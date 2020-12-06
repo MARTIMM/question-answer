@@ -1,0 +1,24 @@
+# https://jekyllrb.com/tutorials/navigation/
+
+- bar_title: "About"
+  bar_menu:
+  - title: "Introduction"
+    url: "/content-docs/setup/introduction.html"
+#  - title: "Configuration"
+#    url: "/content-docs/setup/configuration.html"
+  - title: "Structures"
+    url: "/content-docs/setup/structures.html"
+  - title: "Locations"
+    url: "/content-docs/setup/locations.html"
+  - title: "Examples"
+    url: "/content-docs/setup/examples.html"
+#  - title: ""
+#    url: "/content-docs/setup/.html"
+  - title: "To do and ideas"
+    url: "/content-docs/setup/todo.html"
+
+#- bar_title: "This site"
+#  bar_menu:
+#  - title: "About"
+#  - title: "Change log"
+#    url: "/content-docs/about/change-log.html"

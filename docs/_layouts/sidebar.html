@@ -1,0 +1,38 @@
+---
+---
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: "en-US" }}">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    {% assign url = site.baseurl | append: "/favicon.ico" %}
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url }}" />
+    {% assign url = site.baseurl | append: "/assets/css/style.css" %}
+    <link rel="stylesheet" href="{{ url }}">
+    {% assign url = site.baseurl | append: "/assets/css/print.css" %}
+    <link rel="stylesheet" type="text/css" href="{{ url }}" media="print">
+
+    <title>{{ page.title }}</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+
+        {% include header-section.html %}
+
+        <div id="reference-container">
+          <div id="sidebar-container">
+            {% include sidebar-section.html %}
+          </div>
+
+          <div id="reference-content">
+            {{ content }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="837px" preserveAspectRatio="none" style="width:665px;height:837px;" version="1.1" viewBox="0 0 665 837" width="665px" zoomAndPan="magnify"><defs><filter height="300%" id="fw50yxxqgyeoy" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[6241453cf245587bf763b27a8f9b7bb9]
+cluster QAManager::Gui--><rect fill="#FFFFFF" filter="url(#fw50yxxqgyeoy)" height="740" style="stroke: #000000; stroke-width: 1.5;" width="356" x="7" y="7"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="129" x="120.5" y="21.9951">QAManager::Gui</text><!--MD5=[6bc371726f5eef2230ffd00acbf361be]
+class QAManager::Gui::Value--><rect codeLine="11" fill="#FEFECE" filter="url(#fw50yxxqgyeoy)" height="228.27" id="QAManager::Gui::Value" style="stroke: #A80036; stroke-width: 1.5;" width="213" x="131.5" y="140"/><ellipse cx="216.25" cy="156" fill="#80FFFF" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M217.4531,156.1406 Q217.8125,156.2188 218.0781,156.5 Q218.3594,156.7656 218.75,157.5469 L220.9844,162 L218.2969,162 L216.7969,158.875 Q216.7344,158.7344 216.625,158.5 Q215.9688,157.1094 215.0781,157.1094 L214.2969,157.1094 L214.2969,162 L211.8594,162 L211.8594,149.6094 L215.3906,149.6094 Q217.7813,149.6094 218.8125,150.4531 Q219.8594,151.2969 219.8594,153.2031 Q219.8594,154.4844 219.2344,155.25 Q218.625,156 217.4531,156.1406 Z M214.2969,151.6719 L214.2969,155.0469 L215.4531,155.0469 Q216.4688,155.0469 216.8906,154.6563 Q217.3281,154.25 217.3281,153.3438 Q217.3281,152.4531 216.8906,152.0625 Q216.4688,151.6719 215.4531,151.6719 L214.2969,151.6719 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="35" x="236.75" y="160.1807">Value</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="132.5" x2="343.5" y1="172" y2="172"/><rect fill="none" height="6" style="stroke: #C82930; stroke-width: 1.0;" width="6" x="139.5" y="180"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="81" x="151.5" y="186.2803">Array $!values</text><rect fill="none" height="6" style="stroke: #C82930; stroke-width: 1.0;" width="6" x="139.5" y="192.896"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="187" x="151.5" y="199.1763">QAManager::Question $!question</text><rect fill="none" height="6" style="stroke: #C82930; stroke-width: 1.0;" width="6" x="139.5" y="205.792"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="147" x="151.5" y="212.0723">Hash $!user-data-set-part</text><rect fill="none" height="6" style="stroke: #C82930; stroke-width: 1.0;" width="6" x="139.5" y="218.688"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="120" x="151.5" y="224.9683">Array $!input-widgets</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="132.5" x2="343.5" y1="231.584" y2="231.584"/><ellipse cx="142.5" cy="242.584" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="53" x="151.5" y="245.8643">initialize()</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="0" x="155.5" y="258.7603"/><rect fill="#F24D5C" height="6" style="stroke: #C82930; stroke-width: 1.0;" width="6" x="139.5" y="265.376"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="67" x="151.5" y="271.6563">set-values()</text><rect fill="#F24D5C" height="6" style="stroke: #C82930; stroke-width: 1.0;" width="6" x="139.5" y="278.272"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="101" x="151.5" y="284.5522">create-input-row()</text><rect fill="#F24D5C" height="6" style="stroke: #C82930; stroke-width: 1.0;" width="6" x="139.5" y="291.168"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="91" x="151.5" y="297.4482">set-status-hint()</text><rect fill="#F24D5C" height="6" style="stroke: #C82930; stroke-width: 1.0;" width="6" x="139.5" y="304.064"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="138" x="151.5" y="310.3442">check-on-focus-change()</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="0" x="155.5" y="323.2402"/><ellipse cx="142.5" cy="332.856" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="60" x="151.5" y="336.0664">set-value()</text><ellipse cx="142.5" cy="345.6606" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="61" x="151.5" y="348.8711">get-value()</text><ellipse cx="142.5" cy="358.4653" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="85" x="151.5" y="361.6758">create-widget()</text><!--MD5=[b739b1061c17015f3614f58fe039c290]
+class QAManager::Gui::GtkIOWidget--><rect codeLine="32" fill="#FEFECE" filter="url(#fw50yxxqgyeoy)" height="38.1367" id="QAManager::Gui::GtkIOWidget" style="stroke: #A80036; stroke-width: 1.5;" width="111" x="209.5" y="42"/><ellipse cx="224.5" cy="61.0684" fill="#80FFFF" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M227.4688,66.709 Q226.8906,67.0059 226.25,67.1465 Q225.6094,67.3027 224.9063,67.3027 Q222.4063,67.3027 221.0781,65.6621 Q219.7656,64.0059 219.7656,60.8809 Q219.7656,57.7559 221.0781,56.0996 Q222.4063,54.4434 224.9063,54.4434 Q225.6094,54.4434 226.25,54.5996 Q226.9063,54.7559 227.4688,55.0527 L227.4688,57.7715 Q226.8438,57.1934 226.25,56.9277 Q225.6563,56.6465 225.0313,56.6465 Q223.6875,56.6465 223,57.7246 Q222.3125,58.7871 222.3125,60.8809 Q222.3125,62.9746 223,64.0527 Q223.6875,65.1152 225.0313,65.1152 Q225.6563,65.1152 226.25,64.8496 Q226.8438,64.5684 227.4688,63.9902 L227.4688,66.709 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="60" x="248" y="58.2148">Some Gtk</text><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="79" x="238.5" y="72.2832">Input Widget</text><!--MD5=[1b926e8707c044ce9aa9d78f54691862]
+class QAManager::Gui::QAIOWidget--><rect codeLine="34" fill="#FEFECE" filter="url(#fw50yxxqgyeoy)" height="84.8247" id="QAManager::Gui::QAIOWidget" style="stroke: #A80036; stroke-width: 1.5;" width="111" x="182.5" y="428"/><ellipse cx="197.5" cy="447.0684" fill="#80FFFF" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M200.4688,452.709 Q199.8906,453.0059 199.25,453.1465 Q198.6094,453.3027 197.9063,453.3027 Q195.4063,453.3027 194.0781,451.6621 Q192.7656,450.0059 192.7656,446.8809 Q192.7656,443.7559 194.0781,442.0996 Q195.4063,440.4434 197.9063,440.4434 Q198.6094,440.4434 199.25,440.5996 Q199.9063,440.7559 200.4688,441.0527 L200.4688,443.7715 Q199.8438,443.1934 199.25,442.9277 Q198.6563,442.6465 198.0313,442.6465 Q196.6875,442.6465 196,443.7246 Q195.3125,444.7871 195.3125,446.8809 Q195.3125,448.9746 196,450.0527 Q196.6875,451.1152 198.0313,451.1152 Q198.6563,451.1152 199.25,450.8496 Q199.8438,450.5684 200.4688,449.9902 L200.4688,452.709 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="56" x="223" y="444.2148">Some QA</text><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="79" x="211.5" y="458.2832">Input Widget</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="183.5" x2="292.5" y1="466.1367" y2="466.1367"/><ellipse cx="193.5" cy="477.1367" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="60" x="202.5" y="480.417">set-value()</text><ellipse cx="193.5" cy="490.0327" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="60" x="202.5" y="493.313">get-value()</text><ellipse cx="193.5" cy="502.9287" fill="#84BE84" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="85" x="202.5" y="506.209">create-widget()</text><!--MD5=[cca5edd92b6d703a0472b82334aee01b]
+class QAManager::Gui::Set--><rect codeLine="43" fill="#FEFECE" filter="url(#fw50yxxqgyeoy)" height="65.792" id="QAManager::Gui::Set" style="stroke: #A80036; stroke-width: 1.5;" width="150" x="23" y="665"/><ellipse cx="83.25" cy="681" fill="#80FFFF" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M86.2188,686.6406 Q85.6406,686.9375 85,687.0781 Q84.3594,687.2344 83.6563,687.2344 Q81.1563,687.2344 79.8281,685.5938 Q78.5156,683.9375 78.5156,680.8125 Q78.5156,677.6875 79.8281,676.0313 Q81.1563,674.375 83.6563,674.375 Q84.3594,674.375 85,674.5313 Q85.6563,674.6875 86.2188,674.9844 L86.2188,677.7031 Q85.5938,677.125 85,676.8594 Q84.4063,676.5781 83.7813,676.5781 Q82.4375,676.5781 81.75,677.6563 Q81.0625,678.7188 81.0625,680.8125 Q81.0625,682.9063 81.75,683.9844 Q82.4375,685.0469 83.7813,685.0469 Q84.4063,685.0469 85,684.7813 Q85.5938,684.5 86.2188,683.9219 L86.2188,686.6406 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="21" x="103.75" y="685.1807">Set</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="24" x2="172" y1="697" y2="697"/><rect fill="none" height="6" style="stroke: #C82930; stroke-width: 1.0;" width="6" x="31" y="705"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="97" x="43" y="711.2803">Array $questions</text><rect fill="none" height="6" style="stroke: #C82930; stroke-width: 1.0;" width="6" x="31" y="717.896"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="124" x="43" y="724.1763">QAManager::Set $!set</text><!--MD5=[2a9c7d86a3501621e4c91c1298927622]
+class QAManager::Gui::SheetDialog--><rect codeLine="48" fill="#FEFECE" filter="url(#fw50yxxqgyeoy)" height="52.896" id="QAManager::Gui::SheetDialog" style="stroke: #A80036; stroke-width: 1.5;" width="108" x="208" y="671.5"/><ellipse cx="223" cy="687.5" fill="#80FFFF" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M225.9688,693.1406 Q225.3906,693.4375 224.75,693.5781 Q224.1094,693.7344 223.4063,693.7344 Q220.9063,693.7344 219.5781,692.0938 Q218.2656,690.4375 218.2656,687.3125 Q218.2656,684.1875 219.5781,682.5313 Q220.9063,680.875 223.4063,680.875 Q224.1094,680.875 224.75,681.0313 Q225.4063,681.1875 225.9688,681.4844 L225.9688,684.2031 Q225.3438,683.625 224.75,683.3594 Q224.1563,683.0781 223.5313,683.0781 Q222.1875,683.0781 221.5,684.1563 Q220.8125,685.2188 220.8125,687.3125 Q220.8125,689.4063 221.5,690.4844 Q222.1875,691.5469 223.5313,691.5469 Q224.1563,691.5469 224.75,691.2813 Q225.3438,691 225.9688,690.4219 L225.9688,693.1406 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="76" x="237" y="691.6807">SheetDialog</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="209" x2="315" y1="703.5" y2="703.5"/><rect fill="none" height="6" style="stroke: #C82930; stroke-width: 1.0;" width="6" x="216" y="711.5"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="66" x="228" y="717.7803">Array $sets</text><!--MD5=[91618bb543b832451aacdf414cb40106]
+class QAManager::Gui::Dialog--><rect fill="#FEFECE" filter="url(#fw50yxxqgyeoy)" height="32" id="QAManager::Gui::Dialog" style="stroke: #A80036; stroke-width: 1.5;" width="71" x="275.5" y="573"/><ellipse cx="290.5" cy="589" fill="#80FFFF" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M293.4688,594.6406 Q292.8906,594.9375 292.25,595.0781 Q291.6094,595.2344 290.9063,595.2344 Q288.4063,595.2344 287.0781,593.5938 Q285.7656,591.9375 285.7656,588.8125 Q285.7656,585.6875 287.0781,584.0313 Q288.4063,582.375 290.9063,582.375 Q291.6094,582.375 292.25,582.5313 Q292.9063,582.6875 293.4688,582.9844 L293.4688,585.7031 Q292.8438,585.125 292.25,584.8594 Q291.6563,584.5781 291.0313,584.5781 Q289.6875,584.5781 289,585.6563 Q288.3125,586.7188 288.3125,588.8125 Q288.3125,590.9063 289,591.9844 Q289.6875,593.0469 291.0313,593.0469 Q291.6563,593.0469 292.25,592.7813 Q292.8438,592.5 293.4688,591.9219 L293.4688,594.6406 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="39" x="304.5" y="593.1807">Dialog</text><!--MD5=[c9c589172e1c1eea8d542217fc03c2c4]
+class QAManager::Gui::StatusBar--><rect fill="#FEFECE" filter="url(#fw50yxxqgyeoy)" height="32" id="QAManager::Gui::StatusBar" style="stroke: #A80036; stroke-width: 1.5;" width="94" x="146" y="573"/><ellipse cx="161" cy="589" fill="#80FFFF" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M163.9688,594.6406 Q163.3906,594.9375 162.75,595.0781 Q162.1094,595.2344 161.4063,595.2344 Q158.9063,595.2344 157.5781,593.5938 Q156.2656,591.9375 156.2656,588.8125 Q156.2656,585.6875 157.5781,584.0313 Q158.9063,582.375 161.4063,582.375 Q162.1094,582.375 162.75,582.5313 Q163.4063,582.6875 163.9688,582.9844 L163.9688,585.7031 Q163.3438,585.125 162.75,584.8594 Q162.1563,584.5781 161.5313,584.5781 Q160.1875,584.5781 159.5,585.6563 Q158.8125,586.7188 158.8125,588.8125 Q158.8125,590.9063 159.5,591.9844 Q160.1875,593.0469 161.5313,593.0469 Q162.1563,593.0469 162.75,592.7813 Q163.3438,592.5 163.9688,591.9219 L163.9688,594.6406 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="62" x="175" y="593.1807">StatusBar</text><!--MD5=[f577825916a5a89d7881c9666febeed3]
+class QAManager::Gui::Frame--><rect fill="#FEFECE" filter="url(#fw50yxxqgyeoy)" height="32" id="QAManager::Gui::Frame" style="stroke: #A80036; stroke-width: 1.5;" width="71" x="103.5" y="45"/><ellipse cx="118.5" cy="61" fill="#80FFFF" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M121.4688,66.6406 Q120.8906,66.9375 120.25,67.0781 Q119.6094,67.2344 118.9063,67.2344 Q116.4063,67.2344 115.0781,65.5938 Q113.7656,63.9375 113.7656,60.8125 Q113.7656,57.6875 115.0781,56.0313 Q116.4063,54.375 118.9063,54.375 Q119.6094,54.375 120.25,54.5313 Q120.9063,54.6875 121.4688,54.9844 L121.4688,57.7031 Q120.8438,57.125 120.25,56.8594 Q119.6563,56.5781 119.0313,56.5781 Q117.6875,56.5781 117,57.6563 Q116.3125,58.7188 116.3125,60.8125 Q116.3125,62.9063 117,63.9844 Q117.6875,65.0469 119.0313,65.0469 Q119.6563,65.0469 120.25,64.7813 Q120.8438,64.5 121.4688,63.9219 L121.4688,66.6406 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="39" x="132.5" y="65.1807">Frame</text><!--MD5=[ac3ed6ab80d4d8032ba34679e86f90ce]
+class QAManager::Gui::Question--><rect fill="#FEFECE" filter="url(#fw50yxxqgyeoy)" height="32" id="QAManager::Gui::Question" style="stroke: #A80036; stroke-width: 1.5;" width="88" x="23" y="573"/><ellipse cx="38" cy="589" fill="#80FFFF" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M40.9688,594.6406 Q40.3906,594.9375 39.75,595.0781 Q39.1094,595.2344 38.4063,595.2344 Q35.9063,595.2344 34.5781,593.5938 Q33.2656,591.9375 33.2656,588.8125 Q33.2656,585.6875 34.5781,584.0313 Q35.9063,582.375 38.4063,582.375 Q39.1094,582.375 39.75,582.5313 Q40.4063,582.6875 40.9688,582.9844 L40.9688,585.7031 Q40.3438,585.125 39.75,584.8594 Q39.1563,584.5781 38.5313,584.5781 Q37.1875,584.5781 36.5,585.6563 Q35.8125,586.7188 35.8125,588.8125 Q35.8125,590.9063 36.5,591.9844 Q37.1875,593.0469 38.5313,593.0469 Q39.1563,593.0469 39.75,592.7813 Q40.3438,592.5 40.9688,591.9219 L40.9688,594.6406 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="56" x="52" y="593.1807">Question</text><!--MD5=[7087bfed06bb932c86c987f0ffe80a86]
+class QAManager::Gui::QALabel--><rect fill="#FEFECE" filter="url(#fw50yxxqgyeoy)" height="32" id="QAManager::Gui::QALabel" style="stroke: #A80036; stroke-width: 1.5;" width="82" x="26" y="454.5"/><ellipse cx="41" cy="470.5" fill="#80FFFF" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M43.9688,476.1406 Q43.3906,476.4375 42.75,476.5781 Q42.1094,476.7344 41.4063,476.7344 Q38.9063,476.7344 37.5781,475.0938 Q36.2656,473.4375 36.2656,470.3125 Q36.2656,467.1875 37.5781,465.5313 Q38.9063,463.875 41.4063,463.875 Q42.1094,463.875 42.75,464.0313 Q43.4063,464.1875 43.9688,464.4844 L43.9688,467.2031 Q43.3438,466.625 42.75,466.3594 Q42.1563,466.0781 41.5313,466.0781 Q40.1875,466.0781 39.5,467.1563 Q38.8125,468.2188 38.8125,470.3125 Q38.8125,472.4063 39.5,473.4844 Q40.1875,474.5469 41.5313,474.5469 Q42.1563,474.5469 42.75,474.2813 Q43.3438,474 43.9688,473.4219 L43.9688,476.1406 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="50" x="55" y="474.6807">QALabel</text><path d="M380,226 L380,250 L344.64,254 L380,258 L380,281.7222 A0,0 0 0 0 380,281.7222 L656,281.7222 A0,0 0 0 0 656,281.7222 L656,236 L646,226 L380,226 A0,0 0 0 0 380,226 " fill="#FBFB77" filter="url(#fw50yxxqgyeoy)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M646,226 L646,236 L656,236 L646,226 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="41" x="386" y="243.1748">Value</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="189" x="431" y="243.1494">is responsible for creating the</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="255" x="386" y="258.3901">sub widgets and read and write the user</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="171" x="386" y="273.6309">values in every sub widget.</text><path d="M379,435 L379,466.5 L293.52,470.5 L379,474.5 L379,505.9629 A0,0 0 0 0 379,505.9629 L641,505.9629 A0,0 0 0 0 641,505.9629 L641,445 L631,435 L379,435 A0,0 0 0 0 379,435 " fill="#FBFB77" filter="url(#fw50yxxqgyeoy)" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M631,435 L631,445 L641,445 L631,435 " fill="#FBFB77" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="59" x="385" y="452.1748">QAEntry</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="178" x="448" y="452.1494">is one of the possible types.</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="237" x="385" y="467.3901">It is responsible for creating the input</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="227" x="385" y="482.6309">widget of which its values are saved</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="15" x="385" y="497.8716">by</text><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="41" x="404" y="497.897">Value</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="4" x="445" y="497.8716">.</text><!--MD5=[ed03d9e1dcf386a6ed6959a81bc2feba]
+class UserApp--><rect fill="#FEFECE" filter="url(#fw50yxxqgyeoy)" height="32" id="UserApp" style="stroke: #A80036; stroke-width: 1.5;" width="85" x="219.5" y="791"/><ellipse cx="234.5" cy="807" fill="#80FFFF" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M237.4688,812.6406 Q236.8906,812.9375 236.25,813.0781 Q235.6094,813.2344 234.9063,813.2344 Q232.4063,813.2344 231.0781,811.5938 Q229.7656,809.9375 229.7656,806.8125 Q229.7656,803.6875 231.0781,802.0313 Q232.4063,800.375 234.9063,800.375 Q235.6094,800.375 236.25,800.5313 Q236.9063,800.6875 237.4688,800.9844 L237.4688,803.7031 Q236.8438,803.125 236.25,802.8594 Q235.6563,802.5781 235.0313,802.5781 Q233.6875,802.5781 233,803.6563 Q232.3125,804.7188 232.3125,806.8125 Q232.3125,808.9063 233,809.9844 Q233.6875,811.0469 235.0313,811.0469 Q235.6563,811.0469 236.25,810.7813 Q236.8438,810.5 237.4688,809.9219 L237.4688,812.6406 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="53" x="248.5" y="811.1807">UserApp</text><!--MD5=[0bf096ce0d2d09ddcfe7b7b184ee323e]
+reverse link QAManager::Gui::Dialog to QAManager::Gui::SheetDialog--><path codeLine="56" d="M295.61,623.61 C288.54,639.04 280.29,657.05 273.74,671.37 " fill="none" id="QAManager::Gui::Dialog-backto-QAManager::Gui::SheetDialog" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="none" points="289.29,620.6,303.98,605.33,302.02,626.43,289.29,620.6" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[d45fdf611bbccc40318ae136e57f8b18]
+link QAManager::Gui::Set to QAManager::Gui::SheetDialog--><path codeLine="57" d="M186.54,698 C189.33,698 195.93,698 195.93,698 " fill="none" id="QAManager::Gui::Set-QAManager::Gui::SheetDialog" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="207.93,698,201.93,694,195.93,698,201.93,702,207.93,698" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="173.27,698,182.27,702,178.27,698,182.27,694,173.27,698" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="178.27" x2="186.27" y1="698" y2="698"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="7" x="181.0239" y="694.4332">*</text><!--MD5=[27aa00f9430e952420c3ab1fac3341e9]
+link QAManager::Gui::SheetDialog to UserApp--><path codeLine="58" d="M262,737.74 C262,750.96 262,778.82 262,778.82 " fill="none" id="QAManager::Gui::SheetDialog-UserApp" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="262,790.82,266,784.82,262,778.82,258,784.82,262,790.82" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="262,724.63,258,733.63,262,729.63,266,733.63,262,724.63" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="262" x2="262" y1="729.63" y2="737.63"/><!--MD5=[76318c5a5b9ca571bc4796f42d138e7e]
+link QAManager::Gui::StatusBar to QAManager::Gui::SheetDialog--><path codeLine="59" d="M210.12,616.54 C218.64,629.75 238.9696,661.2831 238.9696,661.2831 " fill="none" id="QAManager::Gui::StatusBar-QAManager::Gui::SheetDialog" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="245.47,671.37,245.5821,664.1598,238.9696,661.2831,238.8575,668.4934,245.47,671.37" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="202.89,605.33,204.403,615.0619,205.5985,609.5329,211.1276,610.7283,202.89,605.33" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="205.5985" x2="209.935" y1="609.5329" y2="616.255"/><!--MD5=[a3b347a0ef9afd94edff75c393947a21]
+reverse link QAManager::Gui::Value to QAManager::Gui::QAIOWidget--><path codeLine="61" d="M238,388.52 C238,402.66 238,416.15 238,427.92 " fill="none" id="QAManager::Gui::Value-backto-QAManager::Gui::QAIOWidget" style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;"/><polygon fill="none" points="231,388.22,238,368.22,245,388.22,231,388.22" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[5dbbde1fb8b7f39758d0f42d34cbb106]
+reverse link QAManager::Gui::Frame to QAManager::Gui::Value--><path codeLine="62" d="M156.15,95.08 C162.84,108 170.94,123.62 179.41,139.96 " fill="none" id="QAManager::Gui::Frame-backto-QAManager::Gui::Value" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="none" points="149.92,98.29,146.93,77.31,162.35,91.84,149.92,98.29" style="stroke: #A80036; stroke-width: 1.0;"/><!--MD5=[ea7ecc52aebe75a97fafcc9af44ce72a]
+link QAManager::Gui::GtkIOWidget to QAManager::Gui::Value--><path codeLine="63" d="M260.57,93.33 C259.19,103.12 255.6849,127.8775 255.6849,127.8775 " fill="none" id="QAManager::Gui::GtkIOWidget-QAManager::Gui::Value" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="254.01,139.76,258.8083,134.377,255.6849,127.8775,250.8866,133.2604,254.01,139.76" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="262.41,80.31,257.193,88.6636,261.7121,85.2611,265.1147,89.7802,262.41,80.31" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="261.7121" x2="260.595" y1="85.2611" y2="93.185"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="7" x="253.6211" y="100.3501">*</text><!--MD5=[5cc20fe5e67387d1305b2def3f91bf29]
+link QAManager::Gui::QAIOWidget to QAManager::Gui::Question--><path codeLine="65" d="M171.46,516.83 C146.92,533.55 98.9731,566.2075 98.9731,566.2075 " fill="none" id="QAManager::Gui::QAIOWidget-QAManager::Gui::Question" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="89.06,572.97,96.2707,572.8931,98.9731,566.2075,91.7624,566.2844,89.06,572.97" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="182.48,509.32,172.7894,511.0787,178.347,512.134,177.2918,517.6915,182.48,509.32" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="178.347" x2="171.74" y1="512.134" y2="516.64"/><!--MD5=[d23f1d16a0d490bb1f9d271a99533aaf]
+link QAManager::Gui::QALabel to QAManager::Gui::Question--><path codeLine="66" d="M67,499.74 C67,517.87 67,560.77 67,560.77 " fill="none" id="QAManager::Gui::QALabel-QAManager::Gui::Question" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="67,572.77,71,566.77,67,560.77,63,566.77,67,572.77" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="67,486.73,63,495.73,67,491.73,71,495.73,67,486.73" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="67" x2="67" y1="491.73" y2="499.73"/><!--MD5=[4cb9976df3ab3b15d70e2d782bc61108]
+link QAManager::Gui::Question to QAManager::Gui::Set--><path codeLine="68" d="M75.1,617.96 C78.13,628.42 85.3611,653.4168 85.3611,653.4168 " fill="none" id="QAManager::Gui::Question-QAManager::Gui::Set" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="88.71,664.94,90.8767,658.0621,85.3611,653.4168,83.1945,660.2947,88.71,664.94" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="71.44,605.33,70.1003,615.0873,72.8303,610.1328,77.7848,612.8628,71.44,605.33" style="stroke: #A80036; stroke-width: 1.0;"/><line style="stroke: #A80036; stroke-width: 1.0;" x1="72.8303" x2="75.06" y1="610.1328" y2="617.815"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="7" x="64.7396" y="625.1136">*</text><!--MD5=[9cb67ab5b8129ad721ec6e7eb4c50538]
+@startuml
+'scale 0.9
+skinparam packageStyle rectangle
+skinparam stereotypeCBackgroundColor #80ffff
+set namespaceSeparator ::
+hide empty members
+
+'class QAManager::Gui::Frame <<(R,#80ffff)>>
+'class QAManager::Gui::Repeat <<(R,#80ffff)>>
+
+class QAManager::Gui::Value <<(R,#80ffff)>> {
+  +initialize()
+
+  -set-values()
+  -create-input-row()
+  -set-status-hint()
+  -check-on-focus-change()
+
+  +{abstract} set-value()
+  +{abstract} get-value()
+'  +{abstract} check-value()
+  +{abstract} create-widget()
+
+  -Array $!values
+  -QAManager::Question $!question
+  -Hash $!user-data-set-part
+  -Array $!input-widgets
+}
+
+note right of QAManager::Gui::Value : <b>Value</b> is responsible for creating the\nsub widgets and read and write the user\nvalues in every sub widget.
+
+class "Some Gtk\nInput Widget" as QAManager::Gui::GtkIOWidget
+
+class "Some QA\nInput Widget" as QAManager::Gui::QAIOWidget {
+  +set-value()
+  +get-value()
+'  +check-value()
+  +create-widget()
+}
+
+note right of QAManager::Gui::QAIOWidget : <b>QAEntry</b> is one of the possible types.\nIt is responsible for creating the input\nwidget of which its values are saved\nby <b>Value</b>.
+
+class QAManager::Gui::Set {
+  -Array $questions
+  -QAManager::Set $!set
+}
+
+class QAManager::Gui::SheetDialog {
+  -Array $sets
+}
+
+
+'QAManager::Gui::Set *- -> QAManager::Set
+'QAManager::Gui::Repeat <|.. QAManager::Gui::QAIOWidget
+
+QAManager::Gui::Dialog <|- - QAManager::Gui::SheetDialog
+QAManager::Gui::Set "*" <-* QAManager::Gui::SheetDialog
+QAManager::Gui::SheetDialog <- -* UserApp
+QAManager::Gui::StatusBar <- -* QAManager::Gui::SheetDialog
+
+QAManager::Gui::Value <|.. QAManager::Gui::QAIOWidget
+QAManager::Gui::Frame <|- - QAManager::Gui::Value
+QAManager::Gui::GtkIOWidget "*" <- -* QAManager::Gui::Value
+
+QAManager::Gui::QAIOWidget <- -* QAManager::Gui::Question
+QAManager::Gui::QALabel <- -* QAManager::Gui::Question
+
+QAManager::Gui::Question "*" <- -* QAManager::Gui::Set
+
+@enduml
+
+@startuml
+skinparam packageStyle rectangle
+skinparam stereotypeCBackgroundColor #80ffff
+set namespaceSeparator ::
+hide empty members
+
+
+class QAManager::Gui::Value <<(R,#80ffff)>> {
+  +initialize()
+
+  -set-values()
+  -create-input-row()
+  -set-status-hint()
+  -check-on-focus-change()
+
+  +{abstract} set-value()
+  +{abstract} get-value()
+  +{abstract} create-widget()
+
+  -Array $!values
+  -QAManager::Question $!question
+  -Hash $!user-data-set-part
+  -Array $!input-widgets
+}
+
+note right of QAManager::Gui::Value : <b>Value</b> is responsible for creating the\nsub widgets and read and write the user\nvalues in every sub widget.
+
+class "Some Gtk\nInput Widget" as QAManager::Gui::GtkIOWidget
+
+class "Some QA\nInput Widget" as QAManager::Gui::QAIOWidget {
+  +set-value()
+  +get-value()
+  +create-widget()
+}
+
+note right of QAManager::Gui::QAIOWidget : <b>QAEntry</b> is one of the possible types.\nIt is responsible for creating the input\nwidget of which its values are saved\nby <b>Value</b>.
+
+class QAManager::Gui::Set {
+  -Array $questions
+  -QAManager::Set $!set
+}
+
+class QAManager::Gui::SheetDialog {
+  -Array $sets
+}
+
+
+
+QAManager::Gui::Dialog <|- - QAManager::Gui::SheetDialog
+QAManager::Gui::Set "*" <-* QAManager::Gui::SheetDialog
+QAManager::Gui::SheetDialog <- -* UserApp
+QAManager::Gui::StatusBar <- -* QAManager::Gui::SheetDialog
+
+QAManager::Gui::Value <|.. QAManager::Gui::QAIOWidget
+QAManager::Gui::Frame <|- - QAManager::Gui::Value
+QAManager::Gui::GtkIOWidget "*" <- -* QAManager::Gui::Value
+
+QAManager::Gui::QAIOWidget <- -* QAManager::Gui::Question
+QAManager::Gui::QALabel <- -* QAManager::Gui::Question
+
+QAManager::Gui::Question "*" <- -* QAManager::Gui::Set
+
+@enduml
+
+PlantUML version 1.2020.19(Mon Oct 12 17:10:01 CEST 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: null
+--></g></svg>

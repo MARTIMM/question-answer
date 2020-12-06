@@ -1,0 +1,39 @@
+<header>
+<!--
+{% assign url = site.baseurl | append: "/content-docs/images/SketchGuru_20181030082640.jpg" %}
+{% assign url = site.baseurl | append: "/content-docs/images/me-4.png" %}
+-->
+  {% assign url = site.baseurl | append: "/assets/images/icons8-invoice-100.png" %}
+  <div>
+    <img class="header-image" src="{{ url }}" />
+    <strong class="XL-h1-size">{{ site.description }}</strong>
+  </div>
+
+  {% for entry in site.data[page.nav_menu].nav_menus %}
+    <nav>
+      {% for item in entry.nav_pages %}
+
+        {% assign classstr = "" %}
+        {% if item.url == page.url %}
+          {% assign classstr = "active" %}
+        {% else %}
+          {% assign classstr = "inactive" %}
+        {% endif %}
+
+        {% if item.right == true %}
+          {% assign classstr = classstr | append: " float-right" %}
+        {% endif %}
+
+        {% if item.url != page.url %}
+          <a class="{{ classstr }} header-menu"
+             href="{{ item.url | prepend: site.baseurl }}">{{ item.title }}</a>
+        {% else %}
+          <a class="{{ classstr }} header-menu">{{ item.title }}</a>
+        {% endif %}
+      {% endfor %}
+
+    </nav>
+  {% endfor %}
+
+  <!-- hr / -->
+</header>

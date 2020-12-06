@@ -1,0 +1,11 @@
+# https://jekyllrb.com/tutorials/navigation/
+
+- bar_title: "Reference"
+  bar_menu:
+  - title: "Category"
+    url: "/content-docs/reference/Category.html"
+  - title: "QATypes"
+    url: "/content-docs/reference/QATypes.html"
+
+#- bar_title: "This site"
+#  bar_menu:
