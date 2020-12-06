@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+
+  <object class="GtkMenu" id="set-menu">
+    <child>
+      <object class="GtkMenuItem">
+        <property name="label" translatable="yes">Show Set</property>
+        <signal name="activate" handler="show-set"/>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkMenuItem">
+        <property name="label" translatable="yes">Set Edit</property>
+        <signal name="activate" handler="set-edit"/>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkMenuItem">
+        <property name="label">Add New Set</property>
+        <signal name="activate" handler="set-add"/>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkMenuItem">
+        <property name="label">Delete Set</property>
+        <signal name="activate" handler="set-delete"/>
+      </object>
+    </child>
+
+    <!--child>
+      <object class="GtkSeparatorMenuItem"/>
+    </child-->
+  </object>
+
+  <object class="GtkMenu" id="qa-menu">
+    <child>
+      <object class="GtkMenuItem">
+        <property name="label" translatable="yes">Move Question Up</property>
+        <signal name="activate" handler="qa-up"/>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkMenuItem">
+        <property name="label" translatable="yes">Move Question Down</property>
+        <signal name="activate" handler="qa-down"/>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkMenuItem">
+        <property name="label" translatable="yes">Question Edit</property>
+        <signal name="activate" handler="qa-edit"/>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkMenuItem">
+        <property name="label">Add New Question</property>
+        <signal name="activate" handler="qa-add"/>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkMenuItem">
+        <property name="label">Delete Question</property>
+        <signal name="activate" handler="qa-delete"/>
+      </object>
+    </child>
+  </object>
+
+</interface>

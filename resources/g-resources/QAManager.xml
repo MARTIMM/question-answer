@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Run glib-compile-resources resources/g-resources/QAManager.xml -->
+<gresources>
+  <gresource prefix="/io/github/martimm/qa">
+    <file compressed="true" preprocess="xml-stripblanks">resources/g-resources/QAManager-menu.xml</file>
+    <file compressed="true" >resources/g-resources/QAManager-style.css</file>
+    <file compressed="true" preprocess="xml-stripblanks">resources/g-resources/QASet-menu.xml</file>
+  </gresource>
+</gresources>

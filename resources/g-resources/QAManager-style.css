@@ -1,0 +1,159 @@
+/* Run glib-compile-resources resources/g-resources/QAManager.xml */
+
+@define-color regular-text-color #005050;
+@define-color label-text-color #0060af;
+@define-color title-text-color #0060af;
+@define-color description-text-color #00507f;
+@define-color message-text-color #00507f;
+@define-color -text-color #00507f;
+
+@define-color field-normal-color #00eeee;
+@define-color field-ok-color #00ff44;
+@define-color field-fail-color #dd4400;
+
+.background {
+	/*background-color: #480044;*/
+	color: blue;
+}
+
+/*
+.dontCare {
+  border-color: #0088ff;
+  border-width: 1px;
+}
+*/
+
+.fieldNormal {
+/*  border-color: @field-normal-color;*/
+  border-width: 1px;
+}
+
+.fieldFail {
+  border-color: @field-fail-color;
+  border-width: 1px;
+}
+
+.fieldOk {
+/*  border-color: @field-ok-color;*/
+  border-width: 1px;
+}
+
+textview.fieldFail {
+  background-color: @field-fail-color;
+}
+
+grid {
+  background-color: #efefff;
+  color: @regular-text-color;
+}
+
+.regularText {
+	color: @regular-text-color;
+
+  /*font-variant: normal;
+  font-style: normal;
+  font-weight: normal;
+  font-stretch: normal;
+  font-size: normal;*/
+}
+
+/*
+  frame
+  ├── border[.flat]
+  ├── <label widget>
+  ╰── <child>
+*/
+frame label {
+	color: @title-text-color;
+
+  font-variant: small-caps;
+  font-style: normal;
+  font-weight: bolder;
+  font-stretch: semi-expanded;
+  /*font-size: 0.6em;*/
+}
+
+.descriptionText {
+	color: @description-text-color;
+
+  font-variant: normal;
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: normal;
+  /*font-size: 0.3em;*/
+}
+
+.messageText {
+	color: @message-text-color;
+
+  font-variant: normal;
+  font-style: normal;
+  font-weight: normal;
+  font-stretch: normal;
+  /*font-size: 0.3em;*/
+}
+
+radiobutton label {
+	color: @label-text-color;
+
+  font-variant: normal;
+  font-style: normal;
+  font-weight: normal;
+  font-stretch: normal;
+  /*font-size: 0.3em;*/
+}
+
+checkbutton label {
+	color: @label-text-color;
+
+  font-variant: normal;
+  font-style: normal;
+  font-weight: normal;
+  font-stretch: normal;
+  /*font-size: medium;*/
+}
+
+statusbar {
+	background-color: #cccccc;
+}
+
+statusbar frame {
+  margin: 0 0 0 0;
+}
+
+statusbar label {
+	color: #000000;
+
+  font-variant: normal;
+  font-style: normal;
+  font-size: smaller;
+}
+
+.labelText {
+	color: @label-text-color;
+
+  font-variant: normal;
+  font-style: normal;
+  font-weight: initial;
+  font-stretch: normal;
+  /*font-size: normal;*/
+}
+
+/*
+container {
+  border-color: #aaaaaa;
+  border-width: 1px;
+}
+*/
+
+/*
+textview {
+  background-color: #ff8000;
+}
+*/
+
+/* example background image
+grid {
+  background-image: url('file:///home/marcel/Languages/Raku/Projects/qa-manager/xt/Data/f1.png');
+}
+*/
