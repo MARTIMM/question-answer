@@ -83,14 +83,14 @@
 ## ----- [ end of defaults ] -----
 
 ## ----- [ your settings ] -----
-title: Question Answer Manager
-description: Question Answer Manager
+title: Question Answer Sheets and Manager
+description: Question Answer Sheets and Manager
 email: mt1957@gmail.com
 github_username: MARTIMM
 
 #url: "https://martimm.github.io"
 port: 4002
-baseurl: "/qa-manager"
+baseurl: "/question-answer"
 
 #plugins:
 #  - jekyll-feed
