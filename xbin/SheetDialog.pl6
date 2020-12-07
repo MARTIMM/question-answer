@@ -9,22 +9,22 @@ use Gnome::Gtk3::Main;
 use Gnome::Gtk3::Window;
 use Gnome::Gtk3::Button;
 
-use QAManager::Gui::SheetDialog;
-use QAManager::Gui::Frame;
-use QAManager::Gui::Value;
-use QAManager::QATypes;
-use QAManager::Question;
+use QA::Gui::SheetDialog;
+use QA::Gui::Frame;
+use QA::Gui::Value;
+use QA::Types;
+use QA::Question;
 
 use Gnome::N::X;
 #Gnome::N::debug(:on);
 
 #-------------------------------------------------------------------------------
 # A user definable widget
-class MyWidget does QAManager::Gui::Value {
+class MyWidget does QA::Gui::Value {
 
   #---------
   method init-widget (
-    QAManager::Question:D :$!question, Hash:D :$!user-data-set-part
+    QA::Question:D :$!question, Hash:D :$!user-data-set-part
   ) {
 
     # widget is not repeatable
@@ -74,10 +74,10 @@ class EH {
     # important to initialize here because destroy of dialogs native object
     # destroyes everything on it including this objects native objects.
     # we need to rebuild it everytime the dialog is (re)run.
-    my QAManager::QATypes $qa-types .= instance;
+    my QA::Types $qa-types .= instance;
     $qa-types.set-widget-object( 'use-my-widget', MyWidget.new);
 
-    my QAManager::Gui::SheetDialog $sheet-dialog .= new(
+    my QA::Gui::SheetDialog $sheet-dialog .= new(
       :sheet-name<QAManagerSetDialog>,
       :show-cancel-warning, :!save-data
     );
@@ -88,7 +88,7 @@ class EH {
 
   #---------
   method dialog-response (
-    int32 $response, QAManager::Gui::SheetDialog :_widget($dialog)
+    int32 $response, QA::Gui::SheetDialog :_widget($dialog)
   ) {
     note "dialog response: $response, ", GtkResponseType($response);
 
@@ -160,7 +160,7 @@ my Hash $user-data = %(
   ),
 );
 
-my QAManager::QATypes $qa-types .= instance;
+my QA::Types $qa-types .= instance;
 $qa-types.data-file-type = QAJSON;
 $qa-types.cfgloc-userdata = 'xt/Data';
 $qa-types.qa-save( 'QAManagerSetDialog', $user-data, :userdata);
@@ -175,9 +175,9 @@ $qa-types.qa-save( 'QAManagerSetDialog', $user-data, :userdata);
 #exit(0);
 }}
 
-my QAManager::QATypes $qa-types .= instance;
+my QA::Types $qa-types .= instance;
 $qa-types.data-file-type = QAJSON;
-$qa-types.cfgloc-userdata = 'xt/Data';
+$qa-types.cfgloc-userdata = 'xbin/Data';
 $qa-types.set-check-handler( 'check-exclam', $eh, 'check-char', :char<!>);
 
 
