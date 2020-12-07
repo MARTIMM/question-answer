@@ -55,6 +55,7 @@ A set is not stored on disk on its own. A set is used to group a series of quest
 
 Questions are what it is all about. In short a piece of text to pose the question and a field where the answer can be given. However, more data is needed to fully display a question like what kind of input do we need, are there limits, is there a choice from a set of possibilities etc.
 
+* **action**; A name of a method which can be called on a previously provided object. The method is called when the answer on the question in accepted.
 * **callback**; A name of a method which can be called on a previously provided object. The handler must check for correctness of the input value for that question.
 * **default**; A default value when no input is provided.
 * **description**; A question. When empty, title is taken.
@@ -155,21 +156,22 @@ The formats used are shown below for each input type with the variables which co
 |-------------------------|----------------------------|-------------|
 |**QACheckButton**        | Cb                         |             |
 |**QAColorChooser**       | Cc                         |             |
-|**QAComboBox**           | Co                         | 🗸           |
-|**QAEntry**              | En                         | 🗸           |
-|**QAFileChooser**        | Fc                         | 🗸           |
-|**QAImage**              | Im                         | 🗸           |
+|**QAComboBox**           | Co                         | ✓           |
+|**QAEntry**              | En                         | ✓           |
+|**QAFileChooser**        | Fc                         | ✓           |
+|**QAImage**              | Im                         | ✓           |
 |**QAList**               | Li                         |             |
-|**QARadioButton**        | Rb                         | 🗸           |
+|**QARadioButton**        | Rb                         | ✓           |
 |**QAScale**              | Sc                         |             |
 |**QASpinButton**         | Sp                         |             |
-|**QASwitch**             | Sw                         | 🗸           |
-|**QATextView**           | Tv                         | 🗸           |
+|**QASwitch**             | Sw                         | ✓           |
+|**QATextView**           | Tv                         | ✓           |
 |**QAToggleButton**       | Tb                         |             |
-|**QAUserWidget**         | Uw                         | 🗸           |
+|**QAUserWidget**         | Uw                         | ✓           |
 
 |             |En|Cb|Co|Im|Li|Rb|Sc|Sw|Tv|Tb|Cc|Fc|Sp|Uw|
 |-------------|--|--|--|--|--|--|--|--|--|--|--|--|--|--|
+|action       |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
 |callback     |o |- |- |  |  |- |  |  |o |  |  |  |  |  |
 |climbrate    |- |- |- |- |- |- |o |- |- |- |- |- |o |  |
 |default      |o |o |o |o |o |o |o |o |o |o |o |o |o |  |

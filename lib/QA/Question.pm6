@@ -5,7 +5,8 @@ unit class QA::Question:auth<github:MARTIMM>;
 
 use QA::Types;
 
-has Str $.callback is rw;       # optional key to check value
+has Str $.action is rw;         # optional key (=methodname) to perform action
+has Str $.callback is rw;       # optional key (=methodname) to check value
 has Any $.climbrate is rw;      # optional rate for spin button
 has Str $.cmpwith is rw;        # optional to check value against other field
 has Any $.default is rw;        # optional default value
@@ -60,6 +61,7 @@ submethod BUILD ( Str:D :$!name, Hash :$qa-data ) {
   }
 
 
+  $!action = $qa-data<action> if $qa-data<action>.defined;
   $!callback = $qa-data<callback> if $qa-data<callback>.defined;
   $!climbrate = $qa-data<climbrate> if $qa-data<climbrate>.defined;
   $!cmpwith = $qa-data<cmpwith> if $qa-data<cmpwith>.defined;
@@ -93,6 +95,7 @@ submethod BUILD ( Str:D :$!name, Hash :$qa-data ) {
 method qa-data ( --> Hash ) {
   my Hash $qa-data = %( :$!name, :$!fieldtype);
 
+  $qa-data<action> = $!action if $!action.defined;
   $qa-data<callback> = $!callback if $!callback.defined;
   $qa-data<climbrate> = $!climbrate if $!climbrate.defined;
   $qa-data<default> = $!default if $!default.defined;
