@@ -217,6 +217,17 @@ method iterator ( ) {
 }
 
 #-------------------------------------------------------------------------------
+multi method get-page ( Int $page-idx --> Hash ) {
+  $page-idx < $!page-data.elems ?? $!page-data[$page-idx] !! %();
+}
+
+#-------------------------------------------------------------------------------
+multi method get-page ( Str $page-name --> Hash ) {
+  my Int $page-idx  = $!pages{$page-name}:exists ?? $!pages{$page-name} !! -1;
+  $page-idx >= 0 ?? $!page-data[$page-idx] !!  %();
+}
+
+#-------------------------------------------------------------------------------
 method get-sheet-list ( --> List ) {
   $!qa-types.qa-list(:sheet)
 #`{{

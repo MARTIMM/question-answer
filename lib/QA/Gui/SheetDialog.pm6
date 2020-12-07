@@ -43,7 +43,6 @@ unit class QA::Gui::SheetDialog:auth<github:MARTIMM>;
 also is QA::Gui::Dialog;
 
 #-------------------------------------------------------------------------------
-#has QA::Gui::Statusbar $!statusbar;
 has QA::Sheet $!sheet;
 has Str $!sheet-name;
 has Hash $!user-data;
@@ -79,6 +78,24 @@ submethod BUILD (
 
   given $!sheet.display {
     when QADialog {
+
+      my Gnome::Gtk3::ScrolledWindow $page-window = self!create-page(
+        $!sheet.get-page(0), :!title, :!description
+      );
+      $page-window.widget-set-hexpand(True);
+      $page-window.widget-set-vexpand(True);
+
+      $grid.grid-attach( $page-window, 0, 0, 1, 1);
+
+      # add some buttons specific for this notebook
+      self!create-button(
+        'cancel', 'cancel-dialog', GTK_RESPONSE_CANCEL, :default
+      );
+      self!create-button( 'finish', 'finish-dialog', GTK_RESPONSE_OK);
+
+      self.register-signal( self, 'dialog-response', 'response');
+      my QA::Gui::Statusbar $statusbar .= instance;
+      $grid.grid-attach( $statusbar, 0, 1, 1, 1);
     }
 
     when QANoteBook {

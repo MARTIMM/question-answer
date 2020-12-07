@@ -58,7 +58,7 @@ method initialize ( ) {
   # check if things are defined properly. must be done here because
   # user defined widgets may forget to handle them
   die 'question data not defined' unless ?$!question and ?$!question.name;
-  die 'user data not defined' unless ?$!user-data-set-part;
+#  die 'user data not defined' unless ?$!user-data-set-part;
 
   # clear values
   $!input-widgets = [];
@@ -103,7 +103,7 @@ method !create-input-row ( Int $row ) {
     $!grid.grid-attach( $tb, QAButtonColumn, $row, 1, 1);
   }
 
-  # create comboxes on the left when selectlist is a non-empty Array
+  # create comboboxes on the left when selectlist is a non-empty Array
   my Array $select-list = $!question.selectlist // [];
   if $select-list.elems {
     my Gnome::Gtk3::ComboBoxText $cbt = self!create-combobox($select-list);
