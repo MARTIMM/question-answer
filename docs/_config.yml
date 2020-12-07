@@ -90,7 +90,7 @@ github_username: MARTIMM
 
 #url: "https://martimm.github.io"
 port: 4002
-baseurl: "/question-answer"
+baseurl: "/question-answer/"
 
 #plugins:
 #  - jekyll-feed
