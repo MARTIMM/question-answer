@@ -20,7 +20,7 @@ use Gnome::Gtk3::Window;
 Purpose of this class is to be a base class for all dialogs (except from other gtk modules like MessageDialog or AboutDialog) used in this application and library so as to show a uniform look. There is a content area which is set as a grid and a button area.
 =end pod
 
-unit class QAManager::Gui::Dialog:auth<github:MARTIMM>;
+unit class QA::Gui::Dialog:auth<github:MARTIMM>;
 also is Gnome::Gtk3::Dialog;
 
 has Gnome::Gtk3::Grid $.dialog-content;

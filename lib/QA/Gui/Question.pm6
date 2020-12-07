@@ -1,37 +1,37 @@
 use v6;
 
-use QAManager::QATypes;
-use QAManager::Set;
-use QAManager::Question;
-use QAManager::Gui::QALabel;
-use QAManager::Gui::QAEntry;
-use QAManager::Gui::QATextView;
-use QAManager::Gui::QAComboBox;
-use QAManager::Gui::QASwitch;
-use QAManager::Gui::QAFileChooser;
-use QAManager::Gui::QAImage;
-use QAManager::Gui::QARadioButton;
-use QAManager::Gui::QACheckButton;
-use QAManager::Gui::QASpinButton;
+use QA::Types;
+use QA::Set;
+use QA::Question;
+use QA::Gui::QALabel;
+use QA::Gui::QAEntry;
+use QA::Gui::QATextView;
+use QA::Gui::QAComboBox;
+use QA::Gui::QASwitch;
+use QA::Gui::QAFileChooser;
+use QA::Gui::QAImage;
+use QA::Gui::QARadioButton;
+use QA::Gui::QACheckButton;
+use QA::Gui::QASpinButton;
 
 use Gnome::Gtk3::Enums;
 use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Label;
 
 #-------------------------------------------------------------------------------
-unit class QAManager::Gui::Question:auth<github:MARTIMM>;
+unit class QA::Gui::Question:auth<github:MARTIMM>;
 
 #-------------------------------------------------------------------------------
 has Gnome::Gtk3::Grid $!question-grid;
 has Int $!grid-row;
 has Hash $!user-data-set-part;
-has QAManager::Question $!question;
+has QA::Question $!question;
 #has Array $!input-widgets;
 has $!input-widget;
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
-  QAManager::Question :$!question, Gnome::Gtk3::Grid:D :$!question-grid,
+  QA::Question :$!question, Gnome::Gtk3::Grid:D :$!question-grid,
   Int:D :row($!grid-row), Hash:D :$!user-data-set-part
 ) {
 
@@ -47,7 +47,7 @@ method display ( ) {
 
   my Str $text = $!question.description // $!question.title ~ ':';
   $!question-grid.grid-attach(
-    QAManager::Gui::QALabel.new(:$text), QAQuestion, $!grid-row, 1, 1
+    QA::Gui::QALabel.new(:$text), QAQuestion, $!grid-row, 1, 1
   );
 
   # mark required fields with a bold star
@@ -61,13 +61,13 @@ method display ( ) {
 
   # find and load the module for this input type. if found, initialize
   # the module and store in array.
-  my Str $module-name = 'QAManager::Gui::' ~ $!question.fieldtype.Str;
+  my Str $module-name = 'QA::Gui::' ~ $!question.fieldtype.Str;
 #note "Input widget class: $module-name, $!grid-row";
 
   # if this is a user widget, the object is already created. get the object
   # from <userwidget> and get the object, then call .init-widget().
   if $!question.fieldtype eq QAUserWidget {
-    my QAManager::QATypes $qa-types .= instance;
+    my QA::Types $qa-types .= instance;
     $!input-widget = $qa-types.get-widget-object($!question.userwidget);
     if ?$!input-widget and $!input-widget.^lookup('init-widget') ~~ Method {
       $!input-widget.init-widget( :$!question, :$!user-data-set-part);
@@ -147,29 +147,29 @@ use Gnome::Gtk3::Switch;
 use Gnome::Gtk3::Image;
 use Gnome::Gtk3::StyleContext;
 
-use QAManager::QATypes;
-use QAManager::Set;
-use QAManager::Question;
-use QAManager::Gui::GroupFrame;
-use QAManager::Gui::QAEntry;
+use QA::Types;
+use QA::Set;
+use QA::Question;
+use QA::Gui::GroupFrame;
+use QA::Gui::QAEntry;
 
 #-------------------------------------------------------------------------------
 =begin pod
 Purpose of this part is to display a question in a row on a given grid. This line consists of several columns. The first column shows a text posing the question, the second shows an optional star to show that an input is required. Then the third column is used to show the input area which can be one of several types of input like text, combobox or checkbox groups.
 =end pod
 
-unit class QAManager::Gui::Question:auth<github:MARTIMM>;
+unit class QA::Gui::Question:auth<github:MARTIMM>;
 
 #-------------------------------------------------------------------------------
 has Hash $!entry-objects = %( );
-has QAManager::Set $!set;
+has QA::Set $!set;
 has Gnome::Gtk3::Grid $!question-grid;
 has Int $!starting-grid-row;
 has Hash $!user-data-set-part;
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
-  QAManager::Set:D :$!set, Gnome::Gtk3::Grid:D :$!question-grid,
+  QA::Set:D :$!set, Gnome::Gtk3::Grid:D :$!question-grid,
   Int:D :$!starting-grid-row, Hash:D :$!user-data-set-part
 ) { }
 
@@ -180,9 +180,9 @@ method build-set-fields ( ) {
 
   my Int $grid-row = $!starting-grid-row;
   my $c := $!set.clone;
-  for $c -> QAManager::Question $question {
+  for $c -> QA::Question $question {
 
-#  for @($!set.get-questions) -> QAManager::Question $question {
+#  for @($!set.get-questions) -> QA::Question $question {
 #note "kv: $question.name(), $question.fieldtype()";
     self.build-entry( :$grid-row, :$question);
     self.check-field( :$grid-row, :$question);
@@ -197,8 +197,8 @@ note "sv udsp: $!user-data-set-part.perl()";
 
   my Int $grid-row = $!starting-grid-row;
   my $c := $!set.clone;
-  for $c -> QAManager::Question $question {
-#  for @($!set.get-questions) -> QAManager::Question $question {
+  for $c -> QA::Question $question {
+#  for @($!set.get-questions) -> QA::Question $question {
     self.set-value( :$grid-row, :$question);
     $grid-row++;
   }
@@ -206,7 +206,7 @@ note "sv udsp: $!user-data-set-part.perl()";
 
 #-------------------------------------------------------------------------------
 method build-entry (
-  Int :$grid-row, QAManager::Question :$question
+  Int :$grid-row, QA::Question :$question
 ) {
 
   # place label on the left. the required star is in the middle column.
@@ -255,7 +255,7 @@ method build-entry (
 }
 
 #-------------------------------------------------------------------------------
-method check-field ( Int :$grid-row, QAManager::Question :$question ) {
+method check-field ( Int :$grid-row, QA::Question :$question ) {
   my $no = $!question-grid.get-child-at( 2, $grid-row);
   my Gnome::Gtk3::Widget $w .= new(:native-object($no));
 
@@ -267,7 +267,7 @@ method check-field ( Int :$grid-row, QAManager::Question :$question ) {
 }
 
 #-------------------------------------------------------------------------------
-method set-value ( Int :$grid-row, QAManager::Question :$question ) {
+method set-value ( Int :$grid-row, QA::Question :$question ) {
   my $no = $!question-grid.get-child-at( 2, $grid-row);
   my Gnome::Gtk3::Widget $w .= new(:native-object($no));
 note "set value, type: $question.fieldtype(), $grid-row, $w.get-name(), {$!user-data-set-part{$w.get-name()}//'-'}";
@@ -323,12 +323,12 @@ method !shape-label (
 
 #-------------------------------------------------------------------------------
 method !entry-field (
-  Int $grid-row, QAManager::Question $question
+  Int $grid-row, QA::Question $question
 ) {
 
   # A frame with one or more entries
 #note "KVO vals: $question.perl()";
-  my QAManager::Gui::QAEntry $w .= new(:$question);
+  my QA::Gui::QAEntry $w .= new(:$question);
 
   # select default if any
   $w.set-default($question.default) if $question.default;
@@ -338,10 +338,10 @@ method !entry-field (
 
 #-------------------------------------------------------------------------------
 method !textview-field (
-  Int $grid-row, QAManager::Question $question
+  Int $grid-row, QA::Question $question
 ) {
 
-  my QAManager::Gui::GroupFrame $frame .= new;
+  my QA::Gui::GroupFrame $frame .= new;
   $!question-grid.grid-attach( $frame, 2, $grid-row, 1, 1);
 
   my Gnome::Gtk3::TextView $w .= new;
@@ -362,7 +362,7 @@ method !textview-field (
 
 #-------------------------------------------------------------------------------
 method !combobox-field (
-  Int $grid-row, QAManager::Question $question
+  Int $grid-row, QA::Question $question
 ) {
 
   my Gnome::Gtk3::ComboBoxText $w .= new;
@@ -391,10 +391,10 @@ method !combobox-field (
 
 #-------------------------------------------------------------------------------
 method !radiobutton-field (
-  Int $set-row, QAManager::Question $question
+  Int $set-row, QA::Question $question
 ) {
 
-  my QAManager::Gui::GroupFrame $frame .= new;
+  my QA::Gui::GroupFrame $frame .= new;
   $!question-grid.grid-attach( $frame, 2, $set-row, 1, 1);
 
   # A series of checkbuttons are stored in a grid
@@ -427,10 +427,10 @@ note "RB: $question.default(), $vname, {($question.default // '') eq $vname}";
 
 #-------------------------------------------------------------------------------
 method !checkbutton-field (
-  Int $set-row, QAManager::Question $question
+  Int $set-row, QA::Question $question
 ) {
 
-  my QAManager::Gui::GroupFrame $frame .= new;
+  my QA::Gui::GroupFrame $frame .= new;
   $!question-grid.grid-attach( $frame, 2, $set-row, 1, 1);
 
   # A series of checkbuttons are stored in a grid
@@ -458,7 +458,7 @@ method !checkbutton-field (
 
 #-------------------------------------------------------------------------------
 method !togglebutton-field (
-  Int $set-row, QAManager::Question $question
+  Int $set-row, QA::Question $question
 ) {
 
   # user data is stored as a hash to make the check more easily
@@ -481,7 +481,7 @@ method !togglebutton-field (
 
 #-------------------------------------------------------------------------------
 method !scale-field (
-  Int $set-row, QAManager::Question $question
+  Int $set-row, QA::Question $question
 ) {
 
   # user data is stored as a hash to make the check more easily
@@ -508,7 +508,7 @@ method !scale-field (
 
 #-------------------------------------------------------------------------------
 method !switch-field (
-  Int $set-row, QAManager::Question $question
+  Int $set-row, QA::Question $question
 ) {
 
   # the switch is streched to the full width of the grid cell. this is ugly!
@@ -535,14 +535,14 @@ method !switch-field (
 
 #-------------------------------------------------------------------------------
 method !image-field (
-  Int $set-row, QAManager::Question $question
+  Int $set-row, QA::Question $question
 ) {
 
   # user data is stored as a hash to make the check more easily
 #  my Array $v = $!user-data{$set.name}{$question.name} // [];
 #  my Hash $reversed-v = $v.kv.reverse.hash;
 
-  my QAManager::Gui::GroupFrame $frame .= new;
+  my QA::Gui::GroupFrame $frame .= new;
   $!question-grid.grid-attach( $frame, 2, $set-row, 1, 1);
 
   my Str $file = $question.default // '';

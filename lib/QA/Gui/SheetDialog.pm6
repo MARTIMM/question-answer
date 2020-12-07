@@ -65,7 +65,7 @@ submethod BUILD (
   Bool :$!show-cancel-warning = True, Bool :$!save-data = True
 ) {
 
-  my QA::QATypes $qa-types .= instance;
+  my QA::Types $qa-types .= instance;
   $!user-data = $user-data //
                 $qa-types.qa-load( $!sheet-name, :userdata) //
                 %();
@@ -267,7 +267,7 @@ method dialog-response (
 
     else {
       $!result-user-data = $!user-data;
-      my QA::QATypes $qa-types .= instance;
+      my QA::Types $qa-types .= instance;
       $qa-types.qa-save( $!sheet-name, $!result-user-data, :userdata)
         if $!save-data;
 #      self.widget-destroy;

@@ -1,9 +1,9 @@
 use v6.d;
 
-use QAManager::QATypes;
+use QA::Types;
 
 #-------------------------------------------------------------------------------
-unit class QAManager::Sheet:auth<github:MARTIMM>;
+unit class QA::Sheet:auth<github:MARTIMM>;
 also does Iterable;
 #also does Iterator;
 
@@ -11,7 +11,7 @@ also does Iterable;
 # sheets are filenames holding pages of sets
 has Str $!sheet-name is required;
 
-# this QAManager::Sheet's pages
+# this QA::Sheet's pages
 has Hash $!pages;
 has Array $!page-data;
 
@@ -28,7 +28,7 @@ has Int $.width is rw;
 has Int $.height is rw;
 has Hash $.button-map is rw;
 
-has QAManager::QATypes $!qa-types;
+has QA::Types $!qa-types;
 
 #-------------------------------------------------------------------------------
 # TODO make use of Bool $resource

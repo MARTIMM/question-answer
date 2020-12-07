@@ -8,12 +8,13 @@ use Gnome::Gtk3::Separator;
 use Gnome::Gtk3::StyleContext;
 use Gnome::Gtk3::Label;
 
-use QAManager::Category;
-use QAManager::Set;
-use QAManager::Question;
-use QAManager::Gui::Question;
-use QAManager::Gui::Frame;
-use QAManager::Gui::Dialog;
+use QA::Category;
+use QA::Set;
+use QA::Question;
+
+use QA::Gui::Question;
+use QA::Gui::Frame;
+use QA::Gui::Dialog;
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -33,17 +34,17 @@ The format is roughly;
   The questions are placed in a grid.
 =end pod
 
-unit class QAManager::Gui::Set:auth<github:MARTIMM>;
-#also is QAManager::Gui::Dialog;
+unit class QA::Gui::Set:auth<github:MARTIMM>;
+#also is QA::Gui::Dialog;
 
 #-------------------------------------------------------------------------------
 has Hash $!user-data-set-part;
-has QAManager::Set $!set;
-has Array[QAManager::Gui::Question] $!questions;
+has QA::Set $!set;
+has Array[QA::Gui::Question] $!questions;
 
 #-------------------------------------------------------------------------------
 # must repeat this new call because it won't call the one of
-# QAManager::Gui::SetDemoDialog
+# QA::Gui::SetDemoDialog
 #submethod new ( |c ) {
 #  self.bless( :GtkDialog, |c);
 #}
@@ -56,10 +57,10 @@ submethod BUILD (
 ) {
 
   # get the set from cat and set names
-  $!set = QAManager::Category.new(:$category-name).get-set($set-name);
+  $!set = QA::Category.new(:$category-name).get-set($set-name);
 
   # create a frame with title
-  my QAManager::Gui::Frame $set-frame .= new(:label($!set.title));
+  my QA::Gui::Frame $set-frame .= new(:label($!set.title));
   $grid.grid-attach( $set-frame, 0, $grid-row, 1, 1);
 
   # the grid is for displaying the input fields and are
@@ -97,8 +98,8 @@ submethod BUILD (
 
   # show set with user data if any on subsequent rows counting from 2
   my $c := $!set.clone;
-  for $c -> QAManager::Question $question {
-    my QAManager::Gui::Question $gui-q .= new(
+  for $c -> QA::Question $question {
+    my QA::Gui::Question $gui-q .= new(
       :$question, :$question-grid, :row($question-grid-row), :$!user-data-set-part
     );
     $!questions.push: $gui-q;

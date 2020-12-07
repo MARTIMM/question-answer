@@ -11,7 +11,7 @@ use Gnome::Gtk3::MessageDialog;
 use Gnome::Gtk3::Window;
 
 #-------------------------------------------------------------------------------
-unit class QAManager::Gui::YNMsgDialog;
+unit class QA::Gui::YNMsgDialog;
 also is Gnome::Gtk3::MessageDialog;
 
 #-------------------------------------------------------------------------------

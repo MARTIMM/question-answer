@@ -2,17 +2,17 @@ use v6.d;
 
 use Gnome::Gtk3::Statusbar;
 
-#use QAManager::QATypes;
-#use QAManager::Gui::Frame;
-#use QAManager::Question;
-#use QAManager::Gui::Value;
+#use QA::Types;
+#use QA::Gui::Frame;
+#use QA::Question;
+#use QA::Gui::Value;
 
 #-------------------------------------------------------------------------------
-unit class QAManager::Gui::Statusbar;
+unit class QA::Gui::Statusbar;
 also is Gnome::Gtk3::Statusbar;
 
 #-------------------------------------------------------------------------------
-my QAManager::Gui::Statusbar $instance;
+my QA::Gui::Statusbar $instance;
 
 #-------------------------------------------------------------------------------
 method new ( ) { !!! }
@@ -32,7 +32,7 @@ submethod BUILD ( ) {
 }
 
 #-------------------------------------------------------------------------------
-method instance ( |c --> QAManager::Gui::Statusbar ) {
+method instance ( |c --> QA::Gui::Statusbar ) {
   $instance //= self.bless( :GtkStatusbar, |c);
 
   $instance
