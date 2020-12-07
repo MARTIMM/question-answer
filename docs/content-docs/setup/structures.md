@@ -55,11 +55,10 @@ A set is not stored on disk on its own. A set is used to group a series of quest
 
 Questions are what it is all about. In short a piece of text to pose the question and a field where the answer can be given. However, more data is needed to fully display a question like what kind of input do we need, are there limits, is there a choice from a set of possibilities etc.
 
-* **action**; A name of a method which can be called on a previously provided object. The method is called when the answer on the question in accepted.
+* **action**; A name of a method which can be called on a previously provided object. The method is called when the answer on the question in accepted and saved in the users data.
 * **callback**; A name of a method which can be called on a previously provided object. The handler must check for correctness of the input value for that question.
 * **default**; A default value when no input is provided.
 * **description**; A question. When empty, title is taken.
-* **encode**; Encode the result of the input before giving the answers back to the caller. Used with e.g. password input.
 * **example**; An example answer/format in light gray in an text field.
 * **fieldlist**; The fieldlist is used to fill e.g. a combobox or a list input field.
 * **fieldtype**; The widget type to use to provide the answer with. Current enumerated types are: `QAEntry` for text, `QATextView` for multiline text, `QAComboBox` a list of possibilities to chose from, `QARadioButton` a select of one of a set of possebilities, `QACheckButton`, one or more possebilities `QAToggleButton` boolean input, `QAScale` a slider, `QASwitch` also boolean input, `QAUserWidget` with a user definable input. Other types are `QADragAndDrop`, `QAColorChooser`, `QAFileChooser`, `QAList`, `QASpin` and `QAImage`. These are not yet implemented.
@@ -81,7 +80,7 @@ Questions are what it is all about. In short a piece of text to pose the questio
 
 #### Notes
 * Default fieldtype is QAEntry
-* Boolean values like required, encode and hide are `False` if not mentioned.
+* Boolean values like required, hide is `False` if not mentioned.
 * Default values are '' or 0 when absent. Min and Max are -Inf and Inf when absent.
 * Encoding is done using sha256.
 * select lists in a question descriptions are always arrays.
@@ -177,7 +176,6 @@ The formats used are shown below for each input type with the variables which co
 |default      |o |o |o |o |o |o |o |o |o |o |o |o |o |  |
 |description  |o |o |o |o |o |o |o |o |o |o |o |o |o |  |
 |digits       |- |- |- |- |- |- |o |- |- |- |- |- |o |  |
-|encode       |o |- |- |- |- |- |- |- |- |- |- |- |- |  |
 |example      |o |- |- |- |- |- |- |- |- |- |- |- |- |  |
 |fieldlist    |- |! |! |- |! |! |  |  |  |  |  |  |  |  |
 |fieldtype    |o |! |! |! |! |! |! |! |! |! |! |! |! |! |
