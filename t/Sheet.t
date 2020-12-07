@@ -1,15 +1,15 @@
 use v6.d;
 use Test;
 
-use QAManager::Sheet;
-use QAManager::Category;
-use QAManager::Set;
-use QAManager::Question;
-use QAManager::QATypes;
+use QA::Sheet;
+use QA::Category;
+use QA::Set;
+use QA::Question;
+use QA::Types;
 
 #-------------------------------------------------------------------------------
-my QAManager::QATypes $qa-types .= instance;
-my QAManager::Sheet $sheet .= new(:sheet-name<__login>);
+my QA::Types $qa-types .= instance;
+my QA::Sheet $sheet .= new(:sheet-name<__login>);
 
 # create some category data with some sets
 make-category();
@@ -17,7 +17,7 @@ make-category();
 #-------------------------------------------------------------------------------
 subtest 'ISO-Test', {
 
-  isa-ok $sheet, QAManager::Sheet, '.new(:sheet-name)';
+  isa-ok $sheet, QA::Sheet, '.new(:sheet-name)';
 }
 
 #-------------------------------------------------------------------------------
@@ -87,7 +87,7 @@ subtest 'Manipulations', {
 }
 
 #-------------------------------------------------------------------------------
-my QAManager::Category $category .= new(:category-name<__test-accounting>);
+my QA::Category $category .= new(:category-name<__test-accounting>);
 $category.remove;
 
 done-testing;
@@ -95,14 +95,14 @@ done-testing;
 #-------------------------------------------------------------------------------
 # create some category data with some sets
 sub make-category ( ) {
-  my QAManager::Category $category .= new(:category-name<__test-accounting>);
+  my QA::Category $category .= new(:category-name<__test-accounting>);
 
   # 1 set
-  my QAManager::Set $set .= new(:name<credentials>);
+  my QA::Set $set .= new(:name<credentials>);
   $set.description = 'Name and password for account';
 
   # 1st question and add to set
-  my QAManager::Question $question .= new(:name<username>);
+  my QA::Question $question .= new(:name<username>);
   $question.description = 'Username of account';
   $question.required = True;
   $set.add-question($question);
