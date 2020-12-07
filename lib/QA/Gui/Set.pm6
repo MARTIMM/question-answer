@@ -8,13 +8,13 @@ use Gnome::Gtk3::Separator;
 use Gnome::Gtk3::StyleContext;
 use Gnome::Gtk3::Label;
 
-use QA::Category;
-use QA::Set;
-use QA::Question;
-
 use QA::Gui::Question;
 use QA::Gui::Frame;
 use QA::Gui::Dialog;
+
+use QA::Category;
+use QA::Set;
+use QA::Question;
 
 #-------------------------------------------------------------------------------
 =begin pod
