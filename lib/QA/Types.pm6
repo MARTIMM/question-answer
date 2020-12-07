@@ -64,6 +64,12 @@ enum QADisplayType is export <QADialog QANoteBook QAStack QAAssistant>;
 enum InputStatusHint is export <QAStatusNormal QAStatusOk QAStatusFail>;
 
 #-------------------------------------------------------------------------------
+#tt:1:ActionReturnType:
+enum ActionReturnType is export <
+  QADoNothing QAOpenDialog QAHidePage QAShowPage QAHideSet QAShowSet
+>;
+
+#-------------------------------------------------------------------------------
 #tt:1::QAGridColSpec
 =begin pod
 =head2 QAGridColSpec
@@ -365,7 +371,7 @@ set-handler is used to set a user defined callback handler. When in a question t
 
 =end pod
 
-#tm:0:set-action-handler
+#tm:1:set-action-handler
 method set-action-handler (
   Str:D $action-key, Mu:D $handler-object, Str:D $method-name, *%options
 ) {
@@ -391,7 +397,7 @@ method set-widget-object ( Str:D $widget-key, Mu:D $widget-object ) {
 }
 
 #-------------------------------------------------------------------------------
-#tm:0:get-action-handler
+#tm:1:get-action-handler
 method get-action-handler ( Str:D $action-key --> Array ) {
   $!user-objects<actions>{$action-key}
 }

@@ -28,7 +28,6 @@ subtest 'Manipulations', {
   $question .= new(:name<password>);
   $question.description = 'Password for username';
   $question.required = True;
-  $question.encode = True;
   $question.invisible = True;
   ok $set.add-question($question), '.add-question() password';
 

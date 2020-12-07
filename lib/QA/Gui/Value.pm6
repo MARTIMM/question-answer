@@ -280,6 +280,39 @@ method !check-value ( $w, Int $row, :$input is copy ) {
 }
 
 #-------------------------------------------------------------------------------
+method !run-users-action ( $input ) {
+
+  # check if there is a user routine to run any actions
+  if $!question.action {
+    my QA::Types $qa-types .= instance;
+    my Array $action-spec = $qa-types.get-action-handler($!question.action);
+    my ( $handler-object, $method-name, $options) = @$action-spec;
+    my Hash $action-return = $handler-object."$method-name"(
+      $input, |%$options
+    ) // QADoNothing;
+
+    given $action-return<type> {
+      when QADoNothing { #`{{ Easy as boiling an egg }} }
+
+      when QAOpenDialog {
+      }
+
+      when QAHidePage {
+      }
+
+      when QAShowPage {
+      }
+
+      when QAHideSet {
+      }
+
+      when QAShowSet {
+      }
+    }
+  }
+}
+
+#-------------------------------------------------------------------------------
 method !set-status-hint ( $widget, InputStatusHint $status ) {
   my Gnome::Gtk3::StyleContext $context .= new(
     :native-object($widget.get-style-context)
@@ -387,10 +420,12 @@ method combobox-change ( :_widget($w), :$input-widget, Int :$row --> Int ) {
 method process-widget-signal (
   $w, Int $row, Bool :$do-check = False, :$input is copy
 ) {
-
   $input //= self.get-value($w);
   self!check-value( $w, $row, :$input) if $do-check;
-  self!adjust-user-data( $w, $input, $row) unless $!faulty-state;
+  unless $!faulty-state {
+    self!adjust-user-data( $w, $input, $row);
+    self!run-users-action($input);
+  }
 }
 
 

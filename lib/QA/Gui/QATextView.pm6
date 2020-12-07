@@ -21,8 +21,6 @@ submethod BUILD (
 ) {
 
   $!question.repeatable = False;
-  $!question.encode = False;
-
   self.initialize;
 }
 

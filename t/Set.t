@@ -25,7 +25,6 @@ subtest 'Manipulations', {
   my QA::Question $pw .= new(:name<password>);
   $pw.description = 'Password for username';
   $pw.required = True;
-  $pw.encode = True;
   $pw.invisible = True;
 
   ok $creds.add-question($un), '.add-question()';

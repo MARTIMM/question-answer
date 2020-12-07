@@ -12,7 +12,6 @@ has Str $.cmpwith is rw;        # optional to check value against other field
 has Any $.default is rw;        # optional default value
 has Str $.description is rw;    # optional
 has Int $.digits is rw;         # optional for spin button
-has Bool $.encode is rw;        # when value must be encoded with sha256
 has Str $.example is rw;        # optional example value for text
 has Array $.fieldlist is rw;    # when a list is displayed in e.g. combobox
 has QAFieldType $.fieldtype is rw;  # optional = QAEntry, QADialog or QACheckButton
@@ -68,7 +67,6 @@ submethod BUILD ( Str:D :$!name, Hash :$qa-data ) {
   $!default = $qa-data<default> if $qa-data<default>.defined;
   $!description = $qa-data<description> if $qa-data<description>.defined;
   $!digits = $qa-data<digits> if $qa-data<digits>.defined;
-  $!encode = $qa-data<encode> if $qa-data<encode>.defined;
   $!example = $qa-data<example> if $qa-data<example>.defined;
   $!fieldlist = $qa-data<fieldlist> if $qa-data<fieldlist>.defined;
   $!height = $qa-data<height> if $qa-data<height>.defined;
@@ -101,7 +99,6 @@ method qa-data ( --> Hash ) {
   $qa-data<default> = $!default if $!default.defined;
   $qa-data<description> = $!description if $!description.defined;
   $qa-data<digits> = $!digits if $!digits.defined;
-  $qa-data<encode> = $!encode if $!encode.defined;
   $qa-data<example> = $!example if $!example.defined;
   $qa-data<fieldlist> = $!fieldlist if $!fieldlist.defined;
   $qa-data<height> = $!height if $!height.defined;
