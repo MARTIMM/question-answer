@@ -7,6 +7,7 @@ use Gnome::Gtk3::Dialog;
 use Gnome::Gtk3::Main;
 #use Gnome::Gtk3::Enums;
 use Gnome::Gtk3::Window;
+use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Button;
 
 use QA::Gui::SheetDialog;
@@ -74,16 +75,38 @@ class EH {
     # important to initialize here because destroy of dialogs native object
     # destroyes everything on it including this objects native objects.
     # we need to rebuild it everytime the dialog is (re)run.
+#    my QA::Types $qa-types .= instance;
+#    $qa-types.set-widget-object( 'use-my-widget', MyWidget.new);
+
+    my QA::Gui::SheetDialog $sheet-dialog .= new(
+      :sheet-name<DialogTest>,
+      :!show-cancel-warning, :!save-data
+    );
+
+    $sheet-dialog.register-signal( self, 'dialog-response', 'response');
+    $sheet-dialog.show-dialog;
+  }
+
+  method show-notebook ( ) {
+    # important to initialize here because destroy of dialogs native object
+    # destroyes everything on it including this objects native objects.
+    # we need to rebuild it everytime the dialog is (re)run.
     my QA::Types $qa-types .= instance;
     $qa-types.set-widget-object( 'use-my-widget', MyWidget.new);
 
     my QA::Gui::SheetDialog $sheet-dialog .= new(
-      :sheet-name<QAManagerSetDialog>,
+      :sheet-name<NotebookTest>,
       :show-cancel-warning, :!save-data
     );
 
     $sheet-dialog.register-signal( self, 'dialog-response', 'response');
     $sheet-dialog.show-dialog;
+  }
+
+  method show-stack ( ) {
+  }
+
+  method show-assistant ( ) {
   }
 
   #---------
@@ -135,6 +158,14 @@ class EH {
   method check-char ( Str $input, :$char --> Any ) {
     "No $char allowed in string" if ?($input ~~ m/$char/)
   }
+
+  #---------
+  # action methods
+  method fieldtype-action ( Str $input --> Hash ) {
+    note "Selected $input";
+
+    %(:type(QADoNothing))
+  }
 }
 
 #-------------------------------------------------------------------------------
@@ -175,10 +206,15 @@ $qa-types.qa-save( 'QAManagerSetDialog', $user-data, :userdata);
 #exit(0);
 }}
 
+# get types instance and modify some path for tests to come and also some
+# user methods to handle checks and actions
 my QA::Types $qa-types .= instance;
 $qa-types.data-file-type = QAJSON;
 $qa-types.cfgloc-userdata = 'xbin/Data';
+$qa-types.cfgloc-category = 'xbin/Data/Categories';
+$qa-types.cfgloc-sheet = 'xbin/Data/Sheets';
 $qa-types.set-check-handler( 'check-exclam', $eh, 'check-char', :char<!>);
+$qa-types.set-action-handler( 'show-select', $eh, 'fieldtype-action');
 
 
 my Gnome::Gtk3::Window $top-window .= new;
@@ -187,9 +223,24 @@ $top-window.register-signal( $eh, 'exit-app', 'destroy');
 $top-window.set-size-request( 300, 1);
 $top-window.window-resize( 300, 1);
 
-my Gnome::Gtk3::Button $dialog-button .= new(:label<Show>);
-$top-window.container-add($dialog-button);
+my Gnome::Gtk3::Grid $grid .= new;
+$top-window.container-add($grid);
+
+my Gnome::Gtk3::Button $dialog-button .= new(:label<QADialog>);
+$grid.grid-attach( $dialog-button, 0, 0, 1, 1);
 $dialog-button.register-signal( $eh, 'show-dialog', 'clicked');
+
+$dialog-button .= new(:label<QANoteBook>);
+$grid.grid-attach( $dialog-button, 1, 0, 1, 1);
+$dialog-button.register-signal( $eh, 'show-notebook', 'clicked');
+
+$dialog-button .= new(:label<QAStack>);
+$grid.grid-attach( $dialog-button, 2, 0, 1, 1);
+$dialog-button.register-signal( $eh, 'show-stack', 'clicked');
+
+$dialog-button .= new(:label<QAAssistant>);
+$grid.grid-attach( $dialog-button, 3, 0, 1, 1);
+$dialog-button.register-signal( $eh, 'show-assistant', 'clicked');
 
 $top-window.show-all;
 
