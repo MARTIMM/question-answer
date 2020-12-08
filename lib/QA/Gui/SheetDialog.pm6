@@ -14,6 +14,7 @@ use Gnome::Gtk3::Label;
 use Gnome::Gtk3::Button;
 use Gnome::Gtk3::Notebook;
 use Gnome::Gtk3::Stack;
+use Gnome::Gtk3::StackSwitcher;
 use Gnome::Gtk3::Assistant;
 use Gnome::Gtk3::CssProvider;
 use Gnome::Gtk3::StyleContext;
@@ -72,7 +73,7 @@ submethod BUILD (
   $!sheet .= new(:$!sheet-name);
 
   self!set-style;
-  
+
   # todo width and height spec must go to sets
   self.set-dialog-size( $!sheet.width, $!sheet.height)
     if ?$!sheet.width and ?$!sheet.height;
@@ -89,6 +90,7 @@ submethod BUILD (
       $page-window.widget-set-vexpand(True);
 
       $grid.grid-attach( $page-window, 0, 0, 1, 1);
+
 
       # add some buttons specific for this notebook
       self!create-button(
@@ -108,12 +110,6 @@ submethod BUILD (
       $notebook.widget-set-vexpand(True);
       $grid.grid-attach( $notebook, 0, 0, 1, 1);
 
-      # add some buttons specific for this notebook
-      self!create-button(
-        'cancel', 'cancel-dialog', GTK_RESPONSE_CANCEL, :default
-      );
-      self!create-button( 'finish', 'finish-dialog', GTK_RESPONSE_OK);
-
       # for each page ...
       my $pages := $!sheet.clone;
       for $pages -> Hash $page {
@@ -129,12 +125,51 @@ submethod BUILD (
         );
       }
 
+      # add some buttons specific for this notebook
+      self!create-button(
+        'cancel', 'cancel-dialog', GTK_RESPONSE_CANCEL, :default
+      );
+      self!create-button( 'finish', 'finish-dialog', GTK_RESPONSE_OK);
+
       self.register-signal( self, 'dialog-response', 'response');
       my QA::Gui::Statusbar $statusbar .= instance;
       $grid.grid-attach( $statusbar, 0, 1, 1, 1);
     }
 
     when QAStack {
+      my Gnome::Gtk3::Stack $stack .= new;
+      $stack.widget-set-hexpand(True);
+      $stack.widget-set-vexpand(True);
+      $grid.grid-attach( $stack, 0, 0, 1, 1);
+
+      # for each page ...
+      my $pages := $!sheet.clone;
+      for $pages -> Hash $page {
+
+        # create page
+        my Gnome::Gtk3::ScrolledWindow $page-window = self!create-page(
+          $page, :!title, :description
+        );
+
+        # add the created page to the notebook
+        $stack.add-named( $page-window, $page<title>);
+      }
+
+      my Gnome::Gtk3::StackSwitcher $stack-switcher .= new;
+      $stack-switcher.widget-set-hexpand(True);
+      $stack-switcher.widget-set-vexpand(True);
+      $stack-switcher.set-stack($stack);
+      $grid.grid-attach( $stack-switcher, 0, 1, 1, 1);
+
+      # add some buttons specific for this notebook
+      self!create-button(
+        'cancel', 'cancel-dialog', GTK_RESPONSE_CANCEL, :default
+      );
+      self!create-button( 'finish', 'finish-dialog', GTK_RESPONSE_OK);
+
+      self.register-signal( self, 'dialog-response', 'response');
+      my QA::Gui::Statusbar $statusbar .= instance;
+      $grid.grid-attach( $statusbar, 0, 2, 1, 1);
     }
 
     when QAAssistant {

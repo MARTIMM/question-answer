@@ -1,0 +1,20 @@
+{
+  "page3": {
+    "QASomething": {
+      "somespec": {
+      }
+    }
+  },
+  "page1": {
+    "QAManagerDialogs": {
+      "set-spec": {
+      }
+    }
+  },
+  "page2": {
+    "QAManagerDialogs": {
+      "entry-spec": {
+      }
+    }
+  }
+}

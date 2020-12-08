@@ -72,12 +72,6 @@ class MyWidget does QA::Gui::Value {
 class EH {
 
   method show-dialog ( ) {
-    # important to initialize here because destroy of dialogs native object
-    # destroyes everything on it including this objects native objects.
-    # we need to rebuild it everytime the dialog is (re)run.
-#    my QA::Types $qa-types .= instance;
-#    $qa-types.set-widget-object( 'use-my-widget', MyWidget.new);
-
     my QA::Gui::SheetDialog $sheet-dialog .= new(
       :sheet-name<DialogTest>,
       :!show-cancel-warning, :!save-data
@@ -104,6 +98,13 @@ class EH {
   }
 
   method show-stack ( ) {
+    my QA::Gui::SheetDialog $sheet-dialog .= new(
+      :sheet-name<StackTest>,
+      :show-cancel-warning, :save-data
+    );
+
+    $sheet-dialog.register-signal( self, 'dialog-response', 'response');
+    $sheet-dialog.show-dialog;
   }
 
   method show-assistant ( ) {
@@ -215,7 +216,7 @@ $qa-types.qa-save( 'QAManagerSetDialog', $user-data, :userdata);
 # get types instance and modify some path for tests to come and also some
 # user methods to handle checks and actions
 my QA::Types $qa-types .= instance;
-$qa-types.data-file-type = QAJSON;
+$qa-types.data-file-type = QAYAML;
 $qa-types.cfgloc-userdata = 'xbin/Data';
 $qa-types.cfgloc-category = 'xbin/Data/Categories';
 $qa-types.cfgloc-sheet = 'xbin/Data/Sheets';
