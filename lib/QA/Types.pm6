@@ -66,7 +66,8 @@ enum InputStatusHint is export <QAStatusNormal QAStatusOk QAStatusFail>;
 #-------------------------------------------------------------------------------
 #tt:1:ActionReturnType:
 enum ActionReturnType is export <
-  QADoNothing QAOpenDialog QAHidePage QAShowPage QAHideSet QAShowSet
+  QAOpenDialog QAHidePage QAShowPage QAHideSet QAShowSet QAEnableButton
+  QADisableButton QAOtherUserAction
 >;
 
 #-------------------------------------------------------------------------------
