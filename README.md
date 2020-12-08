@@ -19,7 +19,7 @@ Documentation, references and examples are (or at least, will be 😄) displayed
 
 Simple and strait forward.
 
-`zef install QAManager`
+`zef install QA`
 
 
 # Issues
