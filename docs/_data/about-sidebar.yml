@@ -4,8 +4,10 @@
   bar_menu:
   - title: "About"
     url: "/content-docs/about/about.html"
-  - title: "Change log"
-    url: "/content-docs/about/release-notes.html"
+  - title: "QA Change log"
+    url: "/content-docs/about/QA-release-notes.html"
+  - title: "QA Manager Change log"
+    url: "/content-docs/about/QA-Manager-release-notes.html"
 
 #  - title: "Gnome::GDK3"
 #  - title: "Gnome::Gio"

@@ -8,6 +8,14 @@ layout: sidebar
 
 See [semantic versioning](http://semver.org/). Please note point 4. on that page: **_Major version zero (0.y.z) is for initial development. Anything may change at any time. The public API should not be considered stable._**
 
+#### 2020-12-08 0.14.0
+* The questions field type `encode` is removed. It felt that it should be the users responsibility what to do with their text input. Basically it was meant to return a secret, like passwords, encoded.
+* Added an `action` field type. Like `callback` it refers to a callable users routine to be executed after the value was entered and checked on its value. The action routine returns an Array of Hashes which describes what to do further. This could be something like enabling or disabling a button.
+* `QAOtherUserAction` return from user action is implemented.
+
+#### 2020-12-06 0.13.1
+* Split package into two. Now called **QA** and **QA::Manager**. **QA** is meant for using the forms by a user's application while **QA::Manager** is meant to create and manage these forms. A separation of the two makes the most used one, **QA**, somewhat lighter. Both packages wil continue their versions at 0.13.1.
+
 #### 2020-11-18 0.13.0
 * Add **QAManager::Gui::QASpinButton** for type QASpinButton.
 
