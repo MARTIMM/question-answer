@@ -82,10 +82,9 @@ Questions are what it is all about. In short a piece of text to pose the questio
 * Default fieldtype is QAEntry
 * Boolean values like required, hide is `False` if not mentioned.
 * Default values are '' or 0 when absent. Min and Max are -Inf and Inf when absent.
-* Encoding is done using sha256.
-* select lists in a question descriptions are always arrays.
+* Select lists in a question descriptions are always arrays.
 * Defaults are always single valued.
-* Callback names are method names in a user class. To provide these information there are several routines defined for this in **QAManager::QATypes**.
+* Callback and action names are keys referring to method names in a user class. To provide this information there are several routines defined for this in **QA::QATypes**.
 
 ### Answer value format to questions
 

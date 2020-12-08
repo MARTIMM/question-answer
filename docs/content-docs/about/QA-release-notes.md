@@ -14,7 +14,7 @@ See [semantic versioning](http://semver.org/). Please note point 4. on that page
 * `QAOtherUserAction` return from user action is implemented.
 
 #### 2020-12-06 0.13.1
-* Split package into two. Now called **QA** and **QA::Manager**. **QA** is meant for using the forms by a user's application while **QA::Manager** is meant to create and manage these forms. A separation of the two makes the most used one, **QA**, somewhat lighter. Both packages wil continue their versions at 0.13.1.
+* Split package into two. Now called **QA** and **QA::Manager**. **QA** is meant for using the forms by a user's application while **QA::Manager** is meant to create and manage these forms. A separation of the two makes the most used one, **QA**, somewhat lighter. Both packages wil continue their versions at 0.13.1. The [website is now at](https://martimm.github.io/question-answer/)
 
 #### 2020-11-18 0.13.0
 * Add **QAManager::Gui::QASpinButton** for type QASpinButton.
