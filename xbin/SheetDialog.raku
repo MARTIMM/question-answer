@@ -161,8 +161,14 @@ class EH {
 
   #---------
   # action methods
-  method fieldtype-action ( Str $input --> Array ) {
-    note "Selected $input";
+  method fieldtype-action1 ( Str $input --> Array ) {
+    note "Selected 1: $input";
+
+    [%( :type(QAOtherUserAction), :action-key<show-select2>),]
+  }
+
+  method fieldtype-action2 ( Str $input, :$opt1 --> Array ) {
+    note "Selected 2: $input, option: $opt1";
 
     [%(),]
   }
@@ -214,7 +220,10 @@ $qa-types.cfgloc-userdata = 'xbin/Data';
 $qa-types.cfgloc-category = 'xbin/Data/Categories';
 $qa-types.cfgloc-sheet = 'xbin/Data/Sheets';
 $qa-types.set-check-handler( 'check-exclam', $eh, 'check-char', :char<!>);
-$qa-types.set-action-handler( 'show-select', $eh, 'fieldtype-action');
+$qa-types.set-action-handler( 'show-select1', $eh, 'fieldtype-action1');
+$qa-types.set-action-handler(
+  'show-select2', $eh, 'fieldtype-action2', :opt1<opt1>
+);
 
 
 my Gnome::Gtk3::Window $top-window .= new;

@@ -44,6 +44,8 @@ has Array $!input-widgets;
 # state of current variable. value is True when answer is incorrect
 has Bool $.faulty-state;
 
+has Bool $!initialized = False;
+
 has Int $!msg-id;
 
 #-------------------------------------------------------------------------------
@@ -82,6 +84,8 @@ method initialize ( ) {
 
   # fill in user data
   self!set-values;
+
+  $!initialized = True;
 }
 
 #-------------------------------------------------------------------------------
@@ -280,36 +284,54 @@ method !check-value ( $w, Int $row, :$input is copy ) {
 }
 
 #-------------------------------------------------------------------------------
-method !run-users-action ( $input ) {
+method !check-users-action ( $input, Str $action-key = '' ) {
 
   # check if there is a user routine to run any actions
-  if $!question.action {
-    my QA::Types $qa-types .= instance;
-    my Array $action-spec = $qa-types.get-action-handler($!question.action);
-    my ( $handler-object, $method-name, $options) = @$action-spec;
-    my Hash $action-return = $handler-object."$method-name"(
-      $input, |%$options
-    ) // QADoNothing;
+  if ? $!question.action {
+    my Array $followup-actions = self!run-users-action( $input, $action-key);
 
-    given $action-return<type> {
-      when QADoNothing { #`{{ Easy as boiling an egg }} }
+    for @$followup-actions -> Hash $action {
+      given $action<type> {
+        when QAOpenDialog {
+        }
 
-      when QAOpenDialog {
-      }
+        when QAHidePage {
+        }
 
-      when QAHidePage {
-      }
+        when QAShowPage {
+        }
 
-      when QAShowPage {
-      }
+        when QAHideSet {
+        }
 
-      when QAHideSet {
-      }
+        when QAShowSet {
+        }
 
-      when QAShowSet {
+        when QAEnableButton {
+        }
+
+        when QADisableButton {
+        }
+
+        when QAOtherUserAction {
+          my Str $other-action-key = $action<action-key>;
+          self!check-users-action( $input, $other-action-key);
+        }
       }
     }
   }
+}
+
+#-------------------------------------------------------------------------------
+method !run-users-action ( $input, Str:D $action-key = '' --> Array ) {
+
+  return [] unless ?$action-key;
+
+  my QA::Types $qa-types .= instance;
+  my Array $action-spec = $qa-types.get-action-handler($action-key);
+  my ( $handler-object, $method-name, $options) = @$action-spec;
+
+  $handler-object."$method-name"( $input, |%$options) // []
 }
 
 #-------------------------------------------------------------------------------
@@ -424,7 +446,7 @@ method process-widget-signal (
   self!check-value( $w, $row, :$input) if $do-check;
   unless $!faulty-state {
     self!adjust-user-data( $w, $input, $row);
-    self!run-users-action($input);
+    self!check-users-action( $input, $!question.action) if $!initialized;
   }
 }
 
