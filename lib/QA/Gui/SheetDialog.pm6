@@ -72,7 +72,10 @@ submethod BUILD (
   $!sheet .= new(:$!sheet-name);
 
   self!set-style;
-  self.set-dialog-size( $!sheet.width, $!sheet.height);
+  
+  # todo width and height spec must go to sets
+  self.set-dialog-size( $!sheet.width, $!sheet.height)
+    if ?$!sheet.width and ?$!sheet.height;
 
   my Gnome::Gtk3::Grid $grid = self.dialog-content;
 
