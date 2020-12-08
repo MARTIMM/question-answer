@@ -96,7 +96,7 @@ class EH {
 
     my QA::Gui::SheetDialog $sheet-dialog .= new(
       :sheet-name<NotebookTest>,
-      :show-cancel-warning, :!save-data
+      :show-cancel-warning, :save-data
     );
 
     $sheet-dialog.register-signal( self, 'dialog-response', 'response');
@@ -161,10 +161,10 @@ class EH {
 
   #---------
   # action methods
-  method fieldtype-action ( Str $input --> Hash ) {
+  method fieldtype-action ( Str $input --> Array ) {
     note "Selected $input";
 
-    %(:type(QADoNothing))
+    [%(),]
   }
 }
 
