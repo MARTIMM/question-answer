@@ -51,8 +51,8 @@ method !load ( ) {
     $!display =
       QADisplayType(QADisplayType.enums{$sheet<display>//''}) // QANoteBook;
     $!display-properties = $sheet<display-properties> // %();
-    $!width = $sheet<width> // 300;
-    $!height = $sheet<height> // 300;
+    $!width = $sheet<width> // 0;# // 300;
+    $!height = $sheet<height> // 0;# // 300;
     $!button-map = $sheet<button-map> // %();
 
     # the rest are pages
