@@ -50,7 +50,7 @@
 
   "source-url": "git://github.com/MARTIMM/qa-manager.git",
 
-  "depends": [ "JSON::Fast", "Config::TOML", "Config::INI", "Gnome::Gtk3"],
+  "depends": [ "JSON::Fast", "Config::TOML", "YAMLish", "Gnome::Gtk3"],
 
   "test-depends": [ ],
   "build-depends": [ ],
