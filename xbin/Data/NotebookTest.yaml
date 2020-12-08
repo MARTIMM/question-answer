@@ -1,0 +1,38 @@
+---
+page1: 
+  QAManagerDialogs: 
+    set-spec: 
+      an-image: "/home/marcel/Desktop/Desktop configurations/Icons-100x100/Scratch/Rakudo_Logo.png"
+      radio: "Radio 1"
+      spinbutton: -0.998
+      title: zxczxc
+      name: "some key"
+      description: "zxcdfg zxc"
+      onefilename: "/home/marcel/Software/Packages/Sources/atom.x86_64.rpm"
+      more-image: 
+        - 
+          P2: "/home/marcel/Pictures/sdv2.jpg"
+      check: 
+        - Purple
+        - Orange
+      filename: 
+        - 
+          Log: "/home/marcel/Languages/Raku/Projects/Auth-SCRAM/appveyor.yml"
+page2: 
+  QAManagerDialogs: 
+    entry-spec: 
+      name: sdfgsgfd
+      tooltip: 
+        - 
+          tt2: sdfgsdfg
+      maximum: sfdgdfg
+      default: "sdfgs dfg"
+      description: "ssdfgsdfgd dfg dfg"
+      minimum: sdfgdsfg
+      callback: "dfg dfg"
+      fieldtype: QASwitch
+      mywidget: "1"
+      title: sdfgsdfg
+      encode: true
+      example: "sdfg dfg"
+...

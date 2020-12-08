@@ -2,27 +2,27 @@
   "page1": {
     "QAManagerDialogs": {
       "set-spec": {
+        "name": "fgh",
         "description": "cvbdfg dfxc xcv cv_bcévb",
-        "title": "123sdf",
+        "more-image": [
+          {
+            "Icon": "/home/marcel/Pictures/01-queens-princess-vintage.adapt.470.1.jpg"
+          }
+        ],
         "check": [
           "Purple",
           "Orange"
         ],
+        "onefilename": "/home/marcel/Videos/simplescreenrecorder-2020-09-23_21.59.23.mkv",
+        "radio": "Classic FM",
+        "title": "123sdf",
+        "an-image": "/home/marcel/Pictures/Pinterest/827d804fdad133e86501a7e0055498ed.jpg",
         "filename": [
           {
             "Config": "/home/marcel/Pictures/Henrikje & Peter.zip"
           },
           {
             "Output": "/home/Data/AC-Ryan-disk-Film/Komedie/Dumb and Dumber/Dumb and Dumber (Divx).avi"
-          }
-        ],
-        "radio": "Classic FM",
-        "an-image": "/home/marcel/Pictures/Pinterest/827d804fdad133e86501a7e0055498ed.jpg",
-        "onefilename": "/home/marcel/Videos/simplescreenrecorder-2020-09-23_21.59.23.mkv",
-        "name": "fgh",
-        "more-image": [
-          {
-            "Icon": "/home/marcel/Pictures/01-queens-princess-vintage.adapt.470.1.jpg"
           }
         ]
       }
@@ -31,24 +31,24 @@
   "page2": {
     "QAManagerDialogs": {
       "entry-spec": {
-        "fieldtype": "QARadioButton",
-        "minimum": "3",
-        "required": true,
-        "title": "df",
-        "default": "dfg",
-        "name": "fgh",
-        "description": "",
-        "mywidget": "15",
+        "invisible": false,
         "tooltip": [
           {
             "tt1": "qweqwe"
           }
         ],
-        "example": "",
-        "maximum": "8",
-        "invisible": false,
         "callback": "fg",
-        "encode": false
+        "maximum": "8",
+        "minimum": "3",
+        "default": "dfg",
+        "fieldtype": "QARadioButton",
+        "example": "",
+        "encode": false,
+        "required": true,
+        "description": "",
+        "name": "fgh",
+        "title": "df",
+        "mywidget": "15"
       }
     }
   }

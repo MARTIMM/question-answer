@@ -4,6 +4,7 @@ use v6.d;
 
 use JSON::Fast;
 use Config::TOML;
+use YAMLish;
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -22,7 +23,7 @@ unit class QA::Types:auth<github:MARTIMM>;
 #=head2 QADataFileType
 #=end pod
 #tt:1:QADataFileType:
-enum QADataFileType is export < QAJSON QATOML >;
+enum QADataFileType is export < QAJSON QATOML QAYAML >;
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -230,6 +231,11 @@ multi method qa-load (
       $qa-path ~~ s/ \.cfg $/.toml/;
       $data = from-toml($qa-path.IO.slurp) if $qa-path.IO.r;
     }
+
+    when QAYAML {
+      $qa-path ~~ s/ \.cfg $/.yaml/;
+      $data = load-yaml($qa-path.IO.slurp) if $qa-path.IO.r;
+    }
   }
 
   $data // Hash
@@ -289,6 +295,11 @@ multi method qa-save (
     when QATOML {
       $qa-path ~~ s/ \.cfg $/.toml/;
       $qa-path.IO.spurt(to-toml($qa-data));
+    }
+
+    when QAYAML {
+      $qa-path ~~ s/ \.cfg $/.yaml/;
+      $qa-path.IO.spurt(save-yaml($qa-data));
     }
   }
 }
