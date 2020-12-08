@@ -1,7 +1,7 @@
 {
   "description": "Q & A Manager",
   "name": "QAManager",
-  "version": "0.13.1",
+  "version": "0.14.0",
   "authors": [ "Marcel Timmerman"],
   "tags": [
     "questionnaire", "configuration", "gtk", "question", "answer", "Raku"
