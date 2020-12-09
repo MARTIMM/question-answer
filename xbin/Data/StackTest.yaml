@@ -1,15 +1,15 @@
 ---
+page3: 
+  QASomething: 
+    somespec:  {}
 page2: 
   QASomething: 
     entry-spec:  {}
 page1: 
   QAManagerDialogs: 
     set-spec: 
-      title: xzcv
       description: "sdf xcv"
-      spinbutton: -0.993
+      title: xzcv
       name: xcvz
-page3: 
-  QASomething: 
-    somespec:  {}
+      spinbutton: -0.993
 ...

@@ -152,12 +152,10 @@ submethod BUILD (
         );
 
         # add the created page to the notebook
-        $stack.add-named( $page-window, $page<title>);
+        $stack.add-titled( $page-window, $page<name>, $page<title>);
       }
 
       my Gnome::Gtk3::StackSwitcher $stack-switcher .= new;
-      $stack-switcher.widget-set-hexpand(True);
-      $stack-switcher.widget-set-vexpand(True);
       $stack-switcher.set-stack($stack);
       $grid.grid-attach( $stack-switcher, 0, 1, 1, 1);
 
