@@ -23,7 +23,7 @@ subtest 'ISO-Test', {
 #-------------------------------------------------------------------------------
 subtest 'Manipulations', {
 
-  is $sheet.display, QANoteBook, '.display()';
+  is $sheet.display, QANotebook, '.display()';
 
   ok $sheet.new-page(:name<tstsheet2>), '.new-page()';
   $sheet.new-page(:name<tstsheet3>);

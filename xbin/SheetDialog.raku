@@ -239,7 +239,7 @@ my Gnome::Gtk3::Button $dialog-button .= new(:label<QADialog>);
 $grid.grid-attach( $dialog-button, 0, 0, 1, 1);
 $dialog-button.register-signal( $eh, 'show-dialog', 'clicked');
 
-$dialog-button .= new(:label<QANoteBook>);
+$dialog-button .= new(:label<QANotebook>);
 $grid.grid-attach( $dialog-button, 1, 0, 1, 1);
 $dialog-button.register-signal( $eh, 'show-notebook', 'clicked');
 

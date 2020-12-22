@@ -49,7 +49,7 @@ method !load ( ) {
   my Hash $sheet = $!qa-types.qa-load( $!sheet-name, :sheet);
   if ?$sheet {
     $!display =
-      QADisplayType(QADisplayType.enums{$sheet<display>//''}) // QANoteBook;
+      QADisplayType(QADisplayType.enums{$sheet<display>//''}) // QANotebook;
     $!display-properties = $sheet<display-properties> // %();
     $!width = $sheet<width> // 0;# // 300;
     $!height = $sheet<height> // 0;# // 300;
@@ -78,7 +78,7 @@ method !load ( ) {
   }
 
   else {
-    $!display = QANoteBook;
+    $!display = QANotebook;
   }
 }
 
