@@ -152,7 +152,7 @@ The formats used are shown below for each input type with the variables which co
 
 | Field Type              | Used letter in table header| Implemented |
 |-------------------------|----------------------------|-------------|
-|**QACheckButton**        | Cb                         |             |
+|**QACheckButton**        | Cb                         | ✓           |
 |**QAColorChooser**       | Cc                         |             |
 |**QAComboBox**           | Co                         | ✓           |
 |**QAEntry**              | En                         | ✓           |
@@ -161,7 +161,7 @@ The formats used are shown below for each input type with the variables which co
 |**QAList**               | Li                         |             |
 |**QARadioButton**        | Rb                         | ✓           |
 |**QAScale**              | Sc                         |             |
-|**QASpinButton**         | Sp                         |             |
+|**QASpinButton**         | Sp                         | ✓           |
 |**QASwitch**             | Sw                         | ✓           |
 |**QATextView**           | Tv                         | ✓           |
 |**QAToggleButton**       | Tb                         |             |
@@ -194,6 +194,7 @@ The formats used are shown below for each input type with the variables which co
 |tooltip      |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
 |userwidget   |- |- |- |- |- |- |- |- |- |- |- |- |- |! |
 |width        |- |- |- |o |  |- |  |  |  |  |  |  |  |  |
+
 
 ## Sheet
 
@@ -230,6 +231,7 @@ The questions are grouped in sets as explained above. Sets are referred to from 
 * **name**; Used in user interface to set and retrieve data.
 * **title**; A text used in a frame label at the top of the page
 * **description**; A text shown in this frame
+* **page-type**; Page types are like `QAContent`, `QAPageIntro`, `QAConfirm`, `QASummary`, `QAProgress` or `QACustom`. The `QAContent` is the default. A few are only useful for `QAAssistant` and almost none for `QADialog`.
 * **sets**; An array of hashes.
 
 The sets in the page are referred to by using names of the category and set.
@@ -237,9 +239,10 @@ The sets in the page are referred to by using names of the category and set.
 * **set**; A Set name in this category.
 
 ```
-"name": used as a key to get and save values,
+"name": ... ,
 "title": ... ,
 "description": ... ,
+"page-type": ... ,
 "sets": [ {
     "category": ...,
     "set": ...
