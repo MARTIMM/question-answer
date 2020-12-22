@@ -58,6 +58,8 @@ has Bool $!show-cancel-warning;
 has Bool $!save-data;
 
 has QA::Gui::DialogDisplay $!dialog-display;
+has QA::Gui::NotebookDisplay $!notebook-display;
+
 has QA::Gui::Dialog $!dialog; # handles <show-dialog widget-destroy>;
 has Gnome::Gtk3::Assistant $!assistant;
 
@@ -102,7 +104,7 @@ submethod BUILD (
     }
 
     when QANotebook {
-      $!dialog-display .= new(
+      $!notebook-display .= new(
         :sheet-dialog(self), :width($!sheet.width), :height($!sheet.height),
       );
 
@@ -110,7 +112,7 @@ submethod BUILD (
       my $pages := $!sheet.clone;
       for $pages -> Hash $page {
         if $page<page-type> ~~ QAContent {
-          $!dialog-display.add-page(
+          $!notebook-display.add-page(
             self!create-page( $page, :!title, :description),
             :title($page<title>)
           );
@@ -325,7 +327,7 @@ method show-dialog ( --> Int ) {
     }
 
     when QANotebook {
-      $!dialog-display.show-dialog;
+      $!notebook-display.show-dialog;
     }
 
     when QAAssistant {
@@ -345,7 +347,7 @@ method widget-destroy ( ) {
     }
 
     when QANotebook {
-      $!dialog-display.widget-destroy;
+      $!notebook-display.widget-destroy;
     }
 
     when QAAssistant {
