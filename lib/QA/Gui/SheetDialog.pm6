@@ -2,6 +2,7 @@
 use v6.d;
 
 #use Gnome::N::X;
+use Gnome::N::GlibToRakuTypes;
 
 use Gnome::Gio::Resource;
 
@@ -33,6 +34,8 @@ use QA::Gui::Statusbar;
 use QA::Gui::YNMsgDialog;
 use QA::Gui::OkMsgDialog;
 
+use QA::Gui::DialogDisplay;
+
 #-------------------------------------------------------------------------------
 =begin pod
 =head1 QA::Gui::SheetDialog
@@ -41,7 +44,7 @@ This module shows a dialog wherein sets of questions are displayed. Several ways
 =end pod
 
 unit class QA::Gui::SheetDialog:auth<github:MARTIMM>;
-also is QA::Gui::Dialog;
+#also is QA::Gui::Dialog;
 
 #-------------------------------------------------------------------------------
 has QA::Sheet $!sheet;
@@ -53,11 +56,15 @@ has Bool $.faulty-state;
 has Bool $!show-cancel-warning;
 has Bool $!save-data;
 
+has QA::Gui::DialogDisplay $!dialog-display;
+has QA::Gui::Dialog $!dialog; # handles <show-dialog widget-destroy>;
+has Gnome::Gtk3::Assistant $!assistant;
+
 #-------------------------------------------------------------------------------
 # initialize the Gtk Dialog
-submethod new ( |c ) {
-  self.bless( :GtkDialog, |c);
-}
+#submethod new ( |c ) {
+#  self.bless( :GtkDialog, |c);
+#}
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
@@ -74,14 +81,22 @@ submethod BUILD (
 
   self!set-style;
 
-  # todo width and height spec must go to sets
-  self.set-dialog-size( $!sheet.width, $!sheet.height)
-    if ?$!sheet.width and ?$!sheet.height;
-
-  my Gnome::Gtk3::Grid $grid = self.dialog-content;
-
   given $!sheet.display {
     when QADialog {
+      $!dialog-display .= new(
+        :sheet-dialog(self), :width($!sheet.width), :height($!sheet.height),
+      );
+
+      $!dialog-display.add-page(
+        self!create-page( $!sheet.get-page(0), :!title, :!description)
+      );
+
+#`{{
+      # todo width and height spec must go to sets
+      $!dialog .= new;
+      $!dialog.set-dialog-size( $!sheet.width, $!sheet.height)
+        if ?$!sheet.width and ?$!sheet.height;
+      my Gnome::Gtk3::Grid $grid = $!dialog.dialog-content;
 
       my Gnome::Gtk3::ScrolledWindow $page-window = self!create-page(
         $!sheet.get-page(0), :!title, :!description
@@ -93,17 +108,25 @@ submethod BUILD (
 
 
       # add some buttons specific for this notebook
-      self!create-button(
+      self.create-button(
         'cancel', 'cancel-dialog', GTK_RESPONSE_CANCEL, :default
       );
-      self!create-button( 'finish', 'finish-dialog', GTK_RESPONSE_OK);
+      self.create-button( 'finish', 'finish-dialog', GTK_RESPONSE_OK);
 
-      self.register-signal( self, 'dialog-response', 'response');
+      $!dialog.register-signal( self, 'dialog-response', 'response');
       my QA::Gui::Statusbar $statusbar .= instance;
       $grid.grid-attach( $statusbar, 0, 1, 1, 1);
+}}
     }
 
     when QANoteBook {
+
+      # todo width and height spec must go to sets
+      $!dialog .= new;
+      $!dialog.set-dialog-size( $!sheet.width, $!sheet.height)
+        if ?$!sheet.width and ?$!sheet.height;
+      my Gnome::Gtk3::Grid $grid = $!dialog.dialog-content;
+
       # create a notebook and place on the grid of the dialog
       my Gnome::Gtk3::Notebook $notebook .= new;
       $notebook.widget-set-hexpand(True);
@@ -126,17 +149,24 @@ submethod BUILD (
       }
 
       # add some buttons specific for this notebook
-      self!create-button(
+      self.create-button(
         'cancel', 'cancel-dialog', GTK_RESPONSE_CANCEL, :default
       );
-      self!create-button( 'finish', 'finish-dialog', GTK_RESPONSE_OK);
+      self.create-button( 'finish', 'finish-dialog', GTK_RESPONSE_OK);
 
-      self.register-signal( self, 'dialog-response', 'response');
+      $!dialog.register-signal( self, 'dialog-response', 'response');
       my QA::Gui::Statusbar $statusbar .= instance;
       $grid.grid-attach( $statusbar, 0, 1, 1, 1);
     }
 
     when QAStack {
+
+      # todo width and height spec must go to sets
+      $!dialog .= new;
+      $!dialog.set-dialog-size( $!sheet.width, $!sheet.height)
+        if ?$!sheet.width and ?$!sheet.height;
+      my Gnome::Gtk3::Grid $grid = $!dialog.dialog-content;
+
       my Gnome::Gtk3::Stack $stack .= new;
       $stack.widget-set-hexpand(True);
       $stack.widget-set-vexpand(True);
@@ -160,17 +190,54 @@ submethod BUILD (
       $grid.grid-attach( $stack-switcher, 0, 1, 1, 1);
 
       # add some buttons specific for this notebook
-      self!create-button(
+      self.create-button(
         'cancel', 'cancel-dialog', GTK_RESPONSE_CANCEL, :default
       );
-      self!create-button( 'finish', 'finish-dialog', GTK_RESPONSE_OK);
+      self.create-button( 'finish', 'finish-dialog', GTK_RESPONSE_OK);
 
-      self.register-signal( self, 'dialog-response', 'response');
+      $!dialog.register-signal( self, 'dialog-response', 'response');
       my QA::Gui::Statusbar $statusbar .= instance;
       $grid.grid-attach( $statusbar, 0, 2, 1, 1);
     }
 
     when QAAssistant {
+      CATCH { .note; }
+
+      $!assistant .= new;
+      $!assistant.widget-set-hexpand(True);
+      $!assistant.widget-set-vexpand(True);
+#      $grid.grid-attach( $!assistant, 0, 0, 1, 1);
+
+      if ?$!sheet.width and ?$!sheet.height {
+        $!assistant.set-size-request( $!sheet.width, $!sheet.height);
+        $!assistant.window-resize( $!sheet.width, $!sheet.height);
+      }
+
+      # for each page ...
+      my $pages := $!sheet.clone;
+      for $pages -> Hash $page {
+
+        # create page
+        my Gnome::Gtk3::ScrolledWindow $page-window = self!create-page(
+          $page, :!title, :description
+        );
+
+        # add the created page to the notebook
+#Gnome::N::debug(:on);
+        my Int $page-idx = $!assistant.append-page($page-window);
+        my $no = $!assistant.get-nth-page($page-idx),
+        $!assistant.set-page-type(
+          $no, QAPageType.enums{$page<page-type>}
+        );
+        $!assistant.set-page-title( $no, $page<title>);
+#Gnome::N::debug(:off);
+      }
+
+      $!assistant.show-all
+
+#      $!dialog.register-signal( self, 'dialog-response', 'response');
+#      my QA::Gui::Statusbar $statusbar .= instance;
+#      $grid.grid-attach( $statusbar, 0, 2, 1, 1);
     }
   }
 }
@@ -197,9 +264,9 @@ method !set-style ( ) {
 }
 
 #-------------------------------------------------------------------------------
-method !create-button (
+method create-button (
   Str $widget-name, Str $method-name, GtkResponseType $response-type,
-  Bool :$default = False
+  Bool :$default = False, QA::Gui::Dialog :$dialog = $!dialog
 ) {
 
   # change text of label on button when defined in the button map structure
@@ -213,11 +280,11 @@ method !create-button (
   $button.set-label($button-text.tc);
   if $default {
     $button.set-can-default(True);
-    self.set-default-response($response-type);
+    $dialog.set-default-response($response-type);
   }
 
 #  $button.register-signal( self, $method-name, 'clicked');
-  self.add-action-widget( $button, $response-type);
+  $dialog.add-action-widget( $button, $response-type);
 }
 
 #-------------------------------------------------------------------------------
@@ -292,15 +359,45 @@ method query-state ( ) {
 }
 
 #-------------------------------------------------------------------------------
+method show-dialog ( --> Int ) {
+  given $!sheet.display {
+    when QADialog {
+      $!dialog-display.show-dialog;
+    }
+
+    when QAAssistant {
+    }
+
+    default {
+      $!dialog.show-dialog;
+    }
+  }
+}
+
+#-------------------------------------------------------------------------------
+method widget-destroy ( ) {
+  given $!sheet.display {
+    when QADialog {
+      $!dialog-display.widget-destroy;
+    }
+
+    when QAAssistant {
+    }
+
+    default {
+      $!dialog.widget-destroy;
+    }
+  }
+}
+
+#-------------------------------------------------------------------------------
 #--[ Signal Handlers ]----------------------------------------------------------
 #-------------------------------------------------------------------------------
-method dialog-response (
-  int32 $response, QA::Gui::SheetDialog :_widget($dialog)
-) {
+method dialog-response ( gint $response, QA::Gui::Dialog :_widget($dialog) ) {
 #Gnome::N::debug(:on);
 
-#  note "enums: ", GtkResponseType.enums;
-  note "sheet dialog response: $response, ", GtkResponseType($response);
+#note "enums: ", GtkResponseType.enums;
+note "sheet dialog response: $response, ", GtkResponseType($response);
   if GtkResponseType($response) ~~ GTK_RESPONSE_DELETE_EVENT {
     note 'Forced dialog close!';
     $dialog.widget-destroy;
@@ -323,7 +420,10 @@ method dialog-response (
       my QA::Types $qa-types .= instance;
       $qa-types.qa-save( $!sheet-name, $!result-user-data, :userdata)
         if $!save-data;
-#      self.widget-destroy;
+
+      # must hide instead of destroy, otherwise the return status
+      # is set to GTK_RESPONSE_NONE
+      $dialog.widget-hide;
     }
   }
 
@@ -340,7 +440,7 @@ method dialog-response (
       $done = ( $r ~~ GTK_RESPONSE_YES );
     }
 
-    self.widget-destroy if $done;
+    $dialog.widget-destroy if $done;
   }
 
 #Gnome::N::debug(:off);
