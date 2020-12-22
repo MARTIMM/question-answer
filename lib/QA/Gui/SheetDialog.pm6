@@ -13,7 +13,7 @@ use Gnome::Gtk3::Dialog;
 use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Label;
 use Gnome::Gtk3::Button;
-use Gnome::Gtk3::Notebook;
+#use Gnome::Gtk3::Notebook;
 use Gnome::Gtk3::Stack;
 use Gnome::Gtk3::StackSwitcher;
 use Gnome::Gtk3::Assistant;
@@ -35,6 +35,7 @@ use QA::Gui::YNMsgDialog;
 use QA::Gui::OkMsgDialog;
 
 use QA::Gui::DialogDisplay;
+use QA::Gui::NotebookDisplay;
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -87,76 +88,34 @@ submethod BUILD (
         :sheet-dialog(self), :width($!sheet.width), :height($!sheet.height),
       );
 
-      $!dialog-display.add-page(
-        self!create-page( $!sheet.get-page(0), :!title, :!description)
-      );
-
-#`{{
-      # todo width and height spec must go to sets
-      $!dialog .= new;
-      $!dialog.set-dialog-size( $!sheet.width, $!sheet.height)
-        if ?$!sheet.width and ?$!sheet.height;
-      my Gnome::Gtk3::Grid $grid = $!dialog.dialog-content;
-
-      my Gnome::Gtk3::ScrolledWindow $page-window = self!create-page(
-        $!sheet.get-page(0), :!title, :!description
-      );
-      $page-window.widget-set-hexpand(True);
-      $page-window.widget-set-vexpand(True);
-
-      $grid.grid-attach( $page-window, 0, 0, 1, 1);
-
-
-      # add some buttons specific for this notebook
-      self.create-button(
-        'cancel', 'cancel-dialog', GTK_RESPONSE_CANCEL, :default
-      );
-      self.create-button( 'finish', 'finish-dialog', GTK_RESPONSE_OK);
-
-      $!dialog.register-signal( self, 'dialog-response', 'response');
-      my QA::Gui::Statusbar $statusbar .= instance;
-      $grid.grid-attach( $statusbar, 0, 1, 1, 1);
-}}
-    }
-
-    when QANoteBook {
-
-      # todo width and height spec must go to sets
-      $!dialog .= new;
-      $!dialog.set-dialog-size( $!sheet.width, $!sheet.height)
-        if ?$!sheet.width and ?$!sheet.height;
-      my Gnome::Gtk3::Grid $grid = $!dialog.dialog-content;
-
-      # create a notebook and place on the grid of the dialog
-      my Gnome::Gtk3::Notebook $notebook .= new;
-      $notebook.widget-set-hexpand(True);
-      $notebook.widget-set-vexpand(True);
-      $grid.grid-attach( $notebook, 0, 0, 1, 1);
-
-      # for each page ...
+      # find first content page
       my $pages := $!sheet.clone;
       for $pages -> Hash $page {
+        if $page<page-type> ~~ QAContent {
+          $!dialog-display.add-page(
+            self!create-page( $page, :!title, :!description)
+          );
 
-        # create page
-        my Gnome::Gtk3::ScrolledWindow $page-window = self!create-page(
-          $page, :!title, :description
-        );
-
-        # add the created page to the notebook
-        $notebook.append-page(
-          $page-window, Gnome::Gtk3::Label.new(:text($page<title>))
-        );
+          last;
+        }
       }
+    }
 
-      # add some buttons specific for this notebook
-      self.create-button(
-        'cancel', 'cancel-dialog', GTK_RESPONSE_CANCEL, :default
+    when QANotebook {
+      $!dialog-display .= new(
+        :sheet-dialog(self), :width($!sheet.width), :height($!sheet.height),
       );
-      self.create-button( 'finish', 'finish-dialog', GTK_RESPONSE_OK);
 
-      $!dialog.register-signal( self, 'dialog-response', 'response');
-      my QA::Gui::Statusbar $statusbar .= instance;
-      $grid.grid-attach( $statusbar, 0, 1, 1, 1);
+      # find first content page
+      my $pages := $!sheet.clone;
+      for $pages -> Hash $page {
+        if $page<page-type> ~~ QAContent {
+          $!dialog-display.add-page(
+            self!create-page( $page, :!title, :description),
+            :title($page<title>)
+          );
+        }
+      }
     }
 
     when QAStack {
@@ -181,7 +140,7 @@ submethod BUILD (
           $page, :!title, :description
         );
 
-        # add the created page to the notebook
+        # add the created page to the Stack
         $stack.add-titled( $page-window, $page<name>, $page<title>);
       }
 
@@ -189,7 +148,7 @@ submethod BUILD (
       $stack-switcher.set-stack($stack);
       $grid.grid-attach( $stack-switcher, 0, 1, 1, 1);
 
-      # add some buttons specific for this notebook
+      # add some buttons specific for this Stack
       self.create-button(
         'cancel', 'cancel-dialog', GTK_RESPONSE_CANCEL, :default
       );
@@ -222,7 +181,7 @@ submethod BUILD (
           $page, :!title, :description
         );
 
-        # add the created page to the notebook
+        # add the created page to the Assistant
 #Gnome::N::debug(:on);
         my Int $page-idx = $!assistant.append-page($page-window);
         my $no = $!assistant.get-nth-page($page-idx),
@@ -365,6 +324,10 @@ method show-dialog ( --> Int ) {
       $!dialog-display.show-dialog;
     }
 
+    when QANotebook {
+      $!dialog-display.show-dialog;
+    }
+
     when QAAssistant {
     }
 
@@ -378,6 +341,10 @@ method show-dialog ( --> Int ) {
 method widget-destroy ( ) {
   given $!sheet.display {
     when QADialog {
+      $!dialog-display.widget-destroy;
+    }
+
+    when QANotebook {
       $!dialog-display.widget-destroy;
     }
 
