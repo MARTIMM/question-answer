@@ -13,14 +13,9 @@ use Gnome::Gtk3::Dialog;
 use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Label;
 use Gnome::Gtk3::Button;
-#use Gnome::Gtk3::Notebook;
-use Gnome::Gtk3::Stack;
-use Gnome::Gtk3::StackSwitcher;
-use Gnome::Gtk3::Assistant;
 use Gnome::Gtk3::CssProvider;
 use Gnome::Gtk3::StyleContext;
 use Gnome::Gtk3::StyleProvider;
-use Gnome::Gtk3::Builder;
 
 use QA::Set;
 use QA::Sheet;
@@ -28,24 +23,23 @@ use QA::Types;
 
 use QA::Gui::Set;
 use QA::Gui::Question;
-use QA::Gui::Dialog;
 use QA::Gui::Frame;
-use QA::Gui::Statusbar;
 use QA::Gui::YNMsgDialog;
 use QA::Gui::OkMsgDialog;
 
 use QA::Gui::DialogDisplay;
 use QA::Gui::NotebookDisplay;
+use QA::Gui::StackDisplay;
+use QA::Gui::AssistantDisplay;
 
 #-------------------------------------------------------------------------------
 =begin pod
 =head1 QA::Gui::SheetDialog
 
-This module shows a dialog wherein sets of questions are displayed. Several ways to display the sheet are available
+This module shows one or more sheets depending on the way the sheets are displayed. There are four ways to display sheets; using a dialog, a notebook, stack or an assistant.
 =end pod
 
 unit class QA::Gui::SheetDialog:auth<github:MARTIMM>;
-#also is QA::Gui::Dialog;
 
 #-------------------------------------------------------------------------------
 has QA::Sheet $!sheet;
@@ -59,15 +53,8 @@ has Bool $!save-data;
 
 has QA::Gui::DialogDisplay $!dialog-display;
 has QA::Gui::NotebookDisplay $!notebook-display;
-
-has QA::Gui::Dialog $!dialog; # handles <show-dialog widget-destroy>;
-has Gnome::Gtk3::Assistant $!assistant;
-
-#-------------------------------------------------------------------------------
-# initialize the Gtk Dialog
-#submethod new ( |c ) {
-#  self.bless( :GtkDialog, |c);
-#}
+has QA::Gui::StackDisplay $!stack-display;
+has QA::Gui::AssistantDisplay $!assistant-display;
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
@@ -108,7 +95,7 @@ submethod BUILD (
         :sheet-dialog(self), :width($!sheet.width), :height($!sheet.height),
       );
 
-      # find first content page
+      # select content pages
       my $pages := $!sheet.clone;
       for $pages -> Hash $page {
         if $page<page-type> ~~ QAContent {
@@ -121,84 +108,37 @@ submethod BUILD (
     }
 
     when QAStack {
+      $!stack-display .= new(
+        :sheet-dialog(self), :width($!sheet.width), :height($!sheet.height),
+      );
 
-      # todo width and height spec must go to sets
-      $!dialog .= new;
-      $!dialog.set-dialog-size( $!sheet.width, $!sheet.height)
-        if ?$!sheet.width and ?$!sheet.height;
-      my Gnome::Gtk3::Grid $grid = $!dialog.dialog-content;
-
-      my Gnome::Gtk3::Stack $stack .= new;
-      $stack.widget-set-hexpand(True);
-      $stack.widget-set-vexpand(True);
-      $grid.grid-attach( $stack, 0, 0, 1, 1);
-
-      # for each page ...
+      # select content pages
       my $pages := $!sheet.clone;
       for $pages -> Hash $page {
-
-        # create page
-        my Gnome::Gtk3::ScrolledWindow $page-window = self!create-page(
-          $page, :!title, :description
-        );
-
-        # add the created page to the Stack
-        $stack.add-titled( $page-window, $page<name>, $page<title>);
+        if $page<page-type> ~~ QAContent {
+          $!stack-display.add-page(
+            self!create-page( $page, :!title, :description),
+            :title($page<title>), :name($page<name>)
+          );
+        }
       }
-
-      my Gnome::Gtk3::StackSwitcher $stack-switcher .= new;
-      $stack-switcher.set-stack($stack);
-      $grid.grid-attach( $stack-switcher, 0, 1, 1, 1);
-
-      # add some buttons specific for this Stack
-      self.create-button(
-        'cancel', 'cancel-dialog', GTK_RESPONSE_CANCEL, :default
-      );
-      self.create-button( 'finish', 'finish-dialog', GTK_RESPONSE_OK);
-
-      $!dialog.register-signal( self, 'dialog-response', 'response');
-      my QA::Gui::Statusbar $statusbar .= instance;
-      $grid.grid-attach( $statusbar, 0, 2, 1, 1);
     }
 
     when QAAssistant {
-      CATCH { .note; }
+      $!assistant-display .= new(
+        :sheet-dialog(self), :width($!sheet.width), :height($!sheet.height),
+      );
 
-      $!assistant .= new;
-      $!assistant.widget-set-hexpand(True);
-      $!assistant.widget-set-vexpand(True);
-#      $grid.grid-attach( $!assistant, 0, 0, 1, 1);
-
-      if ?$!sheet.width and ?$!sheet.height {
-        $!assistant.set-size-request( $!sheet.width, $!sheet.height);
-        $!assistant.window-resize( $!sheet.width, $!sheet.height);
-      }
-
-      # for each page ...
+      # select all type of pages
       my $pages := $!sheet.clone;
       for $pages -> Hash $page {
 
-        # create page
-        my Gnome::Gtk3::ScrolledWindow $page-window = self!create-page(
-          $page, :!title, :description
+        $!assistant-display.add-page(
+          self!create-page( $page, :!title, :description),
+          :title($page<title>), :page-type($page<page-type>)
         );
-
-        # add the created page to the Assistant
-#Gnome::N::debug(:on);
-        my Int $page-idx = $!assistant.append-page($page-window);
-        my $no = $!assistant.get-nth-page($page-idx),
-        $!assistant.set-page-type(
-          $no, QAPageType.enums{$page<page-type>}
-        );
-        $!assistant.set-page-title( $no, $page<title>);
-#Gnome::N::debug(:off);
+        $!assistant-display.show-all;
       }
-
-      $!assistant.show-all
-
-#      $!dialog.register-signal( self, 'dialog-response', 'response');
-#      my QA::Gui::Statusbar $statusbar .= instance;
-#      $grid.grid-attach( $statusbar, 0, 2, 1, 1);
     }
   }
 }
@@ -227,7 +167,7 @@ method !set-style ( ) {
 #-------------------------------------------------------------------------------
 method create-button (
   Str $widget-name, Str $method-name, GtkResponseType $response-type,
-  Bool :$default = False, QA::Gui::Dialog :$dialog = $!dialog
+  Bool :$default = False, QA::Gui::Dialog :$dialog
 ) {
 
   # change text of label on button when defined in the button map structure
@@ -244,7 +184,6 @@ method create-button (
     $dialog.set-default-response($response-type);
   }
 
-#  $button.register-signal( self, $method-name, 'clicked');
   $dialog.add-action-widget( $button, $response-type);
 }
 
@@ -259,7 +198,6 @@ method !create-page(
   my Gnome::Gtk3::ScrolledWindow $page-window .= new;
   my Gnome::Gtk3::Grid $page-grid .= new;
   $page-window.container-add($page-grid);
-#  $page-grid.set-border-width(5);
   my Int $page-row = 0;
 
   if $description {
@@ -272,8 +210,6 @@ method !create-page(
     # place description as text in this frame
     given my Gnome::Gtk3::Label $page-descr .= new(:text($page<description>)) {
       .set-line-wrap(True);
-      #.set-max-width-chars(60);
-      #.set-justify(GTK_JUSTIFY_LEFT);
       .widget-set-halign(GTK_ALIGN_START);
       .widget-set-margin-bottom(3);
       .widget-set-margin-start(5);
@@ -302,6 +238,8 @@ method !create-page(
   }
 
   # return the page
+  $page-window.widget-set-hexpand(True);
+  $page-window.widget-set-vexpand(True);
   $page-window
 }
 
@@ -330,11 +268,11 @@ method show-dialog ( --> Int ) {
       $!notebook-display.show-dialog;
     }
 
-    when QAAssistant {
+    when QAStack {
+      $!stack-display.show-dialog;
     }
 
-    default {
-      $!dialog.show-dialog;
+    when QAAssistant {
     }
   }
 }
@@ -350,11 +288,11 @@ method widget-destroy ( ) {
       $!notebook-display.widget-destroy;
     }
 
-    when QAAssistant {
+    when QAStack {
+      $!stack-display.widget-destroy;
     }
 
-    default {
-      $!dialog.widget-destroy;
+    when QAAssistant {
     }
   }
 }
@@ -362,6 +300,9 @@ method widget-destroy ( ) {
 #-------------------------------------------------------------------------------
 #--[ Signal Handlers ]----------------------------------------------------------
 #-------------------------------------------------------------------------------
+# this handler is used by three modules; QA::Gui::DialogDisplay,
+# QA::Gui::NotebookDisplay and QA::Gui::StackDisplay. This is possible because
+# all three are based on a Gnome::Gtk3::Dialog. The signal used is 'response'.
 method dialog-response ( gint $response, QA::Gui::Dialog :_widget($dialog) ) {
 #Gnome::N::debug(:on);
 
