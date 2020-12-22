@@ -30,8 +30,8 @@ submethod new ( |c ) {
 
 #-------------------------------------------------------------------------------
 submethod BUILD ( :$!sheet-dialog, Int :$width, Int :$height ) {
-#note "S: ", self.gist, ', ', $!sheet-dialog.gist;
 
+  # todo width and height spec must go to sets
   self.set-dialog-size( $width, $height) if ?$width and ?$height;
 
   $!grid = self.dialog-content;
@@ -52,9 +52,5 @@ submethod BUILD ( :$!sheet-dialog, Int :$width, Int :$height ) {
 
 #-------------------------------------------------------------------------------
 method add-page ( $page-window where .^name ~~ 'Gnome::Gtk3::ScrolledWindow' ) {
-
-  $page-window.widget-set-hexpand(True);
-  $page-window.widget-set-vexpand(True);
-
   $!grid.grid-attach( $page-window, 0, 0, 1, 1);
 }

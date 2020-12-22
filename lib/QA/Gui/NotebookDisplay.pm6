@@ -15,7 +15,7 @@ use QA::Gui::Statusbar;
 
 #-------------------------------------------------------------------------------
 =begin pod
-=head1 QA::Gui::DialogDisplay
+=head1 QA::Gui::NotebookDisplay
 
 =end pod
 
@@ -35,8 +35,8 @@ submethod new ( |c ) {
 
 #-------------------------------------------------------------------------------
 submethod BUILD ( :$!sheet-dialog, Int :$width, Int :$height ) {
-note "S: ", self.gist, ', ', $!sheet-dialog.gist;
 
+  # todo width and height spec must go to sets
   self.set-dialog-size( $width, $height) if ?$width and ?$height;
 
   $!grid = self.dialog-content;
@@ -63,12 +63,8 @@ note "S: ", self.gist, ', ', $!sheet-dialog.gist;
 
 #-------------------------------------------------------------------------------
 method add-page (
-  $page-window where .^name ~~ 'Gnome::Gtk3::ScrolledWindow', :$title
+  $page-window where .^name ~~ 'Gnome::Gtk3::ScrolledWindow', Str :$title
 ) {
-
-  $page-window.widget-set-hexpand(True);
-  $page-window.widget-set-vexpand(True);
-
   $!notebook.append-page(
     $page-window, Gnome::Gtk3::Label.new(:text($title))
   )
