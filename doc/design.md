@@ -191,6 +191,23 @@ dp --> [*]: some button\npress
 @startuml
 hide empty description
 
+skinparam DefaultFontSize 17
+skinparam DefaultFontName "z003"
+'skinparam StateMessageAlignment left
+'skinparam DefaultTextAlignment middle
+skinparam StateStartColor #a0a0a0
+'skinparam StateAttributeFontColor
+'skinparam StateAttributeFontName
+'skinparam StateAttributeFontSize
+'skinparam StateAttributeFontStyle
+'skinparam StateBackgroundColor
+'skinparam StateBorderColor
+skinparam StateEndColor #a0a0a0
+'skinparam StateFontColor
+'skinparam StateFontName
+'skinparam StateFontSize
+'skinparam StateFontStyle
+
 state "displayed page" as dp: answer questions
 state "final check" as fc: check answers
 state "wrong" as w: show problem\nmessage dialog
@@ -199,11 +216,10 @@ state "are you sure" as c: show quit\nmessage dialog
 [*] --> dp
 dp --> c: cancel\npressed
 dp --> fc: finish\npressed
-fc --> w
+fc --> w: wrong\nshow\nmessage
 w --> dp: want to\ncontinue
-w: wrong/continue
-w --> [*]: wrong/quit
-fc --> finished: ok
+w --> [*]: want to\nquit
+fc --> finished: ok\nfinish
 
 c --> dp: want to\ncontinue
 c --> [*]: want to\nquit
@@ -221,6 +237,11 @@ A QANotebook has more pages selectable by tabs. There might be an introductory p
 @startuml
 hide empty description
 
+skinparam DefaultFontSize 17
+skinparam DefaultFontName "z003"
+skinparam StateStartColor #a0a0a0
+skinparam StateEndColor #a0a0a0
+
 state "displayed intro" as dpi: show purpose\nof this QA
 state "displayed content" as dpc: answer questions
 state "final check" as fc: check answers
@@ -234,10 +255,9 @@ dpc --> dpi: tab\nselected
 dpc --> dpc: tab selected\nswitch page
 
 dpc --> fc: finish\npressed
-fc --> w
+fc --> w: wrong\nshow\nmessage
 w --> dpc: want to\ncontinue
-w: wrong/continue
-w --> [*]: wrong/quit
+w --> [*]: want to\nquit
 fc --> finished: ok
 
 dpi --> c: cancel\npressed
