@@ -3,35 +3,11 @@ use v6.d;
 
 #use Gnome::N::X;
 
-use Gnome::Gio::Resource;
-
-use Gnome::Gtk3::Widget;
-use Gnome::Gtk3::Enums;
-use Gnome::Gtk3::ScrolledWindow;
 use Gnome::Gtk3::Dialog;
 use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::Label;
-use Gnome::Gtk3::Button;
-#use Gnome::Gtk3::Notebook;
-#use Gnome::Gtk3::Stack;
-#use Gnome::Gtk3::StackSwitcher;
-#use Gnome::Gtk3::Assistant;
-use Gnome::Gtk3::CssProvider;
-use Gnome::Gtk3::StyleContext;
-use Gnome::Gtk3::StyleProvider;
-#use Gnome::Gtk3::Builder;
 
-#use QA::Set;
-#use QA::Sheet;
-use QA::Types;
-
-#use QA::Gui::Set;
-#use QA::Gui::Question;
 use QA::Gui::Dialog;
-#use QA::Gui::Frame;
 use QA::Gui::Statusbar;
-use QA::Gui::YNMsgDialog;
-use QA::Gui::OkMsgDialog;
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -43,9 +19,7 @@ unit class QA::Gui::DialogDisplay:auth<github:MARTIMM>;
 also is QA::Gui::Dialog;
 
 #-------------------------------------------------------------------------------
-#has QA::Sheet $!sheet;
 has Gnome::Gtk3::Grid $!grid;
-
 has $!sheet-dialog;
 
 #-------------------------------------------------------------------------------
@@ -56,7 +30,7 @@ submethod new ( |c ) {
 
 #-------------------------------------------------------------------------------
 submethod BUILD ( :$!sheet-dialog, Int :$width, Int :$height ) {
-note "S: ", self.gist, ', ', $!sheet-dialog.gist;
+#note "S: ", self.gist, ', ', $!sheet-dialog.gist;
 
   self.set-dialog-size( $width, $height) if ?$width and ?$height;
 
@@ -77,7 +51,7 @@ note "S: ", self.gist, ', ', $!sheet-dialog.gist;
 }
 
 #-------------------------------------------------------------------------------
-method add-page ( Gnome::Gtk3::ScrolledWindow $page-window ) {
+method add-page ( $page-window where .^name ~~ 'Gnome::Gtk3::ScrolledWindow' ) {
 
   $page-window.widget-set-hexpand(True);
   $page-window.widget-set-vexpand(True);
