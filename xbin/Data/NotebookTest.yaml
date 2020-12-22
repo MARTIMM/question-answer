@@ -2,37 +2,37 @@
 page1: 
   QAManagerDialogs: 
     set-spec: 
-      an-image: "/home/marcel/Desktop/Desktop configurations/Icons-100x100/Scratch/Rakudo_Logo.png"
-      radio: "Radio 1"
-      spinbutton: -0.998
-      title: zxczxc
-      name: "some key"
       description: "zxcdfg zxc"
-      onefilename: "/home/marcel/Software/Packages/Sources/atom.x86_64.rpm"
-      more-image: 
-        - 
-          P2: "/home/marcel/Pictures/sdv2.jpg"
+      title: zxczxc
+      spinbutton: -0.998
       check: 
-        - Purple
+        - Red
         - Orange
+      radio: "Classic FM"
       filename: 
         - 
           Log: "/home/marcel/Languages/Raku/Projects/Auth-SCRAM/appveyor.yml"
+      name: "some key"
+      onefilename: "/home/marcel/Software/Packages/Sources/atom.x86_64.rpm"
+      an-image: "/home/marcel/Desktop/Desktop configurations/Icons-100x100/Scratch/Rakudo_Logo.png"
+      more-image: 
+        - 
+          P2: "/home/marcel/Pictures/sdv2.jpg"
 page2: 
   QAManagerDialogs: 
     entry-spec: 
       name: sdfgsgfd
+      fieldtype: QAComboBox
+      callback: "dfg dfg"
+      description: "ssdfgsdfgd dfg dfg"
+      default: "sdfgs dfg"
+      minimum: sdfgdsfg
       tooltip: 
         - 
           tt2: sdfgsdfg
-      maximum: sfdgdfg
-      default: "sdfgs dfg"
-      description: "ssdfgsdfgd dfg dfg"
-      minimum: sdfgdsfg
-      callback: "dfg dfg"
-      fieldtype: QASwitch
-      mywidget: "1"
-      title: sdfgsdfg
-      encode: true
       example: "sdfg dfg"
+      title: sdfgsdfg
+      mywidget: "1"
+      maximum: sfdgdfg
+      encode: true
 ...
