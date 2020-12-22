@@ -65,6 +65,7 @@ method !load ( ) {
         $h-page<title> //= $h-page<name>.tclc;
         $h-page<description> //= $h-page<title>;
         $h-page<hide> //= False;
+        $h-page<page-type> //= QAContent;
 
         $!pages{$h-page<name>} = $!page-data.elems;
         $!page-data.push: $h-page;

@@ -61,6 +61,34 @@ enum QAFieldType is export <
 enum QADisplayType is export <QADialog QANoteBook QAStack QAAssistant>;
 
 #-------------------------------------------------------------------------------
+#tt:1:QAPageType:
+=begin pod
+
+Page types are based on GtkAssistantPageType
+
+=item QAContent; The page has regular contents. This is the default page type in all of the display posibilities.
+=comment Both the Back and forward buttons will be shown.
+
+=item QAPageIntro; The page contains an introduction to the assistant task. This could be displayed on the first tab of a Notebook, Stack or Assistant. There is no use for it in a Dialog because only one page is shown.
+=comment Only the Forward button will be shown if there is a next page.
+
+=item QAConfirm; The page lets the user confirm or deny the changes. Only useful in an Assistant.
+=comment The Back and Apply buttons will be shown.
+
+=item QASummary; The page informs the user of the changes done. Only useful in an Assistant.
+=comment Only the Close button will be shown.
+
+=item QAProgress; Used for tasks that take a long time to complete, blocks the assistant until the page is marked as complete. Only useful in an Assistant.
+=comment Only the back button will be shown.
+
+=comment item QACustom; Used for when other page types are not appropriate. No buttons will be shown, and the application must add its own buttons through gtk_assistant_add_action_widget().
+
+=end pod
+enum QAPageType is export <
+  QAContent QAPageIntro QAConfirm QASummary QAProgress QACustom
+>;
+
+#-------------------------------------------------------------------------------
 #tt:1:InputStatusHint:
 enum InputStatusHint is export <QAStatusNormal QAStatusOk QAStatusFail>;
 
@@ -78,9 +106,9 @@ enum ActionReturnType is export <
 
 Column numbers for the question-answer row in a grid
 
-=item
-=item
-=item
+=item QAQuestion;
+=item QARequired;
+=item QAAnswer;
 =end pod
 enum QAGridColSpec is export <QAQuestion QARequired QAAnswer>;
 
@@ -90,9 +118,9 @@ enum QAGridColSpec is export <QAQuestion QARequired QAAnswer>;
 
 Column numbers for the grid in the answer part of the QA
 
-=item QACatColumn
-=item QAInputColumn
-=item QAButtonColumn
+=item QACatColumn;
+=item QAInputColumn;
+=item QAButtonColumn;
 =end pod
 #tt:1::AGridColSpec
 enum AGridColSpec is export <QACatColumn QAInputColumn QAButtonColumn>;
