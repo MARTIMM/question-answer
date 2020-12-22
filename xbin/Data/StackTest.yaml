@@ -1,14 +1,25 @@
 ---
-page3: 
-  QASomething: 
-    somespec:  {}
 page1: 
   QAManagerDialogs: 
     set-spec: 
-      name: xcvz
-      spinbutton: -0.993
-      description: "sdf xcv"
+      spinbutton: -0.995
+      onefilename: "/home/marcel/Pictures/sdv2.jpg"
+      more-image: 
+        - 
+          Icon: "/home/marcel/Pictures/sdv4.jpg"
+        - 
+          Icon: "/home/marcel/Pictures/sdv5.jpg"
       title: xzcv
+      filename: 
+        - 
+          Log: "/home/marcel/Pictures/sdv2.jpg"
+      description: "sdf xcv"
+      check:  []
+      radio: "Radio 1"
+      name: fgh
+page3: 
+  QASomething: 
+    somespec:  {}
 page2: 
   QASomething: 
     entry-spec:  {}
