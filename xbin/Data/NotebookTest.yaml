@@ -1,38 +1,38 @@
 ---
+page2: 
+  QAManagerDialogs: 
+    entry-spec: 
+      callback: "dfg dfg"
+      encode: true
+      fieldtype: QAComboBox
+      tooltip: 
+        - 
+          tt2: sdfgsdfg
+      description: "ssdfgsdfgd dfg dfg"
+      title: sdfgsdfg
+      mywidget: "1"
+      example: "sdfg dfg"
+      name: sdfgsgfd
+      maximum: sfdgdfg
+      minimum: sdfgdsfg
+      default: "sdfgs dfg"
 page1: 
   QAManagerDialogs: 
     set-spec: 
-      description: "zxcdfg zxc"
-      title: zxczxc
+      name: "some key"
+      onefilename: "/home/marcel/Software/Packages/Sources/atom.x86_64.rpm"
       spinbutton: -0.998
+      description: "zxcdfg zxc"
+      an-image: "/home/marcel/Desktop/Desktop configurations/Icons-100x100/Scratch/Rakudo_Logo.png"
+      title: zxczxc
+      more-image: 
+        - 
+          Etc: "/home/marcel/Pictures/sdv2.jpg"
+      filename: 
+        - 
+          Log: "/home/marcel/Languages/Raku/Projects/Auth-SCRAM/appveyor.yml"
       check: 
         - Red
         - Orange
       radio: "Classic FM"
-      filename: 
-        - 
-          Log: "/home/marcel/Languages/Raku/Projects/Auth-SCRAM/appveyor.yml"
-      name: "some key"
-      onefilename: "/home/marcel/Software/Packages/Sources/atom.x86_64.rpm"
-      an-image: "/home/marcel/Desktop/Desktop configurations/Icons-100x100/Scratch/Rakudo_Logo.png"
-      more-image: 
-        - 
-          P2: "/home/marcel/Pictures/sdv2.jpg"
-page2: 
-  QAManagerDialogs: 
-    entry-spec: 
-      name: sdfgsgfd
-      fieldtype: QAComboBox
-      callback: "dfg dfg"
-      description: "ssdfgsdfgd dfg dfg"
-      default: "sdfgs dfg"
-      minimum: sdfgdsfg
-      tooltip: 
-        - 
-          tt2: sdfgsdfg
-      example: "sdfg dfg"
-      title: sdfgsdfg
-      mywidget: "1"
-      maximum: sfdgdfg
-      encode: true
 ...
