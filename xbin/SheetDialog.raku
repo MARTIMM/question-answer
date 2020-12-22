@@ -77,8 +77,8 @@ class EH {
       :!show-cancel-warning, :!save-data
     );
 
-    $sheet-dialog.register-signal( self, 'dialog-response', 'response');
-    $sheet-dialog.show-dialog;
+    my Int $response = $sheet-dialog.show-dialog;
+    self.display-result( $response, $sheet-dialog);
   }
 
   method show-notebook ( ) {
@@ -93,8 +93,8 @@ class EH {
       :show-cancel-warning, :save-data
     );
 
-    $sheet-dialog.register-signal( self, 'dialog-response', 'response');
-    $sheet-dialog.show-dialog;
+    my Int $response = $sheet-dialog.show-dialog;
+    self.display-result( $response, $sheet-dialog);
   }
 
   method show-stack ( ) {
@@ -103,50 +103,49 @@ class EH {
       :show-cancel-warning, :save-data
     );
 
-    $sheet-dialog.register-signal( self, 'dialog-response', 'response');
-    $sheet-dialog.show-dialog;
+    my Int $response = $sheet-dialog.show-dialog;
+    self.display-result( $response, $sheet-dialog);
   }
 
   method show-assistant ( ) {
+    my QA::Gui::SheetDialog $sheet-dialog .= new(
+      :sheet-name<AssistantTest>,
+      :show-cancel-warning, :save-data
+    );
+
+#    $sheet-dialog.register-signal( self, 'dialog-response', 'response');
+#    $sheet-dialog.show-dialog;
   }
 
   #---------
-  method dialog-response (
-    int32 $response, QA::Gui::SheetDialog :_widget($dialog)
-  ) {
-    note "dialog response: $response, ", GtkResponseType($response);
+  method display-result ( Int $response, QA::Gui::SheetDialog $dialog ) {
 
-    if GtkResponseType($response) ~~ GTK_RESPONSE_OK {
-      if $dialog.faulty-state {
-        note 'Faulty state';
-      }
+    note "Dialog return status: ", GtkResponseType($response);
+    return unless $response ~~ GTK_RESPONSE_OK;
 
-      else {
-        my $i = 0;
-        sub show-hash ( Hash $h ) {
-          $i++;
-          for $h.keys.sort -> $k {
-            if $h{$k} ~~ Hash {
-              note '  ' x $i, "$k => \{";
-              show-hash($h{$k});
-              note '  ' x $i, '}';
-            }
-
-            elsif $h{$k} ~~ Array {
-              note '  ' x $i, "$k => $h{$k}.perl()";
-            }
-
-            else {
-              note '  ' x $i, "$k => $h{$k}";
-            }
-          }
-          $i--;
+    my $i = 0;
+    sub show-hash ( Hash $h ) {
+      $i++;
+      for $h.keys.sort -> $k {
+        if $h{$k} ~~ Hash {
+          note '  ' x $i, "$k => \{";
+          show-hash($h{$k});
+          note '  ' x $i, '}';
         }
 
-        show-hash($dialog.result-user-data);
-        $dialog.widget-destroy;
+        elsif $h{$k} ~~ Array {
+          note '  ' x $i, "$k => $h{$k}.perl()";
+        }
+
+        else {
+          note '  ' x $i, "$k => $h{$k}";
+        }
       }
+      $i--;
     }
+
+    show-hash($dialog.result-user-data);
+    $dialog.widget-destroy;
   }
 
   #---------
