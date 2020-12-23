@@ -113,8 +113,8 @@ class EH {
       :show-cancel-warning, :save-data
     );
 
-#    $sheet-dialog.register-signal( self, 'dialog-response', 'response');
-#    $sheet-dialog.show-dialog;
+    my Int $response = $sheet-dialog.show-dialog;
+    self.display-result( $response, $sheet-dialog);
   }
 
   #---------
