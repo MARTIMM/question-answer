@@ -2,5 +2,42 @@
   "schemaVersion": 1,
   "label": "hello",
   "message": "sweet world",
-  "color": "orange"
+  "color": "orange",
+  "logoSvg": "<svg width="162" height="20" xmlns="http://www.w3.org/2000/svg">
+
+  <linearGradient id="lg" x1="0%" y1 = "0%" x2="0%" y2="100%">
+    <stop stop-color="#fff" stop-opacity=".1" offset="0%"/>
+    <stop stop-color="#fff" stop-opacity=".7" offset="10%"/>
+    <stop stop-color="#fff" stop-opacity=".3" offset="20%"/>
+    <stop stop-color="#fff" stop-opacity=".15" offset="30%"/>
+    <stop stop-color="#fff" stop-opacity=".15" offset="90%"/>
+    <stop stop-color="#fff" stop-opacity="0" offset="100%"/>
+  </linearGradient>
+
+  <mask id="mask">
+    <rect height="20" rx="3" width="162" fill="#ff0"/>
+  </mask>
+
+  <g mask="url(#mask)">
+    <path d="M 0 0 h 47 v 20 H 0 z" fill="#3f3f3f"/>
+    <path d="M 47 0 h 162 v 20 H 47 z" fill="#003aa7"/>
+    <path d="M 0 0 h 162 v 20 H 0 z" fill="url(#lg)"/>
+  </g>
+
+  <g text-anchor="left"
+     font-family="DejaVu Sans,Verdana,Geneva,sans-serif"
+     fill="#fff" font-size="11">
+
+    <text x="4" y="15" fill-opacity=".5" fill="#000">
+      license
+    </text>
+    <text x="3" y="14"> license </text>
+
+    <text x="55" y="15" fill-opacity=".5" fill="#000">
+      Artistic License 2.0
+    </text>
+    <text x="54" y="14"> Artistic License 2.0 </text>
+  </g>
+</svg>
+"
 }
