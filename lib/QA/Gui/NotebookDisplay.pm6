@@ -12,6 +12,7 @@ use Gnome::Gtk3::Label;
 
 use QA::Gui::Dialog;
 use QA::Gui::Statusbar;
+use QA::Gui::Page;
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -62,10 +63,8 @@ submethod BUILD ( :$!sheet-dialog, Int :$width, Int :$height ) {
 }
 
 #-------------------------------------------------------------------------------
-method add-page (
-  $page-window where .^name ~~ 'Gnome::Gtk3::ScrolledWindow', Str :$title
-) {
+method add-page ( QA::Gui::Page $page, Str :$title ) {
   $!notebook.append-page(
-    $page-window, Gnome::Gtk3::Label.new(:text($title))
+    $page.create-content, Gnome::Gtk3::Label.new(:text($title))
   )
 }

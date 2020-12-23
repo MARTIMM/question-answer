@@ -10,6 +10,7 @@ use Gnome::Gtk3::StackSwitcher;
 
 use QA::Gui::Dialog;
 use QA::Gui::Statusbar;
+use QA::Gui::Page;
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -64,10 +65,7 @@ submethod BUILD ( :$!sheet-dialog, Int :$width, Int :$height ) {
 }
 
 #-------------------------------------------------------------------------------
-method add-page (
-  $page-window where .^name ~~ 'Gnome::Gtk3::ScrolledWindow',
-  Str :$title, Str :$name
-) {
+method add-page ( QA::Gui::Page $page, Str :$name, Str :$title ) {
 
-  $!stack.add-titled( $page-window, $name, $title);
+  $!stack.add-titled( $page.create-content, $name, $title);
 }

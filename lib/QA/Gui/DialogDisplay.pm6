@@ -5,9 +5,11 @@ use v6.d;
 
 use Gnome::Gtk3::Dialog;
 use Gnome::Gtk3::Grid;
+#use Gnome::Gtk3::ScrolledWindow;
 
 use QA::Gui::Dialog;
 use QA::Gui::Statusbar;
+use QA::Gui::Page;
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -51,6 +53,7 @@ submethod BUILD ( :$!sheet-dialog, Int :$width, Int :$height ) {
 }
 
 #-------------------------------------------------------------------------------
-method add-page ( $page-window where .^name ~~ 'Gnome::Gtk3::ScrolledWindow' ) {
-  $!grid.grid-attach( $page-window, 0, 0, 1, 1);
+method add-page ( QA::Gui::Page $page ) {
+#  my Gnome::Gtk3::ScrolledWindow $page-window = $page.create-content;
+  $!grid.grid-attach( $page.create-content, 0, 0, 1, 1);
 }
