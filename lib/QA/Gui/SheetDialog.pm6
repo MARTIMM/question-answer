@@ -8,7 +8,7 @@ use Gnome::Gio::Resource;
 
 use Gnome::Gtk3::Widget;
 use Gnome::Gtk3::Enums;
-use Gnome::Gtk3::ScrolledWindow;
+#use Gnome::Gtk3::ScrolledWindow;
 use Gnome::Gtk3::Dialog;
 use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Label;
@@ -24,6 +24,7 @@ use QA::Types;
 use QA::Gui::Set;
 use QA::Gui::Question;
 use QA::Gui::Frame;
+use QA::Gui::Page;
 use QA::Gui::YNMsgDialog;
 use QA::Gui::OkMsgDialog;
 
@@ -47,6 +48,7 @@ has Str $!sheet-name;
 has Hash $!user-data;
 has Hash $.result-user-data;
 has Array $!sets = [];
+has Array $!pages = [];
 has Bool $.faulty-state;
 has Bool $!show-cancel-warning;
 has Bool $!save-data;
@@ -79,10 +81,10 @@ submethod BUILD (
 
       # find first content page
       my $pages := $!sheet.clone;
-      for $pages -> Hash $page {
-        if $page<page-type> ~~ QAContent {
+      for $pages -> Hash $page-data {
+        if $page-data<page-type> ~~ QAContent {
           $!dialog-display.add-page(
-            self!create-page( $page, :!title, :!description)
+            self!create-page( $page-data, :!description)
           );
 
           last;
@@ -97,11 +99,11 @@ submethod BUILD (
 
       # select content pages
       my $pages := $!sheet.clone;
-      for $pages -> Hash $page {
-        if $page<page-type> ~~ QAContent {
+      for $pages -> Hash $page-data {
+        if $page-data<page-type> ~~ QAContent {
           $!notebook-display.add-page(
-            self!create-page( $page, :!title, :description),
-            :title($page<title>)
+            self!create-page( $page-data, :description),
+            :title($page-data<title>)
           );
         }
       }
@@ -114,11 +116,11 @@ submethod BUILD (
 
       # select content pages
       my $pages := $!sheet.clone;
-      for $pages -> Hash $page {
-        if $page<page-type> ~~ QAContent {
+      for $pages -> Hash $page-data {
+        if $page-data<page-type> ~~ QAContent {
           $!stack-display.add-page(
-            self!create-page( $page, :!title, :description),
-            :title($page<title>), :name($page<name>)
+            self!create-page( $page-data, :description),
+            :title($page-data<title>), :name($page-data<name>)
           );
         }
       }
@@ -131,13 +133,12 @@ submethod BUILD (
 
       # select all type of pages
       my $pages := $!sheet.clone;
-      for $pages -> Hash $page {
+      for $pages -> Hash $page-data {
 
         $!assistant-display.add-page(
-          self!create-page( $page, :!title, :description),
-          :title($page<title>), :page-type($page<page-type>)
+          self!create-page( $page-data, :description),
+          :title($page-data<title>), :page-type($page-data<page-type>)
         );
-        $!assistant-display.show-all;
       }
     }
   }
@@ -190,8 +191,19 @@ method create-button (
 #-------------------------------------------------------------------------------
 # create page with all widgets on it. it always will return a
 # scrollable window
+method !create-page( Hash $page, Bool :$description = True --> QA::Gui::Page ) {
+  my QA::Gui::Page $gui-page .= new( :$page, :$description, :$!user-data);
+  $!pages.push: $gui-page;
+
+  $gui-page
+}
+
+#`{{
+#-------------------------------------------------------------------------------
+# create page with all widgets on it. it always will return a
+# scrollable window
 method !create-page(
-  Hash $page, Bool :$title = True, Bool :$description = True
+  Hash $page, Bool :$description = True
   --> Gnome::Gtk3::ScrolledWindow
 ) {
 
@@ -201,10 +213,8 @@ method !create-page(
   my Int $page-row = 0;
 
   if $description {
-    # place page title in frame if wished
-    my QA::Gui::Frame $page-frame .= new(
-      :label($title ?? $page<title> !! '')
-    );
+    # no page title in frame
+    my QA::Gui::Frame $page-frame .= new(:label(''));
     $page-grid.grid-attach( $page-frame, 0, $page-row++, 2, 1);
 
     # place description as text in this frame
@@ -242,15 +252,16 @@ method !create-page(
   $page-window.widget-set-vexpand(True);
   $page-window
 }
+}}
 
 #-------------------------------------------------------------------------------
 method query-state ( ) {
 
   $!faulty-state = False;
-  for @$!sets -> $set {
+  for @$!pages -> $page {
 
     # this question is not ok when True
-    if $set.query-state {
+    if $page.query-page-state {
       $!faulty-state = True;
       last;
     }
@@ -273,6 +284,8 @@ method show-dialog ( --> Int ) {
     }
 
     when QAAssistant {
+      $!assistant-display.show-all;
+      GTK_RESPONSE_OK
     }
   }
 }
@@ -293,6 +306,7 @@ method widget-destroy ( ) {
     }
 
     when QAAssistant {
+#      $!assistant-display.widget-destroy;
     }
   }
 }
