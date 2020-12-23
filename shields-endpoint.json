@@ -4,14 +4,5 @@
   "message": "sweet world",
   "color": "orange",
   "style": "plastic",
-  "logoSvg": "
-    <linearGradient id='lg' x1='0%' y1 = '0%' x2='0%' y2='100%'>
-    <stop stop-color='#fff' stop-opacity='.1' offset='0%'/>
-    <stop stop-color='#fff' stop-opacity='.7' offset='10%'/>
-    <stop stop-color='#fff' stop-opacity='.3' offset='20%'/>
-    <stop stop-color='#fff' stop-opacity='.15' offset='30%'/>
-    <stop stop-color='#fff' stop-opacity='.15' offset='90%'/>
-    <stop stop-color='#fff' stop-opacity='0' offset='100%'/>
-  </linearGradient>
-"
+  "logoSvg": "<linearGradient id='lg' x1='0%' y1 = '0%' x2='0%' y2='100%'><stop stop-color='#fff' stop-opacity='.1' offset='0%'/><stop stop-color='#fff' stop-opacity='.7' offset='10%'/><stop stop-color='#fff' stop-opacity='.3' offset='20%'/><stop stop-color='#fff' stop-opacity='.15' offset='30%'/><stop stop-color='#fff' stop-opacity='.15' offset='90%'/><stop stop-color='#fff' stop-opacity='0' offset='100%'/></linearGradient>"
 }
