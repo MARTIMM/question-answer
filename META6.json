@@ -10,42 +10,44 @@
   "perl": "6.d",
   "license": "Artistic-2.0",
 
+  "p": {
+    "QA::Gui::": "lib/QA/Gui/.pm6",
+    "QA::Gui::": "lib/QA/Gui/.pm6",
+    "QA::Gui::": "lib/QA/Gui/.pm6",
+    "QA::Gui::": "lib/QA/Gui/.pm6"
+  },
+
   "provides": {
+    "QA::Gui::AssistantDisplay": "lib/QA/Gui/AssistantDisplay.pm6",
     "QA::Gui::Dialog": "lib/QA/Gui/Dialog.pm6",
+    "QA::Gui::DialogDisplay": "lib/QA/Gui/DialogDisplay.pm6",
     "QA::Gui::Frame": "lib/QA/Gui/Frame.pm6",
+    "QA::Gui::NotebookDisplay": "lib/QA/Gui/NotebookDisplay.pm6",
     "QA::Gui::OkMsgDialog": "lib/QA/Gui/OkMsgDialog.pm6",
     "QA::Gui::QACheckButton": "lib/QA/Gui/QACheckButton.pm6",
     "QA::Gui::QAComboBox": "lib/QA/Gui/QAComboBox.pm6",
     "QA::Gui::QAEntry": "lib/QA/Gui/QAEntry.pm6",
+    "QA::Gui::QAFileChooser": "lib/QA/Gui/QAFileChooser.pm6",
     "QA::Gui::QAImage": "lib/QA/Gui/QAImage.pm6",
     "QA::Gui::QALabel": "lib/QA/Gui/QALabel.pm6",
     "QA::Gui::QARadioButton": "lib/QA/Gui/QARadioButton.pm6",
     "QA::Gui::QASpinButton": "lib/QA/Gui/QASpinButton.pm6",
     "QA::Gui::QASwitch": "lib/QA/Gui/QASwitch.pm6",
     "QA::Gui::QATextView": "lib/QA/Gui/QATextView.pm6",
+    "QA::Gui::Page": "lib/QA/Gui/Page.pm6",
     "QA::Gui::Question": "lib/QA/Gui/Question.pm6",
     "QA::Gui::Set": "lib/QA/Gui/Set.pm6",
     "QA::Gui::SheetDialog": "lib/QA/Gui/SheetDialog.pm6",
+    "QA::Gui::StackDisplay": "lib/QA/Gui/StackDisplay.pm6",
     "QA::Gui::Statusbar": "lib/QA/Gui/Statusbar.pm6",
     "QA::Gui::Value": "lib/QA/Gui/Value.pm6",
     "QA::Gui::YNMsgDialog": "lib/QA/Gui/YNMsgDialog.pm6",
 
-    "QA::Gui::QACheckButton": "lib/QA/Gui/QACheckButton.pm6",
-    "QA::Gui::QAComboBox": "lib/QA/Gui/QAComboBox.pm6",
-    "QA::Gui::QAEntry": "lib/QA/Gui/QAEntry.pm6",
-    "QA::Gui::QAImage": "lib/QA/Gui/QAImage.pm6",
-    "QA::Gui::QALabel": "lib/QA/Gui/QALabel.pm6",
-    "QA::Gui::QARadioButton": "lib/QA/Gui/QARadioButton.pm6",
-    "QA::Gui::QASpinButton": "lib/QA/Gui/QASpinButton.pm6",
-    "QA::Gui::QASwitch": "lib/QA/Gui/QASwitch.pm6",
-    "QA::Gui::QATextView": "lib/QA/Gui/QATextView.pm6",
-    "QA::Gui::Value": "lib/QA/Gui/Value.pm6",
-
     "QA::Category": "lib/QA/Category.pm6",
-    "QA::QATypes": "lib/QA/QATypes.pm6",
     "QA::Question": "lib/QA/Question.pm6",
     "QA::Set": "lib/QA/Set.pm6",
-    "QA::Sheet": "lib/QA/Sheet.pm6"
+    "QA::Sheet": "lib/QA/Sheet.pm6",
+    "QA::Types": "lib/QA/Types.pm6"
   },
 
   "source-url": "git://github.com/MARTIMM/qa-manager.git",
