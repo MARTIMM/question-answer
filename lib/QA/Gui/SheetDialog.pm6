@@ -139,6 +139,8 @@ submethod BUILD (
           :title($page-data<title>), :page-type($page-data<page-type>)
         );
       }
+
+      $!assistant-display.show-all;
     }
   }
 }
@@ -283,8 +285,8 @@ method show-dialog ( --> Int ) {
     }
 
     when QAAssistant {
-      $!assistant-display.show-all;
-      GTK_RESPONSE_OK
+#      $!assistant-display.show-all;
+#      GTK_RESPONSE_OK
     }
   }
 }
@@ -339,10 +341,7 @@ note "sheet dialog response: $response, ", GtkResponseType($response);
     }
 
     else {
-      $!result-user-data = $!user-data;
-      my QA::Types $qa-types .= instance;
-      $qa-types.qa-save( $!sheet-name, $!result-user-data, :userdata)
-        if $!save-data;
+      self.save-data;
 
       # must hide instead of destroy, otherwise the return status
       # is set to GTK_RESPONSE_NONE
@@ -351,20 +350,33 @@ note "sheet dialog response: $response, ", GtkResponseType($response);
   }
 
   elsif GtkResponseType($response) ~~ GTK_RESPONSE_CANCEL {
-
-    my Bool $done = True;
-    if $!show-cancel-warning {
-      my QA::Gui::YNMsgDialog $yn .= new(
-        :message("Are you sure to cancel?\nAll changes will be lost!")
-      );
-
-      my $r = GtkResponseType($yn.dialog-run);
-      $yn.widget-destroy;
-      $done = ( $r ~~ GTK_RESPONSE_YES );
-    }
-
-    $dialog.widget-destroy if $done;
+    self.widget-destroy if self.show-cancel;
   }
 
 #Gnome::N::debug(:off);
+}
+
+#-------------------------------------------------------------------------------
+method show-cancel ( --> Bool ) {
+
+  my Bool $done = True;
+  if $!show-cancel-warning {
+    my QA::Gui::YNMsgDialog $yn .= new(
+      :message("Are you sure to cancel?\nAll changes will be lost!")
+    );
+
+    my $r = GtkResponseType($yn.dialog-run);
+    $yn.widget-destroy;
+    $done = ( $r ~~ GTK_RESPONSE_YES );
+  }
+note "done = $done";
+  $done
+}
+
+#-------------------------------------------------------------------------------
+method save-data ( ) {
+  $!result-user-data = $!user-data;
+  my QA::Types $qa-types .= instance;
+  $qa-types.qa-save( $!sheet-name, $!result-user-data, :userdata)
+    if $!save-data;
 }
