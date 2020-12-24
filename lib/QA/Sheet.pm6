@@ -66,7 +66,7 @@ method !load ( ) {
         $h-page<description> //= $h-page<title>;
         $h-page<hide> //= False;
         $h-page<page-type> = ?$h-page<page-type>
-          ?? QAPageType(QAPageType.enums{$h-page<page-type>})
+          ?? QAPageType(QAPageType.enums{$h-page<page-type>} // QAContent)
           !! QAContent;
 
         $!pages{$h-page<name>} = $!page-data.elems;
