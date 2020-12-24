@@ -69,7 +69,7 @@ Page types are based on GtkAssistantPageType
 =item QAContent; The page has regular contents. This is the default page type in all of the display posibilities.
 =comment Both the Back and forward buttons will be shown.
 
-=item QAPageIntro; The page contains an introduction to the assistant task. This could be displayed on the first tab of a Notebook, Stack or Assistant. There is no use for it in a Dialog because only one page is shown.
+=item QAIntro; The page contains an introduction to the assistant task. This could be displayed on the first tab of a Notebook, Stack or Assistant. There is no use for it in a Dialog because only one page is shown.
 =comment Only the Forward button will be shown if there is a next page.
 
 =item QAConfirm; The page lets the user confirm or deny the changes. Only useful in an Assistant.
@@ -85,7 +85,7 @@ Page types are based on GtkAssistantPageType
 
 =end pod
 enum QAPageType is export <
-  QAContent QAPageIntro QAConfirm QASummary QAProgress QACustom
+  QAContent QAIntro QAConfirm QASummary QAProgress QACustom
 >;
 
 #-------------------------------------------------------------------------------
