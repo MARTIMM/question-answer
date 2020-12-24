@@ -134,7 +134,6 @@ submethod BUILD (
       # select all type of pages
       my $pages := $!sheet.clone;
       for $pages -> Hash $page-data {
-
         $!assistant-display.add-page(
           self!create-page( $page-data, :description),
           :title($page-data<title>), :page-type($page-data<page-type>)
