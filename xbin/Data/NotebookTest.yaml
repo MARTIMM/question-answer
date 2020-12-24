@@ -1,41 +1,41 @@
 ---
+page2: 
+  QAManagerDialogs: 
+    entry-spec: 
+      mywidget: "1"
+      tooltip: 
+        - 
+          tt2: sdfgsdfg
+      encode: true
+      name: sdfgsgfd
+      default: "sdfgs dfg"
+      callback: "dfg dfg"
+      maximum: sfdgdfg
+      fieldtype: QAComboBox
+      minimum: sdfgdsfg
+      title: sdfgsdfg
+      example: "sdfg dfg"
+      description: "ssdfgsdfgd dfg dfg"
 page1: 
   QAManagerDialogs: 
     set-spec: 
-      spinbutton: -1
-      radio: "Classic FM"
+      check: 
+        - Red
+        - Purple
+        - Orange
       name: "some keyxc"
-      title: zxczxc
+      spinbutton: -1
       an-image: "/home/marcel/Desktop/Desktop configurations/Icons-100x100/Scratch/Rakudo_Logo.png"
       more-image: 
         - 
           Etc: "/home/marcel/Pictures/sdv2.jpg"
         - 
           Icon: "/home/marcel/Pictures/42904117_2196280837252577_4226742788475060224_n.jpg"
-      description: "zxcdfg zxc"
-      check: 
-        - Red
-        - Purple
-        - Orange
       onefilename: "/home/marcel/Software/Packages/Sources/XnSketch-linux.tgz"
+      description: "zxcdfg zxc"
       filename: 
         - 
           Log: "/home/marcel/Languages/Raku/Projects/Auth-SCRAM/appveyor.yml"
-page2: 
-  QAManagerDialogs: 
-    entry-spec: 
-      default: "sdfgs dfg"
-      mywidget: "1"
-      encode: true
-      callback: "dfg dfg"
-      title: sdfgsdfg
-      fieldtype: QAComboBox
-      tooltip: 
-        - 
-          tt2: sdfgsdfg
-      example: "sdfg dfg"
-      minimum: sdfgdsfg
-      name: sdfgsgfd
-      maximum: sfdgdfg
-      description: "ssdfgsdfgd dfg dfg"
+      title: zxczxc
+      radio: "Classic FM"
 ...

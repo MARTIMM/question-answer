@@ -2,16 +2,14 @@
 page1: 
   QAManagerDialogs: 
     set-spec: 
-      radio: "Radio 1"
       title: xzcv
       filename: 
         - 
           Log: "/home/marcel/Pictures/sdv2.jpg"
-      description: "sdf xcv"
       name: fgh
-      spinbutton: -1
-      check:  []
+      spinbutton: -0.995
       onefilename: "/home/marcel/Pictures/sdv2.jpg"
+      radio: "Radio 1"
       more-image: 
         - 
           Icon: "/home/marcel/Pictures/sdv4.jpg"
@@ -23,10 +21,12 @@ page1:
           Icon: "/home/marcel/Pictures/sdv3.jpg"
         - 
           Icon: "/home/marcel/Pictures/Terminator/KL 14.png"
-page2: 
-  QASomething: 
-    entry-spec:  {}
+      description: "sdf xcv"
+      check:  []
 page3: 
   QASomething: 
     somespec:  {}
+page2: 
+  QASomething: 
+    entry-spec:  {}
 ...

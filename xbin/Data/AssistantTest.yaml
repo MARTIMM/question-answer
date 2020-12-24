@@ -1,0 +1,11 @@
+---
+page3: 
+  QASomething: 
+    somespec:  {}
+page2: 
+  QASomething: 
+    entry-spec: 
+      title: ""
+  QAManagerDialogs: 
+    set-spec:  {}
+...
