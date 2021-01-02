@@ -1,0 +1,41 @@
+---
+page2: 
+  QAManagerDialogs: 
+    entry-spec: 
+      minimum: sdfgdsfg
+      mywidget: "1"
+      tooltip: 
+        - 
+          tt2: sdfgsdfg
+      title: sdfgsdfg
+      callback: "dfg dfg"
+      description: "ssdfgsdfgd dfg dfg"
+      maximum: sfdgdfg
+      fieldtype: QAComboBox
+      name: sdfgsgfd
+      encode: true
+      default: "sdfgs dfg"
+      example: "sdfg dfg"
+page1: 
+  QAManagerDialogs: 
+    set-spec: 
+      title: zxczxc
+      onefilename: "/home/marcel/Software/Packages/Sources/XnSketch-linux.tgz"
+      check: 
+        - Red
+        - Purple
+        - Orange
+      spinbutton: -1
+      radio: "Classic FM"
+      name: "some keyxc"
+      an-image: "/home/marcel/Desktop/Desktop configurations/Icons-100x100/Scratch/Rakudo_Logo.png"
+      more-image: 
+        - 
+          Etc: "/home/marcel/Pictures/sdv2.jpg"
+        - 
+          Icon: "/home/marcel/Pictures/42904117_2196280837252577_4226742788475060224_n.jpg"
+      description: "zxcdfg zxc"
+      filename: 
+        - 
+          Log: "/home/marcel/Languages/Raku/Projects/Auth-SCRAM/appveyor.yml"
+...
