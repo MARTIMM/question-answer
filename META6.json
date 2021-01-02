@@ -1,7 +1,7 @@
 {
   "description": "Q & A Manager",
   "name": "QAManager",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "authors": [ "Marcel Timmerman"],
   "tags": [
     "questionnaire", "configuration", "gtk", "question", "answer", "Raku"
@@ -12,17 +12,13 @@
 
   "p": {
     "QA::Gui::": "lib/QA/Gui/.pm6",
-    "QA::Gui::": "lib/QA/Gui/.pm6",
-    "QA::Gui::": "lib/QA/Gui/.pm6",
     "QA::Gui::": "lib/QA/Gui/.pm6"
   },
 
   "provides": {
     "QA::Gui::AssistantDisplay": "lib/QA/Gui/AssistantDisplay.pm6",
     "QA::Gui::Dialog": "lib/QA/Gui/Dialog.pm6",
-    "QA::Gui::DialogDisplay": "lib/QA/Gui/DialogDisplay.pm6",
     "QA::Gui::Frame": "lib/QA/Gui/Frame.pm6",
-    "QA::Gui::NotebookDisplay": "lib/QA/Gui/NotebookDisplay.pm6",
     "QA::Gui::OkMsgDialog": "lib/QA/Gui/OkMsgDialog.pm6",
     "QA::Gui::QACheckButton": "lib/QA/Gui/QACheckButton.pm6",
     "QA::Gui::QAComboBox": "lib/QA/Gui/QAComboBox.pm6",
@@ -38,6 +34,7 @@
     "QA::Gui::Question": "lib/QA/Gui/Question.pm6",
     "QA::Gui::Set": "lib/QA/Gui/Set.pm6",
     "QA::Gui::SheetDialog": "lib/QA/Gui/SheetDialog.pm6",
+    "QA::Gui::SheetSimple": "lib/QA/Gui/SheetSimple.pm6",
     "QA::Gui::StackDisplay": "lib/QA/Gui/StackDisplay.pm6",
     "QA::Gui::Statusbar": "lib/QA/Gui/Statusbar.pm6",
     "QA::Gui::Value": "lib/QA/Gui/Value.pm6",
