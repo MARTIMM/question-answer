@@ -53,10 +53,12 @@ has Bool $.faulty-state;
 has Bool $!show-cancel-warning;
 has Bool $!save-data;
 
-has QA::Gui::DialogDisplay $!dialog-display;
-has QA::Gui::NotebookDisplay $!notebook-display;
-has QA::Gui::StackDisplay $!stack-display;
+#has QA::Gui::DialogDisplay $!dialog-display;
+#has QA::Gui::NotebookDisplay $!notebook-display;
+#has QA::Gui::StackDisplay $!stack-display;
 has QA::Gui::AssistantDisplay $!assistant-display;
+
+has QA::Gui::Dialog $!dialog handles <widget-destroy show-dialog>;
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
@@ -75,7 +77,7 @@ submethod BUILD (
 
   given $!sheet.display {
     when QADialog {
-      $!dialog-display .= new(
+      $!dialog = QA::Gui::DialogDisplay.new(
         :sheet-dialog(self), :width($!sheet.width), :height($!sheet.height),
       );
 
@@ -83,7 +85,7 @@ submethod BUILD (
       my $pages := $!sheet.clone;
       for $pages -> Hash $page-data {
         if $page-data<page-type> ~~ QAContent {
-          $!dialog-display.add-page(
+          $!dialog.add-page(
             self!create-page( $page-data, :!description)
           );
 
@@ -93,7 +95,7 @@ submethod BUILD (
     }
 
     when QANotebook {
-      $!notebook-display .= new(
+      $!dialog = QA::Gui::NotebookDisplay.new(
         :sheet-dialog(self), :width($!sheet.width), :height($!sheet.height),
       );
 
@@ -101,7 +103,7 @@ submethod BUILD (
       my $pages := $!sheet.clone;
       for $pages -> Hash $page-data {
         if $page-data<page-type> ~~ QAContent {
-          $!notebook-display.add-page(
+          $!dialog.add-page(
             self!create-page( $page-data, :description),
             :title($page-data<title>)
           );
@@ -110,7 +112,7 @@ submethod BUILD (
     }
 
     when QAStack {
-      $!stack-display .= new(
+      $!dialog = QA::Gui::StackDisplay.new(
         :sheet-dialog(self), :width($!sheet.width), :height($!sheet.height),
       );
 
@@ -118,7 +120,7 @@ submethod BUILD (
       my $pages := $!sheet.clone;
       for $pages -> Hash $page-data {
         if $page-data<page-type> ~~ QAContent {
-          $!stack-display.add-page(
+          $!dialog.add-page(
             self!create-page( $page-data, :description),
             :title($page-data<title>), :name($page-data<name>)
           );
@@ -269,6 +271,7 @@ method query-state ( ) {
   }
 }
 
+#`{{
 #-------------------------------------------------------------------------------
 method show-dialog ( --> Int ) {
   given $!sheet.display {
@@ -311,6 +314,7 @@ method widget-destroy ( ) {
     }
   }
 }
+}}
 
 #-------------------------------------------------------------------------------
 #--[ Signal Handlers ]----------------------------------------------------------
