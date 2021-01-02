@@ -2,40 +2,39 @@
 page2: 
   QAManagerDialogs: 
     entry-spec: 
-      mywidget: "1"
+      encode: true
+      maximum: sfdgdfg
+      default: "sdfgs dfg"
+      name: sdfgsgfd
+      title: sdfgsdfg
+      description: "ssdfgsdfgd dfg dfg"
+      fieldtype: QAComboBox
+      example: "sdfg dfg"
+      minimum: sdfgdsfg
+      callback: "dfg dfg"
       tooltip: 
         - 
           tt2: sdfgsdfg
-      encode: true
-      name: sdfgsgfd
-      default: "sdfgs dfg"
-      callback: "dfg dfg"
-      maximum: sfdgdfg
-      fieldtype: QAComboBox
-      minimum: sdfgdsfg
-      title: sdfgsdfg
-      example: "sdfg dfg"
-      description: "ssdfgsdfgd dfg dfg"
+      mywidget: "1"
 page1: 
   QAManagerDialogs: 
     set-spec: 
+      radio: "Radio 1"
+      description: "zxcdfg zxc"
+      spinbutton: -1
+      title: zxczxc
       check: 
         - Red
-        - Purple
         - Orange
-      name: "some keyxc"
-      spinbutton: -1
-      an-image: "/home/marcel/Desktop/Desktop configurations/Icons-100x100/Scratch/Rakudo_Logo.png"
+      filename: 
+        - 
+          Log: "/home/marcel/Languages/Raku/Projects/Auth-SCRAM/appveyor.yml"
       more-image: 
         - 
           Etc: "/home/marcel/Pictures/sdv2.jpg"
         - 
           Icon: "/home/marcel/Pictures/42904117_2196280837252577_4226742788475060224_n.jpg"
+      name: asd
       onefilename: "/home/marcel/Software/Packages/Sources/XnSketch-linux.tgz"
-      description: "zxcdfg zxc"
-      filename: 
-        - 
-          Log: "/home/marcel/Languages/Raku/Projects/Auth-SCRAM/appveyor.yml"
-      title: zxczxc
-      radio: "Classic FM"
+      an-image: "/home/marcel/Desktop/Desktop configurations/Icons-100x100/Scratch/Rakudo_Logo.png"
 ...
