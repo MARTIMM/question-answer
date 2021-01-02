@@ -46,8 +46,8 @@ submethod BUILD ( :$!sheet-dialog, Int :$width, Int :$height ) {
   $!pages = Array[QA::Gui::Page].new;
 
   given $!assistant .= new {
-    .widget-set-hexpand(True);
-    .widget-set-vexpand(True);
+    .set-hexpand(True);
+    .set-vexpand(True);
 
     if ? $width and ? $height {
       .set-size-request( $width, $height);
@@ -79,7 +79,9 @@ method add-page ( QA::Gui::Page $page, Str :$title, :$page-type ) {
 #  $!assistant.set-page-type( $no, QAPageType.enums{$page-type});
 
   $!assistant.append-page($page-window);
-  $!assistant.set-page-type( $page-window, QAPageType.enums{$page-type});
+  $!assistant.set-page-type(
+    $page-window, GtkAssistantPageType(QAPageType.enums{$page-type})
+  );
   $!assistant.set-page-title( $page-window, $title);
 #Gnome::N::debug(:off);
 }
