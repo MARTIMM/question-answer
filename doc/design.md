@@ -168,17 +168,23 @@ The diagram shows a displayed sheet state where some of the input fields can be 
 @startuml
 hide empty description
 
+state "user app" as u: user prepares pages
+state "initializing" as i: load sheet and user data
 state "displayed page" as dp: answer questions
-state "initializing" as i: load sheet and\nuser data
+state "processing" as ip
 
-[*] --> i
+[*] --> u
 
-i --> dp
+u -> i: call sheet\ndialog
+i --> dp: display\npages
 
-dp -> check: change\nfocus
-check: string value\ncheck
+dp --> check: change\nfocus
+check: string value check
 check -> dp: modify field display\nand set statusbar
-dp --> [*]: some button\npress
+dp --> ip: some button\npress
+ip -> u: quit or\nfinish
+ip -> dp: continue\ninput
+u --> [*]
 
 @enduml
 ```
@@ -210,8 +216,8 @@ skinparam StateEndColor #a0a0a0
 
 state "displayed page" as dp: answer questions
 state "final check" as fc: check answers
-state "wrong" as w: show problem\nmessage dialog
-state "are you sure" as c: show quit\nmessage dialog
+state "wrong" as w: show problem message dialog
+state "are you sure" as c: show quit message dialog
 
 [*] --> dp
 dp --> c: cancel\npressed
@@ -224,7 +230,7 @@ fc --> finished: ok\nfinish
 c --> dp: want to\ncontinue
 c --> [*]: want to\nquit
 finished --> [*]
-finished: save data\nif requested
+finished: save data if requested
 
 @enduml
 ```
@@ -242,11 +248,11 @@ skinparam DefaultFontName "z003"
 skinparam StateStartColor #a0a0a0
 skinparam StateEndColor #a0a0a0
 
-state "displayed intro" as dpi: show purpose\nof this QA
+state "displayed intro" as dpi: show purpose of this QA
 state "displayed content" as dpc: answer questions
 state "final check" as fc: check answers
-state "wrong" as w: show problem\nmessage dialog
-state "are you sure" as c: show quit\nmessage dialog
+state "wrong" as w: show problem message dialog
+state "are you sure" as c: show quit message dialog
 
 [*] --> dpi
 [*] --> dpc
@@ -266,7 +272,7 @@ c --> dpc: want to\ncontinue
 c --> dpi: want to\ncontinue
 c --> [*]: want to\nquit
 finished --> [*]
-finished: save data\nif requested
+finished: save data if requested
 
 
 
