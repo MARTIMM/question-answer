@@ -22,8 +22,6 @@ has Iterator $!iterator;
 has Hash $!page;
 
 # sheet dialog properties
-has QADisplayType $.display is rw;
-has Hash $.display-properties is rw;
 has Int $.width is rw;
 has Int $.height is rw;
 has Hash $.button-map is rw;
@@ -48,9 +46,6 @@ method !load ( ) {
 
   my Hash $sheet = $!qa-types.qa-load( $!sheet-name, :sheet);
   if ?$sheet {
-    $!display =
-      QADisplayType(QADisplayType.enums{$sheet<display>//''}) // QANotebook;
-    $!display-properties = $sheet<display-properties> // %();
     $!width = $sheet<width> // 0;# // 300;
     $!height = $sheet<height> // 0;# // 300;
     $!button-map = $sheet<button-map> // %();
@@ -77,10 +72,6 @@ method !load ( ) {
         note "Name of page not defined, page skipped";
       }
     }
-  }
-
-  else {
-    $!display = QANotebook;
   }
 }
 
@@ -151,13 +142,13 @@ method remove-set ( Str:D :$category, Str:D :$set --> Bool ) {
 
 #-------------------------------------------------------------------------------
 method save ( ) {
-  $!qa-types.qa-save( $!sheet-name, %(:$!display, :pages($!page-data)), :sheet);
+  $!qa-types.qa-save( $!sheet-name, %( :pages($!page-data)), :sheet);
 }
 
 #-------------------------------------------------------------------------------
 method save-as ( Str $new-sheet ) {
 
-  $!qa-types.qa-save( $new-sheet, %(:$!display, :pages($!page-data)), :sheet);
+  $!qa-types.qa-save( $new-sheet, %( :pages($!page-data)), :sheet);
   $!sheet-name = $new-sheet;
 }
 

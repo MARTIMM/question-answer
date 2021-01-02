@@ -58,7 +58,7 @@ enum QAFieldType is export <
 
 #-------------------------------------------------------------------------------
 #tt:1:QADisplayType:
-enum QADisplayType is export <QADialog QANotebook QAStack QAAssistant>;
+enum QADisplayType is export <QASimpleDialog QANotebook QAStack QAAssistant>;
 
 #-------------------------------------------------------------------------------
 #tt:1:QAPageType:

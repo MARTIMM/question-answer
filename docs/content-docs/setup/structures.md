@@ -200,15 +200,13 @@ The formats used are shown below for each input type with the variables which co
 
 The sheet is used to present questions to the user. In a sheet there are pages which hold sets of questions. When shown there is only one page visible and using tabs or buttons you can show another.
 
-* **display**; The type of dialog. One can choose from `QADialog`, `QANotebook`, `QAStack` or `QAAssistant`.
 * **width**; The minimum width of the dialog.
 * **height**; The minimum height of the dialog.
 * **button-map**; A map of button names. For instance on a login one would not like to have a 'Finish' label on a button but 'Login'. So an entry could be `"finish": "login"`. First letter uppercase is done automatically.
 * **pages**; An array of hashes.
 
 ```
-{ "display": dialog type
-  "width": ... ,
+{ "width": ... ,
   "height": ... ,
   "button-map": {
     default label: new label ,
