@@ -3,38 +3,38 @@ page2:
   QAManagerDialogs: 
     entry-spec: 
       encode: true
-      maximum: sfdgdfg
-      default: "sdfgs dfg"
-      name: sdfgsgfd
-      title: sdfgsdfg
-      description: "ssdfgsdfgd dfg dfg"
       fieldtype: QAComboBox
-      example: "sdfg dfg"
+      default: "sdfgs dfg"
+      mywidget: "2"
+      name: sdfgsgfd
       minimum: sdfgdsfg
+      title: sdfgsdfg
       callback: "dfg dfg"
+      maximum: sfdgdfg
+      description: "ssdfgsdfgd dfg dfg"
       tooltip: 
         - 
           tt2: sdfgsdfg
-      mywidget: "1"
+      example: "sdfg dfg"
 page1: 
   QAManagerDialogs: 
     set-spec: 
-      radio: "Radio 1"
+      an-image: "/home/marcel/Desktop/Desktop configurations/Icons-100x100/Scratch/Rakudo_Logo.png"
+      title: zxczxc
+      name: asd
       description: "zxcdfg zxc"
       spinbutton: -1
-      title: zxczxc
-      check: 
-        - Red
-        - Orange
-      filename: 
-        - 
-          Log: "/home/marcel/Languages/Raku/Projects/Auth-SCRAM/appveyor.yml"
       more-image: 
         - 
           Etc: "/home/marcel/Pictures/sdv2.jpg"
         - 
           Icon: "/home/marcel/Pictures/42904117_2196280837252577_4226742788475060224_n.jpg"
-      name: asd
+      filename: 
+        - 
+          Log: "/home/marcel/Languages/Raku/Projects/Auth-SCRAM/appveyor.yml"
       onefilename: "/home/marcel/Software/Packages/Sources/XnSketch-linux.tgz"
-      an-image: "/home/marcel/Desktop/Desktop configurations/Icons-100x100/Scratch/Rakudo_Logo.png"
+      radio: "Radio 1"
+      check: 
+        - Red
+        - Orange
 ...
