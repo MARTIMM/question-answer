@@ -164,8 +164,15 @@ method !set-values ( ) {
     }
   }
 
+  # set a single field and check
   elsif $v.defined {
     self.set-value( $!input-widgets[0], $v);
+    self!check-value( $!input-widgets[0], 0);
+  }
+
+  # check field too when no value is set. now also required fields
+  # turns in faulty state beforehand
+  else {
     self!check-value( $!input-widgets[0], 0);
   }
 }
