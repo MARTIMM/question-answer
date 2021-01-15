@@ -1,18 +1,26 @@
 ---
-page3: 
-  QASomething: 
-    somespec:  {}
 page2: 
   QASomething: 
-    entry-spec:  {}
+    entry-spec: 
+      required: true
+page3: 
+  QASomething: 
+    somespec: 
+      name: hgf
+      fieldtype: QASwitch
 page1: 
   QAManagerDialogs: 
     set-spec: 
+      filename: 
+        - 
+          Log: "/home/marcel/Pictures/sdv2.jpg"
+      title: xzcv
       check:  []
-      onefilename: "/home/marcel/Pictures/sdv2.jpg"
+      radio: "Radio 1"
+      spinbutton: -0.995
       more-image: 
         - 
-          Icon: "/home/marcel/Pictures/sdv4.jpg"
+          Etc: "/home/marcel/Pictures/sdv4.jpg"
         - 
           Icon: "/home/marcel/Pictures/sdv5.jpg"
         - 
@@ -21,12 +29,11 @@ page1:
           Icon: "/home/marcel/Pictures/sdv3.jpg"
         - 
           Icon: "/home/marcel/Pictures/Terminator/KL 14.png"
-      description: "sdf xcv"
-      radio: "Radio 1"
-      spinbutton: -0.995
-      name: fgh
-      title: xzcv
-      filename: 
         - 
-          Log: "/home/marcel/Pictures/sdv2.jpg"
+          Icon: "/home/Data/Fotos/.Old/Beauty/Jolanda/FaceApp/set 10/FaceApp_1610269551868.jpg"
+        - 
+          Icon: "/home/Data/Fotos/.Old/Beauty/Jolanda/FaceApp/set 10/FaceApp_1610269226285.jpg"
+      description: "sdf xcv"
+      onefilename: "/home/marcel/Pictures/sdv2.jpg"
+      name: fgh
 ...

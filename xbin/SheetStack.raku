@@ -11,7 +11,7 @@ use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Button;
 use Gnome::Gtk3::Label;
 
-use QA::Gui::SheetSimple;
+use QA::Gui::SheetStack;
 use QA::Gui::Frame;
 use QA::Gui::Value;
 use QA::Types;
@@ -20,7 +20,7 @@ use QA::Question;
 use Gnome::N::X;
 #Gnome::N::debug(:on);
 
-#`{{
+
 #-------------------------------------------------------------------------------
 # A user definable widget
 class MyWidget does QA::Gui::Value {
@@ -68,11 +68,12 @@ class MyWidget does QA::Gui::Value {
     self.process-widget-signal( $button, $row, :!do-check);
   }
 }
-}}
+
 
 #-------------------------------------------------------------------------------
 class EH {
 
+#`{{
   method show-dialog ( ) {
     my QA::Gui::SheetSimple $sheet-dialog .= new(
       :sheet-name<DialogTest>,
@@ -82,6 +83,7 @@ class EH {
     my Int $response = $sheet-dialog.show-sheet;
     self.display-result( $response, $sheet-dialog);
   }
+}}
 
 #`{{
   method show-notebook ( ) {
@@ -91,25 +93,26 @@ class EH {
     my QA::Types $qa-types .= instance;
     $qa-types.set-widget-object( 'use-my-widget', MyWidget.new);
 
-    my QA::Gui::SheetDialog $sheet-dialog .= new(
-      :sheet-name<NotebookTest>,
-      :show-cancel-warning, :save-data
+    my QA::Gui::SheetNotebook $sheet-dialog .= new(
+      :sheet-name<NotebookTest>, :show-cancel-warning, :save-data
     );
 
-    my Int $response = $sheet-dialog.show-dialog;
+    my Int $response = $sheet-dialog.show-sheet;
     self.display-result( $response, $sheet-dialog);
   }
+}}
 
   method show-stack ( ) {
-    my QA::Gui::SheetDialog $sheet-dialog .= new(
+    my QA::Gui::SheetStack $sheet-dialog .= new(
       :sheet-name<StackTest>,
       :show-cancel-warning, :save-data
     );
 
-    my Int $response = $sheet-dialog.show-dialog;
+    my Int $response = $sheet-dialog.show-sheet;
     self.display-result( $response, $sheet-dialog);
   }
 
+#`{{
   method show-assistant ( ) {
     my QA::Gui::SheetDialog $sheet-dialog .= new(
       :sheet-name<AssistantTest>,
@@ -165,7 +168,6 @@ class EH {
     Gnome::Gtk3::Main.new.gtk-main-quit;
   }
 
-#`{{
   #---------
   # check methods
   method check-char ( Str $input, :$char --> Any ) {
@@ -185,7 +187,6 @@ class EH {
 
     [%(),]
   }
-}}
 }
 
 #-------------------------------------------------------------------------------
@@ -233,17 +234,17 @@ $qa-types.data-file-type = QAYAML;
 $qa-types.cfgloc-userdata = 'xbin/Data';
 $qa-types.cfgloc-category = 'xbin/Data/Categories';
 $qa-types.cfgloc-sheet = 'xbin/Data/Sheets';
-#$qa-types.set-check-handler( 'check-exclam', $eh, 'check-char', :char<!>);
-#$qa-types.set-action-handler( 'show-select1', $eh, 'fieldtype-action1');
-#$qa-types.set-action-handler(
-#  'show-select2', $eh, 'fieldtype-action2', :opt1<opt1>
-#);
+$qa-types.set-check-handler( 'check-exclam', $eh, 'check-char', :char<!>);
+$qa-types.set-action-handler( 'show-select1', $eh, 'fieldtype-action1');
+$qa-types.set-action-handler(
+  'show-select2', $eh, 'fieldtype-action2', :opt1<opt1>
+);
 
 
 my Gnome::Gtk3::Grid $grid .= new;
 
 given my Gnome::Gtk3::Window $top-window .= new {
-  .set-title('Simple Sheet Test');
+  .set-title('Notebook Sheet Test');
   .register-signal( $eh, 'exit-app', 'destroy');
 #  .set-size-request( 300, 1);
 #  .window-resize( 300, 1);
@@ -254,30 +255,32 @@ given my Gnome::Gtk3::Window $top-window .= new {
 my Gnome::Gtk3::Label $description .= new(:text(''));
 $description.set-markup(Q:to/EOLABEL/);
 
-  Show a <b>QASimpleDialog</b> view with only
-  one page. Quitting is specified here to not
-  display a warning and just quit.
+  Show a <b>QAStack</b> view with a few pages
+  and some special questions of which one
+  is a <u>user defined</u> field on the 2nd page.
 
   EOLABEL
 
 
-$grid.attach( $description, 0, 0, 1, 1);
-
-my Gnome::Gtk3::Button $dialog-button .= new(:label<QASimpleDialog>);
-$grid.attach( $dialog-button, 0, 1, 1, 1);
-$dialog-button.register-signal( $eh, 'show-dialog', 'clicked');
+$grid.grid-attach( $description, 0, 0, 1, 1);
 
 #`{{
-$dialog-button .= new(:label<QANotebook>);
-$grid.attach( $dialog-button, 1, 0, 1, 1);
-$dialog-button.register-signal( $eh, 'show-notebook', 'clicked');
+my Gnome::Gtk3::Button $dialog-button .= new(:label<QADialog>);
+$grid.grid-attach( $dialog-button, 0, 1, 1, 1);
+$dialog-button.register-signal( $eh, 'show-dialog', 'clicked');
 
-$dialog-button .= new(:label<QAStack>);
-$grid.attach( $dialog-button, 2, 0, 1, 1);
+my Gnome::Gtk3::Button $dialog-button .= new(:label<QANotebook>);
+$grid.grid-attach( $dialog-button, 0, 1, 1, 1);
+$dialog-button.register-signal( $eh, 'show-notebook', 'clicked');
+}}
+
+my Gnome::Gtk3::Button $dialog-button .= new(:label<QAStack>);
+$grid.grid-attach( $dialog-button, 0, 1, 1, 1);
 $dialog-button.register-signal( $eh, 'show-stack', 'clicked');
 
-$dialog-button .= new(:label<QAAssistant>);
-$grid.attach( $dialog-button, 3, 0, 1, 1);
+#`{{
+my Gnome::Gtk3::Button $dialog-button .= new(:label<QAAssistant>);
+$grid.grid-attach( $dialog-button, 0, 1, 1, 1);
 $dialog-button.register-signal( $eh, 'show-assistant', 'clicked');
 }}
 

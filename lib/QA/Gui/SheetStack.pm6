@@ -9,7 +9,8 @@ use Gnome::Gio::Resource;
 use Gnome::Gtk3::Widget;
 use Gnome::Gtk3::Enums;
 use Gnome::Gtk3::Dialog;
-use Gnome::Gtk3::Notebook;
+use Gnome::Gtk3::Stack;
+use Gnome::Gtk3::StackSwitcher;
 use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Label;
 use Gnome::Gtk3::Button;
@@ -31,11 +32,11 @@ use QA::Gui::OkMsgDialog;
 
 #-------------------------------------------------------------------------------
 =begin pod
-=head1 QA::Gui::SheetNotebook
+=head1 QA::Gui::SheetStack
 
 =end pod
 
-unit class QA::Gui::SheetNotebook:auth<github:MARTIMM>;
+unit class QA::Gui::SheetStack:auth<github:MARTIMM>;
 also is QA::Gui::Dialog;
 
 #-------------------------------------------------------------------------------
@@ -49,7 +50,8 @@ has Bool $.faulty-state;
 has Bool $!show-cancel-warning;
 has Bool $!save-data;
 has Int $!response;
-has Gnome::Gtk3::Notebook $!notebook;
+has Gnome::Gtk3::Stack $!stack;
+has Gnome::Gtk3::StackSwitcher $!stack-switcher;
 has Gnome::Gtk3::Grid $!grid;
 
 #-------------------------------------------------------------------------------
@@ -79,7 +81,15 @@ submethod BUILD (
 
   $!grid = self.dialog-content;
 
-  # add some buttons specific for this notebook
+  # create the stack and add pages to it
+  $!stack .= new;
+  $!grid.attach( $!stack, 0, 0, 1, 1);
+
+  $!stack-switcher .= new;
+  $!stack-switcher.set-stack($!stack);
+  $!grid.attach( $!stack-switcher, 0, 1, 1, 1);
+
+  # add some buttons specific for this stack
   self.create-button(
     'cancel', 'cancel-dialog', GTK_RESPONSE_CANCEL, :default, :dialog(self)
   );
@@ -95,20 +105,16 @@ submethod BUILD (
   # catch button presses
   self.register-signal( self, 'dialog-response', 'response');
   my QA::Gui::Statusbar $statusbar .= instance;
-  $!grid.attach( $statusbar, 0, 1, 1, 1);
-
-  # create the notebook and add pages to it
-  $!notebook .= new;
-  $!grid.attach( $!notebook, 0, 0, 1, 1);
+  $!grid.attach( $statusbar, 0, 2, 1, 1);
 
   # select content pages only
   my $pages := $!sheet.clone;
   for $pages -> Hash $page-data {
     if $page-data<page-type> ~~ QAContent {
       my QA::Gui::Page $page = self!create-page( $page-data, :!description);
-      $!notebook.append-page(
-        $page.create-content, Gnome::Gtk3::Label.new(:text($page-data<title>))
-      )
+      $!stack.add-titled(
+        $page.create-content, $page-data<name>, $page-data<title>
+      );
     }
   }
 }
@@ -166,7 +172,6 @@ method !create-page( Hash $page, Bool :$description = True --> QA::Gui::Page ) {
 
   $gui-page
 }
-
 
 #-------------------------------------------------------------------------------
 method query-state ( ) {
