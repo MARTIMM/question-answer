@@ -61,14 +61,14 @@ submethod BUILD (
 
   # create a frame with title
   my QA::Gui::Frame $set-frame .= new(:label($!set.title));
-  $grid.grid-attach( $set-frame, 0, $grid-row, 1, 1);
+  $grid.attach( $set-frame, 0, $grid-row, 1, 1);
 
   # the grid is for displaying the input fields and are
   # strechable horizontally
   my Gnome::Gtk3::Grid $question-grid .= new;
   $question-grid.set-border-width(5);
   #$question-grid.set-row-spacing(5);
-  $question-grid.widget-set-hexpand(True);
+  $question-grid.set-hexpand(True);
   $set-frame.container-add($question-grid);
 
   # place set description at the top of the grid
@@ -84,7 +84,7 @@ submethod BUILD (
   $context.add-class('descriptionText');
 
   my Int $question-grid-row = 0;
-  $question-grid.grid-attach( $description, 0, $question-grid-row++, 3, 1);
+  $question-grid.attach( $description, 0, $question-grid-row++, 3, 1);
 
   # a separator made a bit shorter on the sides
   my Gnome::Gtk3::Separator $sep .= new(
@@ -94,7 +94,7 @@ submethod BUILD (
   $sep.set-sensitive(False);
   $sep.set-margin-start(10);
   $sep.set-margin-end(10);
-  $question-grid.grid-attach( $sep, 0, $question-grid-row++, 3, 1);
+  $question-grid.attach( $sep, 0, $question-grid-row++, 3, 1);
 
   # show set with user data if any on subsequent rows counting from 2
   my $c := $!set.clone;

@@ -47,7 +47,7 @@ method display ( ) {
   # provide an answer. And finally on the right, an input widget.
 
   my Str $text = $!question.description // $!question.title ~ ':';
-  $!question-grid.grid-attach(
+  $!question-grid.attach(
     QA::Gui::QALabel.new(:$text), QAQuestion, $!grid-row, 1, 1
   );
 
@@ -58,7 +58,7 @@ method display ( ) {
     .set-valign(GTK_ALIGN_START);
     .set-margin-top(6);
   }
-  $!question-grid.grid-attach( $r-label, QARequired, $!grid-row, 1, 1);
+  $!question-grid.attach( $r-label, QARequired, $!grid-row, 1, 1);
 
   # find and load the module for this input type. if found, initialize
   # the module and store in array.
@@ -72,7 +72,7 @@ method display ( ) {
     $!input-widget = $qa-types.get-widget-object($!question.userwidget);
     if ?$!input-widget and $!input-widget.^lookup('init-widget') ~~ Method {
       $!input-widget.init-widget( :$!question, :$!user-data-set-part);
-      $!question-grid.grid-attach( $!input-widget, QAAnswer, $!grid-row, 1, 1);
+      $!question-grid.attach( $!input-widget, QAAnswer, $!grid-row, 1, 1);
     }
 
     else {
@@ -87,7 +87,7 @@ method display ( ) {
     $!input-widget = ::($module-name).new(
       :$!question, :$!user-data-set-part
     );
-    $!question-grid.grid-attach( $!input-widget, QAAnswer, $!grid-row, 1, 1);
+    $!question-grid.attach( $!input-widget, QAAnswer, $!grid-row, 1, 1);
   }
 
   else {
