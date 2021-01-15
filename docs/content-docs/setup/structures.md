@@ -242,8 +242,7 @@ The sets in the page are referred to by using names of the category and set.
 "description": ... ,
 "page-type": ... ,
 "sets": [ {
-    "category": ...,
-    "set": ...
+    ...
   }, {
     ... next set ...
   }

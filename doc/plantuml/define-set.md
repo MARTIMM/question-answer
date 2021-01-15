@@ -11,7 +11,7 @@ scale 0.8
 
 'title Define Categories
 
-FA_ARCHIVE( qaa, Category\nLibrary) #ffefaf
+FA_ARCHIVE( qaa, Set\nLibrary) #ffefaf
 FA_CLONE( ucs1, sets) #e0e0ff
 FA_EDIT( ec2, edit set) #e0e0ff
 

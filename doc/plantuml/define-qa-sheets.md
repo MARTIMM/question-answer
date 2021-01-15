@@ -12,7 +12,7 @@ scale 0.8
 
 'title Define QA sheets
 
-FA_ARCHIVE( qaa1, Category\nLibrary) #ffefaf
+FA_ARCHIVE( qaa1, Set\nLibrary) #ffefaf
 FA_ARCHIVE( qaa2, QA Sheets) #ffefaf
 FA_CLONE( ucs2, sets) #e0e0ff
 FA_CLONE( ucs3, sheets) #e0e0ff
