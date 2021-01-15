@@ -8,6 +8,16 @@ layout: sidebar
 
 See [semantic versioning](http://semver.org/). Please note point 4. on that page: **_Major version zero (0.y.z) is for initial development. Anything may change at any time. The public API should not be considered stable._**
 
+#### 2021-01-15 0.14.2
+* Remove `Category` module, directories, etc. and replace it with a series of `Set` files in a set directory.
+* Rewrite several functions in QATypes module.
+* Changed module Set to save and load set files.
+* Changed module Sheet to cope with new layout.
+
+#### 2021-01-14 0.14.1
+* Bugfix in QARadioButton
+* Splitup code from `SheetDialog.pm6` to keep modules smaller and `SheetDialog.raku` to make separate demo programs.
+
 #### 2020-12-08 0.14.0
 * The questions field type `encode` is removed. It felt that it should be the users responsibility what to do with their text input. Basically it was meant to return a secret, like passwords, encoded.
 * Added an `action` field type. Like `callback` it refers to a callable users routine to be executed after the value was entered and checked on its value. The action routine returns an Array of Hashes which describes what to do further. This could be something like enabling or disabling a button.
