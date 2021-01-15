@@ -46,6 +46,7 @@ $creds.add-question($un);
 $creds.add-question($pw);
 ```
 
+<!--
 ## Building a category(or archive) of sets
 
 * Create a category, populate and save
@@ -58,6 +59,7 @@ $category.save;
 ```
 $category.remove
 ```
+-->
 
 ## Building a sheet
 * Create a sheet, populate and save
