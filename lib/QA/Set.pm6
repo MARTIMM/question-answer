@@ -1,12 +1,15 @@
 use v6.d;
 
+use QA::Types;
 use QA::Question;
 
 #-------------------------------------------------------------------------------
 unit class QA::Set:auth<github:MARTIMM>;
 also does Iterable;
 
-has Str $.name is required;
+has QA::Types $!qa-types;
+
+has Str $.set-name is required;
 has Str $.title is rw;
 has Str $.description is rw;
 has Bool $.hide is rw;
@@ -17,13 +20,35 @@ has Hash $!keys;
 has Array $!questions;
 
 #-------------------------------------------------------------------------------
-submethod BUILD ( Str:D :$!name, Str :$title, Str :$description ) {
+submethod BUILD ( Str:D :$name, Str :$title, Str :$description ) {
 
-  $!title = $title // $!name.tclc;
+  $!qa-types .= instance;
+
+  $!set-name = $name;
+  $!title = $title // $!set-name.tclc;
   $!description = $description // $title;
   $!keys = %();
   $!questions = [];
   $!hide = False;
+
+  self!load;
+}
+
+#-------------------------------------------------------------------------------
+method !load ( ) {
+
+  my Hash $set = $!qa-types.qa-load( $!set-name, :set);
+  if ?$set {
+#    my Str $name = $!set-name;
+    my Str $title = $set<title> // $!set-name.tclc;
+    my Str $description = $set<description> // $title;
+
+    for @($set<questions>) -> $q {
+      my Str $name = $q<name>;#.delete;
+      my QA::Question $question .= new( :$name, :qa-data($q));
+      self.add-question($question);
+    }
+  }
 }
 
 #-------------------------------------------------------------------------------
@@ -36,6 +61,12 @@ method add-question ( QA::Question:D $question --> Bool ) {
   $!questions.push: $question;
 
   True
+}
+
+#-------------------------------------------------------------------------------
+method get-question ( Str $name --> QA::Question ) {
+
+  $!questions[$!keys{$name}]
 }
 
 #-------------------------------------------------------------------------------
@@ -53,9 +84,29 @@ method replace-question ( QA::Question:D $question ) {
 #-------------------------------------------------------------------------------
 method set ( --> Hash ) {
 
-  %( :$!name, :$!title, :$!description, :$!hide,
+  %( :$!title, :$!description, :$!hide,
      questions => [map {.qa-data}, @$!questions]
   )
+}
+
+#-------------------------------------------------------------------------------
+method save ( ) {
+  $!qa-types.qa-save( $!set-name, self.set, :set);
+}
+
+#-------------------------------------------------------------------------------
+method remove ( --> Bool ) {
+  if ?$!questions {
+    $!questions = Nil;
+    $!title = $!description = Str;
+    $!qa-types.qa-remove( $!set-name, :set);
+
+    True
+  }
+
+  else {
+    False
+  }
 }
 
 #-------------------------------------------------------------------------------

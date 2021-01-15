@@ -29,8 +29,7 @@ has Hash $.button-map is rw;
 has QA::Types $!qa-types;
 
 #-------------------------------------------------------------------------------
-# TODO make use of Bool $resource
-submethod BUILD ( Str:D :$!sheet-name, Bool :$resource = False ) {
+submethod BUILD ( Str:D :$!sheet-name ) {
 
   # initialize types
   $!qa-types .= instance;
@@ -77,7 +76,7 @@ method !load ( ) {
 
 #-------------------------------------------------------------------------------
 method new-page (
-  Str:D :$name where ?$name, Str :$title = '', Str :$description = '',
+  Str:D :$name, Str :$title = '', Str :$description = '',
   Bool :$hide = False
   --> Bool
 ) {
@@ -89,7 +88,6 @@ method new-page (
 
   $!set-data = [];
   $!page = %( :$name, :$title, :$description, :$hide);
-  $!page<sets> := $!set-data;
 
   $!pages{$name} = $!page-data.elems;
   $!page-data.push: $!page;
@@ -98,46 +96,40 @@ method new-page (
 }
 
 #-------------------------------------------------------------------------------
-method add-set (
-  Str:D :$category, Str:D :$set, Str :$qa-path is copy --> Bool
-) {
-# TODO check existence
+method add-set ( Str:D :$set-name --> Bool ) {
 
-  my Bool $set-ok = False;
+  my Hash $set = $!qa-types.qa-load( $set-name, :set);
+  if ?$set {
+    # add set name for lookup and manips
+    $set<name> = $set-name;
+    $!set-data.push: $set;
+    $!page<sets> = $!set-data;
 
-  $qa-path ~= "/$category" if ?$qa-path;
-  my Hash $cat = $!qa-types.qa-load( $category, :$qa-path);
-  if ?$cat {
-    for @($cat<sets>) -> Hash $h-set {
-      if $h-set<name> eq $set {
-        $set-ok = True;
-        last
-      }
-    }
+    True
   }
 
-  $!set-data.push: %( :$category, :$set);
-  $set-ok
+  else {
+    False
+  }
 }
 
 #-------------------------------------------------------------------------------
-method remove-set ( Str:D :$category, Str:D :$set --> Bool ) {
-# TODO check existence
-
-#TODO yes/no message using 'Bool :$gui = False' argument
-
-  my Bool $removed = False;
-
-  loop ( my Int $i = 0; $i < $!set-data.elems; $i++ ) {
-    my Hash $h-set = $!set-data[$i];
-    if ($h-set<category> eq $category) and ($h-set<set> eq $set) {
-      $!set-data.splice( $i, 1);
-      $removed = True;
+method remove-set ( Str:D :$set-name --> Bool ) {
+  my Bool $ok = False;
+  my Int $c = 0;
+  for @$!set-data -> Hash $sd {
+    if $sd<name> eq $set-name {
+      $!set-data.splice( $c, 1);
+      $ok = True;
       last;
+    }
+
+    else {
+      $c++;
     }
   }
 
-  $removed
+  $ok
 }
 
 #-------------------------------------------------------------------------------
@@ -146,7 +138,7 @@ method save ( ) {
 }
 
 #-------------------------------------------------------------------------------
-method save-as ( Str $new-sheet ) {
+method save-as ( Str:D $new-sheet ) {
 
   $!qa-types.qa-save( $new-sheet, %( :pages($!page-data)), :sheet);
   $!sheet-name = $new-sheet;
@@ -170,13 +162,18 @@ method delete-page ( :$name --> Bool ) {
 
 
 #-------------------------------------------------------------------------------
-method remove ( Bool :$ignore-changes = False ) {
+method remove ( --> Bool ) {
 
-#TODO yes/no message using 'Bool :$gui = False' argument
+  if ?$!pages {
+    $!pages = Nil;
+    $!page-data = [];
+    $!qa-types.qa-remove( $!sheet-name, :sheet);
+    True
+  }
 
-  $!pages = Nil;
-  $!page-data = [];
-  $!qa-types.qa-remove( $!sheet-name, :sheet);
+  else {
+    False
+  }
 }
 
 #-------------------------------------------------------------------------------
@@ -224,13 +221,4 @@ multi method get-page ( Str $page-name --> Hash ) {
 #-------------------------------------------------------------------------------
 method get-sheet-list ( --> List ) {
   $!qa-types.qa-list(:sheet)
-#`{{
-  my @sl = ();
-  for (dir $!sheet-lib-dir)>>.Str -> $sheet-path is copy {
-    $sheet-path ~~ s/ ^ .*? (<-[/]>+ ) \. 'cfg' $ /$0/;
-    @sl.push($sheet-path);
-  }
-
-  @sl
-}}
 }
