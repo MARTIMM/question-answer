@@ -456,37 +456,3 @@ method process-widget-signal (
     self!check-users-action( $input, $!question.action) if $!initialized;
   }
 }
-
-
-
-
-=finish
-
-#-------------------------------------------------------------------------------
-method get-values ( --> Array ) {
-  ...
-}
-
-#-------------------------------------------------------------------------------
-method set-values ( Array $data-array, Bool :$overwrite = True ) {
-  my Int $row = 0;
-  for @$data-array -> $t {
-    my ( $data-key, $data-value) = $t.kv;
-#note 'svs: ', $data-key//'--dk--', ', ', $data-value//'--dv--';
-    self.set-value(
-      $data-key // 0, $data-value // '', $row, :$overwrite,
-      :last-row( ($row + 1) == $data-array.elems )
-    );
-
-    $row++;
-  }
-}
-
-#-------------------------------------------------------------------------------
-# when called, at least one row is visible. only first row will be
-# set with a default unless field is already filled in.
-# subsequent calls to fill data from user configs, will overwrite the content.
-method set-default ( $t ) {
-  my ( $data-key, $data-value) = $t.kv;
-  self.set-value( $data-key, $data-value, 0, :!overwrite, :last-row);
-}
