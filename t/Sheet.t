@@ -21,7 +21,7 @@ given my QA::Types $qa-types {
   .cfgloc-set(@dirs[SET]);
 }
 
-# create some category data with some sets
+# create some sets
 make-sets();
 
 my QA::Sheet $sheet .= new(:sheet-name<login>);
@@ -123,6 +123,6 @@ sub make-sets ( ) {
   $question.required = True;
   $set.add-question($question);
 
-  # add set to category
+  # save 2nd set
   $set.save;
 }
