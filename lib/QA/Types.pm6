@@ -411,20 +411,19 @@ method qa-list ( *%options --> List ) {
 
 #-------------------------------------------------------------------------------
 =begin pod
-=head2 set-handler
+=head2 set-action-handler
 
-set-handler is used to set a user defined callback handler. When in a question the callback specification is used, the value of it is used to find the callback. Callbacks can have one of two purposes. First is to check an input from the sheet. Second is to perform some action (this is not implemented yet).
+set-action-handler is used to set a user defined callback handler. When in a question the action field spec has a value of C<$action-key>, the value of it is used to find the callback. The purpose is to perform some action.
 
   method set-action-handler (
-    Str:D $callback-key, Mu:D $handler-object, Str:D $method-name,
+    Str:D $action-key, Mu:D $handler-object, Str:D $method-name,
     *%options
   )
 
-  method set-check-handler (
-    Str:D $callback-key, Mu:D $handler-object, Str:D $method-name,
-    *%options
-  )
-
+=item $action-key; the key under which the handler is stored. Also this name is used in the field specification C<action> to refer to the handler to call.
+=item $handler-object; the object where the handler method resides.
+=item $method-name; the name of the handler
+=item %options; any user defined named arguments. These are handed to the method.
 =end pod
 
 #tm:1:set-action-handler
@@ -436,7 +435,44 @@ method set-action-handler (
   ];
 }
 
-#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#-------------------------------------------------------------------------------
+=begin pod
+=head2 get-action-handler
+
+Get the action handler using the C<$action-key>. The method is mostly used by form handling software to call the user handler.
+
+The method returns an array with the following items;
+=item $handler-object; the object where the handler method resides.
+=item $method-name; the name of the handler
+=item %options; any user defined named arguments. These are handed to the method.
+
+  method get-action-handler ( Str:D $action-key --> Array )
+
+=item $action-key; the key under which the handler is stored. Also this name is used in the field specification C<action> to refer to the handler to call.
+=end pod
+
+#tm:1:get-action-handler
+method get-action-handler ( Str:D $action-key --> Array ) {
+  $!user-objects<actions>{$action-key}
+}
+
+#-------------------------------------------------------------------------------
+=begin pod
+=head2 set-check-handler
+
+set-check-handler is used to set a user defined callback handler. When in a question the callback field spec has a value of C<$check-key>, the value of it is used to find the callback. The purpose is to check an input from the sheet.
+
+  method set-check-handler (
+    Str:D $check-key, Mu:D $handler-object, Str:D $method-name,
+    *%options
+  )
+
+=item $check-key; the key under which the handler is stored. Also this name is used in the field specification C<callback> to refer to the handler to call.
+=item $handler-object; the object where the handler method resides.
+=item $method-name; the name of the handler
+=item %options; any user defined named arguments. These are handed to the method.
+=end pod
+
 #tm:1:set-check-handler
 method set-check-handler (
   Str:D $check-key, Mu:D $handler-object, Str:D $method-name, *%options
@@ -446,31 +482,130 @@ method set-check-handler (
   ];
 }
 
-#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#-------------------------------------------------------------------------------
+=begin pod
+=head2 get-check-handler
+
+Get the check handler using the C<$check-key>. The method is mostly used by form handling software to call the user handler.
+
+The method returns an array with the following items;
+=item $handler-object; the object where the handler method resides.
+=item $method-name; the name of the handler
+=item %options; any user defined named arguments. These are handed to the method.
+
+  method get-check-handler ( Str:D $check-key --> Array )
+
+=end pod
+
+#tm:1:get-check-handler
+method get-check-handler ( Str:D $check-key --> Array ) {
+  $!user-objects<checks>{$check-key}
+}
+
+#-------------------------------------------------------------------------------
+=begin pod
+=head2 set-widget-object
+
+Store a user defined input widget using the C<$widget-key>.
+The provided C<$widget-object> must conform to some rules like any other input widget in this system. The rules are;
+
+=item Use the B<QA::Gui::Value role>.
+=item Have method C<init-widget()>.
+=item Have method C<create-widget()>.
+=item Have method C<get-value()>.
+=item Have method C<set-value()>.
+=item Optionally have C<check-value()>.
+=begin item
+Have a signal registered so it can respond to user input or focus changes.
+=end item
+B< >
+
+  method set-widget-object (
+    Str:D $widget-key, Mu:D $widget-object
+  )
+
+=item $widget-key; the key under which the widget is stored. Also this name is used in the field specification C<userwidget> to refer to this widget.
+=item $widget-object; the input widget
+
+An example widget could be something like the one shown below. This widget shows a button with a number as its label. This label is incremented when the button is pressed.
+
+  class MyWidget does QA::Gui::Value {
+
+    method init-widget (
+      QA::Question:D :$!question, Hash:D :$!user-data-set-part
+    ) {
+
+      # widget is not repeatable
+      $!question.repeatable = False;
+
+      self.initialize;
+    }
+
+    method create-widget ( Str $widget-name, Int $row --> Any ) {
+
+      # create a text input widget
+      my Gnome::Gtk3::Button $button .= new;
+      $button.set-label('0');
+      $button.set-hexpand(False);
+      $button.register-signal( self, 'change-label', 'clicked');
+
+      $button
+    }
+
+    method get-value ( $button --> Any ) {
+      $button.get-label;
+    }
+
+    method set-value ( Any:D $button, $label ) {
+      $button.set-label($label);
+    }
+
+    method change-label ( :_widget($button) ) {
+      $button.set-label(($button.get-label // '0').Int + 1);
+
+      my ( $n, $row ) = $button.get-name.split(':');
+      $row .= Int;
+      self.process-widget-signal( $button, $row, :!do-check);
+    }
+  }
+
+  # later ...
+  my QA::Types $qa-types .= new;
+  $qa-types.set-widget-object( 'my-widget', MyWidget.new);
+
+
+=end pod
+
 #tm:1:set-widget-object
 method set-widget-object ( Str:D $widget-key, Mu:D $widget-object ) {
   $!user-objects<widgets>{$widget-key} = $widget-object;
 }
 
 #-------------------------------------------------------------------------------
-#tm:1:get-action-handler
-method get-action-handler ( Str:D $action-key --> Array ) {
-  $!user-objects<actions>{$action-key}
-}
+=begin pod
+=head2 get-widget-object
 
-#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#tm:1:get-check-handler
-method get-check-handler ( Str:D $check-key --> Array ) {
-  $!user-objects<checks>{$check-key}
-}
+Get the widget object using the C<$widget-key>. The method is mostly used by form handling software to display and use the input widget.
 
-#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  method get-widget-object ( Str:D $widget-key --> Any )
+
+=end pod
+
 #tm:1:get-widget-object
 method get-widget-object ( Str:D $widget-key --> Any ) {
   $!user-objects<widgets>{$widget-key}
 }
 
 #-------------------------------------------------------------------------------
+=begin pod
+=head2 reinit-dirs
+
+When config or data directories are changed after the initialization of B<QA::Types>, this call is needed to prepare the directories.
+
+  method reinit-dirs ( )
+
+=end pod
+
 #tm:1:reinit:
 method reinit-dirs ( ) {
 

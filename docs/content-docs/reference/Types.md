@@ -179,18 +179,160 @@ Only one of the options `:sheet`, `:set` or `:userdata` can be used. The method 
 
   * Str $qa-path; optional path to locate the file. The value of $sheet is then ignored.
 
-set-handler
------------
+set-action-handler
+------------------
 
-set-handler is used to set a user defined callback handler. When in a question the callback specification is used, the value of it is used to find the callback. Callbacks can have one of two purposes. First is to check an input from the sheet. Second is to perform some action (this is not implemented yet).
+set-action-handler is used to set a user defined callback handler. When in a question the action field spec has a value of `$action-key`, the value of it is used to find the callback. The purpose is to perform some action.
 
     method set-action-handler (
-      Str:D $callback-key, Mu:D $handler-object, Str:D $method-name,
+      Str:D $action-key, Mu:D $handler-object, Str:D $method-name,
       *%options
     )
 
+  * $action-key; the key under which the handler is stored. Also this name is used in the field specification `action` to refer to the handler to call.
+
+  * $handler-object; the object where the handler method resides.
+
+  * $method-name; the name of the handler
+
+  * %options; any user defined named arguments. These are handed to the method.
+
+get-action-handler
+------------------
+
+Get the action handler using the `$action-key`. The method is mostly used by form handling software to call the user handler.
+
+The method returns an array with the following items;
+
+  * $handler-object; the object where the handler method resides.
+
+  * $method-name; the name of the handler
+
+  * %options; any user defined named arguments. These are handed to the method.
+
+    method get-action-handler ( Str:D $action-key --> Array )
+
+  * $action-key; the key under which the handler is stored. Also this name is used in the field specification `action` to refer to the handler to call.
+
+set-check-handler
+-----------------
+
+set-check-handler is used to set a user defined callback handler. When in a question the callback field spec has a value of `$check-key`, the value of it is used to find the callback. The purpose is to check an input from the sheet.
+
     method set-check-handler (
-      Str:D $callback-key, Mu:D $handler-object, Str:D $method-name,
+      Str:D $check-key, Mu:D $handler-object, Str:D $method-name,
       *%options
     )
+
+  * $check-key; the key under which the handler is stored. Also this name is used in the field specification `callback` to refer to the handler to call.
+
+  * $handler-object; the object where the handler method resides.
+
+  * $method-name; the name of the handler
+
+  * %options; any user defined named arguments. These are handed to the method.
+
+get-check-handler
+-----------------
+
+Get the check handler using the `$check-key`. The method is mostly used by form handling software to call the user handler.
+
+The method returns an array with the following items;
+
+  * $handler-object; the object where the handler method resides.
+
+  * $method-name; the name of the handler
+
+  * %options; any user defined named arguments. These are handed to the method.
+
+    method get-check-handler ( Str:D $check-key --> Array )
+
+set-widget-object
+-----------------
+
+Store a user defined input widget using the `$widget-key`. The provided `$widget-object` must conform to some rules like any other input widget in this system. The rules are;
+
+  * Use the **QA::Gui::Value role**.
+
+  * Have method `init-widget()`.
+
+  * Have method `create-widget()`.
+
+  * Have method `get-value()`.
+
+  * Have method `set-value()`.
+
+  * Optionally have `check-value()`.
+
+  * Have a signal registered so it can respond to user input or focus changes.
+
+****
+
+    method set-widget-object (
+      Str:D $widget-key, Mu:D $widget-object
+    )
+
+  * $widget-key; the key under which the widget is stored. Also this name is used in the field specification `userwidget` to refer to this widget.
+
+  * $widget-object; the input widget
+
+An example widget could be something like the one shown below. This widget shows a button with a number as its label. This label is incremented when the button is pressed.
+
+    class MyWidget does QA::Gui::Value {
+
+      method init-widget (
+        QA::Question:D :$!question, Hash:D :$!user-data-set-part
+      ) {
+
+        # widget is not repeatable
+        $!question.repeatable = False;
+
+        self.initialize;
+      }
+
+      method create-widget ( Str $widget-name, Int $row --> Any ) {
+
+        # create a text input widget
+        my Gnome::Gtk3::Button $button .= new;
+        $button.set-label('0');
+        $button.set-hexpand(False);
+        $button.register-signal( self, 'change-label', 'clicked');
+
+        $button
+      }
+
+      method get-value ( $button --> Any ) {
+        $button.get-label;
+      }
+
+      method set-value ( Any:D $button, $label ) {
+        $button.set-label($label);
+      }
+
+      method change-label ( :_widget($button) ) {
+        $button.set-label(($button.get-label // '0').Int + 1);
+
+        my ( $n, $row ) = $button.get-name.split(':');
+        $row .= Int;
+        self.process-widget-signal( $button, $row, :!do-check);
+      }
+    }
+
+    # later ...
+    my QA::Types $qa-types .= new;
+    $qa-types.set-widget-object( 'my-widget', MyWidget.new);
+
+get-widget-object
+-----------------
+
+Get the widget object using the `$widget-key`. The method is mostly used by form handling software to display and use the input widget.
+
+    method get-widget-object ( Str:D $widget-key --> Any )
+
+reinit-dirs
+-----------
+
+When config or data directories are changed after the initialization of **QA::Types**, this call is needed to prepare the directories.
+
+    method reinit-dirs ( )
 
