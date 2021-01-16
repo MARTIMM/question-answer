@@ -149,12 +149,6 @@ method cfgloc-userdata ( Str $dir ) {
 }
 
 #-------------------------------------------------------------------------------
-my Str $cfgloc-category;
-method cfgloc-category ( Str $dir ) {
-  $cfgloc-category = $dir;
-}
-
-#-------------------------------------------------------------------------------
 my Str $cfgloc-sheet;
 method cfgloc-sheet ( Str $dir ) {
   $cfgloc-sheet = $dir;
@@ -178,7 +172,14 @@ submethod new ( ) { !!! }
 
 #-------------------------------------------------------------------------------
 submethod BUILD ( ) {
-  self!init
+  $data-file-type //= QAJSON;
+  $!user-objects = %(
+    actions => %(),
+    checks => %(),
+    widgets => %(),
+  );
+
+  self.reinit-dirs;
 }
 
 #-------------------------------------------------------------------------------
@@ -189,13 +190,11 @@ The users application can modify the variables before opening any query sheets. 
 
 =item QADataFileType C<$data-file-type>; You can choose from QAJSON or QATOML. By default it loads and saves the answers to questions in json formatted files.
 
+=item Str C<$cfgloc-set>; Location where sets are stored. Default is C<$!HOME/.config/QAManager/Sets.d> on *nix systems. Use C<cfgloc-set()> to change it.
+=item Str C<$cfgloc-sheet>; Location where sheets are stored. Default is C<$!HOME/.config/QAManager/Sheets.d> on *nix systems. Use C<cfgloc-sheet()> to change it.
+=item Str C<$cfgloc-userdata>; Location where userdata is stored. Default is C<$!HOME/.config/<modified $*PROGRAM-NAME>> on *nix systems. Use C<cfgloc-userdata()> to change it.
 
-=item Str C<$cfgloc-category>; Location where categories are stored. Default is C<$!HOME/.config/QAManager/Categories.d> on *nix systems.
-=item Str C<$cfgloc-set>; Location where sets are stored. Default is C<$!HOME/.config/QAManager/Sets.d> on *nix systems.
-=item Str C<$cfgloc-sheet>; Location where sheets are stored. Default is C<$!HOME/.config/QAManager/Sheets.d> on *nix systems.
-=item Str C<$cfgloc-userdata>; Location where userdata is stored. Default is C<$!HOME/.config/<modified $*PROGRAM-NAME>> on *nix systems.
-
-If any of C<$cfgloc-category>, C<$cfgloc-sheet>, C<$cfgloc-set> or C<$cfgloc-userdata> is changed, make sure that the directories exists!
+If any of C<$cfgloc-sheet>, C<$cfgloc-set> or C<$cfgloc-userdata> is changed, make sure that it is changed before first time init of B<QA::Types> or otherwise call C<reinit-dirs()>! If you want to fall back to the default values after having set them, call the above mentioned methods with an undefined string, i.e. Str, like e.g. C<cfgloc-sheet(Str)>.
 
 =end pod
 
@@ -206,53 +205,25 @@ method instance ( --> QA::Types ) {
   $instance
 }
 
-#`{{
-#-------------------------------------------------------------------------------
-=begin pod
-=head2 qa-path
-
-Return a path where a QA based sheet or category should be found. When C<:userdata> is used, the user info for the sheet is searched for.
-
-  multi method qa-path( Str:D $qa-filename, :sheet --> Str )
-  multi method qa-path( Str:D $qa-filename, :userdata --> Str )
-  multi method qa-path( Str:D $qa-filename --> Str )
-
-=item Str $qa-filename; the filename for the sheet, userdata or category.
-
-=end pod
-
-#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-multi method qa-path( Str:D $qa-filename, Bool :$set! --> Str ) {
-  "$cfgloc-set/$qa-filename.cfg";
-}
-
-#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-multi method qa-path( Str:D $qa-filename, Bool :$userdata! --> Str ) {
-  "$cfgloc-userdata/$qa-filename.cfg";
-}
-
-#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-multi method qa-path( Str:D $qa-filename --> Str ) {
-  "$cfgloc-category/$qa-filename.cfg";
-}
-}}
-
 #-------------------------------------------------------------------------------
 =begin pod
 =head2 qa-load
 
-Load a config or data file into a Hash. There is no use for it directly. To load data, use the modules B<QManager::Set> or B<QManager::Sheet>. The type of the file is taken from the $data-file-type. Only one of the options sheet, set, category or userdata can be used.
+Load a config or data file into a Hash. There is no use for it directly. To load data, use the modules B<QManager::Set> or B<QManager::Sheet>. The type of the file is taken from the $data-file-type.
 
-  multi method qa-load (
-    Str:D $qa-filename, :sheet?, :set?, :userdata?, :category?, Str :$qa-path?
+C<:userdata> is used to load data which will be displayed in the forms.
+
+Only one of the options C<:sheet>, C<:set> or C<:userdata> must be used to load a file. The method throws an exception if none found.
+
+  method qa-load (
+    Str:D $qa-filename, :$sheet?, :$set?, :$userdata?, Str :$qa-path?
     --> Hash
   )
 
-=item Str $qa-filename; the filename for the category or sheet.
+=item Str $qa-filename; the filename without the extention. It functions also as the name of the sheet or set.
 =item $sheet; load a sheet if option exists.
 =item $set; load a set if option exists.
-=item $category; load a category if option exists.
-=item $userdata; load a userdata if option exists.
+=item $userdata; load userdata if option exists.
 =item Str $qa-path; optional path to locate the file. The values of $qa-filename and other options are then ignored.
 =end pod
 
@@ -267,8 +238,7 @@ method qa-load( Str:D $qa-filename, *%options --> Hash ) {
     if %options<sheet>:exists       { $basename = $cfgloc-sheet; }
     elsif %options<set>:exists      { $basename = $cfgloc-set; }
     elsif %options<userdata>:exists { $basename = $cfgloc-userdata; }
-    elsif %options<category>:exists { $basename = $cfgloc-category; }
-    else                            { $basename = $cfgloc-category; }
+    else                            { die 'No type option found'; }
   }
 
   given $data-file-type {
@@ -291,115 +261,27 @@ method qa-load( Str:D $qa-filename, *%options --> Hash ) {
   $qa-data
 }
 
-#`{{
-#tm:1:qa-load
-multi method qa-load (
-  Str:D $qa-filename, Bool :$set!, Str :$qa-path? is copy
-  --> Hash
-) {
-  $qa-path //= self.qa-path( $qa-filename, :set);
-
-  my Hash $data;
-  given $qa-filename.IO.extension {
-    when 'json' {
-      $data = from-json($qa-path.IO.slurp) if $qa-path.IO.r;
-    }
-
-    when 'yaml' {
-      $data = from-yaml($qa-path.IO.slurp) if $qa-path.IO.r;
-    }
-
-    when 'toml' {
-      $data = from-yaml($qa-path.IO.slurp) if $qa-path.IO.r;
-    }
-  }
-
-  $data // Hash
-}
-
-#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-multi method qa-load (
-  Str:D $qa-filename, Bool :$sheet!, Str :$qa-path? is copy
-  --> Hash
-) {
-  $qa-path //= self.qa-path( $qa-filename, :sheet);
-
-  my Hash $data;
-  given $qa-path.IO.extension {
-    when 'json' {
-      $data = from-json($qa-path.IO.slurp) if $qa-path.IO.r;
-    }
-
-    when 'yaml' {
-      $data = from-yaml($qa-path.IO.slurp) if $qa-path.IO.r;
-    }
-
-    when 'toml' {
-      $data = from-yaml($qa-path.IO.slurp) if $qa-path.IO.r;
-    }
-  }
-
-  $data // Hash
-}
-
-#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-multi method qa-load (
-  Str:D $qa-filename, Bool :$userdata!, Str :$qa-path? is copy
-  --> Hash
-) {
-  my Hash $data;
-
-  $qa-path //= self.qa-path( $qa-filename, :userdata);
-  given $data-file-type {
-    when QAJSON {
-      $qa-path ~~ s/ \.cfg $/.json/;
-      $data = from-json($qa-path.IO.slurp) if $qa-path.IO.r;
-    }
-
-    when QATOML {
-      $qa-path ~~ s/ \.cfg $/.toml/;
-      $data = from-toml($qa-path.IO.slurp) if $qa-path.IO.r;
-    }
-
-    when QAYAML {
-      $qa-path ~~ s/ \.cfg $/.yaml/;
-      $data = load-yaml($qa-path.IO.slurp) if $qa-path.IO.r;
-    }
-  }
-
-  $data // Hash
-}
-
-#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-multi method qa-load ( Str:D $qa-filename, Str :$qa-path? is copy --> Hash ) {
-  $qa-path //= self.qa-path($qa-filename);
-  my Hash $data = from-json($qa-path.IO.slurp) if $qa-path.IO.r;
-  $data // Hash
-}
-}}
-
 #-------------------------------------------------------------------------------
 =begin pod
 =head2 qa-save
 
-Save a Hash of QA type data into a file. There is no use for it directly. To save data, use the modules B<QManager::Category> or B<QManager::Sheet>. C<:userdata> is used to save data read from the forms.
+Save a Hash of QA type data into a file. There is no use for it directly. To save data, use the modules B<QManager::Set> or B<QManager::Sheet>.
 
-  multi method qa-save (
-    Str:D $qa-filename, Hash:D $qa-data, :sheet!, Str :$qa-path?
+C<:userdata> is used to save data read from the forms.
+
+Only one of the options C<:sheet>, C<:set> or C<:userdata> can be used. The method throws an exception if none found.
+
+  method qa-save (
+    Str:D $qa-filename, Hash:D $qa-data, :$sheet?, :$set?, :$userdata?,
+    Str :$qa-path?
   )
 
-  multi method qa-save (
-    Str:D $qa-filename, Hash:D $qa-data, :userdata!, Str :$qa-path?
-  )
-
-  multi method qa-save (
-    Str:D $qa-filename, Hash:D $qa-data, Str :$qa-path?
-  )
-
-=item Str $qa-filename; the filename for the category or sheet.
-=item Hash $qa-data; sheet or category data.
-=item Bool $sheet; switch between sheet or category.
-=item Str $qa-path; optional path to locate the file. The values of $qa-filename and $sheet are then ignored.
+=item Str $qa-filename; the filename without the extention. It functions also as the name of the sheet or set.
+=item Hash $qa-data; data.
+=item $sheet; load a sheet if option exists.
+=item $set; load a set if option exists.
+=item $userdata; load userdata if option exists.
+=item Str $qa-path; optional path to locate the file. The values of $qa-filename and other options are then ignored.
 =end pod
 
 #tm:1:qa-save
@@ -411,8 +293,7 @@ method qa-save( Str:D $qa-filename, Hash $qa-data, *%options ) {
     if %options<sheet>:exists       { $basename = $cfgloc-sheet; }
     elsif %options<set>:exists      { $basename = $cfgloc-set; }
     elsif %options<userdata>:exists { $basename = $cfgloc-userdata; }
-    elsif %options<category>:exists { $basename = $cfgloc-category; }
-    else                            { $basename = $cfgloc-category; }
+    else                            { die 'No type option found'; }
   }
 
   given $data-file-type {
@@ -433,71 +314,25 @@ method qa-save( Str:D $qa-filename, Hash $qa-data, *%options ) {
   }
 }
 
-#`{{
-#tm:1:qa-save
-multi method qa-save (
-  Str:D $qa-filename, Hash:D $qa-data, Bool :$sheet!, Str :$qa-path is copy
-) {
-  $qa-path //= self.qa-path( $qa-filename, :sheet);
-  $qa-path.IO.spurt(to-json($qa-data));
-}
-
-#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#tm:1:qa-save
-multi method qa-save (
-  Str:D $qa-filename, Hash:D $qa-data, Bool :$set!, Str :$qa-path is copy
-) {
-  $qa-path //= self.qa-path( $qa-filename, :set);
-  $qa-path.IO.spurt(to-json($qa-data));
-}
-
-#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#tm:1:qa-save
-multi method qa-save (
-  Str:D $qa-filename, Hash:D $qa-data, Bool :$userdata!, Str :$qa-path is copy
-) {
-  $qa-path //= self.qa-path( $qa-filename, :userdata);
-  given $data-file-type {
-    when QAJSON {
-      $qa-path ~~ s/ \.cfg $/.json/;
-      $qa-path.IO.spurt(to-json($qa-data));
-    }
-
-    when QATOML {
-      $qa-path ~~ s/ \.cfg $/.toml/;
-      $qa-path.IO.spurt(to-toml($qa-data));
-    }
-
-    when QAYAML {
-      $qa-path ~~ s/ \.cfg $/.yaml/;
-      $qa-path.IO.spurt(save-yaml($qa-data));
-    }
-  }
-}
-
-#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#tm:1:qa-save
-multi method qa-save (
-  Str:D $qa-filename, Hash:D $qa-data, Str :$qa-path is copy
-) {
-  $qa-path //= self.qa-path($qa-filename);
-  $qa-path.IO.spurt(to-json($qa-data));
-}
-}}
-
 #-------------------------------------------------------------------------------
 =begin pod
 =head2 qa-remove
 
-Remove a QA type data file. There is no use for it directly. To remove data, use the modules B<QManager::Category> or B<QManager::Sheet>.
+Remove a Hash of QA type data file. There is no use for it directly. To remove data, use the modules B<QManager::Set> or B<QManager::Sheet>.
+
+C<:userdata> is used to save data read from the forms.
+
+Only one of the options C<:sheet>, C<:set> or C<:userdata> can be used. The method throws an exception if none found.
 
   method qa-remove (
-    Str:D $qa-filename, Bool :$sheet = False, Str :$qa-path
+    Str:D $qa-filename, :$sheet?, :$set?, :$userdata?, Str :$qa-path
   )
 
-=item Str $qa-filename; the filename for the category or sheet.
-=item Bool $sheet; switch between sheet or category.
-=item Str $qa-path; optional path to locate the file. The values of $qa-filename and $sheet are then ignored.
+=item Str $qa-filename; the filename without the extention. It functions also as the name of the sheet or set.
+=item $sheet; load a sheet if option exists.
+=item $set; load a set if option exists.
+=item $userdata; load userdata if option exists.
+=item Str $qa-path; optional path to locate the file. The values of $qa-filename and other options are then ignored.
 =end pod
 
 #tm:1:qa-remove
@@ -512,8 +347,7 @@ method qa-remove (
     if %options<sheet>:exists       { $basename = $cfgloc-sheet; }
     elsif %options<set>:exists      { $basename = $cfgloc-set; }
     elsif %options<userdata>:exists { $basename = $cfgloc-userdata; }
-    elsif %options<category>:exists { $basename = $cfgloc-category; }
-    else                            { $basename = $cfgloc-category; }
+    else                            { die 'No type option found'; }
   }
 
   given $data-file-type {
@@ -531,24 +365,21 @@ method qa-remove (
   }
 
   unlink $qa-path;
-
-#`{{
-  $qa-path //= $sheet
-            ?? self.qa-path( $qa-filename, :sheet)
-            !! self.qa-path( $qa-filename);
-  unlink $qa-path;
-}}
 }
 
 #-------------------------------------------------------------------------------
 =begin pod
 =head2 qa-list
 
-Get the list of sheets or categories stored.
+Get the list of sheets, sets or datafiles stored.
 
-  method qa-list ( Bool :$sheet = False, Str :$qa-path --> List )
+Only one of the options C<:sheet>, C<:set> or C<:userdata> can be used. The method throws an exception if none found.
 
-=item Bool $sheet; switch between sheet or category.
+  method qa-list ( :$sheet?, :$set?, :$userdata?, Str :$qa-path --> List )
+
+=item $sheet; load a sheet if option exists.
+=item $set; load a set if option exists.
+=item $userdata; load userdata if option exists.
 =item Str $qa-path; optional path to locate the file. The value of $sheet is then ignored.
 =end pod
 
@@ -565,35 +396,18 @@ method qa-list ( *%options --> List ) {
     if %options<sheet>:exists       { $basename = $cfgloc-sheet; }
     elsif %options<set>:exists      { $basename = $cfgloc-set; }
     elsif %options<userdata>:exists { $basename = $cfgloc-userdata; }
-    elsif %options<category>:exists { $basename = $cfgloc-category; }
-    else                            { $basename = $cfgloc-category; }
+    else                            { die 'No type option found'; }
   }
 
   my @qa-list = ();
   for (dir $basename)>>.Str -> $qa-filename is copy {
-    # only keep the name of the sheet or category without extensions
+    # only keep the name of the file without extentions
     $qa-filename ~~ s/ ^ .*? (<-[/]>+ ) \. \w+ $ /$0/;
     @qa-list.push($qa-filename);
   }
 
   @qa-list
 }
-
-#`{{
-method qa-list ( Bool :$sheet = False, Str :$qa-path is copy --> List ) {
-  $qa-path //= self.qa-path( '__', :$sheet);
-  $qa-path ~~ s/ '/__.cfg' //;
-
-  my @qa-list = ();
-  for (dir $qa-path)>>.Str -> $qa-filename is copy {
-    # only keep the name of the sheet or category without extensions
-    $qa-filename ~~ s/ ^ .*? (<-[/]>+ ) \. 'cfg' $ /$0/;
-    @qa-list.push($qa-filename);
-  }
-
-  @qa-list
-}
-}}
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -657,20 +471,6 @@ method get-widget-object ( Str:D $widget-key --> Any ) {
 }
 
 #-------------------------------------------------------------------------------
-#tm:1:!init:
-method !init ( ) {
-
-  $data-file-type //= QAJSON;
-  $!user-objects = %(
-    actions => %(),
-    checks => %(),
-    widgets => %(),
-  );
-
-  self.reinit-dirs;
-}
-
-#-------------------------------------------------------------------------------
 #tm:1:reinit:
 method reinit-dirs ( ) {
 
@@ -678,9 +478,6 @@ method reinit-dirs ( ) {
   }
 
   else {
-    $cfgloc-category //= "$*HOME/.config/QAManager/Categories.d";
-    mkdir( $cfgloc-category, 0o760) unless $cfgloc-category.IO.d;
-
     $cfgloc-sheet //= "$*HOME/.config/QAManager/Sheets.d";
     mkdir( $cfgloc-sheet, 0o760) unless $cfgloc-sheet.IO.d;
 

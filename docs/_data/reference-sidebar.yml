@@ -4,8 +4,8 @@
   bar_menu:
 #  - title: "Category"
 #    url: "/content-docs/reference/Category.html"
-  - title: "QATypes"
-    url: "/content-docs/reference/QATypes.html"
+  - title: "Types"
+    url: "/content-docs/reference/Types.html"
 
 #- bar_title: "This site"
 #  bar_menu:
