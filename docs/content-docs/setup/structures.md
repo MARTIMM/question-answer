@@ -10,22 +10,6 @@ layout: sidebar
 Structures are shown to have an idea how the files are defined. Categories and Sheets are stored on disk. The other structures are in categories, sets or sheets.
 
 
-## Category
-
-A category is used for archiving sets. It does not need a name, title or description. The name of the file, without its extension, is the name of the category. The data is stored in a JSON format.
-
-* **sets**; An array of hashes.
-
-```
-{ "sets": [ {
-      ... set ...
-    }, {
-      ... next set ...
-    }
-  ]
-}
-```
-
 
 ## Set
 
@@ -230,11 +214,7 @@ The questions are grouped in sets as explained above. Sets are referred to from 
 * **title**; A text used in a frame label at the top of the page
 * **description**; A text shown in this frame
 * **page-type**; Page types are like `QAContent`, `QAPageIntro`, `QAConfirm`, `QASummary`, `QAProgress` or `QACustom`. The `QAContent` is the default. A few are only useful for `QAAssistant` and almost none for `QADialog`.
-* **sets**; An array of hashes.
-
-The sets in the page are referred to by using names of the category and set.
-* **category**; A category name used as a reference to the categories in the archive directory
-* **set**; A Set name in this category.
+* **sets**; An array of set hashes.
 
 ```
 "name": ... ,
@@ -242,7 +222,7 @@ The sets in the page are referred to by using names of the category and set.
 "description": ... ,
 "page-type": ... ,
 "sets": [ {
-    ...
+    ... set ...
   }, {
     ... next set ...
   }
