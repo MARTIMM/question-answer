@@ -60,11 +60,13 @@ class MyWidget does QA::Gui::Value {
 
   #---------
   method change-label ( :_widget($button) ) {
+    $button.set-label(($button.get-label // '0').Int + 1);
+#    my Str $l = $button.get-label // '0';
+#    my Int $i = $l.Int + 1;
+#    $button.set-label("$i");
+
     my ( $n, $row ) = $button.get-name.split(':');
     $row .= Int;
-    my Str $l = $button.get-label // '0';
-    my Int $i = $l.Int + 1;
-    $button.set-label("$i");
     self.process-widget-signal( $button, $row, :!do-check);
   }
 }
