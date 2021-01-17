@@ -8,6 +8,7 @@ use Gnome::Gtk3::Enums;
 
 use QA::Gui::Frame;
 use QA::Gui::Set;
+use QA::Set;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::Page:auth<github:MARTIMM>;
@@ -40,21 +41,19 @@ method create-content( --> Gnome::Gtk3::ScrolledWindow ) {
 
   # display all selected sets
   for @($!page<sets>) -> Hash $set-data {
-    # set data consists of a category name and set name. Both are needed
-    # to get the set data we need.
-    my Str $category-name = $set-data<category>;
-    my Str $set-name = $set-data<set>;
+    my QA::Set $set .= new(:$set-data);
+    my Str $set-name = $set-data<set-name>;
 
     # check if userdata exists
-    $!user-data{$!page<name>}{$category-name}{$set-name} = %()
-      unless $!user-data{$!page<name>}{$category-name}{$set-name} ~~ Hash;
+    $!user-data{$!page<page-name>}{$set-name} = %()
+      unless $!user-data{$!page<page-name>}{$set-name} ~~ Hash;
 
     # display a set
-    my QA::Gui::Set $set .= new(
-      :grid($!page-grid), :grid-row($!page-row), :$category-name, :$set-name,
-      :user-data-set-part($!user-data{$!page<name>}{$category-name}{$set-name})
+    my QA::Gui::Set $gui-set .= new(
+      :grid($!page-grid), :grid-row($!page-row), :$set,
+      :user-data-set-part($!user-data{$!page<page-name>}{$set-name})
     );
-    $!sets.push: $set;
+    $!sets.push: $gui-set;
     $!page-row++;
   }
 

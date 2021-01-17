@@ -12,7 +12,6 @@ use QA::Gui::Question;
 use QA::Gui::Frame;
 use QA::Gui::Dialog;
 
-use QA::Category;
 use QA::Set;
 use QA::Question;
 
@@ -53,11 +52,8 @@ has Array[QA::Gui::Question] $!questions;
 # Display a set on a given grid at given row
 submethod BUILD (
   Gnome::Gtk3::Grid :$grid, Int:D :$grid-row,
-  Str:D :$category-name, Str:D :$set-name, Hash:D :$!user-data-set-part
+  QA::Set :$!set, Hash:D :$!user-data-set-part
 ) {
-
-  # get the set from cat and set names
-  $!set = QA::Category.new(:$category-name).get-set($set-name);
 
   # create a frame with title
   my QA::Gui::Frame $set-frame .= new(:label($!set.title));
