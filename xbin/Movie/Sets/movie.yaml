@@ -1,0 +1,13 @@
+---
+set-name: movie
+description: "Movie information"
+title: ~
+questions: 
+  - 
+    name: movie-select
+    description: "Select a movie"
+    title: Movie-select
+    required: true
+    fieldtype: QAFileChooser
+hide: false
+...

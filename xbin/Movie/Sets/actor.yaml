@@ -1,0 +1,26 @@
+---
+description: "Actor information"
+questions: 
+  - 
+    description: "Name of actor"
+    name: actorname
+    fieldtype: QAEntry
+    required: true
+    title: Actorname
+  - 
+    fieldlist: 
+      - male
+      - female
+    description: "Gender of actor"
+    title: Gender
+    name: gender
+    fieldtype: QARadioButton
+  - 
+    fieldtype: QAImage
+    description: "A photo of actor"
+    title: Photo
+    name: photo
+title: ~
+set-name: actor
+hide: false
+...
