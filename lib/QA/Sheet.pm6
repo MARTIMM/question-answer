@@ -45,8 +45,8 @@ method !load ( ) {
 
   my Hash $sheet = $!qa-types.qa-load( $!sheet-name, :sheet);
   if ?$sheet {
-    $!width = $sheet<width> // 0;# // 300;
-    $!height = $sheet<height> // 0;# // 300;
+    $!width = $sheet<width> // 0;
+    $!height = $sheet<height> // 0;
     $!button-map = $sheet<button-map> // %();
 
     # the rest are pages
@@ -54,7 +54,7 @@ method !load ( ) {
       next unless ?$h-page;
 
       # get and save page properties
-      if $h-page<name>:exists and ?$h-page<name> {
+      if $h-page<page-name>:exists and ?$h-page<page-name> {
 
         $h-page<title> //= $h-page<name>.tclc;
         $h-page<description> //= $h-page<title>;
@@ -63,7 +63,7 @@ method !load ( ) {
           ?? QAPageType(QAPageType.enums{$h-page<page-type>} // QAContent)
           !! QAContent;
 
-        $!pages{$h-page<name>} = $!page-data.elems;
+        $!pages{$h-page<page-name>} = $!page-data.elems;
         $!page-data.push: $h-page;
       }
 
@@ -75,57 +75,120 @@ method !load ( ) {
 }
 
 #-------------------------------------------------------------------------------
-method new-page (
-  Str:D :$name, Str :$title = '', Str :$description = '',
+method add-page (
+  Str:D $page-name, Str :$title = '', Str :$description = '',
   Bool :$hide = False
   --> Bool
 ) {
 
-  return False if $!pages{$name}:exists;
+  return False if $!pages{$page-name}:exists;
 
-  $title //= $name.tclc;
+  $title //= $page-name.tclc;
   $description //=$title;
 
   $!set-data = [];
-  $!page = %( :$name, :$title, :$description, :$hide);
+  $!page = %( :$page-name, :$title, :$description, :$hide);
 
-  $!pages{$name} = $!page-data.elems;
+  $!pages{$page-name} = $!page-data.elems;
   $!page-data.push: $!page;
 
   True
 }
 
 #-------------------------------------------------------------------------------
-method add-set ( Str:D :$set-name --> Bool ) {
+method remove-page ( Str:D $page-name --> Bool ) {
 
-  my Hash $set = $!qa-types.qa-load( $set-name, :set);
-  if ?$set {
-    # add set name for lookup and manips
-    $set<name> = $set-name;
-    $!set-data.push: $set;
-    $!page<sets> = $!set-data;
+  return False unless $!pages{$page-name}:exists;
 
-    True
+  my Int $idx = $!pages{$page-name}:delete;
+  $!page-data.splice( $idx, 1);
+  for $!pages.keys -> $k {
+    $!pages{$k}-- if $!pages{$k} > $idx;
   }
 
-  else {
-    False
-  }
+  True
 }
 
 #-------------------------------------------------------------------------------
-method remove-set ( Str:D :$set-name --> Bool ) {
+multi method get-page ( Int:D $page-idx --> Hash ) {
+  $page-idx < $!page-data.elems ?? $!page-data[$page-idx] !! %();
+}
+
+#-------------------------------------------------------------------------------
+multi method get-page ( Str:D $page-name --> Hash ) {
+  my Int $page-idx  = $!pages{$page-name}:exists ?? $!pages{$page-name} !! -1;
+  $page-idx >= 0 ?? $!page-data[$page-idx] !!  %();
+}
+
+#-------------------------------------------------------------------------------
+method get-sheet-list ( --> List ) {
+  $!qa-types.qa-list(:sheet)
+}
+
+#-------------------------------------------------------------------------------
+method add-set (
+  Str:D $page-name, Str:D $set-name, Bool :$replace = False --> Bool
+) {
+
+  return False unless $!pages{$page-name}:exists;
+
+  my Hash $new-set = $!qa-types.qa-load( $set-name, :set);
+  return False unless ?$new-set;
+
   my Bool $ok = False;
   my Int $c = 0;
-  for @$!set-data -> Hash $sd {
-    if $sd<name> eq $set-name {
-      $!set-data.splice( $c, 1);
-      $ok = True;
-      last;
-    }
+  my Bool $set-found = False;
+  my Int $pidx = $!pages{$page-name};
 
-    else {
-      $c++;
+  if $!page-data[$pidx]<sets>:exists {
+    for @($!page-data[$pidx]<sets>) -> Hash $set {
+      if $set<set-name> eq $set-name {
+        $set-found = True;
+        if $replace {
+          $!page-data[$pidx]<sets>.splice( $c, 1, $new-set);
+          $ok = True;
+        }
+
+        else {
+          $ok = False;
+        }
+        last;
+      }
+
+      else {
+        $c++;
+      }
+    }
+  }
+
+  unless $set-found {
+    $!page-data[$pidx]<sets>.push: $new-set;
+    $ok = True;
+  }
+
+  $ok
+}
+
+#-------------------------------------------------------------------------------
+method remove-set ( Str:D $page-name, Str:D $set-name --> Bool ) {
+
+  return False unless $!pages{$page-name}:exists;
+
+  my Bool $ok = False;
+  my Int $c = 0;
+  my Int $pidx = $!pages{$page-name};
+
+  if $!page-data[$pidx]<sets>:exists {
+    for @($!page-data[$pidx]<sets>) -> Hash $set {
+      if $set<set-name> eq $set-name {
+        $!page-data[$pidx]<sets>.splice( $c, 1);
+        $ok = True;
+        last;
+      }
+
+      else {
+        $c++;
+      }
     }
   }
 
@@ -133,33 +196,43 @@ method remove-set ( Str:D :$set-name --> Bool ) {
 }
 
 #-------------------------------------------------------------------------------
+method get-set ( Str:D $page-name, Str:D $set-name --> Hash ) {
+
+  return False unless $!pages{$page-name}:exists;
+
+  my Int $pidx = $!pages{$page-name};
+  my Hash $set = %();
+
+  if $!page-data[$pidx]<sets>:exists {
+    for @($!page-data[$pidx]<sets>) -> Hash $s {
+      if $s<set-name> eq $set-name {
+        $set = $s;
+        last;
+      }
+    }
+  }
+
+  $set
+}
+
+#-------------------------------------------------------------------------------
 method save ( ) {
-  $!qa-types.qa-save( $!sheet-name, %( :pages($!page-data)), :sheet);
+
+  $!qa-types.qa-save(
+    $!sheet-name, %(:$!width, :$!height, :$!button-map, :pages($!page-data)),
+    :sheet
+  );
 }
 
 #-------------------------------------------------------------------------------
 method save-as ( Str:D $new-sheet ) {
 
-  $!qa-types.qa-save( $new-sheet, %( :pages($!page-data)), :sheet);
+  $!qa-types.qa-save(
+    $new-sheet, %(:$!width, :$!height, :$!button-map, :pages($!page-data)),
+    :sheet
+  );
   $!sheet-name = $new-sheet;
 }
-
-#-------------------------------------------------------------------------------
-method delete-page ( :$name --> Bool ) {
-
-#TODO yes/no message using 'Bool :$gui = False' argument
-
-  return False unless $!pages{$name}:exists;
-
-  $!page-data.splice( $!pages{$name}, 1);
-  for $!pages.keys -> $k {
-    $!pages{$k}-- if $!pages{$k} > $!pages{$name}
-  }
-
-  $!pages{$name}:delete;
-  True
-}
-
 
 #-------------------------------------------------------------------------------
 method remove ( --> Bool ) {
@@ -205,20 +278,4 @@ method iterator ( ) {
 
     # Create the object for this class and return it
   }.new(:pdata($!page-data))
-}
-
-#-------------------------------------------------------------------------------
-multi method get-page ( Int $page-idx --> Hash ) {
-  $page-idx < $!page-data.elems ?? $!page-data[$page-idx] !! %();
-}
-
-#-------------------------------------------------------------------------------
-multi method get-page ( Str $page-name --> Hash ) {
-  my Int $page-idx  = $!pages{$page-name}:exists ?? $!pages{$page-name} !! -1;
-  $page-idx >= 0 ?? $!page-data[$page-idx] !!  %();
-}
-
-#-------------------------------------------------------------------------------
-method get-sheet-list ( --> List ) {
-  $!qa-types.qa-list(:sheet)
 }
