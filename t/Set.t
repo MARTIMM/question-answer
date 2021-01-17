@@ -21,12 +21,12 @@ given my QA::Types $qa-types {
   .cfgloc-set(@dirs[SET]);
 }
 
-my QA::Set $creds .= new(:name<credentials>);
+my QA::Set $creds .= new(:set-name<credentials>);
 
 #-------------------------------------------------------------------------------
 subtest 'ISO-Test', {
 
-  isa-ok $creds, QA::Set, '.new(:name)';
+  isa-ok $creds, QA::Set, '.new(:set-name)';
 }
 
 #-------------------------------------------------------------------------------
@@ -52,14 +52,38 @@ subtest 'Create questions', {
 }
 
 #-------------------------------------------------------------------------------
-subtest 'Save and load set', {
+subtest 'Save, load and change set', {
   $creds.save;
   ok "@dirs[SET]/credentials.yaml".IO ~~ :e, '.save()';
 
-  my QA::Set $new-creds .= new(:name<credentials>);
+  my QA::Set $new-creds .= new(:set-name<credentials>);
   my QA::Question $question = $new-creds.get-question('username');
   is $question.description, 'Username of account', 'from set file';
 
+  my QA::Question $pw = $new-creds.get-question('password');
+  is $pw.description, 'Password for username', '.get-question()';
+  $pw.description = 'Choose proper password';
+  nok $new-creds.add-question($pw), 'cannot add existing entry';
+  ok $new-creds.add-question( $pw, :replace), 'use :replace';
+  $new-creds.save;
+
+  $new-creds .= new(:set-name<credentials>);
+  is $pw.description, 'Choose proper password', 'check after saving';
+#`{{
+  note " ";
+  my $c := $new-creds.clone;
+  for $c -> QA::Question $q {
+    for $q.qa-data.kv -> $k, $v {
+      note "$k => $v";
+    }
+    note " ";
+  }
+}}
+}
+
+#-------------------------------------------------------------------------------
+subtest 'Remove set', {
+  my QA::Set $new-creds .= new(:set-name<credentials>);
   ok $new-creds.remove, '.remove()';
   nok $new-creds.remove, 'already removed';
   ok "@dirs[SET]/credentials.yaml".IO ~~ :!e, 'file removed';

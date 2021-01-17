@@ -16,51 +16,85 @@ has Bool $.hide is rw;
 
 # this QA::KV's keys and values. $!keys is to check the names and index
 # into $!questions and $!questions is to keep order as it is input.
-has Hash $!keys;
-has Array $!questions;
+has Hash $.keys;
+has Array $.questions;
 
 #-------------------------------------------------------------------------------
-submethod BUILD ( Str:D :$name, Str :$title, Str :$description ) {
+multi submethod BUILD ( Str:D :$!set-name!, Str :$title, Str :$description ) {
 
-  $!qa-types .= instance;
-
-  $!set-name = $name;
   $!title = $title // $!set-name.tclc;
   $!description = $description // $title;
+  $!hide = False;
   $!keys = %();
   $!questions = [];
-  $!hide = False;
 
   self!load;
 }
 
 #-------------------------------------------------------------------------------
+multi submethod BUILD ( QA::Set:D :$set! ) {
+
+  $!set-name = $set.set-name;
+  $!title = $set.title;
+  $!description = $set.description;
+  $!hide = $set.hide;
+  $!keys = $set.keys;
+  $!questions = $set.questions;
+}
+
+#-------------------------------------------------------------------------------
+multi submethod BUILD ( Hash:D :$set-data! ) {
+
+  $!set-name = $set-data<set-name>;
+  $!title = $set-data<title> // $!set-name.tclc;
+  $!description = $set-data<description> // $!title;
+  $!hide = $set-data<hide>;
+
+  for @($set-data<questions>) -> $q {
+    self.add-question(QA::Question.new( :name($q<name>), :qa-data($q)));
+  }
+}
+
+#-------------------------------------------------------------------------------
 method !load ( ) {
 
-  my Hash $set = $!qa-types.qa-load( $!set-name, :set);
-  if ?$set {
-#    my Str $name = $!set-name;
-    my Str $title = $set<title> // $!set-name.tclc;
-    my Str $description = $set<description> // $title;
+  $!qa-types .= instance;
+  my Hash $set-data = $!qa-types.qa-load( $!set-name, :set);
+  if ?$set-data {
+    $!title = $set-data<title> // $!set-name.tclc;
+    $!description = $set-data<description> // $!title;
+    $!hide = $set-data<hide> // False;
 
-    for @($set<questions>) -> $q {
-      my Str $name = $q<name>;#.delete;
-      my QA::Question $question .= new( :$name, :qa-data($q));
-      self.add-question($question);
+    for @($set-data<questions>) -> $q {
+#      my Str $name = $q<name>;#.delete;
+#      my QA::Question $question .= new( :$name, :qa-data($q));
+#      self.add-question($question);
+      self.add-question(QA::Question.new( :name($q<name>), :qa-data($q)));
     }
   }
 }
 
 #-------------------------------------------------------------------------------
-method add-question ( QA::Question:D $question --> Bool ) {
+method add-question (
+  QA::Question:D $question, Bool :$replace = False --> Bool
+) {
 
-  # check if key exists, don't overwrite
-  return False if $!keys{$question.name}.defined;
+  if $!keys{$question.name}:exists {
+    if $replace {
+      self.replace-question($question);
+      True
+    }
 
-  $!keys{$question.name} = $!questions.elems;
-  $!questions.push: $question;
+    else {
+      False
+    }
+  }
 
-  True
+  else {
+    $!keys{$question.name} = $!questions.elems;
+    $!questions.push: $question;
+    True
+  }
 }
 
 #-------------------------------------------------------------------------------
@@ -78,19 +112,27 @@ method get-questions ( --> Array ) {
 #-------------------------------------------------------------------------------
 method replace-question ( QA::Question:D $question ) {
 
-  $!questions[$!keys{$question.name}] = $question;
+  if $!keys{$question.name}:exists {
+    $!questions[$!keys{$question.name}] = $question;
+  }
+
+  else {
+    $!keys{$question.name} = $!questions.elems;
+    $!questions.push: $question;
+  }
 }
 
 #-------------------------------------------------------------------------------
 method set ( --> Hash ) {
 
-  %( :$!title, :$!description, :$!hide,
-     questions => [map {.qa-data}, @$!questions]
+  %( :$!set-name, :$!title, :$!description, :$!hide,
+     questions => [map {.qa-data}, @$!questions // []]
   )
 }
 
 #-------------------------------------------------------------------------------
 method save ( ) {
+  $!qa-types .= instance;
   $!qa-types.qa-save( $!set-name, self.set, :set);
 }
 
@@ -99,6 +141,8 @@ method remove ( --> Bool ) {
   if ?$!questions {
     $!questions = Nil;
     $!title = $!description = Str;
+
+    $!qa-types .= instance;
     $!qa-types.qa-remove( $!set-name, :set);
 
     True
