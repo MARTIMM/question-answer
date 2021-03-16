@@ -16,13 +16,36 @@ class EH {
 }
 
 my EH $eh .= new;
+my QA::Types $qa-types;
 
-# set a few values before initializing
-given my QA::Types $qa-types {
-  .data-file-type(QAYAML);
-  .cfgloc-userdata(@dirs[UDATA]);
-  .cfgloc-sheet(@dirs[SHEET]);
-  .cfgloc-set(@dirs[SET]);
+#-------------------------------------------------------------------------------
+subtest 'QA locations', {
+  # set a few values before initializing
+  given $qa-types {
+    my List $l = $*DISTRO.is-win
+      ?? ("$*HOME/dataDir/Types/Data", "$*HOME/dataDir/Types/Sets",
+          "$*HOME/dataDir/Types/Sheets")
+      !! ("$*HOME/.config/Types/Data.d", "$*HOME/.config/Types/Sets.d",
+          "$*HOME/.config/Types/Sheets.d");
+    is-deeply .list-dirs, $l, '.list-dirs: ' ~ .list-dirs;
+
+    .cfg-root('MyRoot');
+    .setup-path(:reset);
+    $l = $*DISTRO.is-win
+      ?? ("$*HOME/dataDir/MyRoot/Data", "$*HOME/dataDir/MyRoot/Sets",
+          "$*HOME/dataDir/MyRoot/Sheets")
+      !! ("$*HOME/.config/MyRoot/Data.d", "$*HOME/.config/MyRoot/Sets.d",
+          "$*HOME/.config/MyRoot/Sheets.d");
+    is-deeply .list-dirs, $l, '.list-dirs: ' ~ .list-dirs;
+
+    .data-file-type(QAYAML);
+    .cfgloc-userdata(@dirs[UDATA]);
+    .cfgloc-sheet(@dirs[SHEET]);
+    .cfgloc-set(@dirs[SET]);
+
+    $l = <t/Data/Userdata t/Data/Sets t/Data/Sheets>;
+    is-deeply .list-dirs, $l, '.list-dirs: ' ~ .list-dirs;
+  }
 }
 
 #-------------------------------------------------------------------------------

@@ -12,7 +12,7 @@ A singleton class to provide types, global variables and some routines.
 
 =end pod
 
-unit class QA::Types:auth<github:MARTIMM>;
+unit class QA::Types:auth<github:MARTIMM>:ver<0.2.0>;
 #-------------------------------------------------------------------------------
 =begin pod
 =head1 Types
@@ -138,26 +138,40 @@ has Hash $!user-objects;
 
 #-------------------------------------------------------------------------------
 my QADataFileType $data-file-type;
-method data-file-type ( QADataFileType $ftype ) {
-  $data-file-type = $ftype;
+method data-file-type ( QADataFileType $ftype? ) {
+  $data-file-type = $ftype // QAJSON;
 }
 
 #-------------------------------------------------------------------------------
 my Str $cfgloc-userdata;
-method cfgloc-userdata ( Str $dir ) {
+method cfgloc-userdata ( Str $dir? ) {
   $cfgloc-userdata = $dir;
 }
 
 #-------------------------------------------------------------------------------
 my Str $cfgloc-sheet;
-method cfgloc-sheet ( Str $dir ) {
+method cfgloc-sheet ( Str $dir? ) {
   $cfgloc-sheet = $dir;
 }
 
 #-------------------------------------------------------------------------------
 my Str $cfgloc-set;
-method cfgloc-set ( Str $dir ) {
+method cfgloc-set ( Str $dir? ) {
   $cfgloc-set = $dir;
+}
+
+#-------------------------------------------------------------------------------
+my Str $cfg-root = $*PROGRAM-NAME.IO.basename;
+$cfg-root ~~ s/ \. <-[.]>* $//;
+method cfg-root ( Str:D $dir? ) {
+  if ?$dir {
+    $cfg-root = $dir;
+  }
+
+  else {
+    $cfg-root = $*PROGRAM-NAME.IO.basename;
+    $cfg-root ~~ s/ \. <-[.]>* $//;
+  }
 }
 
 #-------------------------------------------------------------------------------
@@ -179,7 +193,7 @@ submethod BUILD ( ) {
     widgets => %(),
   );
 
-  self.reinit-dirs;
+  self.init-dirs;
 }
 
 #-------------------------------------------------------------------------------
@@ -190,11 +204,13 @@ The users application can modify the variables before opening any query sheets. 
 
 =item QADataFileType C<$data-file-type>; You can choose from QAJSON or QATOML. By default it loads and saves the answers to questions in json formatted files.
 
-=item Str C<$cfgloc-set>; Location where sets are stored. Default is C<$!HOME/.config/QAManager/Sets.d> on *nix systems. Use C<cfgloc-set()> to change it.
-=item Str C<$cfgloc-sheet>; Location where sheets are stored. Default is C<$!HOME/.config/QAManager/Sheets.d> on *nix systems. Use C<cfgloc-sheet()> to change it.
-=item Str C<$cfgloc-userdata>; Location where userdata is stored. Default is C<$!HOME/.config/<modified $*PROGRAM-NAME>> on *nix systems. Use C<cfgloc-userdata()> to change it.
+=item Str C<$cfgloc-set>; Location where sets are stored. Default is C<$!HOME/.config/$cfg-root/Sets.d> on *nix systems. Use C<cfgloc-set()> to change it.
+=item Str C<$cfgloc-sheet>; Location where sheets are stored. Default is C<$!HOME/.config/$cfg-root/Sheets.d> on *nix systems. Use C<cfgloc-sheet()> to change it.
+=item Str C<$cfgloc-userdata>; Location where userdata is stored. Default is C<$!HOME/.config/$cfg-root/Data.d> on *nix systems. Use C<cfgloc-userdata()> to change it.
 
-If any of C<$cfgloc-sheet>, C<$cfgloc-set> or C<$cfgloc-userdata> is changed, make sure that it is changed before first time init of B<QA::Types> or otherwise call C<reinit-dirs()>! If you want to fall back to the default values after having set them, call the above mentioned methods with an undefined string, i.e. Str, like e.g. C<cfgloc-sheet(Str)>.
+By default, $cfg-root is set to the basename of your program. This can be changed by calling C<cfg-root()>.
+
+If any of C<$cfgloc-sheet>, C<$cfgloc-set> or C<$cfgloc-userdata> is changed, make sure that it is changed before first time init of B<QA::Types> or otherwise call C<init-dirs(:reset)>! If you want to fall back to the default values after having set them, call the above mentioned methods without argument.
 
 =end pod
 
@@ -597,31 +613,59 @@ method get-widget-object ( Str:D $widget-key --> Any ) {
 }
 
 #-------------------------------------------------------------------------------
+# See also https://stackoverflow.com/questions/43853548/xdg-basedir-directories-for-windows
+
 =begin pod
-=head2 reinit-dirs
+=head2 init-dirs
 
-When config or data directories are changed after the initialization of B<QA::Types>, this call is needed to prepare the directories.
+When config or data directories are changed after the initialization of B<QA::Types>, this call is needed to prepare the directories. When $reset is C<True>, the directories are reset to default values.
 
-  method reinit-dirs ( )
+  method init-dirs ( Bool :$reset = False )
 
 =end pod
 
 #tm:1:reinit:
-method reinit-dirs ( ) {
+method init-dirs ( Bool :$reset = False ) {
+  self.setup-path(:$reset);
 
-  if $*DISTRO.is-win {
+  mkdir( $cfgloc-userdata, 0o760) unless $cfgloc-userdata.IO.d;
+  mkdir( $cfgloc-set, 0o760) unless $cfgloc-set.IO.d;
+  mkdir( $cfgloc-sheet, 0o760) unless $cfgloc-sheet.IO.d;
+}
+
+#-------------------------------------------------------------------------------
+method list-dirs ( --> List ) {
+  self.setup-path;
+  ( $cfgloc-userdata, $cfgloc-set, $cfgloc-sheet)
+}
+
+#-------------------------------------------------------------------------------
+method setup-path ( Bool :$reset = False ) {
+  if $reset {
+    if $*DISTRO.is-win {
+      $cfgloc-sheet = "$*HOME/dataDir/$cfg-root/Sheets";
+      $cfgloc-set = "$*HOME/dataDir/$cfg-root/Sets";
+      $cfgloc-userdata = "$*HOME/dataDir/$cfg-root/Data";
+    }
+
+    else {
+      $cfgloc-sheet = "$*HOME/.config/$cfg-root/Sheets.d";
+      $cfgloc-set = "$*HOME/.config/$cfg-root/Sets.d";
+      $cfgloc-userdata = "$*HOME/.config/$cfg-root/Data.d";
+    }
   }
 
   else {
-    $cfgloc-sheet //= "$*HOME/.config/QAManager/Sheets.d";
-    mkdir( $cfgloc-sheet, 0o760) unless $cfgloc-sheet.IO.d;
+    if $*DISTRO.is-win {
+      $cfgloc-sheet //= "$*HOME/dataDir/$cfg-root/Sheets";
+      $cfgloc-set //= "$*HOME/dataDir/$cfg-root/Sets";
+      $cfgloc-userdata //= "$*HOME/dataDir/$cfg-root/Data";
+    }
 
-    $cfgloc-set //= "$*HOME/.config/QAManager/Sets.d";
-    mkdir( $cfgloc-set, 0o760) unless $cfgloc-set.IO.d;
-
-    my Str $pname //= $*PROGRAM-NAME.IO.basename;
-    $pname ~~ s/ \. <-[.]>* $//;
-    $cfgloc-userdata //= "$*HOME/.config/$pname";
-    mkdir( $cfgloc-userdata, 0o760) unless $cfgloc-userdata.IO.d;
+    else {
+      $cfgloc-sheet //= "$*HOME/.config/$cfg-root/Sheets.d";
+      $cfgloc-set //= "$*HOME/.config/$cfg-root/Sets.d";
+      $cfgloc-userdata //= "$*HOME/.config/$cfg-root/Data.d";
+    }
   }
 }
