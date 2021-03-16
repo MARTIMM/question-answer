@@ -27,7 +27,7 @@ submethod new ( Str :$message, |c ) {
 
 #-------------------------------------------------------------------------------
 submethod BUILD ( *%options ) {
-  self.format-secondary-markup('Press <b>Yes</b> if you are');
+  self.secondary-markup('Press <b>Yes</b> if you are');
   self.set-position(GTK_WIN_POS_MOUSE);
   self.set-keep-above(True);
   self.set-default-response(GTK_RESPONSE_NO);
