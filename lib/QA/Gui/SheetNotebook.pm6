@@ -245,7 +245,7 @@ method show-cancel ( --> Bool ) {
   my Bool $done = True;
   if $!show-cancel-warning {
     my QA::Gui::YNMsgDialog $yn .= new(
-      :message("Are you sure to cancel?\nAll changes will be lost!")
+      :message("Are you sure to cancel?\n<i><u>All changes will be lost!</u></i>")
     );
 
     my $r = GtkResponseType($yn.dialog-run);
