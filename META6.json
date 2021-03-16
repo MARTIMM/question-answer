@@ -1,7 +1,7 @@
 {
-  "description": "Q & A Manager",
-  "name": "QAManager",
-  "version": "0.14.2",
+  "description": "Question Answer",
+  "name": "QA",
+  "version": "0.14.3",
   "authors": [ "Marcel Timmerman"],
   "tags": [
     "questionnaire", "configuration", "gtk", "question", "answer", "Raku"
@@ -9,9 +9,12 @@
 
   "perl": "6.d",
   "license": "Artistic-2.0",
+  "X-provides": {
+    "QA::Gui::AssistantDisplay": "lib/QA/Gui/AssistantDisplay.pm6",
+    "QA::Gui::SheetDialog": "lib/QA/Gui/SheetDialog.pm6"
+  },
 
   "provides": {
-    "QA::Gui::AssistantDisplay": "lib/QA/Gui/AssistantDisplay.pm6",
     "QA::Gui::Dialog": "lib/QA/Gui/Dialog.pm6",
     "QA::Gui::Frame": "lib/QA/Gui/Frame.pm6",
     "QA::Gui::OkMsgDialog": "lib/QA/Gui/OkMsgDialog.pm6",
@@ -28,7 +31,6 @@
     "QA::Gui::QATextView": "lib/QA/Gui/QATextView.pm6",
     "QA::Gui::Question": "lib/QA/Gui/Question.pm6",
     "QA::Gui::Set": "lib/QA/Gui/Set.pm6",
-    "QA::Gui::SheetDialog": "lib/QA/Gui/SheetDialog.pm6",
     "QA::Gui::SheetNotebook": "lib/QA/Gui/SheetNotebook.pm6",
     "QA::Gui::SheetSimple": "lib/QA/Gui/SheetSimple.pm6",
     "QA::Gui::SheetStack": "lib/QA/Gui/SheetStack.pm6",

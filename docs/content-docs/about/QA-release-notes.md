@@ -8,6 +8,9 @@ layout: sidebar
 
 See [semantic versioning](http://semver.org/). Please note point 4. on that page: **_Major version zero (0.y.z) is for initial development. Anything may change at any time. The public API should not be considered stable._**
 
+#### 2021-03-16 0.14.3
+* Add `.cfg-root()` to **QA::Types**. Also not store anymore in QAManager environment. By default only in program config or in a root set by cfg-root(). Also tried to set dirs specific for windows using `$*HOME/dataDir`.
+
 #### 2021-01-15 0.14.2
 * Remove `Category` module, directories, etc. and replace it with a series of `Set` files in a set directory.
 * Rewrite several functions in QATypes module.
