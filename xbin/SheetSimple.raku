@@ -228,11 +228,19 @@ $qa-types.qa-save( 'QAManagerSetDialog', $user-data, :userdata);
 
 # get types instance and modify some path for tests to come and also some
 # user methods to handle checks and actions
-my QA::Types $qa-types .= instance;
-$qa-types.data-file-type = QAYAML;
-$qa-types.cfgloc-userdata = 'xbin/Data';
-$qa-types.cfgloc-category = 'xbin/Data/Categories';
-$qa-types.cfgloc-sheet = 'xbin/Data/Sheets';
+
+given my QA::Types $qa-types {
+  .data-file-type(QAJSON);
+  .cfgloc-userdata('xbin/Data');
+  .cfgloc-sheet('xbin/Data/Sheets');
+#  .cfgloc-set();
+}
+
+#my QA::Types $qa-types .= instance;
+#$qa-types.data-file-type = QAYAML;
+#$qa-types.cfgloc-userdata = 'xbin/Data';
+#$qa-types.cfgloc-category = 'xbin/Data/Categories';
+#$qa-types.cfgloc-sheet = 'xbin/Data/Sheets';
 #$qa-types.set-check-handler( 'check-exclam', $eh, 'check-char', :char<!>);
 #$qa-types.set-action-handler( 'show-select1', $eh, 'fieldtype-action1');
 #$qa-types.set-action-handler(
