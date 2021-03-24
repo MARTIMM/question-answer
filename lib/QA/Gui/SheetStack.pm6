@@ -113,7 +113,7 @@ submethod BUILD (
     if $page-data<page-type> ~~ QAContent {
       my QA::Gui::Page $page = self!create-page( $page-data, :!description);
       $!stack.add-titled(
-        $page.create-content, $page-data<name>, $page-data<title>
+        $page.create-content, $page-data<page-name>, $page-data<title>
       );
     }
   }

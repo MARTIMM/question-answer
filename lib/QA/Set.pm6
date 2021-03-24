@@ -48,7 +48,7 @@ multi submethod BUILD ( Hash:D :$set-data! ) {
   $!set-name = $set-data<set-name>;
   $!title = $set-data<title> // $!set-name.tclc;
   $!description = $set-data<description> // $!title;
-  $!hide = $set-data<hide>;
+  $!hide = $set-data<hide> // False;
 
   for @($set-data<questions>) -> $q {
     self.add-question(QA::Question.new( :name($q<name>), :qa-data($q)));

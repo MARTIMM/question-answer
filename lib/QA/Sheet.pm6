@@ -56,7 +56,7 @@ method !load ( ) {
       # get and save page properties
       if $h-page<page-name>:exists and ?$h-page<page-name> {
 
-        $h-page<title> //= $h-page<name>.tclc;
+        $h-page<title> //= $h-page<page-name>.tclc;
         $h-page<description> //= $h-page<title>;
         $h-page<hide> //= False;
         $h-page<page-type> = ?$h-page<page-type>

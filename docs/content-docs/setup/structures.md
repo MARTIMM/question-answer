@@ -15,14 +15,14 @@ Structures are shown to have an idea how the files are defined. Categories and S
 
 A set is not stored on disk on its own. A set is used to group a series of questions. A set has a name, a title and a description.
 
-* **name**; Name is used as a key to get or set the input fields. It is also used to refer to a set from a sheet.
+* **set-name**; Name is used as a key to get or set the input fields. It is also used to refer to a set from a sheet.
 * **title**; Used as a label in a frame widget.
 * **description**; Shown in above mentioned frame to describe the questions in this set.
 * **hide**; Hide this set. A use for it to hide or view a set in an action handler.
 * **questions**; An array of hashes.
 
 ```
-"name": used as a key to get and save values,
+"set-name": used as a key to get and save values,
 "title": ... ,
 "description":  ... ,
 "hide": ... ,
@@ -210,14 +210,14 @@ The sheet is used to present questions to the user. In a sheet there are pages w
 
 The questions are grouped in sets as explained above. Sets are referred to from a page to prevent duplication of structures. The problem which may arise is that sets in categories can be replaced or removed. The sheet display software will than issue a warning and skips the display of that particularly set.
 
-* **name**; Used in user interface to set and retrieve data.
+* **page-name**; Used in user interface to set and retrieve data.
 * **title**; A text used in a frame label at the top of the page
 * **description**; A text shown in this frame
 * **page-type**; Page types are like `QAContent`, `QAPageIntro`, `QAConfirm`, `QASummary`, `QAProgress` or `QACustom`. The `QAContent` is the default. A few are only useful for `QAAssistant` and almost none for `QADialog`.
 * **sets**; An array of set hashes.
 
 ```
-"name": ... ,
+"page-name": ... ,
 "title": ... ,
 "description": ... ,
 "page-type": ... ,
