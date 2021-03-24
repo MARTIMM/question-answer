@@ -5,8 +5,6 @@ use Gnome::N::N-GObject;
 
 use Gnome::Glib::Error;
 
-use Gnome::Gdk3::Pixbuf;
-
 use Gnome::Gtk3::Box;
 use Gnome::Gtk3::Enums;
 use Gnome::Gtk3::Dialog;
@@ -39,17 +37,10 @@ submethod BUILD ( ) {
 #  self.set-size-request( $width, $height);
 #  self.window-resize( $width, $height);
 
-  my Gnome::Gdk3::Pixbuf $win-icon .= new(
-    :file(%?RESOURCES<icons8-invoice-100.png>.Str)
+  my Gnome::Glib::Error $e = self.set-icon-from-file(
+    %?RESOURCES<icons8-invoice-100.png>.Str
   );
-  my Gnome::Glib::Error $e = $win-icon.last-error;
-  if $e.is-valid {
-    note "Error icon file: $e.message()";
-  }
-
-  else {
-    self.set-icon($win-icon);
-  }
+  die $e.message if $e.is-valid;
 
   # a grid is placed in this dialog
   $!dialog-content .= new;
