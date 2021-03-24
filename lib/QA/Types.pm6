@@ -202,7 +202,7 @@ submethod BUILD ( ) {
 
 The users application can modify the variables before opening any query sheets. The following variables are used in this program;
 
-=item QADataFileType C<$data-file-type>; You can choose from QAJSON or QATOML. By default it loads and saves the answers to questions in json formatted files.
+=item QADataFileType C<$data-file-type>; You can choose from QAJSON, QAYAML or QATOML. By default it loads and saves the answers to questions in json formatted files.
 
 =item Str C<$cfgloc-set>; Location where sets are stored. Default is C<$!HOME/.config/$cfg-root/Sets.d> on *nix systems. Use C<cfgloc-set()> to change it.
 =item Str C<$cfgloc-sheet>; Location where sheets are stored. Default is C<$!HOME/.config/$cfg-root/Sheets.d> on *nix systems. Use C<cfgloc-sheet()> to change it.
