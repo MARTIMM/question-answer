@@ -10,6 +10,7 @@ See [semantic versioning](http://semver.org/). Please note point 4. on that page
 
 #### 2021-03-16 0.14.3
 * Add `.cfg-root()` to **QA::Types**. Also not store anymore in QAManager environment. By default only in program config or in a root set by cfg-root(). Also tried to set dirs specific for windows using `$*HOME/dataDir`.
+* Bugfixes.
 
 #### 2021-01-15 0.14.2
 * Remove `Category` module, directories, etc. and replace it with a series of `Set` files in a set directory.
