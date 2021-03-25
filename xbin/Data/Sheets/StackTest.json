@@ -1,0 +1,194 @@
+{
+  "width": 500,
+  "height": 500,
+  "button-map": {
+    "cancel": "stop",
+    "finish": "donnit"
+  },
+  "pages": [
+    {
+      "sets": [
+        {
+          "questions": [
+            {
+              "name": "name",
+              "required": true,
+              "fieldtype": "QAEntry",
+              "description": "Key of this input field",
+              "title": "Name"
+            },
+            {
+              "name": "radio",
+              "fieldtype": "QARadioButton",
+              "description": "select a station",
+              "fieldlist": [
+                "Classic FM",
+                "Radio 1",
+                "Pop 90-ies"
+              ]
+            },
+            {
+              "name": "spinbutton",
+              "fieldtype": "QASpinButton",
+              "description": "spin it a bit",
+              "climbrate": 0.03,
+              "digits": 3,
+              "minimum": -1,
+              "maximum": 1,
+              "page-incr": 0.05,
+              "page-size": 0.1,
+              "step-incr": 0.001
+            },
+            {
+              "name": "check",
+              "fieldtype": "QACheckButton",
+              "description": "select some colors",
+              "fieldlist": [
+                "Red",
+                "Purple",
+                "Orange"
+              ]
+            },
+            {
+              "name": "title",
+              "fieldtype": "QAEntry",
+              "description": "Title text",
+              "title": "Title",
+              "minimum": 4,
+              "maximum": 10
+            },
+            {
+              "name": "onefilename",
+              "fieldtype": "QAFileChooser",
+              "description": "One files",
+              "title": "Select a File"
+            },
+            {
+              "name": "an-image",
+              "fieldtype": "QAImage",
+              "description": "A Picture",
+              "title": "Select an Image",
+              "width": 100
+            },
+            {
+              "name": "filename",
+              "fieldtype": "QAFileChooser",
+              "description": "Your files",
+              "title": "Select Files",
+              "repeatable": true,
+              "selectlist": [
+                "Config",
+                "Output",
+                "Log"
+              ]
+            },
+            {
+              "name": "more-image",
+              "fieldtype": "QAImage",
+              "description": "A Picture",
+              "title": "Select an Image",
+              "width": 100,
+              "repeatable": true,
+              "selectlist": [
+                "Icon",
+                "P2",
+                "Etc"
+              ]
+            },
+            {
+              "fieldtype": "QATextView",
+              "description": "Description of this input field",
+              "title": "Description",
+              "name": "description",
+              "required": false,
+              "repeatable": true,
+              "minimum": 2,
+              "maximum": 4
+            }
+          ],
+          "set-name": "entry-spec",
+          "description": "Specify the fields that makup this question",
+          "title": "Entry Specification"
+        }
+      ],
+      "description": "Specification of a set. Below you can fill in the necessary fields required for a description of an input field.",
+      "title": "Set Specification",
+      "page-name": "page1"
+    },
+    {
+      "sets": [
+        {
+          "questions": [
+            {
+              "required": false,
+              "name": "title",
+              "description": "Title text",
+              "title": "Title",
+              "fieldtype": "QAEntry"
+            },
+            {
+              "fieldtype": "QASwitch",
+              "default": false,
+              "title": "Required",
+              "description": "Required input",
+              "name": "required",
+              "required": false
+            },
+            {
+              "default": false,
+              "fieldtype": "QASwitch",
+              "title": "Encode",
+              "description": "Encode input value before returning",
+              "required": false,
+              "name": "encode"
+            }
+          ],
+          "set-name": "entry-spec",
+          "description": "Specify the fields that makup this question",
+          "title": "Entry Specification"
+        }
+      ],
+      "description": "Something new.",
+      "title": "2nd Specification",
+      "page-name": "page2"
+    },
+    {
+      "sets": [
+        {
+          "questions": [
+            {
+              "required": true,
+              "name": "name",
+              "fieldtype": "QAEntry",
+              "title": "Name",
+              "description": "Key of this input fieldtype"
+            },
+            {
+              "name": "fieldtype",
+              "fieldlist": [
+                "QAEntry",
+                "QATextView",
+                "QASwitch",
+                "QAComboBox",
+                "QARadioButton",
+                "QACheckButton",
+                "QAToggleButton"
+              ],
+              "fieldtype": "QAComboBox",
+              "default": "QAEntry",
+              "title": "Field",
+              "description": "Type of input field",
+              "action": "show-select1"
+            }
+          ],
+          "set-name": "somespec",
+          "description": "Specify the fields that makup this question",
+          "title": "Entry Specification"
+        }
+      ],
+      "description": "Something else.",
+      "title": "3rd Specification",
+      "page-name": "page3"
+    }
+  ]
+}

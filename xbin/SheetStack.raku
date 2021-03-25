@@ -231,11 +231,14 @@ $qa-types.qa-save( 'QAManagerSetDialog', $user-data, :userdata);
 
 # get types instance and modify some path for tests to come and also some
 # user methods to handle checks and actions
-my QA::Types $qa-types .= instance;
-$qa-types.data-file-type = QAYAML;
-$qa-types.cfgloc-userdata = 'xbin/Data';
-$qa-types.cfgloc-category = 'xbin/Data/Categories';
-$qa-types.cfgloc-sheet = 'xbin/Data/Sheets';
+
+given my QA::Types $qa-types {
+  .data-file-type(QAJSON);
+  .cfgloc-userdata('xbin/Data');
+  .cfgloc-sheet('xbin/Data/Sheets');
+}
+
+$qa-types .= instance;
 $qa-types.set-check-handler( 'check-exclam', $eh, 'check-char', :char<!>);
 $qa-types.set-action-handler( 'show-select1', $eh, 'fieldtype-action1');
 $qa-types.set-action-handler(
@@ -243,15 +246,12 @@ $qa-types.set-action-handler(
 );
 
 
-my Gnome::Gtk3::Grid $grid .= new;
-
 given my Gnome::Gtk3::Window $top-window .= new {
   .set-title('Notebook Sheet Test');
   .register-signal( $eh, 'exit-app', 'destroy');
 #  .set-size-request( 300, 1);
 #  .window-resize( 300, 1);
   .set-border-width(20);
-  .container-add($grid);
 }
 
 my Gnome::Gtk3::Label $description .= new(:text(''));
@@ -264,7 +264,12 @@ $description.set-markup(Q:to/EOLABEL/);
   EOLABEL
 
 
+my Gnome::Gtk3::Button $dialog-button .= new(:label<QAStack>);
+$dialog-button.register-signal( $eh, 'show-stack', 'clicked');
+
+my Gnome::Gtk3::Grid $grid .= new;
 $grid.grid-attach( $description, 0, 0, 1, 1);
+$grid.grid-attach( $dialog-button, 0, 1, 1, 1);
 
 #`{{
 my Gnome::Gtk3::Button $dialog-button .= new(:label<QADialog>);
@@ -276,16 +281,13 @@ $grid.grid-attach( $dialog-button, 0, 1, 1, 1);
 $dialog-button.register-signal( $eh, 'show-notebook', 'clicked');
 }}
 
-my Gnome::Gtk3::Button $dialog-button .= new(:label<QAStack>);
-$grid.grid-attach( $dialog-button, 0, 1, 1, 1);
-$dialog-button.register-signal( $eh, 'show-stack', 'clicked');
-
 #`{{
 my Gnome::Gtk3::Button $dialog-button .= new(:label<QAAssistant>);
 $grid.grid-attach( $dialog-button, 0, 1, 1, 1);
 $dialog-button.register-signal( $eh, 'show-assistant', 'clicked');
 }}
 
+$top-window.container-add($grid);
 $top-window.show-all;
 
 Gnome::Gtk3::Main.new.gtk-main;

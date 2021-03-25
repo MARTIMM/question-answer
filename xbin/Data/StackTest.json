@@ -1,5 +1,18 @@
 {
+  "page2": {
+    "entry-spec": {
+      "encode": true
+    },
+    "QAManagerDialogs": {
+      "entry-spec": {
+      }
+    }
+  },
   "page3": {
+    "somespec": {
+      "name": "uytuytuyt",
+      "fieldtype": "QATextView"
+    },
     "QASomething": {
       "somespec": {
       }
@@ -9,12 +22,18 @@
     "QAManagerDialogs": {
       "set-spec": {
       }
-    }
-  },
-  "page2": {
-    "QAManagerDialogs": {
-      "entry-spec": {
-      }
+    },
+    "entry-spec": {
+      "name": "gfdgfdgfd",
+      "more-image": [
+        {
+          "Icon": "/home/marcel/Languages/Raku/Projects/Library/Old/I/p1.jpg"
+        }
+      ],
+      "spinbutton": -0.997e0,
+      "onefilename": "/home/marcel/Languages/Raku/Projects/Library/Old/I/p0.jpg",
+      "description": "jhg jg",
+      "title": "hgf mnb b"
     }
   }
 }
