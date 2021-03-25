@@ -11,6 +11,7 @@ See [semantic versioning](http://semver.org/). Please note point 4. on that page
 #### 2021-03-16 0.14.3
 * Add `.cfg-root()` to **QA::Types**. Also not store anymore in QAManager environment. By default only in program config or in a root set by cfg-root(). Also tried to set dirs specific for windows using `$*HOME/dataDir`.
 * Bugfixes.
+  * Name fields of sets and pages where not changed everywhere. It is now `set-name` and `page-name` resp.
   * `QA::Gui::Value.add-row()` must also push an empty value on the users array.
 
 #### 2021-01-15 0.14.2
