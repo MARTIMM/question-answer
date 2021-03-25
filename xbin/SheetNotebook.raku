@@ -12,12 +12,12 @@ use Gnome::Gtk3::Button;
 use Gnome::Gtk3::Label;
 
 use QA::Gui::SheetNotebook;
-use QA::Gui::Frame;
-use QA::Gui::Value;
+#use QA::Gui::Frame;
+#use QA::Gui::Value;
 use QA::Types;
-use QA::Question;
+#use QA::Question;
 
-use Gnome::N::X;
+#use Gnome::N::X;
 #Gnome::N::debug(:on);
 
 #-------------------------------------------------------------------------------
@@ -60,9 +60,6 @@ class MyWidget does QA::Gui::Value {
   #---------
   method change-label ( :_widget($button) ) {
     $button.set-label((($button.get-label // '0').Int + 1).Str);
-#    my Str $l = $button.get-label // '0';
-#    my Int $i = $l.Int + 1;
-#    $button.set-label("$i");
 
     my ( $n, $row ) = $button.get-name.split(':');
     $row .= Int;
@@ -236,7 +233,6 @@ given my QA::Types $qa-types {
   .data-file-type(QAJSON);
   .cfgloc-userdata('xbin/Data');
   .cfgloc-sheet('xbin/Data/Sheets');
-#  .cfgloc-set();
 }
 
 # Now we can set some more in the current instance after
@@ -249,7 +245,6 @@ $qa-types.set-action-handler(
 );
 
 
-my Gnome::Gtk3::Grid $grid .= new;
 
 given my Gnome::Gtk3::Window $top-window .= new {
   .set-title('Notebook Sheet Test');
@@ -270,16 +265,18 @@ $description.set-markup(Q:to/EOLABEL/);
   EOLABEL
 
 
-$grid.grid-attach( $description, 0, 0, 1, 1);
-
 #`{{
 my Gnome::Gtk3::Button $dialog-button .= new(:label<QADialog>);
 $grid.grid-attach( $dialog-button, 0, 1, 1, 1);
 $dialog-button.register-signal( $eh, 'show-dialog', 'clicked');
 }}
 my Gnome::Gtk3::Button $dialog-button .= new(:label<QANotebook>);
-$grid.grid-attach( $dialog-button, 0, 1, 1, 1);
 $dialog-button.register-signal( $eh, 'show-notebook', 'clicked');
+
+
+my Gnome::Gtk3::Grid $grid .= new;
+$grid.grid-attach( $description, 0, 0, 1, 1);
+$grid.grid-attach( $dialog-button, 0, 1, 1, 1);
 
 #`{{
 my Gnome::Gtk3::Button $dialog-button .= new(:label<QAStack>);
@@ -291,6 +288,7 @@ $grid.grid-attach( $dialog-button, 0, 1, 1, 1);
 $dialog-button.register-signal( $eh, 'show-assistant', 'clicked');
 }}
 
+$top-window.container-add($grid);
 $top-window.show-all;
 
 Gnome::Gtk3::Main.new.gtk-main;
