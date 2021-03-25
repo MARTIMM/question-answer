@@ -145,7 +145,8 @@ method !set-values ( ) {
 
       # set value in field widget
       if $!question.selectlist.defined {
-        my Str ( $select-item, $input) = @values[$row].kv;
+        # no types, can be anything and undefined
+        my ( $select-item, $input) = @values[$row].kv;
         self.set-value( $!input-widgets[$row], $input);
         self!check-value( $!input-widgets[$row], $row);
 
