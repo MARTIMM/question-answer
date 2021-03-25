@@ -1,55 +1,49 @@
 {
-  "page1": {
-    "QAManagerDialogs": {
-      "set-spec": {
-        "name": "fgh",
-        "description": "cvbdfg dfxc xcv cv_bcévb",
-        "more-image": [
-          {
-            "Icon": "/home/marcel/Pictures/01-queens-princess-vintage.adapt.470.1.jpg"
-          }
-        ],
-        "check": [
-          "Purple",
-          "Orange"
-        ],
-        "onefilename": "/home/marcel/Videos/simplescreenrecorder-2020-09-23_21.59.23.mkv",
-        "radio": "Classic FM",
-        "title": "123sdf",
-        "an-image": "/home/marcel/Pictures/Pinterest/827d804fdad133e86501a7e0055498ed.jpg",
-        "filename": [
-          {
-            "Config": "/home/marcel/Pictures/Henrikje & Peter.zip"
-          },
-          {
-            "Output": "/home/Data/AC-Ryan-disk-Film/Komedie/Dumb and Dumber/Dumb and Dumber (Divx).avi"
-          }
-        ]
-      }
+  "page2": {
+    "entry-spec": {
+      "callback": "",
+      "name": "asda",
+      "tooltip": [
+        {
+          "tt1": "vbn"
+        },
+        "",
+        "",
+        "",
+        ""
+      ],
+      "invisible": true,
+      "mywidget": "3"
     }
   },
-  "page2": {
-    "QAManagerDialogs": {
-      "entry-spec": {
-        "invisible": false,
-        "tooltip": [
-          {
-            "tt1": "qweqwe"
-          }
-        ],
-        "callback": "fg",
-        "maximum": "8",
-        "minimum": "3",
-        "default": "dfg",
-        "fieldtype": "QARadioButton",
-        "example": "",
-        "encode": false,
-        "required": true,
-        "description": "",
-        "name": "fgh",
-        "title": "df",
-        "mywidget": "15"
-      }
+  "page1": {
+    "set-spec": {
+      "check": [
+        "Purple"
+      ],
+      "name": "cvb",
+      "an-image": "/home/marcel/Languages/Raku/Projects/Library/Old/window-icon.jpg",
+      "title": "qwe asd d",
+      "onefilename": "/home/marcel/Languages/Raku/Projects/Library/Old/I/FaceApp_1608029951398.jpg",
+      "radio": "Pop 90-ies",
+      "description": "vbn vbn bvn\t",
+      "more-image": [
+        {
+          "Icon": "/home/marcel/Languages/Raku/Projects/Library/Old/I/p2.jpg"
+        },
+        {
+          "P2": "/home/marcel/Languages/Raku/Projects/Library/Old/I/p0.jpg"
+        },
+        {
+          "Etc": "/home/marcel/Languages/Raku/Projects/Library/Old/I/p1.jpg"
+        },
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]
     }
   }
 }

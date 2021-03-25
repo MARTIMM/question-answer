@@ -59,7 +59,7 @@ class MyWidget does QA::Gui::Value {
 
   #---------
   method change-label ( :_widget($button) ) {
-    $button.set-label(($button.get-label // '0').Int + 1);
+    $button.set-label((($button.get-label // '0').Int + 1).Str);
 #    my Str $l = $button.get-label // '0';
 #    my Int $i = $l.Int + 1;
 #    $button.set-label("$i");
@@ -88,7 +88,7 @@ class EH {
 
   method show-notebook ( ) {
     # important to initialize here because destroy of dialogs native object
-    # destroyes everything on it including this objects native objects.
+    # destroys everything on it including this objects native objects.
     # we need to rebuild it everytime the dialog is (re)run.
     my QA::Types $qa-types .= instance;
     $qa-types.set-widget-object( 'use-my-widget', MyWidget.new);
@@ -133,6 +133,9 @@ class EH {
 
   #---------
   method show-hash ( Hash $h, Int :$i is copy ) {
+
+note "\n$h.gist()";
+note ' ';
     if $i.defined {
       $i++;
     }
@@ -228,11 +231,17 @@ $qa-types.qa-save( 'QAManagerSetDialog', $user-data, :userdata);
 
 # get types instance and modify some path for tests to come and also some
 # user methods to handle checks and actions
-my QA::Types $qa-types .= instance;
-$qa-types.data-file-type = QAYAML;
-$qa-types.cfgloc-userdata = 'xbin/Data';
-$qa-types.cfgloc-category = 'xbin/Data/Categories';
-$qa-types.cfgloc-sheet = 'xbin/Data/Sheets';
+
+given my QA::Types $qa-types {
+  .data-file-type(QAJSON);
+  .cfgloc-userdata('xbin/Data');
+  .cfgloc-sheet('xbin/Data/Sheets');
+#  .cfgloc-set();
+}
+
+# Now we can set some more in the current instance after
+# directories are created
+$qa-types .= instance;
 $qa-types.set-check-handler( 'check-exclam', $eh, 'check-char', :char<!>);
 $qa-types.set-action-handler( 'show-select1', $eh, 'fieldtype-action1');
 $qa-types.set-action-handler(
