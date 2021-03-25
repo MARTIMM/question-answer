@@ -389,6 +389,7 @@ method create-widget ( Str $widget-name, Int $row --> Any ) { ... }
 #-------------------------------------------------------------------------------
 method add-row ( Gnome::Gtk3::ToolButton :_widget($tb), Int :$_handler-id ) {
 
+#Gnome::N::debug(:on);
   # modify this buttons icon
   my Gnome::Gtk3::Image $image .= new;
   $image.set-from-icon-name( 'list-remove', GTK_ICON_SIZE_BUTTON);
@@ -400,6 +401,8 @@ method add-row ( Gnome::Gtk3::ToolButton :_widget($tb), Int :$_handler-id ) {
 
   # create a new row
   self!create-input-row($!input-widgets.elems);
+  $!user-data-set-part{$!widget-name}.push('');
+#  note 'add nrows: ', $!input-widgets.elems;
 }
 
 #-------------------------------------------------------------------------------
@@ -407,6 +410,7 @@ method delete-row ( Gnome::Gtk3::ToolButton :_widget($tb), Int :$_handler-id ) {
 
   my ( $x, $row ) = $tb.get-name.split(':');
   $row .= Int;
+#note "del nr: $row, $!input-widgets.elems()";
 
   # all toolbuttons below this one must change its name
   loop ( my Int $r = $row.Int + 1; $r < $!input-widgets.elems; $r++ ) {
@@ -414,13 +418,17 @@ method delete-row ( Gnome::Gtk3::ToolButton :_widget($tb), Int :$_handler-id ) {
       :native-object($!grid.get-child-at( QAButtonColumn, $r))
     );
     my ( $x, $row) = $tbn.get-name.split(':');
-    $tbn.set-name('tb:' ~ ($row.Int - 1).Str);
+#print "rename $row of $tbn.get-name() to ";
+    $tbn.set-name("tb:{$row.Int - 1}");
+#note $tbn.get-name;
   }
 
   # delete a row from grid, an item from the widget and user data array
   $!grid.remove-row($row);
+#note "A: $row, $!input-widgets.elems(), $!input-widgets.gist()";
   $!input-widgets.splice( $row, 1);
-  $!user-data-set-part{$!widget-name}.splice( $row, 1);;
+#note "U: $row, $!user-data-set-part.elems(), $!user-data-set-part.gist()";
+  $!user-data-set-part{$!widget-name}.splice( $row, 1);
 
   # rename input widgets
   $row = 0;
