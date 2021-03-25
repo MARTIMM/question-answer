@@ -1,6 +1,6 @@
 #!/usr/bin/env raku
 
-use v6;
+use v6.d;
 
 use Gnome::Gtk3::Dialog;
 use Gnome::Gtk3::Main;
@@ -10,13 +10,7 @@ use Gnome::Gtk3::Button;
 use Gnome::Gtk3::Label;
 
 use QA::Gui::SheetSimple;
-use QA::Gui::Frame;
-use QA::Gui::Value;
 use QA::Types;
-use QA::Question;
-
-#use Gnome::N::X;
-#Gnome::N::debug(:on);
 
 #-------------------------------------------------------------------------------
 class EH {
