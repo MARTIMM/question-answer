@@ -12,97 +12,10 @@ use Gnome::Gtk3::Button;
 use Gnome::Gtk3::Label;
 
 use QA::Gui::SheetStack;
-use QA::Gui::Frame;
-use QA::Gui::Value;
 use QA::Types;
-use QA::Question;
-
-use Gnome::N::X;
-#Gnome::N::debug(:on);
-
-
-#-------------------------------------------------------------------------------
-# A user definable widget
-class MyWidget does QA::Gui::Value {
-
-  #---------
-  method init-widget (
-    QA::Question:D :$!question, Hash:D :$!user-data-set-part
-  ) {
-
-    # widget is not repeatable
-    $!question.repeatable = False;
-
-    self.initialize;
-  }
-
-  #---------
-  method create-widget ( Str $widget-name, Int $row --> Any ) {
-
-    # create a text input widget
-    my Gnome::Gtk3::Button $button .= new;
-    $button.set-label('0');
-    $button.set-hexpand(False);
-    $button.register-signal( self, 'change-label', 'clicked');
-
-    $button
-  }
-
-  #---------
-  method get-value ( $button --> Any ) {
-    $button.get-label;
-  }
-
-  #---------
-  method set-value ( Any:D $button, $label ) {
-    $button.set-label($label);
-  }
-
-  #---------
-  method change-label ( :_widget($button) ) {
-    $button.set-label(($button.get-label // '0').Int + 1);
-#    my Str $l = $button.get-label // '0';
-#    my Int $i = $l.Int + 1;
-#    $button.set-label("$i");
-
-    my ( $n, $row ) = $button.get-name.split(':');
-    $row .= Int;
-    self.process-widget-signal( $button, $row, :!do-check);
-  }
-}
-
 
 #-------------------------------------------------------------------------------
 class EH {
-
-#`{{
-  method show-dialog ( ) {
-    my QA::Gui::SheetSimple $sheet-dialog .= new(
-      :sheet-name<DialogTest>,
-      :!show-cancel-warning, :!save-data
-    );
-
-    my Int $response = $sheet-dialog.show-sheet;
-    self.display-result( $response, $sheet-dialog);
-  }
-}}
-
-#`{{
-  method show-notebook ( ) {
-    # important to initialize here because destroy of dialogs native object
-    # destroyes everything on it including this objects native objects.
-    # we need to rebuild it everytime the dialog is (re)run.
-    my QA::Types $qa-types .= instance;
-    $qa-types.set-widget-object( 'use-my-widget', MyWidget.new);
-
-    my QA::Gui::SheetNotebook $sheet-dialog .= new(
-      :sheet-name<NotebookTest>, :show-cancel-warning, :save-data
-    );
-
-    my Int $response = $sheet-dialog.show-sheet;
-    self.display-result( $response, $sheet-dialog);
-  }
-}}
 
   method show-stack ( ) {
     my QA::Gui::SheetStack $sheet-dialog .= new(
@@ -113,18 +26,6 @@ class EH {
     my Int $response = $sheet-dialog.show-sheet;
     self.display-result( $response, $sheet-dialog);
   }
-
-#`{{
-  method show-assistant ( ) {
-    my QA::Gui::SheetDialog $sheet-dialog .= new(
-      :sheet-name<AssistantTest>,
-      :show-cancel-warning, :save-data
-    );
-
-#    my Int $response = $sheet-dialog.show-dialog;
-#    self.display-result( $response, $sheet-dialog);
-  }
-}}
 
   #---------
   method display-result ( Int $response, QA::Gui::Dialog $dialog ) {
