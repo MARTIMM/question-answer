@@ -11,51 +11,26 @@
 @define-color field-ok-color #00ff44;
 @define-color field-fail-color #dd4400;
 
-.background {
-	/*background-color: #480044;*/
-	color: blue;
-}
 
-/*
-.dontCare {
-  border-color: #0088ff;
-  border-width: 1px;
-}
-*/
 
-.fieldNormal {
+.QAStatusNormal {
 /*  border-color: @field-normal-color;*/
   border-width: 1px;
 }
 
-.fieldFail {
+.QAStatusOk {
+  border-width: 1px;
+}
+
+.QAStatusFail {
   border-color: @field-fail-color;
   border-width: 1px;
 }
 
-.fieldOk {
-/*  border-color: @field-ok-color;*/
-  border-width: 1px;
-}
-
-textview.fieldFail {
+.QATextView.QAStatusFail {
   background-color: @field-fail-color;
 }
 
-grid {
-  background-color: #efefff;
-  color: @regular-text-color;
-}
-
-.regularText {
-	color: @regular-text-color;
-
-  /*font-variant: normal;
-  font-style: normal;
-  font-weight: normal;
-  font-stretch: normal;
-  font-size: normal;*/
-}
 
 /*
   frame
@@ -63,7 +38,7 @@ grid {
   ├── <label widget>
   ╰── <child>
 */
-frame label {
+.QAFrame label {
 	color: @title-text-color;
 
   font-variant: small-caps;
@@ -73,27 +48,7 @@ frame label {
   /*font-size: 0.6em;*/
 }
 
-.descriptionText {
-	color: @description-text-color;
-
-  font-variant: normal;
-  font-style: normal;
-  font-weight: 400;
-  font-stretch: normal;
-  /*font-size: 0.3em;*/
-}
-
-.messageText {
-	color: @message-text-color;
-
-  font-variant: normal;
-  font-style: normal;
-  font-weight: normal;
-  font-stretch: normal;
-  /*font-size: 0.3em;*/
-}
-
-radiobutton label {
+.QARadioButton label {
 	color: @label-text-color;
 
   font-variant: normal;
@@ -103,7 +58,7 @@ radiobutton label {
   /*font-size: 0.3em;*/
 }
 
-checkbutton label {
+.QACheckButton label {
 	color: @label-text-color;
 
   font-variant: normal;
@@ -113,15 +68,15 @@ checkbutton label {
   /*font-size: medium;*/
 }
 
-statusbar {
+.QAStatusbar {
 	background-color: #cccccc;
 }
 
-statusbar frame {
+.QAStatusbar frame {
   margin: 0 0 0 0;
 }
 
-statusbar label {
+.QAStatusbar label {
 	color: #000000;
 
   font-variant: normal;
@@ -129,7 +84,7 @@ statusbar label {
   font-size: smaller;
 }
 
-.labelText {
+.QALabel {
 	color: @label-text-color;
 
   font-variant: normal;
@@ -140,20 +95,25 @@ statusbar label {
 }
 
 /*
-container {
-  border-color: #aaaaaa;
-  border-width: 1px;
-}
-*/
+.descriptionText {
+	color: @description-text-color;
 
-/*
-textview {
-  background-color: #ff8000;
+  font-variant: normal;
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: normal;
 }
-*/
 
-/* example background image
-grid {
-  background-image: url('file:///home/marcel/Languages/Raku/Projects/qa-manager/xt/Data/f1.png');
+.regularText {
+	color: @regular-text-color;
+}
+
+.messageText {
+	color: @message-text-color;
+
+  font-variant: normal;
+  font-style: normal;
+  font-weight: normal;
+  font-stretch: normal;
 }
 */
