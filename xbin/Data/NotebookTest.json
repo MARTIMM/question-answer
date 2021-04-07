@@ -1,32 +1,7 @@
 {
-  "page2": {
-    "entry-spec": {
-      "callback": "",
-      "name": "asda",
-      "tooltip": [
-        {
-          "tt1": "vbn"
-        },
-        "",
-        "",
-        "",
-        ""
-      ],
-      "invisible": true,
-      "mywidget": "3"
-    }
-  },
   "page1": {
     "set-spec": {
-      "check": [
-        "Purple"
-      ],
-      "name": "cvb",
-      "an-image": "/home/marcel/Languages/Raku/Projects/Library/Old/window-icon.jpg",
       "title": "qwe asd d",
-      "onefilename": "/home/marcel/Languages/Raku/Projects/Library/Old/I/FaceApp_1608029951398.jpg",
-      "radio": "Pop 90-ies",
-      "description": "vbn vbn bvn\t",
       "more-image": [
         {
           "Icon": "/home/marcel/Languages/Raku/Projects/Library/Old/I/p2.jpg"
@@ -37,13 +12,75 @@
         {
           "Etc": "/home/marcel/Languages/Raku/Projects/Library/Old/I/p1.jpg"
         },
+        {
+          "Icon": "/home/Data/Fotos/.Old/Beauty/Jolanda/FaceApp/FaceApp_1602921695237.jpg"
+        },
+        {
+          "Icon": "/home/Data/Fotos/.Old/Beauty/Jolanda/FaceApp/FaceApp_1604559632015.jpg"
+        },
+        {
+          "Icon": "/home/marcel/Languages/Raku/Projects/Library/Old/I/FaceApp_1608025274826.jpg"
+        },
+        {
+          "Icon": "/home/Data/Fotos/.Old/Beauty/Jolanda/FaceApp/FaceApp_1604560471876.jpg"
+        },
+        {
+          "Icon": "/home/Data/Fotos/.Old/Beauty/Jolanda/FaceApp/FaceApp_1604559988945.jpg"
+        },
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
         "",
         "",
         "",
         "",
         "",
         ""
+      ],
+      "onefilename": "/home/marcel/Languages/Raku/Projects/Library/Old/I/FaceApp_1608029951398.jpg",
+      "an-image": "/home/marcel/Languages/Raku/Projects/Library/Old/window-icon.jpg",
+      "description": "vbn vbn bvn\t",
+      "radio": "Pop 90-ies",
+      "name": "cvb",
+      "check": [
+        "Purple"
       ]
+    }
+  },
+  "page2": {
+    "entry-spec": {
+      "tooltip": [
+        {
+          "tt1": "vbn"
+        },
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "invisible": true,
+      "mywidget": "3",
+      "name": "asda",
+      "callback": ""
     }
   }
 }

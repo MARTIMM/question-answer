@@ -178,7 +178,7 @@
               "default": "QAEntry",
               "title": "Field",
               "description": "Type of input field",
-              "action": "show-select1
+              "action": "show-select1"
             }
           ],
           "set-name": "somespec",

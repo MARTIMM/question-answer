@@ -5,8 +5,8 @@
       }
     },
     "somespec": {
-      "fieldtype": "QATextView",
-      "name": "uytuytuyt"
+      "name": "uytuytuyt",
+      "fieldtype": "QATextView"
     }
   },
   "page2": {
@@ -24,22 +24,26 @@
       }
     },
     "entry-spec": {
+      "spinbutton": -0.997e0,
+      "more-image": [
+        {
+          "Icon": "/home/marcel/Languages/Raku/Projects/Library/Old/I/p1.jpg"
+        },
+        {
+          "Etc": "/home/marcel/Languages/Raku/Projects/Library/Old/I/p3.jpg"
+        },
+        ""
+      ],
+      "an-image": "/home/marcel/Languages/Raku/Projects/Library/Old/I/p2.jpg",
+      "radio": "Pop 90-ies",
+      "name": "gfdgfdgfd",
       "check": [
         "Purple",
         "Orange"
       ],
-      "radio": "Pop 90-ies",
       "title": "hgf mnb b",
-      "name": "gfdgfdgfd",
-      "more-image": [
-        {
-          "Icon": "/home/marcel/Languages/Raku/Projects/Library/Old/I/p1.jpg"
-        }
-      ],
-      "onefilename": "/home/marcel/Languages/Raku/Projects/Library/Old/I/p1.jpg",
       "description": "jhg jg",
-      "an-image": "/home/marcel/Languages/Raku/Projects/Library/Old/I/p2.jpg",
-      "spinbutton": -0.997e0
+      "onefilename": "/home/marcel/Languages/Raku/Projects/Library/Old/I/p1.jpg"
     }
   }
 }

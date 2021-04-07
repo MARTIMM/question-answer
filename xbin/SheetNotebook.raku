@@ -246,15 +246,6 @@ $qa-types.set-action-handler(
 
 
 
-given my Gnome::Gtk3::Window $top-window .= new {
-  .set-title('Notebook Sheet Test');
-  .register-signal( $eh, 'exit-app', 'destroy');
-#  .set-size-request( 300, 1);
-#  .window-resize( 300, 1);
-  .set-border-width(20);
-  .container-add($grid);
-}
-
 my Gnome::Gtk3::Label $description .= new(:text(''));
 $description.set-markup(Q:to/EOLABEL/);
 
@@ -288,7 +279,15 @@ $grid.grid-attach( $dialog-button, 0, 1, 1, 1);
 $dialog-button.register-signal( $eh, 'show-assistant', 'clicked');
 }}
 
-$top-window.container-add($grid);
-$top-window.show-all;
+given my Gnome::Gtk3::Window $top-window .= new {
+  .set-title('Notebook Sheet Test');
+  .register-signal( $eh, 'exit-app', 'destroy');
+#  .set-size-request( 300, 1);
+#  .window-resize( 300, 1);
+  .set-border-width(20);
+  .container-add($grid);
+  .show-all;
+}
+
 
 Gnome::Gtk3::Main.new.gtk-main;
