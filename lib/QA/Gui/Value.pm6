@@ -349,21 +349,22 @@ method !set-status-hint ( $widget, InputStatusHint $status ) {
   );
 
   # remove classes first
-  $context.remove-class('dontcare');
-  $context.remove-class('fieldOk');
-  $context.remove-class('fieldFail');
+  #$context.remove-class('dontcare');
+  $context.remove-class('QAStatusNormal');
+  $context.remove-class('QAStatusOk');
+  $context.remove-class('QAStatusFail');
 
   # add class depending on status
   if $status ~~ QAStatusNormal {
-    $context.add-class('fieldNormal');
+    $context.add-class('QAStatusNormal');
   }
 
   elsif $status ~~ QAStatusOk {
-    $context.add-class('fieldOk');
+    $context.add-class('QAStatusOk');
   }
 
   elsif $status ~~ QAStatusFail {
-    $context.add-class('fieldFail');
+    $context.add-class('QAStatusFail');
   }
 
   else {
