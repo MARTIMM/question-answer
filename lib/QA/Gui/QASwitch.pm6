@@ -1,6 +1,7 @@
 use v6.d;
 
 use Gnome::Gtk3::Switch;
+use Gnome::Gtk3::StyleContext;
 
 use QA::Types;
 use QA::Question;
@@ -18,6 +19,11 @@ submethod BUILD (
   $!question.repeatable = False;
 
   self.initialize;
+
+  my Gnome::Gtk3::StyleContext $context .= new(
+    :native-object(self.get-style-context)
+  );
+  $context.add-class('QASwitch');
 }
 
 #-------------------------------------------------------------------------------

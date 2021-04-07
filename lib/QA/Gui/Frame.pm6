@@ -2,7 +2,7 @@ use v6;
 
 #-------------------------------------------------------------------------------
 use Gnome::Gtk3::Frame;
-#use Gnome::Gtk3::StyleContext;
+use Gnome::Gtk3::StyleContext;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::Frame;
@@ -22,10 +22,10 @@ submethod BUILD ( Str :$label = '' ) {
   self.widget-set-margin-bottom(3);
   #self.set-border-width(5);
   self.widget-set-hexpand(True);
-#  my Gnome::Gtk3::StyleContext $context .= new(
-#    :native-object(self.get-style-context)
-#  );
-#  $context.add-class('titleText');
-#note "frame set label: $label";
   self.set-label($label) if ?$label;
+
+  my Gnome::Gtk3::StyleContext $context .= new(
+    :native-object(self.get-style-context)
+  );
+  $context.add-class('QAFrame');
 }

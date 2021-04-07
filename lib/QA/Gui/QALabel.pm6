@@ -31,6 +31,6 @@ submethod BUILD ( ) {
 
     Gnome::Gtk3::StyleContext.new(
       :native-object(.get-style-context)
-    ).add-class('labelText');
+    ).add-class('QALabel');
   }
 }

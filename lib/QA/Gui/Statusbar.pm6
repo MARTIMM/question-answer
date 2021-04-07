@@ -1,7 +1,9 @@
 use v6.d;
 
 use Gnome::N::GlibToRakuTypes;
+
 use Gnome::Gtk3::Statusbar;
+use Gnome::Gtk3::StyleContext;
 
 #use QA::Types;
 #use QA::Gui::Frame;
@@ -34,6 +36,11 @@ submethod BUILD ( ) {
   self.register-signal( self, 'invalidate', 'destroy');
 
   %cids = %();
+
+  my Gnome::Gtk3::StyleContext $context .= new(
+    :native-object(self.get-style-context)
+  );
+  $context.add-class('QAStatusbar');
 }
 
 #-------------------------------------------------------------------------------

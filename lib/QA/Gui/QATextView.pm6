@@ -6,6 +6,7 @@ use Gnome::Gtk3::Enums;
 use Gnome::Gtk3::TextView;
 use Gnome::Gtk3::TextBuffer;
 use Gnome::Gtk3::TextIter;
+use Gnome::Gtk3::StyleContext;
 
 use QA::Types;
 use QA::Question;
@@ -22,6 +23,11 @@ submethod BUILD (
 
   $!question.repeatable = False;
   self.initialize;
+
+  my Gnome::Gtk3::StyleContext $context .= new(
+    :native-object(self.get-style-context)
+  );
+  $context.add-class('QATextView');
 }
 
 #-------------------------------------------------------------------------------

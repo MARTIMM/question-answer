@@ -2,6 +2,7 @@ use v6.d;
 
 use Gnome::Gtk3::CheckButton;
 use Gnome::Gtk3::Grid;
+use Gnome::Gtk3::StyleContext;
 
 use QA::Types;
 use QA::Question;
@@ -17,6 +18,11 @@ submethod BUILD (
 ) {
 
   $!question.repeatable = False;
+
+  my Gnome::Gtk3::StyleContext $context .= new(
+    :native-object(self.get-style-context)
+  );
+  $context.add-class('QACheckButton');
 
   self.initialize;
 }

@@ -3,6 +3,7 @@ use v6.d;
 use Gnome::Gdk3::Events;
 
 use Gnome::Gtk3::Entry;
+use Gnome::Gtk3::StyleContext;
 
 use QA::Types;
 use QA::Gui::Frame;
@@ -18,6 +19,11 @@ submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part
 ) {
   self.initialize;
+
+  my Gnome::Gtk3::StyleContext $context .= new(
+    :native-object(self.get-style-context)
+  );
+  $context.add-class('QAEntry');
 }
 
 #-------------------------------------------------------------------------------

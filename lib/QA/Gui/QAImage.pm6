@@ -7,6 +7,7 @@ use Gnome::Gtk3::Image;
 use Gnome::Gtk3::FileFilter;
 use Gnome::Gtk3::FileChooser;
 use Gnome::Gtk3::FileChooserButton;
+use Gnome::Gtk3::StyleContext;
 
 use QA::Types;
 use QA::Question;
@@ -20,8 +21,12 @@ also does QA::Gui::Value;
 submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part
 ) {
-
   self.initialize;
+
+  my Gnome::Gtk3::StyleContext $context .= new(
+    :native-object(self.get-style-context)
+  );
+  $context.add-class('QAImage');
 }
 
 #-------------------------------------------------------------------------------

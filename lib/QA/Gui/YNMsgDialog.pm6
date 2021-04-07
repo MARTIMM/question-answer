@@ -9,6 +9,7 @@ use Gnome::Gtk3::Enums;
 use Gnome::Gtk3::Dialog;
 use Gnome::Gtk3::MessageDialog;
 use Gnome::Gtk3::Window;
+use Gnome::Gtk3::StyleContext;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::YNMsgDialog;
@@ -44,6 +45,11 @@ submethod BUILD ( *%options ) {
   else {
     self.set-icon($win-icon);
   }
+
+  my Gnome::Gtk3::StyleContext $context .= new(
+    :native-object(self.get-style-context)
+  );
+  $context.add-class('QAYNMsgDialog');
 }
 
 #-------------------------------------------------------------------------------

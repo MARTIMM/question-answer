@@ -12,6 +12,7 @@ use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Button;
 use Gnome::Gtk3::Widget;
 use Gnome::Gtk3::Window;
+use Gnome::Gtk3::StyleContext;
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -55,6 +56,11 @@ submethod BUILD ( ) {
   $content.container-add($!dialog-content);
 #CATCH{.note}}
 #Gnome::N::debug(:off);
+
+  my Gnome::Gtk3::StyleContext $context .= new(
+    :native-object(self.get-style-context)
+  );
+  $context.add-class('QADialog');
 }
 
 #-------------------------------------------------------------------------------

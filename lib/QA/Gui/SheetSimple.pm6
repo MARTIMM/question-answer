@@ -122,10 +122,12 @@ method !set-style ( ) {
   $css-provider.load-from-resource(
     $application-id ~ '/resources/g-resources/QAManager-style.css'
   );
-  my Gnome::Gtk3::StyleContext $style-context .= new;
-  $style-context.add_provider_for_screen(
+  my Gnome::Gtk3::StyleContext $context .= new;
+  $context.add_provider_for_screen(
     Gnome::Gdk3::Screen.new, $css-provider, GTK_STYLE_PROVIDER_PRIORITY_USER
   );
+
+  $context.add-class('QASheetSimple');
 }
 
 #-------------------------------------------------------------------------------
