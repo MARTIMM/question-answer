@@ -32,12 +32,13 @@ submethod new ( |c ) {
 #-------------------------------------------------------------------------------
 submethod BUILD ( ) {
 
+  CATCH {.note;}
+
 #  self.set-dialog-size( 300, 300);
   self.set-keep-above(True);
   self.set-position(GTK_WIN_POS_MOUSE);
 #  self.set-size-request( $width, $height);
 #  self.window-resize( $width, $height);
-
   my Gnome::Glib::Error $e = self.set-icon-from-file(
     %?RESOURCES<icons8-invoice-100.png>.Str
   );
