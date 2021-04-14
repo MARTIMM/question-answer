@@ -285,7 +285,7 @@ given my Gnome::Gtk3::Window $top-window .= new {
 #  .set-size-request( 300, 1);
 #  .window-resize( 300, 1);
   .set-border-width(20);
-  .container-add($grid);
+  .add($grid);
   .show-all;
 }
 

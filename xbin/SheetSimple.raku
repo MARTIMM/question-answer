@@ -102,7 +102,7 @@ my Gnome::Gtk3::Grid $grid .= new;
 $grid.attach( $description, 0, 0, 1, 1);
 $grid.attach( $dialog-button, 0, 1, 1, 1);
 
-$top-window.container-add($grid);
+$top-window.add($grid);
 $top-window.show-all;
 
 Gnome::Gtk3::Main.new.gtk-main;

@@ -79,7 +79,7 @@ method initialize ( ) {
   # the input fields are placed under each other in one column. furthermore,
   # a pulldown can be shown when the input can be categorized.
   $!grid .= new;
-  self.container-add($!grid);
+  self.add($!grid);
   self!create-input-row(0);
 
   # fill in user data

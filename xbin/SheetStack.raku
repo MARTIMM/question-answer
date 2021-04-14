@@ -188,7 +188,7 @@ $grid.grid-attach( $dialog-button, 0, 1, 1, 1);
 $dialog-button.register-signal( $eh, 'show-assistant', 'clicked');
 }}
 
-$top-window.container-add($grid);
+$top-window.add($grid);
 $top-window.show-all;
 
 Gnome::Gtk3::Main.new.gtk-main;

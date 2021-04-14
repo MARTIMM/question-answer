@@ -35,7 +35,7 @@ method create-content( --> Gnome::Gtk3::ScrolledWindow ) {
   my Gnome::Gtk3::ScrolledWindow $page-window .= new;
   $!page-grid .= new;
   $!page-row = 0;
-  $page-window.container-add($!page-grid);
+  $page-window.add($!page-grid);
 
   self!description if $!description;
 
@@ -93,5 +93,5 @@ method !description ( ) {
     .widget-set-margin-start(5);
   }
 
-  $page-frame.container-add($page-descr);
+  $page-frame.add($page-descr);
 }

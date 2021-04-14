@@ -346,7 +346,7 @@ method !textview-field (
   $!question-grid.grid-attach( $frame, 2, $grid-row, 1, 1);
 
   my Gnome::Gtk3::TextView $w .= new;
-  $frame.container-add($w);
+  $frame.add($w);
 
   #$w.set-margin-top(6);
   $w.set-size-request( 1, $question.height // 50);
@@ -401,7 +401,7 @@ method !radiobutton-field (
   # A series of checkbuttons are stored in a grid
   my Gnome::Gtk3::Grid $g .= new;
   $g.set-name('radiobutton-grid');
-  $frame.container-add($g);
+  $frame.add($g);
 
   # user data is stored as a hash to make the check more easily
 #  my Array $v = $!user-data{$set.name}{$question.name} // [];
@@ -437,7 +437,7 @@ method !checkbutton-field (
   # A series of checkbuttons are stored in a grid
   my Gnome::Gtk3::Grid $g .= new;
   $g.set-name('checkbutton-grid');
-  $frame.container-add($g);
+  $frame.add($g);
 
   # user data is stored as a hash to make the check more easily
 #  my Array $v = $!user-data{$set.name}{$question.name} // [];
@@ -560,7 +560,7 @@ method !image-field (
   $w.set-margin-top(3);
   $w.set-tooltip-text($question.tooltip) if ?$question.tooltip;
 
-  $frame.container-add(
+  $frame.add(
     self!field-with-button( self, 'select-image',
     :field-text($file), :field-widget($w)
     )

@@ -65,7 +65,7 @@ submethod BUILD (
   $question-grid.set-border-width(5);
   #$question-grid.set-row-spacing(5);
   $question-grid.set-hexpand(True);
-  $set-frame.container-add($question-grid);
+  $set-frame.add($question-grid);
 
   # place set description at the top of the grid
   my Gnome::Gtk3::Label $description .= new(:text($!set.description));

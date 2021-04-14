@@ -53,7 +53,7 @@ submethod BUILD ( ) {
   my Gnome::Gtk3::Box $content .= new(:native-object(self.get-content-area));
   $content.widget-set-name('dialog-content-area');
   self!cleanup-content($content);
-  $content.container-add($!dialog-content);
+  $content.add($!dialog-content);
 #CATCH{.note}}
 #Gnome::N::debug(:off);
 

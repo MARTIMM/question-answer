@@ -50,7 +50,7 @@ given my Gnome::Gtk3::Window $top-window .= new {
   .window-resize( 300, 1);
 
   my Gnome::Gtk3::Grid $grid .= new;
-  .container-add($grid);
+  .add($grid);
 
   my Gnome::Gtk3::Button $dialog-button .= new(:label<QANotebook>);
   $grid.grid-attach( $dialog-button, 1, 0, 1, 1);
