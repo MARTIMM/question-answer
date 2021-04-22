@@ -43,7 +43,7 @@ submethod BUILD (
 method display ( ) {
 
   # on each row in the provided grid, a label with the question comes on the
-  # left. Then, in the middle, an optional '*' when the it is required to
+  # left. Then, in the middle, an optional '*' when the user is required to
   # provide an answer. And finally on the right, an input widget.
 
   my Str $text = $!question.description // $!question.title ~ ':';
@@ -76,7 +76,7 @@ method display ( ) {
     }
 
     else {
-      note "fail to use QAUserWidget, $!question.userwidget() instantiate";
+      note "failed to use QAUserWidget, $!question.userwidget().init-widget\()";
     }
   }
 
