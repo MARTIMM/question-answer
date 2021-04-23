@@ -1,7 +1,7 @@
 {
   "description": "Question Answer",
   "name": "QA",
-  "version": "0.14.3",
+  "version": "0.14.4",
   "authors": [ "Marcel Timmerman"],
   "tags": [
     "questionnaire", "configuration", "gtk", "question", "answer", "Raku"
@@ -51,6 +51,6 @@
   "test-depends": [ ],
   "build-depends": [ ],
   "resources": [
-    "g-resources/QAManager.gresource"
+    "g-resources/QAManager.gresource", "icons8-invoice-100.png"
   ]
 }
