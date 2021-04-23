@@ -32,13 +32,12 @@ submethod new ( |c ) {
 #-------------------------------------------------------------------------------
 submethod BUILD ( ) {
 
-  CATCH {.note;}
-
 #  self.set-dialog-size( 300, 300);
   self.set-keep-above(True);
   self.set-position(GTK_WIN_POS_MOUSE);
 #  self.set-size-request( $width, $height);
 #  self.window-resize( $width, $height);
+
   my Gnome::Glib::Error $e = self.set-icon-from-file(
     %?RESOURCES<icons8-invoice-100.png>.Str
   );
@@ -49,14 +48,10 @@ submethod BUILD ( ) {
   $!dialog-content.widget-set-hexpand(True);
   $!dialog-content.widget-set-vexpand(True);
 
-#Gnome::N::debug(:on);
-#try {
   my Gnome::Gtk3::Box $content .= new(:native-object(self.get-content-area));
   $content.widget-set-name('dialog-content-area');
   self!cleanup-content($content);
   $content.add($!dialog-content);
-#CATCH{.note}}
-#Gnome::N::debug(:off);
 
   my Gnome::Gtk3::StyleContext $context .= new(
     :native-object(self.get-style-context)
