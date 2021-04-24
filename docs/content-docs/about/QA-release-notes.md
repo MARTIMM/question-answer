@@ -8,6 +8,13 @@ layout: sidebar
 
 See [semantic versioning](http://semver.org/). Please note point 4. on that page: **_Major version zero (0.y.z) is for initial development. Anything may change at any time. The public API should not be considered stable._**
 
+#### 2021-04-24 0.14.5
+* Improved **QA::Gui::Value** and other QA widgets by adding class names. Names are like QAEntry and QAFrame.
+* Bugfixed **QA::Gui::Value**; returned data from repeatable input fields were extended with an empty value each time.
+<!--
+* Label holding question can have Pango markup.
+-->
+
 #### 2021-03-16 0.14.4
 * META6 bugfix. Missing a resource.
 
