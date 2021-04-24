@@ -40,7 +40,7 @@ A set is not stored on disk on its own. A set is used to group a series of quest
 Questions are what it is all about. In short a piece of text to pose the question and a field where the answer can be given. However, more data is needed to fully display a question like what kind of input do we need, are there limits, is there a choice from a set of possibilities etc.
 
 * **action**; A name of a method which can be called on a previously provided object. The method is called when the answer on the question in accepted and saved in the users data.
-* **callback**; A name of a method which can be called on a previously provided object. The handler must check for correctness of the input value for that question.
+* **callback**; A name of a method which can be called on a previously provided object. The handler must check for correctness of the input value for that question and return an error message if test fails.
 * **default**; A default value when no input is provided.
 * **description**; A question. When empty, title is taken.
 * **example**; An example answer/format in light gray in an text field.
