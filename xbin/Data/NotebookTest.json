@@ -1,10 +1,33 @@
 {
+  "page2": {
+    "entry-spec": {
+      "mywidget": "3",
+      "callback": "",
+      "name": "asda",
+      "invisible": true,
+      "tooltip": [
+        {
+          "tt1": "vbn"
+        },
+        {
+          "tt2": "dfgtyu"
+        },
+        ""
+      ]
+    }
+  },
   "page1": {
     "set-spec": {
-      "title": "qwe asd d",
+      "an-image": "/home/Data/Fotos/.Old/Beauty/Jolanda/FaceApp/set 03/FaceApp_1607595817471.jpg",
+      "filename": [
+        {
+          "Output": null
+        }
+      ],
+      "description": "vbn vbn bvn\t",
       "more-image": [
         {
-          "Icon": "/home/marcel/Languages/Raku/Projects/Library/Old/I/p2.jpg"
+          "Etc": "/home/marcel/Languages/Raku/Projects/Library/Old/I/p2.jpg"
         },
         {
           "P2": "/home/marcel/Languages/Raku/Projects/Library/Old/I/p0.jpg"
@@ -27,38 +50,11 @@
         {
           "Icon": "/home/Data/Fotos/.Old/Beauty/Jolanda/FaceApp/FaceApp_1604559988945.jpg"
         },
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        ""
-      ],
-      "onefilename": "/home/marcel/Languages/Raku/Projects/Library/Old/I/FaceApp_1608029951398.jpg",
-      "an-image": "/home/marcel/Languages/Raku/Projects/Library/Old/window-icon.jpg",
-      "description": "vbn vbn bvn\t",
-      "radio": "Pop 90-ies",
-      "name": "cvb",
-      "check": [
-        "Purple"
-      ]
-    }
-  },
-  "page2": {
-    "entry-spec": {
-      "tooltip": [
         {
-          "tt1": "vbn"
+          "Icon": "/home/Data/Fotos/.Old/Beauty/Jolanda/FaceApp/FaceApp_1610611835736.jpg"
+        },
+        {
+          "Icon": "/home/Data/Fotos/.Old/Beauty/Jolanda/FaceApp/set 07/2020-12-10-09-38-59-580.jpg"
         },
         "",
         "",
@@ -66,21 +62,15 @@
         "",
         "",
         "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
         ""
       ],
-      "invisible": true,
-      "mywidget": "3",
-      "name": "asda",
-      "callback": ""
+      "title": "qwe asd d",
+      "name": "cvb",
+      "radio": "Pop 90-ies",
+      "check": [
+        "Purple"
+      ],
+      "onefilename": "/home/marcel/Languages/Raku/Projects/Library/Old/I/FaceApp_1608029951398.jpg"
     }
   }
 }

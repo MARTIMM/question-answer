@@ -85,6 +85,9 @@ method initialize ( ) {
   # fill in user data
   self!set-values;
 
+  # add a classname to the frame
+  self.add-class( self, 'QAFrame');
+
   $!initialized = True;
 }
 
@@ -96,6 +99,7 @@ method !create-input-row ( Int $row ) {
   my Str $tooltip = $!question.tooltip;
   $input-widget.set-tooltip-text($tooltip) if ?$tooltip;
   $input-widget.set-name("$!widget-name:$row");
+  #self.add-class( $input-widget, $!question.fieldtype.Str);
 
   # add to the grid
   $!grid.grid-attach( $input-widget, QAInputColumn, $row, 1, 1);
@@ -126,9 +130,34 @@ method !set-values ( ) {
   # check if the value is an array
   my $v = $!user-data-set-part{$!question.name};
   my @values = $v ~~ Array ?? @$v !! ($v);
-
   if $!question.repeatable {
-    loop ( my Int $row = 0; $row < @values.elems; $row++ ) {
+    my Bool $spliced = False;
+    my Int $row = 0;
+
+    # loop like this because we might take out empty items
+    loop {
+      last if $row >= @values.elems;
+
+      # check for empty data
+      my ( $select-item, $input);
+      if ?$!question.selectlist {
+        ( $select-item, $input) = @values[$row].kv;
+
+        unless $input {
+          @values.splice( $row, 1);
+          $spliced = True;
+          next;
+        }
+      }
+
+      else {
+        unless ?@values[$row] {
+          @values.splice( $row, 1);
+          $spliced = True;
+          next;
+        }
+      }
+
 
       # create a new input row if widget didn't exist
       if ! $!input-widgets[$row].defined {
@@ -146,7 +175,8 @@ method !set-values ( ) {
       # set value in field widget
       if $!question.selectlist.defined {
         # no types, can be anything and undefined
-        my ( $select-item, $input) = @values[$row].kv;
+        #my ( $select-item, $input) = @values[$row].kv;
+
         self.set-value( $!input-widgets[$row], $input);
         self!check-value( $!input-widgets[$row], $row);
 
@@ -162,7 +192,12 @@ method !set-values ( ) {
         self.set-value( $!input-widgets[$row], @values[$row]);
         self!check-value( $!input-widgets[$row], $row);
       }
+
+      $row++;
+      last if $row >= @values.elems;
     }
+
+    $!user-data-set-part{$!question.name} = [|@values] if $spliced;
   }
 
   # set a single field and check
@@ -185,6 +220,7 @@ method !create-toolbutton ( $row --> Gnome::Gtk3::ToolButton ) {
   $image.set-from-icon-name( 'list-add', GTK_ICON_SIZE_BUTTON);
 
   my Gnome::Gtk3::ToolButton $tb .= new(:icon($image));
+  self.add-class( $tb, 'QAToolButtonRowControl');
   $tb.set-name("tb:$row");
   $tb.register-signal( self, 'add-row', 'clicked');
 
@@ -199,6 +235,7 @@ method !create-combobox ( Array $select-list --> Gnome::Gtk3::ComboBoxText ) {
     $cbt.append-text($select-item);
   }
 
+  self.add-class( $cbt, 'QAComboBoxText');
   $cbt.set-active(0);
   $cbt
 }
@@ -344,31 +381,27 @@ method !run-users-action ( $input, Str:D $action-key = '' --> Array ) {
 
 #-------------------------------------------------------------------------------
 method !set-status-hint ( $widget, InputStatusHint $status ) {
-  my Gnome::Gtk3::StyleContext $context .= new(
-    :native-object($widget.get-style-context)
-  );
-
   # remove classes first
   #$context.remove-class('dontcare');
-  $context.remove-class('QAStatusNormal');
-  $context.remove-class('QAStatusOk');
-  $context.remove-class('QAStatusFail');
+  self.remove-class( $widget, 'QAStatusNormal');
+  self.remove-class( $widget, 'QAStatusOk');
+  self.remove-class( $widget, 'QAStatusFail');
 
   # add class depending on status
   if $status ~~ QAStatusNormal {
-    $context.add-class('QAStatusNormal');
+    self.add-class( $widget, 'QAStatusNormal');
   }
 
   elsif $status ~~ QAStatusOk {
-    $context.add-class('QAStatusOk');
+    self.add-class( $widget, 'QAStatusOk');
   }
 
   elsif $status ~~ QAStatusFail {
-    $context.add-class('QAStatusFail');
+    self.add-class( $widget, 'QAStatusFail');
   }
 
-  else {
-  }
+#  else {
+#  }
 }
 
 #-------------------------------------------------------------------------------
@@ -465,4 +498,20 @@ method process-widget-signal (
     self!adjust-user-data( $w, $input, $row);
     self!check-users-action( $input, $!question.action) if $!initialized;
   }
+}
+
+#-------------------------------------------------------------------------------
+method add-class ( $widget, Str $class-name ) {
+  my Gnome::Gtk3::StyleContext $context .= new(
+    :native-object($widget.get-style-context)
+  );
+  $context.add-class($class-name);
+}
+
+#-------------------------------------------------------------------------------
+method remove-class ( $widget, Str $class-name ) {
+  my Gnome::Gtk3::StyleContext $context .= new(
+    :native-object($widget.get-style-context)
+  );
+  $context.remove-class($class-name);
 }
