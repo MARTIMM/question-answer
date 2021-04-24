@@ -18,6 +18,7 @@ use QA::Gui::QASpinButton;
 use Gnome::Gtk3::Enums;
 use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Label;
+use Gnome::Gtk3::StyleContext;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::Question:auth<github:MARTIMM>;
@@ -57,6 +58,10 @@ method display ( ) {
     .set-use-markup(True);
     .set-valign(GTK_ALIGN_START);
     .set-margin-top(6);
+
+    Gnome::Gtk3::StyleContext.new(
+      :native-object(.get-style-context)
+    ).add-class('QARequiredLabel');
   }
   $!question-grid.attach( $r-label, QARequired, $!grid-row, 1, 1);
 

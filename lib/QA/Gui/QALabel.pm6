@@ -16,10 +16,10 @@ submethod new ( |c ) {
 }
 
 #-------------------------------------------------------------------------------
-submethod BUILD ( ) {
+submethod BUILD ( *%options ) {
 
   given self {
-    #.set-use-markup(True);
+    .set-use-markup(%options<do-markup>:exists);
     .set-hexpand(True);
     .set-line-wrap(True);
     #.set-max-width-chars(40);
@@ -31,6 +31,6 @@ submethod BUILD ( ) {
 
     Gnome::Gtk3::StyleContext.new(
       :native-object(.get-style-context)
-    ).add-class('QALabel');
+    ).add-class('QAQuestionLabel');
   }
 }

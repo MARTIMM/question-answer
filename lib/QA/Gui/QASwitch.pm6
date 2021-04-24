@@ -1,7 +1,6 @@
 use v6.d;
 
 use Gnome::Gtk3::Switch;
-use Gnome::Gtk3::StyleContext;
 
 use QA::Types;
 use QA::Question;
@@ -15,15 +14,8 @@ also does QA::Gui::Value;
 submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part
 ) {
-
   $!question.repeatable = False;
-
   self.initialize;
-
-  my Gnome::Gtk3::StyleContext $context .= new(
-    :native-object(self.get-style-context)
-  );
-  $context.add-class('QASwitch');
 }
 
 #-------------------------------------------------------------------------------
@@ -33,6 +25,7 @@ method create-widget ( Str $widget-name, Int $row --> Any ) {
   my Gnome::Gtk3::Switch $switch .= new;
   $switch.set-hexpand(False);
   $switch.register-signal( self, 'changed-state', 'state-set');
+  self.add-class( $switch, 'QASwitch');
 
   $switch
 }

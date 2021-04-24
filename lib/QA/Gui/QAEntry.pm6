@@ -3,7 +3,6 @@ use v6.d;
 use Gnome::Gdk3::Events;
 
 use Gnome::Gtk3::Entry;
-use Gnome::Gtk3::StyleContext;
 
 use QA::Types;
 use QA::Gui::Frame;
@@ -19,11 +18,6 @@ submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part
 ) {
   self.initialize;
-
-  my Gnome::Gtk3::StyleContext $context .= new(
-    :native-object(self.get-style-context)
-  );
-  $context.add-class('QAEntry');
 }
 
 #-------------------------------------------------------------------------------
@@ -31,6 +25,7 @@ method create-widget ( Str $widget-name, Int $row --> Any ) {
 
   # create a text input widget
   given my Gnome::Gtk3::Entry $entry .= new {
+    self.add-class( $entry, 'QAEntry');
 
     .set-size-request( 70, 1);
     .set-hexpand(True);

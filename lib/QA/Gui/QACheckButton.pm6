@@ -2,7 +2,6 @@ use v6.d;
 
 use Gnome::Gtk3::CheckButton;
 use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::StyleContext;
 
 use QA::Types;
 use QA::Question;
@@ -16,14 +15,7 @@ also does QA::Gui::Value;
 submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part
 ) {
-
   $!question.repeatable = False;
-
-  my Gnome::Gtk3::StyleContext $context .= new(
-    :native-object(self.get-style-context)
-  );
-  $context.add-class('QACheckButton');
-
   self.initialize;
 }
 
@@ -32,24 +24,16 @@ method create-widget ( Str $widget-name, Int $row --> Any ) {
 
   # create a grid with checkbuttons
   my Gnome::Gtk3::Grid $button-grid .= new;
+  self.add-class( $button-grid, 'QAGrid');
 
   my Int $button-grid-row = 0;
-#  my Gnome::Gtk3::CheckButton $rb-first;
   for @($!question.fieldlist) -> $label {
     my Gnome::Gtk3::CheckButton $rb .= new(:$label);
     $rb.set-hexpand(True);
     $rb.register-signal( self, 'button-selected', 'clicked');
-
-    # join the group of the first button
-#    $rb.join-group($rb-first) if ?$rb-first;
-
-    # set first button in the group
-#    $rb-first = $rb unless ?$rb-first;
+    self.add-class( $rb, 'QACheckButton');
     $button-grid.grid-attach( $rb, 0, $button-grid-row++, 1, 1);
   }
-
-  # set first button on
-#  $rb-first.set-active(True);
 
   $button-grid
 }

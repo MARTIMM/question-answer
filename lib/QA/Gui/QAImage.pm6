@@ -7,7 +7,7 @@ use Gnome::Gtk3::Image;
 use Gnome::Gtk3::FileFilter;
 use Gnome::Gtk3::FileChooser;
 use Gnome::Gtk3::FileChooserButton;
-use Gnome::Gtk3::StyleContext;
+#use Gnome::Gtk3::StyleContext;
 
 use QA::Types;
 use QA::Question;
@@ -23,10 +23,10 @@ submethod BUILD (
 ) {
   self.initialize;
 
-  my Gnome::Gtk3::StyleContext $context .= new(
-    :native-object(self.get-style-context)
-  );
-  $context.add-class('QAImage');
+#  my Gnome::Gtk3::StyleContext $context .= new(
+#    :native-object(self.get-style-context)
+#  );
+#  $context.add-class('QAImage');
 }
 
 #-------------------------------------------------------------------------------
@@ -34,20 +34,25 @@ method create-widget ( Str $widget-name, Int $row --> Any ) {
 
   # we need a grid with 2 rows. one for the file chooser button
   # and one for the image
-  my Gnome::Gtk3::Grid $widget-grid .= new;
-
-  my Gnome::Gtk3::FileChooserButton $fcb .= new(:title($!question.title));
-  $fcb.set-hexpand(True);
-  $fcb.register-signal( self, 'file-selected', 'file-set');
   my Gnome::Gtk3::FileFilter $filter .= new;
   $filter.set-name('images');
   $filter.add-mime-type('image/x-icon');
   $filter.add-mime-type('image/jpeg');
   $filter.add-mime-type('image/png');
+
+  my Gnome::Gtk3::FileChooserButton $fcb .= new(:title($!question.title));
+  $fcb.set-hexpand(True);
+  $fcb.set-vexpand(True);
+  $fcb.register-signal( self, 'file-selected', 'file-set');
   $fcb.set_filter($filter);
-  $widget-grid.grid-attach( $fcb, 0, 0, 1, 1);
+  self.add-class( $fcb, 'QAFileChooserButton');
 
   my Gnome::Gtk3::Image $image .= new;
+  self.add-class( $image, 'QAImage');
+
+  my Gnome::Gtk3::Grid $widget-grid .= new;
+  self.add-class( $widget-grid, 'QAGrid');
+  $widget-grid.grid-attach( $fcb, 0, 0, 1, 1);
   $widget-grid.grid-attach( $image, 0, 1, 1, 1);
 
   $widget-grid

@@ -1,7 +1,6 @@
 use v6.d;
 
 use Gnome::Gtk3::ComboBoxText;
-use Gnome::Gtk3::StyleContext;
 
 use QA::Types;
 use QA::Question;
@@ -15,14 +14,7 @@ also does QA::Gui::Value;
 submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part
 ) {
-
   $!question.repeatable = False;
-
-  my Gnome::Gtk3::StyleContext $context .= new(
-    :native-object(self.get-style-context)
-  );
-  $context.add-class('QAComboBox');
-
   self.initialize;
 }
 
@@ -32,6 +24,7 @@ method create-widget ( Str $widget-name, Int $row --> Any ) {
   # create a text input widget
   my Gnome::Gtk3::ComboBoxText $combobox .= new;
   $combobox.set-hexpand(True);
+  self.add-class( $combobox, 'QAComboBoxText');
 
   my @fieldlist = @($!question.fieldlist // []);
   for @fieldlist -> $fielditem {

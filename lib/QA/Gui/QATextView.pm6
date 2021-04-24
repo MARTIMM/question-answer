@@ -6,7 +6,6 @@ use Gnome::Gtk3::Enums;
 use Gnome::Gtk3::TextView;
 use Gnome::Gtk3::TextBuffer;
 use Gnome::Gtk3::TextIter;
-use Gnome::Gtk3::StyleContext;
 
 use QA::Types;
 use QA::Question;
@@ -20,14 +19,8 @@ also does QA::Gui::Value;
 submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part
 ) {
-
   $!question.repeatable = False;
   self.initialize;
-
-  my Gnome::Gtk3::StyleContext $context .= new(
-    :native-object(self.get-style-context)
-  );
-  $context.add-class('QATextView');
 }
 
 #-------------------------------------------------------------------------------
@@ -40,9 +33,10 @@ method create-widget ( Str $widget-name, Int $row --> Any ) {
     .set-size-request( 1, $!question.height // 50);
     .set-wrap-mode(GTK_WRAP_WORD);
     .set-border-width(1);
-
     .register-signal( self, 'check-on-focus-change', 'focus-out-event');
   }
+
+  self.add-class( $textview, 'QATextView');
 
   $textview
 }

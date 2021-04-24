@@ -2,7 +2,6 @@ use v6.d;
 
 use Gnome::Gtk3::RadioButton;
 use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::StyleContext;
 
 use QA::Types;
 use QA::Question;
@@ -16,15 +15,8 @@ also does QA::Gui::Value;
 submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part
 ) {
-
   $!question.repeatable = False;
-
   self.initialize;
-
-  my Gnome::Gtk3::StyleContext $context .= new(
-    :native-object(self.get-style-context)
-  );
-  $context.add-class('QARadioButton');
 }
 
 #-------------------------------------------------------------------------------
@@ -32,12 +24,14 @@ method create-widget ( Str $widget-name, Int $row --> Any ) {
 
   # create a grid with radiobuttons
   my Gnome::Gtk3::Grid $button-grid .= new;
+  self.add-class( $button-grid, 'QAGrid');
 
   my Int $button-grid-row = 0;
   my Gnome::Gtk3::RadioButton $rb-first;
   for @($!question.fieldlist) -> $label {
     my Gnome::Gtk3::RadioButton $rb .= new(:$label);
     $rb.set-hexpand(True);
+    self.add-class( $rb, 'QARadioButton');
 
     # join the group of the first button
     $rb.join-group($rb-first) if ?$rb-first;
