@@ -274,7 +274,7 @@ method qa-load( Str:D $qa-filename, *%options --> Hash ) {
     }
   }
 
-  $qa-data
+  $qa-data // %()
 }
 
 #-------------------------------------------------------------------------------
@@ -352,10 +352,7 @@ Only one of the options C<:sheet>, C<:set> or C<:userdata> can be used. The meth
 =end pod
 
 #tm:1:qa-remove
-method qa-remove (
-#  Str:D $qa-filename, Bool :$sheet = False, Str :$qa-path is copy
-  Str:D $qa-filename, *%options
-) {
+method qa-remove ( Str:D $qa-filename, *%options ) {
   my Str $basename = '';
   my Str $qa-path = %options<qa-path> // Str;
 
