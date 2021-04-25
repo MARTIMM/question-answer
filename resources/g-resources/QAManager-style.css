@@ -37,7 +37,7 @@
   ├── border[.flat]
   ├── <label widget>
   ╰── <child>
-*/
+*//*
 .QAFrame label {
 	color: @title-text-color;
 
@@ -45,7 +45,6 @@
   font-style: normal;
   font-weight: bolder;
   font-stretch: semi-expanded;
-  /*font-size: 0.6em;*/
 }
 
 .QARadioButton label {
@@ -55,7 +54,6 @@
   font-style: normal;
   font-weight: normal;
   font-stretch: normal;
-  /*font-size: 0.3em;*/
 }
 
 .QACheckButton label {
@@ -65,7 +63,7 @@
   font-style: normal;
   font-weight: normal;
   font-stretch: normal;
-  /*font-size: medium;*/
+font-size: medium;
 }
 
 .QAStatusbar {
@@ -91,8 +89,8 @@
   font-style: normal;
   font-weight: initial;
   font-stretch: normal;
-  /*font-size: normal;*/
 }
+*/
 
 /*
 .descriptionText {
