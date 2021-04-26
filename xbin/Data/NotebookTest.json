@@ -18,7 +18,7 @@
   },
   "page1": {
     "set-spec": {
-      "an-image": "/home/Data/Fotos/.Old/Beauty/Jolanda/FaceApp/set 03/FaceApp_1607595817471.jpg",
+      "an-image": "",
       "filename": [
         {
           "Output": null
@@ -26,43 +26,6 @@
       ],
       "description": "vbn vbn bvn\t",
       "more-image": [
-        {
-          "Etc": "/home/marcel/Languages/Raku/Projects/Library/Old/I/p2.jpg"
-        },
-        {
-          "P2": "/home/marcel/Languages/Raku/Projects/Library/Old/I/p0.jpg"
-        },
-        {
-          "Etc": "/home/marcel/Languages/Raku/Projects/Library/Old/I/p1.jpg"
-        },
-        {
-          "Icon": "/home/Data/Fotos/.Old/Beauty/Jolanda/FaceApp/FaceApp_1602921695237.jpg"
-        },
-        {
-          "Icon": "/home/Data/Fotos/.Old/Beauty/Jolanda/FaceApp/FaceApp_1604559632015.jpg"
-        },
-        {
-          "Icon": "/home/marcel/Languages/Raku/Projects/Library/Old/I/FaceApp_1608025274826.jpg"
-        },
-        {
-          "Icon": "/home/Data/Fotos/.Old/Beauty/Jolanda/FaceApp/FaceApp_1604560471876.jpg"
-        },
-        {
-          "Icon": "/home/Data/Fotos/.Old/Beauty/Jolanda/FaceApp/FaceApp_1604559988945.jpg"
-        },
-        {
-          "Icon": "/home/Data/Fotos/.Old/Beauty/Jolanda/FaceApp/FaceApp_1610611835736.jpg"
-        },
-        {
-          "Icon": "/home/Data/Fotos/.Old/Beauty/Jolanda/FaceApp/set 07/2020-12-10-09-38-59-580.jpg"
-        },
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        ""
       ],
       "title": "qwe asd d",
       "name": "cvb",
@@ -70,7 +33,7 @@
       "check": [
         "Purple"
       ],
-      "onefilename": "/home/marcel/Languages/Raku/Projects/Library/Old/I/FaceApp_1608029951398.jpg"
+      "onefilename": ""
     }
   }
 }
