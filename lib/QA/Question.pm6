@@ -6,12 +6,14 @@ unit class QA::Question:auth<github:MARTIMM>;
 use QA::Types;
 
 has Str $.action is rw;         # optional key (=methodname) to perform action
+has Bool $.buttons is rw;       # optional hide buttons when repeat is True
 has Str $.callback is rw;       # optional key (=methodname) to check value
 has Any $.climbrate is rw;      # optional rate for spin button
 has Str $.cmpwith is rw;        # optional to check value against other field
 has Any $.default is rw;        # optional default value
 has Str $.description is rw;    # optional
 has Int $.digits is rw;         # optional for spin button
+has Str $.dnd is rw;            # optional make widget a drop destination
 has Str $.example is rw;        # optional example value for text
 has Array $.fieldlist is rw;    # when a list is displayed in e.g. combobox
 has QAFieldType $.fieldtype is rw;  # optional = QAEntry, QADialog or QACheckButton
@@ -61,12 +63,14 @@ submethod BUILD ( Str:D :$!name, Hash :$qa-data ) {
 
 
   $!action = $qa-data<action> if $qa-data<action>.defined;
+  $!buttons = $qa-data<buttons> if $qa-data<buttons>.defined;
   $!callback = $qa-data<callback> if $qa-data<callback>.defined;
   $!climbrate = $qa-data<climbrate> if $qa-data<climbrate>.defined;
   $!cmpwith = $qa-data<cmpwith> if $qa-data<cmpwith>.defined;
   $!default = $qa-data<default> if $qa-data<default>.defined;
   $!description = $qa-data<description> if $qa-data<description>.defined;
   $!digits = $qa-data<digits> if $qa-data<digits>.defined;
+  $!dnd = $qa-data<dnd> if $qa-data<dnd>.defined;
   $!example = $qa-data<example> if $qa-data<example>.defined;
   $!fieldlist = $qa-data<fieldlist> if $qa-data<fieldlist>.defined;
   $!height = $qa-data<height> if $qa-data<height>.defined;
@@ -94,11 +98,13 @@ method qa-data ( --> Hash ) {
   my Hash $qa-data = %( :$!name, :$!fieldtype);
 
   $qa-data<action> = $!action if $!action.defined;
+  $qa-data<buttons> = $!buttons if $!buttons.defined;
   $qa-data<callback> = $!callback if $!callback.defined;
   $qa-data<climbrate> = $!climbrate if $!climbrate.defined;
   $qa-data<default> = $!default if $!default.defined;
   $qa-data<description> = $!description if $!description.defined;
   $qa-data<digits> = $!digits if $!digits.defined;
+  $qa-data<dnd> = $!dnd if $!dnd.defined;
   $qa-data<example> = $!example if $!example.defined;
   $qa-data<fieldlist> = $!fieldlist if $!fieldlist.defined;
   $qa-data<height> = $!height if $!height.defined;

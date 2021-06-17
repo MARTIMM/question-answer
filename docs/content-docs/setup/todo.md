@@ -21,3 +21,5 @@ layout: sidebar
   * Listbox
   * Treeview
   * Pane
+
+* Now that drag and drop is implemented in the GTK binding, we can extend the widgets to accept drags from file managers and browsers

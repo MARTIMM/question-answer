@@ -9,6 +9,9 @@ use QA::Gui::Frame;
 use QA::Question;
 use QA::Gui::Value;
 
+use Gnome::N::X;
+#Gnome::N::debug(:on);
+
 #-------------------------------------------------------------------------------
 unit class QA::Gui::QAEntry;
 also does QA::Gui::Value;
@@ -69,7 +72,7 @@ method check-value ( Str $input --> Str ) {
 
 #-------------------------------------------------------------------------------
 method check-on-focus-change (
-  N-GdkEventFocus $, :_widget($entry) --> Int
+  N-GdkEventFocus $no, :_widget($entry) --> Int
 ) {
   #self!check-value( $w, $row, :input(self.get-value($w)));
   my ( $n, $row ) = $entry.get-name.split(':');

@@ -131,7 +131,7 @@ class EH {
   #---------
   method show-hash ( Hash $h, Int :$i is copy ) {
 
-note "\n$h.gist()";
+#note "\n$h.gist()";
 note ' ';
     if $i.defined {
       $i++;

@@ -87,13 +87,24 @@
               "fieldtype": "QAImage",
               "description": "A Picture",
               "title": "Select an Image",
-              "width": 100,
+              "width": 150,
+              "height": 150,
               "repeatable": true,
               "selectlist": [
                 "Icon",
                 "P2",
                 "Etc"
               ]
+            },
+            {
+              "name": "images",
+              "fieldtype": "QAImage",
+              "description": "Pictures",
+              "title": "Select Images",
+              "width": 200,
+              "height": 200,
+              "dnd": "text/uri-list",
+              "repeatable": true
             },
             {
               "fieldtype": "QATextView",

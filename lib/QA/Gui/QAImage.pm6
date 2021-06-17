@@ -1,4 +1,5 @@
 use v6.d;
+use NativeCall;
 
 use Gnome::Gdk3::Pixbuf;
 
@@ -8,6 +9,22 @@ use Gnome::Gtk3::FileFilter;
 use Gnome::Gtk3::FileChooser;
 use Gnome::Gtk3::FileChooserButton;
 #use Gnome::Gtk3::StyleContext;
+
+use Gnome::Gtk3::TargetEntry;
+#use Gnome::Gtk3::DragSource;
+use Gnome::Gtk3::DragDest;
+use Gnome::Gtk3::TargetList;
+use Gnome::Gtk3::SelectionData;
+
+use Gnome::Gdk3::Events;
+
+use Gnome::Gdk3::Atom;
+use Gnome::Gdk3::DragContext;
+use Gnome::Gdk3::Types;
+use Gnome::Gdk3::Pixbuf;
+
+use Gnome::GObject::Value;
+use Gnome::GObject::Type;
 
 use QA::Types;
 use QA::Question;
@@ -34,26 +51,41 @@ method create-widget ( Str $widget-name, Int $row --> Any ) {
 
   # we need a grid with 2 rows. one for the file chooser button
   # and one for the image
-  my Gnome::Gtk3::FileFilter $filter .= new;
-  $filter.set-name('images');
-  $filter.add-mime-type('image/x-icon');
-  $filter.add-mime-type('image/jpeg');
-  $filter.add-mime-type('image/png');
-
-  my Gnome::Gtk3::FileChooserButton $fcb .= new(:title($!question.title));
-  $fcb.set-hexpand(True);
-  $fcb.set-vexpand(True);
-  $fcb.register-signal( self, 'file-selected', 'file-set');
-  $fcb.set_filter($filter);
-  self.add-class( $fcb, 'QAFileChooserButton');
+  given my Gnome::Gtk3::FileFilter $filter .= new {
+    .set-name('images');
+    .add-mime-type('image/x-icon');
+    .add-mime-type('image/jpeg');
+    .add-mime-type('image/png');
+    .add-mime-type('image/svg+xml');
+    .add-mime-type('text/uri-list');
+  }
 
   my Gnome::Gtk3::Image $image .= new;
   self.add-class( $image, 'QAImage');
 
   my Gnome::Gtk3::Grid $widget-grid .= new;
   self.add-class( $widget-grid, 'QAGrid');
-  $widget-grid.grid-attach( $fcb, 0, 0, 1, 1);
+
+  if ?$!question.dnd {
+    self.setup-as-drag-destination( $image, $!question.dnd);
+  }
+
+  else {
+    my Str $title = $!question.title;
+    given my Gnome::Gtk3::FileChooserButton $fcb .= new(:$title) {
+      .set-hexpand(True);
+      .set-vexpand(True);
+      .register-signal( self, 'file-selected', 'file-set');
+      .set_filter($filter);
+    }
+
+    self.add-class( $fcb, 'QAFileChooserButton');
+    $widget-grid.grid-attach( $fcb, 0, 0, 1, 1);
+  }
+
   $widget-grid.grid-attach( $image, 0, 1, 1, 1);
+
+note "DND Target: ", $!question.dnd//'-';
 
   $widget-grid
 }
@@ -61,10 +93,21 @@ method create-widget ( Str $widget-name, Int $row --> Any ) {
 #-------------------------------------------------------------------------------
 method get-value ( $grid --> Any ) {
 
-  my Gnome::Gtk3::FileChooserButton $fcb .= new(
-    :native-object($grid.get-child-at( 0, 0))
+#  my Gnome::Gtk3::FileChooserButton $fcb = $grid.get-child-at-rk( 0, 0);
+
+  my Gnome::Gtk3::Image $image = $grid.get-child-at-rk( 0, 1);
+
+#  my Gnome::GObject::Value $gv .= new(:init(G_TYPE_STRING));
+#  $image.get-property( 'file', $gv);
+#  my $filename = $gv.get-string // '';
+#  my $filename = $image.get-name;
+  my CArray[Str] $ca = nativecast(
+    CArray[Str], $image.get-data('image-filename')
   );
-  $fcb.get-filename;
+  my $filename = $ca[0];
+
+note "F: $filename";
+  $filename
 }
 
 #-------------------------------------------------------------------------------
@@ -74,7 +117,7 @@ method set-value ( Any:D $grid, $filename ) {
     my Gnome::Gtk3::FileChooserButton $fcb .= new(
       :native-object($grid.get-child-at( 0, 0))
     );
-    $fcb.set-filename($filename);
+#    $fcb.set-filename($filename) unless ?$!question.dnd;
     self!set-image( $grid, $filename);
   }
 }
@@ -100,10 +143,36 @@ method !set-image ( Gnome::Gtk3::Grid $grid, Str $filename ) {
   my Int $width = $!question.width // 100;
   my Int $height = $!question.height // 100;
   my Gnome::Gdk3::Pixbuf $pb .= new( :file($filename), :$width, :$height);
-  my Gnome::Gtk3::Image $image .= new(
-    :native-object($grid.get-child-at( 0, 1))
-  );
+  my Gnome::Gtk3::Image $image = $grid.get-child-at-rk( 0, 1);
   $image.set-from-pixbuf($pb);
+
+#  my Gnome::GObject::Value $gv .= new(:init(G_TYPE_STRING));
+#  $image.get-property( 'file', $gv);
+#  $gv.set-string($filename);
+
+#  $image.set-name($filename);
+  $image.set-data(
+    'image-filename', nativecast( Pointer, CArray[Str].new($filename))
+  );
+}
+
+#-------------------------------------------------------------------------------
+method setup-as-drag-destination ( $destination-widget, Str $target-list ) {
+
+  my Array[N-GtkTargetEntry] $target-entries = Array[N-GtkTargetEntry].new;
+  for $target-list.split(/\s* ',' \s*/) -> $target {
+    $target-entries.push:  N-GtkTargetEntry.new( :$target, :flags(0), :info(0));
+  }
+
+  my Gnome::Gtk3::DragDest $destination .= new;
+  $destination.set(
+    $destination-widget, GTK_DEST_DEFAULT_NONE, $target-entries, GDK_ACTION_COPY
+  );
+
+  $destination-widget.register-signal( self, 'motion', 'drag-motion');
+  $destination-widget.register-signal( self, 'leave', 'drag-leave');
+  $destination-widget.register-signal( self, 'receive', 'drag-data-receive');
+  $destination-widget.register-signal( self, 'drop', 'drag-drop');
 }
 
 

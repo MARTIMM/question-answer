@@ -19,9 +19,9 @@ submethod BUILD ( Str :$label = '' ) {
 
   # modify frame and title
   self.set-label-align( 0.04, 0.5);
-  self.widget-set-margin-bottom(3);
+  self.set-margin-bottom(3);
   #self.set-border-width(5);
-  self.widget-set-hexpand(True);
+  self.set-hexpand(True);
   self.set-label($label) if ?$label;
 
   my Gnome::Gtk3::StyleContext $context .= new(

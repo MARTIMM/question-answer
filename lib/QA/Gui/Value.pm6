@@ -3,17 +3,14 @@ use v6.d;
 #TODO is encoding a string necessary? isn't it users aftermath?
 #TODO when to fill in default values? also users work later?
 
-use Gnome::Gdk3::Events;
-
 #use Gnome::Gtk3::Widget;
 #use Gnome::Gtk3::ComboBoxText;
-use Gnome::Gtk3::StyleContext;
 use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::Image;
 use Gnome::Gtk3::ToolButton;
-use Gnome::Gtk3::Enums;
 use Gnome::Gtk3::ComboBoxText;
-use Gnome::Gtk3::ToolButton;
+use Gnome::Gtk3::Image;
+use Gnome::Gtk3::StyleContext;
+use Gnome::Gtk3::Enums;
 
 use QA::Gui::Statusbar;
 use QA::Gui::Frame;
@@ -96,6 +93,7 @@ method !create-input-row ( Int $row ) {
 
   # create input widget and add or change some general items
   my $input-widget = self.create-widget( "$!widget-name:$row", $row);
+
   my Str $tooltip = $!question.tooltip;
   $input-widget.set-tooltip-text($tooltip) if ?$tooltip;
   $input-widget.set-name("$!widget-name:$row");
@@ -160,17 +158,7 @@ method !set-values ( ) {
 
 
       # create a new input row if widget didn't exist
-      if ! $!input-widgets[$row].defined {
-
-        # get the toolbutton from the previous row to adjust its settings.
-        # $row always > 0 because there is always one field created.
-        my Gnome::Gtk3::ToolButton $toolbutton .= new(
-          :native-object($!grid.get-child-at( QAButtonColumn, $row - 1))
-        );
-
-        # extend by emitting a signal which triggers the 'add-row' method.
-        $toolbutton.emit-by-name('clicked');
-      }
+      self.add-new-row($row);
 
       # set value in field widget
       if $!question.selectlist.defined {
@@ -210,6 +198,25 @@ method !set-values ( ) {
   # turns in faulty state beforehand
   else {
     self!check-value( $!input-widgets[0], 0);
+  }
+}
+
+#-------------------------------------------------------------------------------
+method add-new-row ( Int $row ) {
+  # create a new input row if widget didn't exist
+  if ! $!input-widgets[$row].defined {
+
+    # get the toolbutton from the previous row to adjust its settings.
+    # $row always > 0 because there is always one field created.
+    #my Gnome::Gtk3::ToolButton $toolbutton .= new(
+    #  :native-object($!grid.get-child-at( QAButtonColumn, $row - 1))
+    #);
+    my Gnome::Gtk3::ToolButton $toolbutton = $!grid.get-child-at-rk(
+      QAButtonColumn, $row - 1
+    );
+
+    # extend by emitting a signal which triggers the 'add-row' method.
+    $toolbutton.emit-by-name('clicked');
   }
 }
 

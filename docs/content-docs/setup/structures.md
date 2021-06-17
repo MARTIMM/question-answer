@@ -40,9 +40,11 @@ A set is not stored on disk on its own. A set is used to group a series of quest
 Questions are what it is all about. In short a piece of text to pose the question and a field where the answer can be given. However, more data is needed to fully display a question like what kind of input do we need, are there limits, is there a choice from a set of possibilities etc.
 
 * **action**; A name of a method which can be called on a previously provided object. The method is called when the answer on the question in accepted and saved in the users data.
+* **buttons**; Show buttons when repeatable is turned on. This is on by default. You might turn it off if you want to use keys and/or drag and drop.
 * **callback**; A name of a method which can be called on a previously provided object. The handler must check for correctness of the input value for that question and return an error message if test fails.
 * **default**; A default value when no input is provided.
 * **description**; A question. When empty, title is taken.
+* **dnd**; Make widget a drag destination for images, documents and text. Its value is a list of target names such as `text/plain, text/x-perl`. You can also makeup targets as long as you have some source application supporting the targets.
 * **example**; An example answer/format in light gray in an text field.
 * **fieldlist**; The fieldlist is used to fill e.g. a combobox or a list input field.
 * **fieldtype**; The widget type to use to provide the answer with. Current enumerated types are: `QAEntry` for text, `QATextView` for multiline text, `QAComboBox` a list of possibilities to chose from, `QARadioButton` a select of one of a set of possebilities, `QACheckButton`, one or more possebilities `QAToggleButton` boolean input, `QAScale` a slider, `QASwitch` also boolean input, `QAUserWidget` with a user definable input. Other types are `QADragAndDrop`, `QAColorChooser`, `QAFileChooser`, `QAList`, `QASpin` and `QAImage`. These are not yet implemented.
@@ -61,6 +63,9 @@ Questions are what it is all about. In short a piece of text to pose the questio
 * **userwidget**; Key to the previously stored user widget as input widget.
 * **width**; sometimes a width is needed for a widget.
 
+<!--
+* **keymap**; Keyed control of widgets like `<CTRL>V` to paste from clipboard. By default turned off. When on, there will be a set of keys defined to add, delete and paste text or documents. All other keyboard keys are by default on, e.g. input of text (of course), arrow keys, tab key etc.
+-->
 
 #### Notes
 * Default fieldtype is QAEntry
@@ -154,11 +159,13 @@ The formats used are shown below for each input type with the variables which co
 |             |En|Cb|Co|Im|Li|Rb|Sc|Sw|Tv|Tb|Cc|Fc|Sp|Uw|
 |-------------|--|--|--|--|--|--|--|--|--|--|--|--|--|--|
 |action       |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
+|buttons      |o |- |- |o |- |- |- |- |  |- |o |o |  |  |
 |callback     |o |- |- |  |  |- |  |  |o |  |  |  |  |  |
 |climbrate    |- |- |- |- |- |- |o |- |- |- |- |- |o |  |
 |default      |o |o |o |o |o |o |o |o |o |o |o |o |o |  |
 |description  |o |o |o |o |o |o |o |o |o |o |o |o |o |  |
 |digits       |- |- |- |- |- |- |o |- |- |- |- |- |o |  |
+|dnd          |- |- |- |o |- |- |- |- |- |- |- |o |- |  |
 |example      |o |- |- |- |- |- |- |- |- |- |- |- |- |  |
 |fieldlist    |- |! |! |- |! |! |  |  |  |  |  |  |  |  |
 |fieldtype    |o |! |! |! |! |! |! |! |! |! |! |! |! |! |
@@ -179,6 +186,9 @@ The formats used are shown below for each input type with the variables which co
 |userwidget   |- |- |- |- |- |- |- |- |- |- |- |- |- |! |
 |width        |- |- |- |o |  |- |  |  |  |  |  |  |  |  |
 
+<!--
+|keymap       |o |o |o |o |o |o |  |  |  |  |o |o |  |  |
+-->
 
 ## Sheet
 

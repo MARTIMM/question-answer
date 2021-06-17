@@ -1,39 +1,45 @@
 {
   "page2": {
     "entry-spec": {
-      "mywidget": "3",
-      "callback": "",
-      "name": "asda",
       "invisible": true,
+      "callback": "",
       "tooltip": [
         {
           "tt1": "vbn"
         },
         {
           "tt2": "dfgtyu"
-        },
-        ""
-      ]
+        }
+      ],
+      "mywidget": "3",
+      "name": "asda"
     }
   },
   "page1": {
     "set-spec": {
-      "an-image": "",
-      "filename": [
+      "more-image": [
         {
-          "Output": null
+          "Icon": "/home/Data/Fotos/.Old/Beauty/Jolanda/PhotoLab/set 10/b19a0372-45a2-4735-be5b-2f804c24af25.jpg"
         }
       ],
+      "an-image": "/home/Data/Fotos/.Old/Beauty/Jolanda/PhotoLab/set 10/7a213020-80d3-4048-a717-e2cae1b98201.jpg",
+      "filename": [
+      ],
       "description": "vbn vbn bvn\t",
-      "more-image": [
+      "check": [
+        "Purple",
+        "Orange"
       ],
       "title": "qwe asd d",
       "name": "cvb",
+      "onefilename": "/home/marcel/Desktop/out-0032.png",
       "radio": "Pop 90-ies",
-      "check": [
-        "Purple"
+      "images": [
+        "/home/Data/Fotos/.Old/Beauty/Jolanda/Jolanda_1/2020-09-14-14-45-36-787-a.jpg",
+        "/home/Data/Fotos/.Old/Beauty/Jolanda/PhotoLab/set 10/3f2a5d42-00c7-4ee8-af44-fa81a598b1b7.jpg",
+        "/home/Data/Fotos/.Old/Beauty/Jolanda/PhotoLab/a197f084-34ca-42d7-9da9-36c1ae88740b.jpg"
       ],
-      "onefilename": ""
+      "spinbutton": -0.997e0
     }
   }
 }
