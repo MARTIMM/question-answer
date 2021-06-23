@@ -125,9 +125,11 @@ method !create-input-row ( Int $row ) {
 #-------------------------------------------------------------------------------
 method !set-values ( ) {
 
-  # check if the value is an array
+  # check if the value is an array, if not, convert to an array.
   my $v = $!user-data-set-part{$!question.name};
   my @values = $v ~~ Array ?? @$v !! ($v);
+
+  # check for repeated values
   if $!question.repeatable {
     my Bool $spliced = False;
     my Int $row = 0;
@@ -137,8 +139,9 @@ method !set-values ( ) {
       last if $row >= @values.elems;
 
       # check for empty data
+
       my ( $select-item, $input);
-      if ?$!question.selectlist {
+      if $!question.selectlist.defined {
         ( $select-item, $input) = @values[$row].kv;
 
         unless $input {
@@ -146,6 +149,9 @@ method !set-values ( ) {
           $spliced = True;
           next;
         }
+
+        self.set-value( $!input-widgets[$row], $input);
+        self!check-value( $!input-widgets[$row], $row);
       }
 
       else {
@@ -154,19 +160,23 @@ method !set-values ( ) {
           $spliced = True;
           next;
         }
+
+        self.set-value( $!input-widgets[$row], @values[$row]);
+        self!check-value( $!input-widgets[$row], $row);
       }
 
 
-      # create a new input row if widget didn't exist
-      self.add-new-row($row);
+      # create a new input row if widget didn't exist.
+      #self.add-new-row($row);
+      self.add-new-row; #($!input-widgets.elems);
 
       # set value in field widget
       if $!question.selectlist.defined {
         # no types, can be anything and undefined
         #my ( $select-item, $input) = @values[$row].kv;
 
-        self.set-value( $!input-widgets[$row], $input);
-        self!check-value( $!input-widgets[$row], $row);
+#        self.set-value( $!input-widgets[$row], $input);
+#        self!check-value( $!input-widgets[$row], $row);
 
         my Int $value-index =
           $!question.selectlist.first( $select-item, :k) // 0;
@@ -176,10 +186,10 @@ method !set-values ( ) {
         $cbt.set-active($value-index);
       }
 
-      else {
-        self.set-value( $!input-widgets[$row], @values[$row]);
-        self!check-value( $!input-widgets[$row], $row);
-      }
+#      else {
+#        self.set-value( $!input-widgets[$row], @values[$row]);
+#        self!check-value( $!input-widgets[$row], $row);
+#      }
 
       $row++;
       last if $row >= @values.elems;
@@ -202,8 +212,11 @@ method !set-values ( ) {
 }
 
 #-------------------------------------------------------------------------------
-method add-new-row ( Int $row ) {
-  # create a new input row if widget didn't exist
+method add-new-row ( --> Int ) {
+  # Create a new input row if widget didn't exist. Number of rows
+  # is equal to number of elements
+  my Int $row = $!input-widgets.elems;
+
   if ! $!input-widgets[$row].defined {
 
     # get the toolbutton from the previous row to adjust its settings.
@@ -218,6 +231,8 @@ method add-new-row ( Int $row ) {
     # extend by emitting a signal which triggers the 'add-row' method.
     $toolbutton.emit-by-name('clicked');
   }
+
+  $row
 }
 
 #-------------------------------------------------------------------------------

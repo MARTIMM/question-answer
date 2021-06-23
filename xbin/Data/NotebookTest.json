@@ -1,45 +1,57 @@
 {
+  "page1": {
+    "set-spec": {
+      "check": [
+        "Purple",
+        "Orange"
+      ],
+      "radio": "Pop 90-ies",
+      "filename": [
+      ],
+      "spinbutton": -0.997e0,
+      "onefilename": "/home/marcel/Pictures/Puzzles/old things/9ff462c33b947ab471a4f41760c681fd.jpg",
+      "description": "vbn vbn bvn\t",
+      "name": "cvb",
+      "more-image": [
+        {
+          "Icon": "/home/marcel/Pictures/Puzzles/sci-fi/1224884.jpg"
+        },
+        {
+          "Icon": "/home/marcel/Pictures/Puzzles/old things/9ff462c33b947ab471a4f41760c681fd.jpg"
+        },
+        "",
+        ""
+      ],
+      "title": "qwe asd d",
+      "an-image": "/home/marcel/Pictures/Puzzles/sci-fi/1576849.jpg",
+      "images": [
+        "/home/marcel/Pictures/Puzzles/sci-fi/1576849.jpg",
+        "/home/marcel/Pictures/Puzzles/sci-fi/1224884.jpg",
+        "/home/marcel/Pictures/Puzzles/sci-fi/1576859.jpg",
+        "/home/marcel/Pictures/Puzzles/sci-fi/234195.jpg",
+        "/home/marcel/Pictures/Puzzles/sci-fi/535158.jpg",
+        "",
+        "/home/marcel/Pictures/Puzzles/sci-fi/denis-melnychenko-moon.jpg",
+        "/home/marcel/Pictures/Puzzles/sci-fi/GRuLZs6.png"
+      ]
+    }
+  },
   "page2": {
     "entry-spec": {
-      "invisible": true,
       "callback": "",
+      "mywidget": "3",
       "tooltip": [
         {
           "tt1": "vbn"
         },
         {
           "tt2": "dfgtyu"
-        }
+        },
+        "",
+        ""
       ],
-      "mywidget": "3",
+      "invisible": true,
       "name": "asda"
-    }
-  },
-  "page1": {
-    "set-spec": {
-      "more-image": [
-        {
-          "Icon": "/home/Data/Fotos/.Old/Beauty/Jolanda/PhotoLab/set 10/b19a0372-45a2-4735-be5b-2f804c24af25.jpg"
-        }
-      ],
-      "an-image": "/home/Data/Fotos/.Old/Beauty/Jolanda/PhotoLab/set 10/7a213020-80d3-4048-a717-e2cae1b98201.jpg",
-      "filename": [
-      ],
-      "description": "vbn vbn bvn\t",
-      "check": [
-        "Purple",
-        "Orange"
-      ],
-      "title": "qwe asd d",
-      "name": "cvb",
-      "onefilename": "/home/marcel/Desktop/out-0032.png",
-      "radio": "Pop 90-ies",
-      "images": [
-        "/home/Data/Fotos/.Old/Beauty/Jolanda/Jolanda_1/2020-09-14-14-45-36-787-a.jpg",
-        "/home/Data/Fotos/.Old/Beauty/Jolanda/PhotoLab/set 10/3f2a5d42-00c7-4ee8-af44-fa81a598b1b7.jpg",
-        "/home/Data/Fotos/.Old/Beauty/Jolanda/PhotoLab/a197f084-34ca-42d7-9da9-36c1ae88740b.jpg"
-      ],
-      "spinbutton": -0.997e0
     }
   }
 }

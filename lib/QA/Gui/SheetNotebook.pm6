@@ -129,7 +129,7 @@ method !set-style ( ) {
     $application-id ~ '/resources/g-resources/QAManager-style.css'
   );
   my Gnome::Gtk3::StyleContext $context .= new;
-  $context.add_provider_for_screen(
+  $context.add-provider-for-screen(
     Gnome::Gdk3::Screen.new, $css-provider, GTK_STYLE_PROVIDER_PRIORITY_USER
   );
 

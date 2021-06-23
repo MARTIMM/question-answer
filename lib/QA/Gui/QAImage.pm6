@@ -26,6 +26,8 @@ use Gnome::Gdk3::Pixbuf;
 use Gnome::GObject::Value;
 use Gnome::GObject::Type;
 
+use Gnome::N::N-GObject;
+
 use QA::Types;
 use QA::Question;
 use QA::Gui::Value;
@@ -49,13 +51,14 @@ submethod BUILD (
 #-------------------------------------------------------------------------------
 method create-widget ( Str $widget-name, Int $row --> Any ) {
 
-  # we need a grid with 2 rows. one for the file chooser button
-  # and one for the image
+  # We need a grid with 2 rows. one for the file chooser button
+  # and one for the image. If DND, 1st row is made invisible.
   given my Gnome::Gtk3::FileFilter $filter .= new {
     .set-name('images');
     .add-mime-type('image/x-icon');
     .add-mime-type('image/jpeg');
     .add-mime-type('image/png');
+    .add-mime-type('image/gif');
     .add-mime-type('image/svg+xml');
     .add-mime-type('text/uri-list');
   }
@@ -66,75 +69,71 @@ method create-widget ( Str $widget-name, Int $row --> Any ) {
   my Gnome::Gtk3::Grid $widget-grid .= new;
   self.add-class( $widget-grid, 'QAGrid');
 
-  if ?$!question.dnd {
-    self.setup-as-drag-destination( $image, $!question.dnd);
+  my Str $title = $!question.title;
+  given my Gnome::Gtk3::FileChooserButton $fcb .= new(:$title) {
+    .set-hexpand(True);
+    .set-vexpand(True);
+    .set_filter($filter);
+    .register-signal( self, 'file-selected', 'file-set');
+    .register-signal( self, 'must-hide', 'show', :dnd($!question.dnd));
   }
 
-  else {
-    my Str $title = $!question.title;
-    given my Gnome::Gtk3::FileChooserButton $fcb .= new(:$title) {
-      .set-hexpand(True);
-      .set-vexpand(True);
-      .register-signal( self, 'file-selected', 'file-set');
-      .set_filter($filter);
-    }
+  self.add-class( $fcb, 'QAFileChooserButton');
+  $widget-grid.grid-attach( $fcb, 0, 0, 1, 1);
 
-    self.add-class( $fcb, 'QAFileChooserButton');
-    $widget-grid.grid-attach( $fcb, 0, 0, 1, 1);
-  }
+  # When drag and drop is requested, prepare a drag destination. Then,
+  # also no file chooser button is necessary. Button is made invisible
+  # on the show event
+  self.setup-as-drag-destination( $image, $!question.dnd, $fcb, $widget-grid)
+    if ?$!question.dnd;
 
   $widget-grid.grid-attach( $image, 0, 1, 1, 1);
 
-note "DND Target: ", $!question.dnd//'-';
+#note "DND Target: ", $!question.dnd//'-';
 
   $widget-grid
 }
 
 #-------------------------------------------------------------------------------
 method get-value ( $grid --> Any ) {
-
-#  my Gnome::Gtk3::FileChooserButton $fcb = $grid.get-child-at-rk( 0, 0);
-
-  my Gnome::Gtk3::Image $image = $grid.get-child-at-rk( 0, 1);
-
-#  my Gnome::GObject::Value $gv .= new(:init(G_TYPE_STRING));
-#  $image.get-property( 'file', $gv);
-#  my $filename = $gv.get-string // '';
-#  my $filename = $image.get-name;
-  my CArray[Str] $ca = nativecast(
-    CArray[Str], $image.get-data('image-filename')
-  );
-  my $filename = $ca[0];
-
-note "F: $filename";
-  $filename
+  my Gnome::Gtk3::FileChooserButton $fcb = $grid.get-child-at-rk( 0, 0);
+#  my $filename = $fcb.get-filename // '';
+#note "F: $filename";
+#  $filename
+  $fcb.get-filename // ''
 }
 
 #-------------------------------------------------------------------------------
 method set-value ( Any:D $grid, $filename ) {
-
   if ?$filename {
-    my Gnome::Gtk3::FileChooserButton $fcb .= new(
-      :native-object($grid.get-child-at( 0, 0))
-    );
-#    $fcb.set-filename($filename) unless ?$!question.dnd;
+    my Gnome::Gtk3::FileChooserButton $fcb = $grid.get-child-at-rk( 0, 0);
+    $fcb.set-filename($filename);# unless ?$!question.dnd;
     self!set-image( $grid, $filename);
+#    $fcb.hide if ?$!question.dnd;
   }
 }
 
 #-------------------------------------------------------------------------------
-method file-selected ( :_widget($fcb) ) {
+method file-selected ( Gnome::Gtk3::FileChooserButton :_widget($fcb) ) {
 
   # must get the grid because the unit is a grid
   my Gnome::Gtk3::Grid $grid .= new(:native-object($fcb.get-parent));
   my ( $n, $row ) = $grid.get-name.split(':');
   $row .= Int;
 
+  # repaint and store image locally
+  self!set-image( $grid, $fcb.get-filename);
+
+note "selected; $row, $fcb.get-filename()";
   # store in user data without checks
   self.process-widget-signal( $grid, $row, :!do-check);
+}
 
-  # repaint image
-  self!set-image( $grid, $fcb.get-filename);
+#-------------------------------------------------------------------------------
+# Make widget invisible when dnd is turned on. Wait until widgets are shown
+# to be able to turn it off.
+method must-hide ( Gnome::Gtk3::FileChooserButton :_widget($fcb), Str :$dnd ) {
+  $fcb.hide if ?$dnd;
 }
 
 #-------------------------------------------------------------------------------
@@ -143,21 +142,32 @@ method !set-image ( Gnome::Gtk3::Grid $grid, Str $filename ) {
   my Int $width = $!question.width // 100;
   my Int $height = $!question.height // 100;
   my Gnome::Gdk3::Pixbuf $pb .= new( :file($filename), :$width, :$height);
+  note $pb.last-error.message if $pb.last-error.is-valid;
+
   my Gnome::Gtk3::Image $image = $grid.get-child-at-rk( 0, 1);
   $image.set-from-pixbuf($pb);
+#  $image.show;
+note $?LINE;
 
 #  my Gnome::GObject::Value $gv .= new(:init(G_TYPE_STRING));
 #  $image.get-property( 'file', $gv);
 #  $gv.set-string($filename);
+#note 'image set: ', $gv.get-string;
 
 #  $image.set-name($filename);
-  $image.set-data(
-    'image-filename', nativecast( Pointer, CArray[Str].new($filename))
-  );
+
+#note $?LINE;
+#  $image.set-data(
+#    'image-filename', nativecast( Pointer, CArray[Str].new($filename))
+#  );
+#note $?LINE;
 }
 
 #-------------------------------------------------------------------------------
-method setup-as-drag-destination ( $destination-widget, Str $target-list ) {
+method setup-as-drag-destination (
+  $destination-widget, Str $target-list, Gnome::Gtk3::FileChooserButton $fcb,
+  Gnome::Gtk3::Grid $grid
+) {
 
   my Array[N-GtkTargetEntry] $target-entries = Array[N-GtkTargetEntry].new;
   for $target-list.split(/\s* ',' \s*/) -> $target {
@@ -169,266 +179,158 @@ method setup-as-drag-destination ( $destination-widget, Str $target-list ) {
     $destination-widget, GTK_DEST_DEFAULT_NONE, $target-entries, GDK_ACTION_COPY
   );
 
-  $destination-widget.register-signal( self, 'motion', 'drag-motion');
-  $destination-widget.register-signal( self, 'leave', 'drag-leave');
-  $destination-widget.register-signal( self, 'receive', 'drag-data-receive');
-  $destination-widget.register-signal( self, 'drop', 'drag-drop');
-}
+  $destination-widget.register-signal(
+    self, 'motion', 'drag-motion', :$destination
+  );
 
+  $destination-widget.register-signal(
+    self, 'leave', 'drag-leave', :$destination
+  );
 
+  $destination-widget.register-signal(
+    self, 'drop', 'drag-drop', :$destination
+  );
 
-
-
-
-
-
-
-
-
-
-
-
-=finish
-
-#-------------------------------------------------------------------------------
-method check-value ( --> Any ) {
+  $destination-widget.register-signal(
+    self, 'received', 'drag-data-received', :$fcb, :$destination, :$grid
+  );
 }
 
 #-------------------------------------------------------------------------------
-method !add-value ( Str $text ) {
-}
-
-#-------------------------------------------------------------------------------
-method set-value (
-  $data-key, $data-value, $row, Bool :$overwrite = True, Bool :$last-row
+method motion (
+  N-GObject $context-no, Int $x, Int $y, UInt $time,
+  :_widget($destination-widget), Gnome::Gtk3::DragDest :$destination
+  --> Bool
 ) {
+#note "\ndst motion: $x, $y, $time";
+  my Bool $status;
 
-#note "SV 0: set value $data-key, $data-value, $row";
-  # if not repeatable, only row 0 can exist. the rest is ignored.
-  return if not $!repeatable and $row > 0;
+  my Gnome::Gdk3::DragContext $context .= new(:native-object($context-no));
+  my Gnome::Gdk3::Atom $target-atom = $destination.find-target(
+    $destination-widget, $context,
+    $destination.get-target-list($destination-widget)
+  );
 
-#  my Int $tb-col = self.check-toolbutton-column;
+#note $?LINE, ', Target match: ', $target-atom.name;
 
-  # if $data-key is a number then only text without a combobox is shown. Text
-  # is found in $data-value. If a combobox is needed then text is in text-key
-  # and combobox selection in text-value.
-  my Bool $need-combobox = ?$!input-category;
-  my Str $text = ($data-key ~~ m/^ \d+ $/).Bool ?? $data-value !! $data-key;
-#note "SV 1: $text";
-
-  # check if there is an input field defined. if not, create input field.
-  # otherwise get object from grid
-  my Bool $new-row;
-  my Gnome::Gtk3::Entry $entry;
-  if $!input-widgets[$row].defined {
-    $new-row = False;
-    $entry .= new(:native-object($!grid.get-child-at( 0, $row)));
+  if $target-atom.name ~~ 'NONE' {
+    $context.status( GDK_ACTION_NONE, $time);
+    $status = False;
   }
 
   else {
-    $new-row = True;
-    $entry .= new( :$text, :$!example, :$!tooltip, :$!visibility);
-
-    $entry.register-signal( self, 'check-on-focus-change', 'focus-out-event');
-    $!grid.grid-attach( $entry, 0, $row, 1, 1);
-    $!input-widgets.push($entry);
+    $destination.highlight($destination-widget);
+    $context.status( GDK_ACTION_COPY, $time);
+    $status = True;
   }
 
-  # the text can be written only if field is empty or if overwrite is True
-  $!input-widgets[$row].set-text($text)
-    if ! $!input-widgets[$row].get-text or $overwrite;
-
-  # insert and set value of a combobox
-  my Gnome::Gtk3::ComboBoxText $cbt;
-  if $need-combobox {
-    if $new-row {
-      $cbt = self.create-combobox;
-      $!grid.attach-next-to( $cbt, $entry, GTK_POS_RIGHT, 1, 1);
-    }
-
-    else {
-      $cbt .= new(:native-object($!grid.get-child-at( 1, $row)));
-    }
-
-    self.set-combobox-select( $cbt, $data-value.Str);
-  }
-
-  # at last the toolbutton if $!repeatable
-  if $!repeatable {
-    my Gnome::Gtk3::ToolButton $tb;
-    if $new-row {
-      $tb = self.create-toolbutton(:add($last-row));
-      $!grid.attach-next-to(
-        $tb, $need-combobox ?? $cbt !! $entry, GTK_POS_RIGHT, 1, 1
-      );
-    }
-
-    else {
-
-    }
-  }
-
-  self.rename-buttons;
+  $status
 }
 
 #-------------------------------------------------------------------------------
-method add-entry (
-  Gnome::Gtk3::ToolButton :_widget($toolbutton), Int :$_handler-id
+method leave (
+  N-GObject $context-no, UInt $time,
+  :_widget($destination-widget), Gnome::Gtk3::DragDest :$destination
 ) {
-
-  # modify this buttons icon and signal handler
-  my Gnome::Gtk3::Image $image .= new;
-  $image.set-from-icon-name( 'list-remove', GTK_ICON_SIZE_BUTTON);
-
-  $toolbutton.set-icon-widget($image);
-  $toolbutton.handler-disconnect($_handler-id);
-  $toolbutton.register-signal( self, 'delete-entry', 'clicked');
-
-  # create new tool button on row below the button triggering this handler
-  my Gnome::Gtk3::ToolButton $tb;
-  $image .= new;
-  $image.set-from-icon-name( 'list-add', GTK_ICON_SIZE_BUTTON);
-  $tb .= new(:icon($image));
-  $tb.register-signal( self, 'add-entry', 'clicked');
-  $!grid.attach-next-to( $tb, $toolbutton, GTK_POS_BOTTOM, 1, 1);
-
-  # check if a combobox is to be drawn
-  my Int $tbcol = self.check-toolbutton-column;
-  my Gnome::Gtk3::ComboBoxText $cbt;
-  if $tbcol == 2 {
-    $cbt = self.create-combobox;
-    $!grid.attach-next-to( $cbt, $tb, GTK_POS_LEFT, 1, 1);
-  }
-
-  # create new text entry to the left of the button
-  my Gnome::Gtk3::Entry $entry .= new(:$!visibility);
-  $!grid.attach-next-to(
-    $entry, $tbcol == 2 ?? $cbt !! $tb, GTK_POS_LEFT, 1, 1
-  );
-
-  self.rename-buttons;
-  $!grid.show-all;
+#note "\ndst leave: $time";
+  $destination.unhighlight($destination-widget);
 }
 
 #-------------------------------------------------------------------------------
-method delete-entry (
-  Gnome::Gtk3::ToolButton :_widget($toolbutton), Int :$_handler-id
+method drop (
+  N-GObject $context-no, Int $x, Int $y, UInt $time,
+  :_widget($destination-widget), Gnome::Gtk3::DragDest :$destination
+  --> Bool
 ) {
+note "\ndst drop: $x, $y, $time";
 
-  # delete a row using the name of the toolbutton, see also rename-buttons().
-  my Str $name = $toolbutton.get-name;
-  $name ~~ s/ 'tb-button' //;
-  my Int $row = $name.Int;
-  $!grid.remove-row($row);
-  self.rename-buttons;
-}
-
-#-------------------------------------------------------------------------------
-# rename buttons in such a way that the row number is saved in the name.
-method rename-buttons ( ) {
-
-  my Int $tb-col = self.check-toolbutton-column;
-  my Int $row = 0;
-  my Gnome::Gtk3::ToolButton $toolbar-button;
-  loop {
-    my $ntb = $!grid.get-child-at( $tb-col, $row);
-    last unless $ntb.defined;
-
-    $toolbar-button .= new(:native-object($ntb));
-    $toolbar-button.set-name("tb-button$row");
-    $row++;
-  }
-}
-
-#-------------------------------------------------------------------------------
-# plans are to insert a combobox before entry. this means that toolbutton
-# can be in column 1 or 2
-method check-toolbutton-column ( --> Int ) {
-
-  my $ntb = $!grid.get-child-at( 2, 0);
-  $ntb.defined ?? 2 !! 1
-}
-
-#-------------------------------------------------------------------------------
-method create-toolbutton ( Bool :$add --> Gnome::Gtk3::ToolButton ) {
-
-  my Gnome::Gtk3::Image $image .= new;
-  $image.set-from-icon-name(
-    $add ?? 'list-add' !! 'list-remove', GTK_ICON_SIZE_BUTTON
+  my Gnome::Gdk3::DragContext $context .= new(:native-object($context-no));
+  my Gnome::Gdk3::Atom $target-atom = $destination.find-target(
+    $destination-widget, $context,
+    $destination.get-target-list($destination-widget)
   );
 
-  my Gnome::Gtk3::ToolButton $tb .= new(:icon($image));
-  $tb.register-signal(
-    self, $add ?? 'add-entry' !! 'delete-entry', 'clicked'
+#note $?LINE, ', Target match: ', (?$target-atom ?? $target-atom.name !! 'NONE');
+
+  # ask for data. triggers drag-data-get on source. when data is received or
+  # error, drag-data-received on destination is triggered
+  $destination.get-data(
+    $destination-widget, $context-no, $target-atom, $time
+  ) if ?$target-atom;
+
+  True
+}
+
+#-------------------------------------------------------------------------------
+method received (
+  N-GObject $context-no, Int $x, Int $y,
+  N-GObject $selection-data-no, UInt $info, UInt $time,
+  :_widget($destination-widget), Gnome::Gtk3::DragDest :$destination,
+  Gnome::Gtk3::FileChooserButton :$fcb, Gnome::Gtk3::Grid :$grid
+) {
+note "\ndst received:, $x, $y, $info, $time";
+  my Gnome::Gtk3::SelectionData $selection-data .= new(
+    :native-object($selection-data-no)
   );
 
-  $tb
-}
+  my $source-data;
+  my Gnome::Gdk3::DragContext $context .= new(
+    :native-object($context-no)
+  );
 
-#-------------------------------------------------------------------------------
-method create-combobox ( Str $select = '' --> Gnome::Gtk3::ComboBoxText ) {
+  my Gnome::Gdk3::Atom $target-atom = $destination.find-target(
+    $destination-widget, $context,
+    $destination.get-target-list($destination-widget)
+  );
+#note $?LINE, ', Target match: ', (?$target-atom ?? $target-atom.name !! 'NONE');
 
-  my Gnome::Gtk3::ComboBoxText $cbt .= new;
-  for @$!input-category -> $v {
-    $cbt.append-text($v);
-  }
+  if $target-atom.name eq 'text/uri-list' {
+    # only first image is replaced, rest is added to the end.
+    my Bool $add = False;
+    my ( $n, $row );
 
-  self.set-combobox-select( $cbt, $select);
-  $cbt
-}
+    $source-data = $selection-data.get-uris;
+#note $?LINE, ', ', $source-data.elems, ', ', $source-data;
+    for @$source-data -> $uri is copy {
+note "$?LINE, $uri";
+      if $uri.IO.extension ~~ any(<jpg png jpeg svg gif>) {
+        $uri ~~ s/^ 'file://' //;
+        $uri ~~ s:g/'%20'/ /;
 
-#-------------------------------------------------------------------------------
-method set-combobox-select( Gnome::Gtk3::ComboBoxText $cbt, Str $select = '' ) {
+        my Gnome::Gtk3::Grid $grid .= new(:native-object($fcb.get-parent));
+note "$?LINE, $fcb.is-valid(), $grid.is-valid(), $add";
 
-  my Int $value-index = $!input-category.first( $select, :k) // 0;
-  $cbt.set-active($value-index);
-}
+        if $add {
+          $row = self.add-new-row;
+        }
 
-#-------------------------------------------------------------------------------
-method check-on-focus-change ( N-GdkEventFocus $event, :_widget($w) --> Int ) {
+        else {
+          $add = True;
+note "$?LINE, {$row//'-'}, $grid.get-name()";
 
-#note 'focus change';
-  my Gnome::Gtk3::Entry $entry = $w;
-  my Str $input = $entry.get-text;
-#    $input = $kv<default> // Str unless ?$input;
+          # must get the grid because the unit is a grid
+          ( $n, $row ) = $grid.get-name.split(':');
+          $row .= Int;
+note "$?LINE, {$row//'-'}";
+        }
+#note "$?LINE, $row";
 
-  my Bool $faulty-state;
-#`{{
-  my Str $cb-name = ($!callback-name // '_') ~ '-sts';
-  if ?$*callback-object and $*callback-object.^can($cb-name) {
-    $faulty-state = $*callback-object."$cb-name"( :$input, :$kv);
-  }
+        # repaint and store image locally
+        #self!set-image( $grid, $fcb.get-filename);
+        $fcb.set-filename($uri);
+note "$?LINE, $uri";
 
-  else {
-    $faulty-state = (?$kv<required> and !$input);
-  }
-}}
-  $faulty-state = (?$!required and !$input);
+        self!set-image( $grid, $uri);
+note $?LINE, ", selected; $fcb.get-filename()";
+        # store in user data without checks
+        self.process-widget-signal( $grid, $row, :!do-check, :input($uri));
 
-  if $faulty-state {
-    self.set-status-hint( $entry, QAStatusFail);
-  }
-
-  elsif ?$!required {
-    self.set-status-hint( $entry, QAStatusOk);
-    my Str ( $widget-name, $row) = $entry.get-name.split(':');
-    if $!repeatable {
-      #if $!... {
-      #}
-      $!user-data-set-part{$widget-name}[$row] = $input;
+        #my Gnome::Gdk3::Pixbuf $pixbuf .= new(
+        #  :file($uri), :380width, :380height, :preserve_aspect_ration
+        #);
+        #$destination-widget.set-from-pixbuf($pixbuf);
+#        last;
+      }
     }
-
-    else {
-      $!user-data-set-part{$widget-name} = $input;
-    }
   }
-
-  else {
-    self.set-status-hint( $entry, QAStatusNormal);
-  }
-
-
-  # must propogate further to prevent messages when notebook page is switched
-  # otherwise it would do ok to return 1.
-  0
 }
