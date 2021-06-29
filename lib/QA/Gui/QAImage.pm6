@@ -3,11 +3,11 @@ use NativeCall;
 
 use Gnome::Gdk3::Pixbuf;
 
-use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::Image;
-use Gnome::Gtk3::FileFilter;
 use Gnome::Gtk3::FileChooser;
 use Gnome::Gtk3::FileChooserButton;
+use Gnome::Gtk3::FileFilter;
+use Gnome::Gtk3::Grid;
+use Gnome::Gtk3::Image;
 #use Gnome::Gtk3::StyleContext;
 
 use Gnome::Gtk3::TargetEntry;
@@ -49,17 +49,18 @@ submethod BUILD (
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( Str $widget-name, Int $row --> Any ) {
+method create-widget ( Str $widget-name --> Any ) {
 
   # We need a grid with 2 rows. one for the file chooser button
   # and one for the image. If DND, 1st row is made invisible.
   given my Gnome::Gtk3::FileFilter $filter .= new {
     .set-name('images');
-    .add-mime-type('image/x-icon');
-    .add-mime-type('image/jpeg');
-    .add-mime-type('image/png');
-    .add-mime-type('image/gif');
-    .add-mime-type('image/svg+xml');
+#    .add-mime-type('image/x-icon');
+#    .add-mime-type('image/jpeg');
+#    .add-mime-type('image/png');
+#    .add-mime-type('image/gif');
+#    .add-mime-type('image/svg+xml');
+    .add-mime-type('image/*');
     .add-mime-type('text/uri-list');
   }
 
@@ -74,6 +75,7 @@ method create-widget ( Str $widget-name, Int $row --> Any ) {
     .set-hexpand(True);
     .set-vexpand(True);
     .set_filter($filter);
+    .set-border-width(2) if $!question.dnd;
     .register-signal( self, 'file-selected', 'file-set');
     .register-signal( self, 'must-hide', 'show', :dnd($!question.dnd));
   }
@@ -146,8 +148,7 @@ method !set-image ( Gnome::Gtk3::Grid $grid, Str $filename ) {
 
   my Gnome::Gtk3::Image $image = $grid.get-child-at-rk( 0, 1);
   $image.set-from-pixbuf($pb);
-#  $image.show;
-note $?LINE;
+note "$?LINE, $filename, $width, $height";
 
 #  my Gnome::GObject::Value $gv .= new(:init(G_TYPE_STRING));
 #  $image.get-property( 'file', $gv);
@@ -266,7 +267,7 @@ method received (
   N-GObject $context-no, Int $x, Int $y,
   N-GObject $selection-data-no, UInt $info, UInt $time,
   :_widget($destination-widget), Gnome::Gtk3::DragDest :$destination,
-  Gnome::Gtk3::FileChooserButton :$fcb, Gnome::Gtk3::Grid :$grid
+  Gnome::Gtk3::FileChooserButton :$fcb is copy, Gnome::Gtk3::Grid :$grid
 ) {
 note "\ndst received:, $x, $y, $info, $time";
   my Gnome::Gtk3::SelectionData $selection-data .= new(
@@ -285,6 +286,8 @@ note "\ndst received:, $x, $y, $info, $time";
 #note $?LINE, ', Target match: ', (?$target-atom ?? $target-atom.name !! 'NONE');
 
   if $target-atom.name eq 'text/uri-list' {
+CONTROL { when CX::Warn {  note .gist; .resume; } }
+#CATCH { default { .message.note; .backtrace.concise.note } }
     # only first image is replaced, rest is added to the end.
     my Bool $add = False;
     my ( $n, $row );
@@ -301,7 +304,11 @@ note "$?LINE, $uri";
 note "$?LINE, $fcb.is-valid(), $grid.is-valid(), $add";
 
         if $add {
-          $row = self.add-new-row;
+          $row = self.add-new-row.Int;
+#note "$?LINE, $grid.get-name()";
+#          my Gnome::Gtk3::Grid $widget-grid = $grid.get-child-at-rk( 0, $row+1);
+#note "$?LINE, $widget-grid.get-name()";
+#          $fcb = $widget-grid.get-child-at-rk( 0, 0);
         }
 
         else {
@@ -311,19 +318,20 @@ note "$?LINE, {$row//'-'}, $grid.get-name()";
           # must get the grid because the unit is a grid
           ( $n, $row ) = $grid.get-name.split(':');
           $row .= Int;
-note "$?LINE, {$row//'-'}";
+#note "$?LINE, {$row//'-'}";
         }
 #note "$?LINE, $row";
 
         # repaint and store image locally
         #self!set-image( $grid, $fcb.get-filename);
         $fcb.set-filename($uri);
-note "$?LINE, $uri";
 
         self!set-image( $grid, $uri);
-note $?LINE, ", selected; $fcb.get-filename()";
+#        self.set-value( $grid, $uri);
+#note $?LINE, ", selected; $fcb.get-filename()";
         # store in user data without checks
         self.process-widget-signal( $grid, $row, :!do-check, :input($uri));
+note "$?LINE, $uri, {$fcb.get-filename() // '-'}";
 
         #my Gnome::Gdk3::Pixbuf $pixbuf .= new(
         #  :file($uri), :380width, :380height, :preserve_aspect_ration
