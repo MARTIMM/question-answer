@@ -36,7 +36,7 @@ class MyWidget does QA::Gui::Value {
   }
 
   #---------
-  method create-widget ( Str $widget-name, Int $row --> Any ) {
+  method create-widget ( Str $widget-name --> Any ) {
 
     # create a text input widget
     my Gnome::Gtk3::Button $button .= new;

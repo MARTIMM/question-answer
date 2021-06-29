@@ -120,6 +120,23 @@
           "set-name": "set-spec",
           "description": "Testing the fields that makup this set",
           "title": "Test Set1"
+        },
+        {
+          "questions": [
+            {
+              "fieldtype": "QATextView",
+              "description": "Description of this input field",
+              "title": "Description",
+              "name": "description",
+              "required": false,
+              "repeatable": true,
+              "minimum": 2,
+              "maximum": 4
+            }
+          ],
+          "set-name": "set-spec",
+          "description": "Testing the fields that makup this set",
+          "title": "Test Set1"
         }
       ],
       "description": "Specification of a set. Below you can fill in the necessary fields required for a description of an input field.",

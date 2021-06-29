@@ -1,44 +1,8 @@
 {
-  "page1": {
-    "set-spec": {
-      "check": [
-        "Purple",
-        "Orange"
-      ],
-      "radio": "Pop 90-ies",
-      "filename": [
-      ],
-      "spinbutton": -0.997e0,
-      "onefilename": "/home/marcel/Pictures/Puzzles/old things/9ff462c33b947ab471a4f41760c681fd.jpg",
-      "description": "vbn vbn bvn\t",
-      "name": "cvb",
-      "more-image": [
-        {
-          "Icon": "/home/marcel/Pictures/Puzzles/sci-fi/1224884.jpg"
-        },
-        {
-          "Icon": "/home/marcel/Pictures/Puzzles/old things/9ff462c33b947ab471a4f41760c681fd.jpg"
-        },
-        "",
-        ""
-      ],
-      "title": "qwe asd d",
-      "an-image": "/home/marcel/Pictures/Puzzles/sci-fi/1576849.jpg",
-      "images": [
-        "/home/marcel/Pictures/Puzzles/sci-fi/1576849.jpg",
-        "/home/marcel/Pictures/Puzzles/sci-fi/1224884.jpg",
-        "/home/marcel/Pictures/Puzzles/sci-fi/1576859.jpg",
-        "/home/marcel/Pictures/Puzzles/sci-fi/234195.jpg",
-        "/home/marcel/Pictures/Puzzles/sci-fi/535158.jpg",
-        "",
-        "/home/marcel/Pictures/Puzzles/sci-fi/denis-melnychenko-moon.jpg",
-        "/home/marcel/Pictures/Puzzles/sci-fi/GRuLZs6.png"
-      ]
-    }
-  },
   "page2": {
     "entry-spec": {
-      "callback": "",
+      "name": "asda",
+      "invisible": true,
       "mywidget": "3",
       "tooltip": [
         {
@@ -46,12 +10,39 @@
         },
         {
           "tt2": "dfgtyu"
-        },
-        "",
-        ""
+        }
       ],
-      "invisible": true,
-      "name": "asda"
+      "callback": ""
+    }
+  },
+  "page1": {
+    "set-spec": {
+      "filename": [
+      ],
+      "name": "cvb",
+      "title": "qwe asd d",
+      "spinbutton": -0.999e0,
+      "more-image": [
+        {
+          "Icon": "/home/marcel/Pictures/Puzzles/sci-fi/1224884.jpg"
+        },
+        {
+          "Icon": "/home/marcel/Pictures/Puzzles/old things/9ff462c33b947ab471a4f41760c681fd.jpg"
+        }
+      ],
+      "onefilename": "/home/marcel/Pictures/Puzzles/old things/9ff462c33b947ab471a4f41760c681fd.jpg",
+      "radio": "Classic FM",
+      "description": "vbn vbn bvn\t",
+      "an-image": "/home/marcel/Pictures/Puzzles/sci-fi/1576849.jpg",
+      "images": [
+        "/home/marcel/Pictures/Puzzles/sci-fi/1224884.jpg",
+        "/home/marcel/Pictures/Puzzles/sci-fi/1224100.jpg",
+        "/home/marcel/Pictures/Puzzles/sci-fi/1224231.jpg"
+      ],
+      "check": [
+        "Red",
+        "Orange"
+      ]
     }
   }
 }
