@@ -8,6 +8,8 @@
 #    url: "/content-docs/setup/configuration.html"
   - title: "Structures"
     url: "/content-docs/setup/structures.html"
+  - title: "Structures GUI"
+    url: "/content-docs/setup/structures-gui.html"
   - title: "Locations"
     url: "/content-docs/setup/locations.html"
   - title: "Examples"
