@@ -5,19 +5,21 @@ use v6.d;
 
 #use Gnome::Gtk3::Widget;
 #use Gnome::Gtk3::ComboBoxText;
-use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::ToolButton;
-use Gnome::Gtk3::ComboBoxText;
-use Gnome::Gtk3::Image;
+
+#use Gnome::Gtk3::Grid;
+#use Gnome::Gtk3::ToolButton;
+#use Gnome::Gtk3::ComboBoxText;
+#use Gnome::Gtk3::Image;
 use Gnome::Gtk3::StyleContext;
 use Gnome::Gtk3::Enums;
 
 use QA::Gui::Statusbar;
 use QA::Gui::Frame;
+use QA::Gui::Repeat;
 use QA::Types;
 use QA::Question;
 
-use Gnome::N::X;
+#use Gnome::N::X;
 #Gnome::N::debug(:on);
 
 #-------------------------------------------------------------------------------
@@ -27,16 +29,17 @@ use Gnome::N::X;
 
 unit role QA::Gui::Value:auth<github:MARTIMM>;
 also is QA::Gui::Frame;
+also does QA::Gui::Repeat;
 
 #-------------------------------------------------------------------------------
-has Gnome::Gtk3::Grid $!grid;
+#has Gnome::Gtk3::Grid $!grid;
 has QA::Question $!question;
 
 has Str $!widget-name;
 
-has Array $!values;
+#has Array $!values;
 has Hash $!user-data-set-part;
-has Array $!input-widgets;
+#has Array $!input-widgets;
 
 # state of current variable. value is True when answer is incorrect
 has Bool $.faulty-state;
@@ -60,13 +63,16 @@ method initialize ( ) {
 #  die 'user data not defined' unless ?$!user-data-set-part;
 
   # clear values
-  $!input-widgets = [];
-  $!values = [];
+#  $!input-widgets = [];
+#  $!values = [];
+
+  # Initialize repetition and add a grid to the frame.
+  self.add(self.init-repeat($!question.repeatable));
 
   $!widget-name = $!question.name;
 
   # make frame invisible if not repeatable
-  self.set-shadow-type(GTK_SHADOW_NONE) unless ?$!question.repeatable;
+#  self.set-shadow-type(GTK_SHADOW_NONE) unless ?$!question.repeatable;
 
   # fiddle a bit
   self.set-name($!widget-name);
@@ -75,19 +81,25 @@ method initialize ( ) {
   # add a grid to the frame. a grid is used to cope with repeatable values.
   # the input fields are placed under each other in one column. furthermore,
   # a pulldown can be shown when the input can be categorized.
-  $!grid .= new;
-  self.add($!grid);
-  self!create-input-row(0);
+  #$!grid .= new;
+  #self.add($!grid);
+
+  my $input-widget = self.create-widget($!widget-name);
+  my Str $tooltip = $!question.tooltip;
+  $input-widget.set-tooltip-text($tooltip) if ?$tooltip;
+#  $input-widget.set-name("$!widget-name:$row");
+  self.create-input-row( $input-widget, $!question.selectlist);
 
   # fill in user data
-  self!set-values;
+  self.set-values($!user-data-set-part{$!question.name});
 
-  # add a classname to the frame
+  # add a classname to this frame
   self.add-class( self, 'QAFrame');
 
   $!initialized = True;
 }
 
+#`{{
 #-------------------------------------------------------------------------------
 method !create-input-row ( Int $row ) {
 
@@ -103,12 +115,14 @@ method !create-input-row ( Int $row ) {
   $!grid.grid-attach( $input-widget, QAInputColumn, $row, 1, 1);
   $!input-widgets[$row] = $input-widget;
 
+#`{{
   # add a [+] button to the right when repeatable is set True
   if $!question.repeatable {
     my Gnome::Gtk3::ToolButton $tb = self!create-toolbutton($row);
     $!grid.grid-attach( $tb, QAButtonColumn, $row, 1, 1);
   }
-
+}}
+#`{{
   # create comboboxes on the left when selectlist is a non-empty Array
   my Array $select-list = $!question.selectlist // [];
   if $select-list.elems {
@@ -118,10 +132,13 @@ method !create-input-row ( Int $row ) {
     );
     $!grid.grid-attach( $cbt, QACatColumn, $row, 1, 1);
   }
+}}
 
   $!grid.show-all;
 }
+}}
 
+#`{{
 #-------------------------------------------------------------------------------
 method !set-values ( ) {
 
@@ -129,6 +146,7 @@ method !set-values ( ) {
   my $v = $!user-data-set-part{$!question.name};
   my @values = $v ~~ Array ?? @$v !! ($v);
 
+#`{{
   # check for repeated values
   if $!question.repeatable {
     my Bool $spliced = False;
@@ -149,9 +167,6 @@ method !set-values ( ) {
           $spliced = True;
           next;
         }
-
-        self.set-value( $!input-widgets[$row], $input);
-        self!check-value( $!input-widgets[$row], $row);
       }
 
       else {
@@ -160,9 +175,6 @@ method !set-values ( ) {
           $spliced = True;
           next;
         }
-
-        self.set-value( $!input-widgets[$row], @values[$row]);
-        self!check-value( $!input-widgets[$row], $row);
       }
 
 
@@ -175,8 +187,8 @@ method !set-values ( ) {
         # no types, can be anything and undefined
         #my ( $select-item, $input) = @values[$row].kv;
 
-#        self.set-value( $!input-widgets[$row], $input);
-#        self!check-value( $!input-widgets[$row], $row);
+        self.set-value( $!input-widgets[$row], $input);
+        self.check-widget-value( $!input-widgets[$row], $row);
 
         my Int $value-index =
           $!question.selectlist.first( $select-item, :k) // 0;
@@ -186,10 +198,10 @@ method !set-values ( ) {
         $cbt.set-active($value-index);
       }
 
-#      else {
-#        self.set-value( $!input-widgets[$row], @values[$row]);
-#        self!check-value( $!input-widgets[$row], $row);
-#      }
+      else {
+        self.set-value( $!input-widgets[$row], @values[$row]);
+        self.check-widget-value( $!input-widgets[$row], $row);
+      }
 
       $row++;
       last if $row >= @values.elems;
@@ -197,20 +209,26 @@ method !set-values ( ) {
 
     $!user-data-set-part{$!question.name} = [|@values] if $spliced;
   }
+}}
 
+#`{{
   # set a single field and check
-  elsif $v.defined {
+  #elsif $v.defined {
+  if $v.defined {
     self.set-value( $!input-widgets[0], $v);
-    self!check-value( $!input-widgets[0], 0);
+    self.check-widget-value( $!input-widgets[0], 0);
   }
 
   # check field too when no value is set. now also required fields
   # turns in faulty state beforehand
   else {
-    self!check-value( $!input-widgets[0], 0);
+    self.check-widget-value( $!input-widgets[0], 0);
   }
+}}
 }
+}}
 
+#`{{
 #-------------------------------------------------------------------------------
 method add-new-row ( --> Int ) {
   # Create a new input row if widget didn't exist. Number of rows
@@ -234,7 +252,9 @@ method add-new-row ( --> Int ) {
 
   $row
 }
+}}
 
+#`{{
 #-------------------------------------------------------------------------------
 method !create-toolbutton ( $row --> Gnome::Gtk3::ToolButton ) {
 
@@ -248,7 +268,9 @@ method !create-toolbutton ( $row --> Gnome::Gtk3::ToolButton ) {
 
   $tb
 }
+}}
 
+#`{{
 #-------------------------------------------------------------------------------
 method !create-combobox ( Array $select-list --> Gnome::Gtk3::ComboBoxText ) {
 
@@ -261,10 +283,16 @@ method !create-combobox ( Array $select-list --> Gnome::Gtk3::ComboBoxText ) {
   $cbt.set-active(0);
   $cbt
 }
+}}
 
 #-------------------------------------------------------------------------------
 method !adjust-user-data ( $w, $input, Int $row ) {
 
+CONTROL { when CX::Warn {  note .gist; .resume; } }
+note "$?LINE, $input, $row";
+#note "$?LINE, $!question.repeatable(), {$!question.selectlist.defined()//'-'}";
+
+#`{{
   if ? $!question.repeatable {
     if $!question.selectlist.defined {
       my Gnome::Gtk3::ComboBoxText $cbt .= new(
@@ -279,14 +307,14 @@ method !adjust-user-data ( $w, $input, Int $row ) {
       $!user-data-set-part{$!widget-name}[$row] = $input;
     }
   }
-
-  else {
+}}
+#  else {
     $!user-data-set-part{$!widget-name} = $input;
-  }
+#  }
 }
 
 #-------------------------------------------------------------------------------
-method !check-value ( $w, Int $row, :$input is copy ) {
+method check-widget-value ( $w, Int $row, :$input is copy ) {
 
   $!faulty-state = False;
 
@@ -445,7 +473,7 @@ method create-widget ( Str $widget-name, Int $row --> Any ) { ... }
 #--[ Signal Handlers ]----------------------------------------------------------
 #-------------------------------------------------------------------------------
 method add-row ( Gnome::Gtk3::ToolButton :_widget($tb), Int :$_handler-id ) {
-
+#`{{
 #Gnome::N::debug(:on);
   # modify this buttons icon
   my Gnome::Gtk3::Image $image .= new;
@@ -460,11 +488,12 @@ method add-row ( Gnome::Gtk3::ToolButton :_widget($tb), Int :$_handler-id ) {
   self!create-input-row($!input-widgets.elems);
   $!user-data-set-part{$!widget-name}.push('');
 #  note 'add nrows: ', $!input-widgets.elems;
+}}
 }
 
 #-------------------------------------------------------------------------------
 method delete-row ( Gnome::Gtk3::ToolButton :_widget($tb), Int :$_handler-id ) {
-
+#`{{
   my ( $x, $row ) = $tb.get-name.split(':');
   $row .= Int;
 #note "del nr: $row, $!input-widgets.elems()";
@@ -493,6 +522,7 @@ method delete-row ( Gnome::Gtk3::ToolButton :_widget($tb), Int :$_handler-id ) {
     $iw.set-name("$!widget-name:$row");
     $row++;
   }
+}}
 }
 
 #-------------------------------------------------------------------------------
@@ -515,7 +545,9 @@ method process-widget-signal (
   $w, Int $row, Bool :$do-check = False, :$input is copy
 ) {
   $input //= self.get-value($w);
-  self!check-value( $w, $row, :$input) if $do-check;
+  self.check-widget-value( $w, $row, :$input) if $do-check;
+note "$?LINE, faulty: faulty-state";
+
   unless $!faulty-state {
     self!adjust-user-data( $w, $input, $row);
     self!check-users-action( $input, $!question.action) if $!initialized;
