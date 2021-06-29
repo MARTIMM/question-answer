@@ -20,7 +20,7 @@ submethod BUILD (
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( Str $widget-name, Int $row --> Any ) {
+method create-widget ( Str $widget-name --> Any ) {
 
   # create a spin button input widget
   my Num $minimum = ($!question.minimum // 0).Num;
@@ -57,9 +57,9 @@ method set-value ( Any:D $spin-button, $value ) {
 
 #-------------------------------------------------------------------------------
 method changed ( :_widget($spin-button) ) {
-  my ( $n, $row ) = $spin-button.get-name.split(':');
-  $row .= Int;
-  self.process-widget-signal( $spin-button, $row, :!do-check);
+#  my ( $n, $row ) = $spin-button.get-name.split(':');
+#  $row .= Int;
+  self.process-widget-signal( $spin-button, 0, :!do-check);
 }
 
 

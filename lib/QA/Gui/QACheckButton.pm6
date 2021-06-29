@@ -20,7 +20,7 @@ submethod BUILD (
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( Str $widget-name, Int $row --> Any ) {
+method create-widget ( Str $widget-name --> Any ) {
 
   # create a grid with checkbuttons
   my Gnome::Gtk3::Grid $button-grid .= new;
@@ -77,13 +77,13 @@ method button-selected ( :_widget($cb) ) {
 
   # must get the grid because the unit is a grid
   my Gnome::Gtk3::Grid $grid .= new(:native-object($cb.get-parent));
-  my ( $n, $row ) = $grid.get-name.split(':');
+#  my ( $n, $row ) = $grid.get-name.split(':');
 
-  return unless ?$row;
-  $row .= Int;
+#  return unless ?$row;
+#  $row .= Int;
 
   # store in user data without checks
-  self.process-widget-signal( $grid, $row, :!do-check);
+  self.process-widget-signal( $grid, 0, :!do-check);
 }
 
 

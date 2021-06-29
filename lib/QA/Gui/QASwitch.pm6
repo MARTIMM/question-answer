@@ -19,7 +19,7 @@ submethod BUILD (
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( Str $widget-name, Int $row --> Any ) {
+method create-widget ( Str $widget-name --> Any ) {
 
   # create a text input widget
   my Gnome::Gtk3::Switch $switch .= new;
@@ -42,9 +42,9 @@ method set-value ( Any:D $switch, $state ) {
 
 #-------------------------------------------------------------------------------
 method changed-state ( Int $state, :_widget($switch) ) {
-  my ( $n, $row ) = $switch.get-name.split(':');
-  $row .= Int;
-  self.process-widget-signal( $switch, $row, :!do-check, :input($state.Bool));
+#  my ( $n, $row ) = $switch.get-name.split(':');
+#  $row .= Int;
+  self.process-widget-signal( $switch, 0, :!do-check, :input($state.Bool));
 }
 
 

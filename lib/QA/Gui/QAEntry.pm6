@@ -24,7 +24,7 @@ submethod BUILD (
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( Str $widget-name, Int $row --> Any ) {
+method create-widget ( Str $widget-name --> Any ) {
 
   # create a text input widget
   given my Gnome::Gtk3::Entry $entry .= new {

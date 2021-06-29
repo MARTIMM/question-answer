@@ -1,11 +1,11 @@
 use v6.d;
 
-use Gnome::Gtk3::FileChooser;
-use Gnome::Gtk3::FileChooserButton;
-
 use QA::Types;
 use QA::Question;
 use QA::Gui::Value;
+
+use Gnome::Gtk3::FileChooser;
+use Gnome::Gtk3::FileChooserButton;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::QAFileChooser;
@@ -19,7 +19,7 @@ submethod BUILD (
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( Str $widget-name, Int $row --> Any ) {
+method create-widget ( Str $widget-name --> Any ) {
 
   # create a text input widget
   my Gnome::Gtk3::FileChooserButton $filechooserbutton .= new(

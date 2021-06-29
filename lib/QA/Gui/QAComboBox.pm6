@@ -19,7 +19,7 @@ submethod BUILD (
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( Str $widget-name, Int $row --> Any ) {
+method create-widget ( Str $widget-name --> Any ) {
 
   # create a text input widget
   my Gnome::Gtk3::ComboBoxText $combobox .= new;
@@ -53,9 +53,9 @@ method set-value ( Any:D $combobox, $text ) {
 # called when a selection changes in the input widget combobox.
 # it must adjust the user data. no checks are needed.
 method changed-event ( :_widget($combobox) ) {
-  my ( $n, $row ) = $combobox.get-name.split(':');
-  $row .= Int;
-  self.process-widget-signal( $combobox, $row, :!do-check);
+#  my ( $n, $row ) = $combobox.get-name.split(':');
+#  $row .= Int;
+  self.process-widget-signal( $combobox, 0, :!do-check);
 }
 
 

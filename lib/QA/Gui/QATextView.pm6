@@ -3,8 +3,8 @@ use v6.d;
 use Gnome::Gdk3::Events;
 
 use Gnome::Gtk3::Enums;
-use Gnome::Gtk3::TextView;
 use Gnome::Gtk3::TextBuffer;
+use Gnome::Gtk3::TextView;
 use Gnome::Gtk3::TextIter;
 
 use QA::Types;
@@ -24,7 +24,7 @@ submethod BUILD (
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( Str $widget-name, Int $row --> Any ) {
+method create-widget ( Str $widget-name --> Any ) {
 
   # create a text input widget
   given my Gnome::Gtk3::TextView $textview .= new {
@@ -83,9 +83,9 @@ method check-on-focus-change (
   N-GdkEventFocus $, :_widget($textview) --> Int
 ) {
   #self!check-value( $w, $row, :input(self.get-value($w)));
-  my ( $n, $row ) = $textview.get-name.split(':');
-  $row .= Int;
-  self.process-widget-signal( $textview, $row, :do-check);
+#  my ( $n, $row ) = $textview.get-name.split(':');
+#  $row .= Int;
+  self.process-widget-signal( $textview, 0, :do-check);
 
   # must propogate further to prevent messages when notebook page is switched
   # otherwise it would do ok to return 1.
