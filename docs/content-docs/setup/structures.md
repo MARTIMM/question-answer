@@ -47,7 +47,7 @@ Questions are what it is all about. In short a piece of text to pose the questio
 * **dnd**; Make widget a drag destination for images, documents and text. Its value is a list of target names such as `text/plain, text/x-perl`. You can also makeup targets as long as you have some source application supporting the targets.
 * **example**; An example answer/format in light gray in an text field.
 * **fieldlist**; The fieldlist is used to fill e.g. a combobox or a list input field.
-* **fieldtype**; The widget type to use to provide the answer with. Current enumerated types are: `QAEntry` for text, `QATextView` for multiline text, `QAComboBox` a list of possibilities to chose from, `QARadioButton` a select of one of a set of possebilities, `QACheckButton`, one or more possebilities `QAToggleButton` boolean input, `QAScale` a slider, `QASwitch` also boolean input, `QAUserWidget` with a user definable input. Other types are `QADragAndDrop`, `QAColorChooser`, `QAFileChooser`, `QAList`, `QASpin` and `QAImage`. These are not yet implemented.
+* **fieldtype**; The widget type to use to provide the answer with. Current enumerated types are: `QAEntry` for text, `QATextView` for multiline text, `QAComboBox` a list of possibilities to chose from, `QARadioButton` a select of one of a set of posibilities, `QACheckButton`, one or more possebilities `QAToggleButton` boolean input, `QAScale` a slider, `QASwitch` also boolean input, `QAUserWidget` with a user definable input. Other types are `QAColorChooser`, `QAFileChooser`, `QAList`, `QASpin` and `QAImage`. Some of these are not yet implemented.
 * **height**; Sometimes a height is needed for a widget.
 * **hide**; Hide this question. A use for it to hide or view a set in an action handler.
 * **invisible**; Make text input unreadable by showing stars (\*) e.g. password input.
@@ -102,30 +102,26 @@ The formats used are shown below for each input type with the variables which co
 
 |Field Type        |Repeatable|Selectlist|Returned|
 |------------------|----------|----------|--------|
-|**QACheckButton** |ignored|ignored|`[ $value, … ]`
-|**QAColorChooser**|ignored|ignored|`$value`
-|**QAComboBox**    |ignored|ignored|`$value`
-|**QAEntry**       |False  |ignored|`$value`
-|                  |True   |∅|`[ $value, … ]`
-|                  |True   |`[ $item, … ]`|`[ :$category($value), … ]`
-|**QAFileChooser** |False  |ignored|`$value`
-|**QAFileChooser** |True   |∅|`[ $value, … ]`
-|**QAFileChooser** |True   |`[ $item, … ]`|`[ :$category($value), … ]`
-|**QAImage**       |False  |ignored|`$value`
-|**QAImage**       |True   |∅|`[ $value, … ]`
-|**QAImage**       |True   |`[ $item, … ]`|`[ :$category($value), … ]`
-|**QAList**        |ignored|ignored|`[ $value, … ]`
-|**QARadioButton** |ignored|ignored|`$value`
-|**QAScale**       |ignored|ignored|`$value`
-|**QASwitch**      |ignored|ignored|`$value`
-|**QATextView**    |ignored|ignored|`$value`
-|**QAToggleButton**|ignored|ignored|`$value`
-|**QASpinButton**  |ignored|ignored|`$value`
+|**QACheckButton** |ignored   |ignored   |`[ $value, … ]`
+|**QAColorChooser**|ignored   |ignored   |`$value`
+|**QAComboBox**    |ignored   |ignored   |`$value`
+|**QAEntry**       |False     |ignored   |`$value`
+|                  |True      |∅         |`[ $value, … ]`
+|                  |True      |`[ $category, … ]` |`[ :$category($value), … ]`
+|**QAFileChooser** |False     |ignored   |`$value`
+|                  |True      |∅         |`[ $value, … ]`
+|                  |True      |`[ $category, … ]` |`[ :$category($value), … ]`
+|**QAImage**       |False     |ignored   |`$value`
+|                  |True      |∅         |`[ $value, … ]`
+|                  |True      |`[ $category, … ]` |`[ :$category($value), … ]`
+|**QAList**        |ignored   |ignored   |`[ $value, … ]`
+|**QARadioButton** |ignored   |ignored   |`$value`
+|**QAScale**       |ignored   |ignored   |`$value`
+|**QASwitch**      |ignored   |ignored   |`$value`
+|**QATextView**    |ignored   |ignored   |`$value`
+|**QAToggleButton**|ignored   |ignored   |`$value`
+|**QASpinButton**  |ignored   |ignored   |`$value`
 |**QAUserWidget**  |user definable|user definable|user definable
-
-<!--
-|**QADragAndDrop** |ignored|ignored|`$value`
--->
 
 <br/>
 #### A table where field specs are shown for each field type
