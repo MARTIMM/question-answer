@@ -17,9 +17,6 @@ pages:
             fieldlist:
               - QAEntry
               - QATextView
-              - QASwitch
-              - QAComboBox
-              - QARadioButton
               - QACheckButton
               - QAToggleButton
           -
@@ -27,16 +24,38 @@ pages:
             description: Wil je verder of niet
             fieldtype: QASwitch
           -
-            name: couleur
-            description: your favorite color
+            name: colors
+            description: select your favorite colors
             fieldtype: QACheckButton
             fieldlist:
               - pink
-              - red
-              - purple
               - blue
               - orange
               - green
+          -
+            name: color
+            description: choose a color
+            fieldtype: QARadioButton
+            fieldlist:
+              - pink
+              - blue
+              - orange
+              - green
+          -
+            name: describe-col
+            description: describe the color
+            fieldtype: QATextView
+            height: 40
+          -
+            name: spin-it
+            description: number between 10 and 20
+            fieldtype: QASpinButton
+            minimum: -20
+            maximum: 100
+            step-incr: 1.5
+            page-incr: 1
+            page-size: 1
+            digits: 2
         description: "Specify the fields that makup this question"
         title: "Entry Specification"
         set-name: entry

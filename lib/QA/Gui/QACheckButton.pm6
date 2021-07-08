@@ -76,16 +76,8 @@ method set-value ( Any:D $button-grid, $labels ) {
 #-------------------------------------------------------------------------------
 method button-selected ( :_widget($cb) ) {
 
-  # joining a group seems to trigger the signal too, the name of the
-  # grid is then not yet set. check the integer before continuing
-
   # must get the grid because the unit is a grid
   my Gnome::Gtk3::Grid $grid .= new(:native-object($cb.get-parent));
-
-#  my ( $n, $row ) = $grid.get-name.split(':');
-
-#  return unless ?$row;
-#  $row .= Int;
 
   # store in user data without checks
   self.process-widget-signal( $grid, :!do-check);

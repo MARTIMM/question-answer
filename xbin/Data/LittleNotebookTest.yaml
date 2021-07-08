@@ -1,0 +1,12 @@
+---
+questions: 
+  entry: 
+    spin-it: 97.5
+    doorgaan: false
+    color: green
+    colors: 
+      - pink
+      - orange
+    fieldtype: QASwitch
+    describe-col: "dfgdfgdfgdfg\ndfgdfgdfg"
+...

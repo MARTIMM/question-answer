@@ -5,11 +5,11 @@ use Gnome::Gtk3::Grid;
 
 use QA::Types;
 use QA::Question;
-use QA::Gui::Value;
+use QA::Gui::SingleValue;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::QARadioButton;
-also does QA::Gui::Value;
+also does QA::Gui::SingleValue;
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
@@ -92,13 +92,9 @@ method button-selected ( :_widget($radiobutton) ) {
 
   # must get the grid because the unit is a grid
   my Gnome::Gtk3::Grid $grid .= new(:native-object($radiobutton.get-parent));
-#  my ( $n, $row ) = $grid.get-name.split(':');
-
-#  return unless ?$row;
-#  $row .= Int;
 
   # store in user data without checks
   self.process-widget-signal(
-    $grid, 0, :input($radiobutton.get-label), :!do-check
+    $grid, :input($radiobutton.get-label), :!do-check
   );
 }
