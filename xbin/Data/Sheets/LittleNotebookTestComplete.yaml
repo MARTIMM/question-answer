@@ -1,0 +1,237 @@
+---
+width: 500
+pages: 
+  - 
+    description: "Specification of a set. Below you can fill in the necessary fields required for a description of an input field."
+    sets: 
+      - 
+        title: "Test Set1"
+        questions: 
+          - 
+            title: Name
+            required: true
+            name: name
+            description: "Key of this input field"
+            fieldtype: QAEntry
+          - 
+            fieldlist: 
+              - "Classic FM"
+              - "Radio 1"
+              - "Pop 90-ies"
+            name: radio
+            description: "select a station"
+            fieldtype: QARadioButton
+          - 
+            name: spinbutton
+            step-incr: 0.001
+            fieldtype: QASpinButton
+            description: "spin it a bit"
+            climbrate: 0.03
+            maximum: 1
+            digits: 3
+            minimum: -1
+            page-incr: 0.05
+            page-size: 0.1
+          - 
+            description: "select some colors"
+            name: check
+            fieldtype: QACheckButton
+            fieldlist: 
+              - Red
+              - Purple
+              - Orange
+          - 
+            description: "Title text"
+            title: Title
+            fieldtype: QAEntry
+            minimum: 4
+            maximum: 10
+            name: title
+          - 
+            title: "Select a File"
+            fieldtype: QAFileChooser
+            description: "One files"
+            name: onefilename
+          - 
+            description: "A Picture"
+            fieldtype: QAImage
+            name: an-image
+            width: 100
+            title: "Select an Image"
+          - 
+            repeatable: true
+            name: filename
+            fieldtype: QAFileChooser
+            selectlist: 
+              - Config
+              - Output
+              - Log
+            title: "Select Files"
+            description: "Your files"
+          - 
+            selectlist: 
+              - Icon
+              - P2
+              - Etc
+            name: more-image
+            description: "A Picture"
+            height: 150
+            fieldtype: QAImage
+            width: 150
+            title: "Select an Image"
+            repeatable: true
+          - 
+            name: images
+            width: 200
+            description: Pictures
+            height: 200
+            repeatable: true
+            fieldtype: QAImage
+            dnd: "text/uri-list"
+            title: "Select Images"
+          - 
+            minimum: 2
+            description: "Description of this input field"
+            repeatable: true
+            required: false
+            maximum: 4
+            fieldtype: QATextView
+            title: Description
+            name: description
+        description: "Testing the fields that makup this set"
+        set-name: set-spec
+      - 
+        description: "Testing the fields that makup this set"
+        set-name: set-spec
+        questions: 
+          - 
+            fieldtype: QATextView
+            required: false
+            title: Description
+            description: "Description of this input field"
+            repeatable: true
+            maximum: 4
+            minimum: 2
+            name: description
+        title: "Test Set1"
+    title: "Set Specification"
+    page-name: page1
+  - 
+    page-name: page2
+    description: "Specification of a set and a lot more info to talk about but we won't, not now anyways."
+    title: "2nd Specification"
+    sets: 
+      - 
+        questions: 
+          - 
+            name: name
+            required: true
+            fieldtype: QAEntry
+            title: Name
+            description: "Key of this input fieldtype"
+          - 
+            title: Field
+            action: show-select1
+            description: "Type of input field"
+            fieldtype: QAComboBox
+            name: fieldtype
+            default: QAEntry
+            fieldlist: 
+              - QAEntry
+              - QATextView
+              - QASwitch
+              - QAComboBox
+              - QARadioButton
+              - QACheckButton
+              - QAToggleButton
+          - 
+            description: "Title text"
+            required: false
+            fieldtype: QAEntry
+            title: Title
+            name: title
+          - 
+            fieldtype: QAUserWidget
+            name: mywidget
+            description: "Button clicks raises count"
+            title: Counter
+            userwidget: use-my-widget
+          - 
+            title: Description
+            description: "Description of this input fieldtype"
+            name: description
+            fieldtype: QATextView
+            required: false
+          - 
+            name: default
+            description: "Default input value when left empty"
+            title: Default
+            required: false
+            fieldtype: QAEntry
+          - 
+            example: "No exclamation marks allowed!"
+            name: example
+            callback: check-exclam
+            fieldtype: QAEntry
+            description: "Example input value shown in gray when empty"
+            title: Example
+            required: false
+          - 
+            selectlist: 
+              - tt1
+              - tt2
+              - tt3
+            title: Tooltip
+            repeatable: true
+            fieldtype: QAEntry
+            description: "Extra info shown when hoovering above input field"
+            required: false
+            name: tooltip
+          - 
+            required: false
+            name: callback
+            title: Callback
+            description: "Callback name in user provided handler object"
+            fieldtype: QAEntry
+          - 
+            title: Invisible
+            description: "Text substituted with *s"
+            required: false
+            name: invisible
+            fieldtype: QASwitch
+            default: false
+          - 
+            required: false
+            fieldtype: QASwitch
+            title: Required
+            description: "Required input"
+            name: required
+            default: false
+          - 
+            fieldtype: QASwitch
+            description: "Encode input value before returning"
+            required: false
+            default: false
+            name: encode
+            title: Encode
+          - 
+            required: false
+            default: 0
+            name: minimum
+            title: Minimum
+            fieldtype: QAEntry
+            description: "Minimum number of characters"
+          - 
+            title: Maximum
+            fieldtype: QAEntry
+            name: maximum
+            description: "Maximum number of characters"
+            required: false
+        description: "Specify the fields that makup this question"
+        title: "Entry Specification"
+        set-name: entry-spec
+height: 500
+button-map: 
+  finish: donnit
+  cancel: stop
+...
