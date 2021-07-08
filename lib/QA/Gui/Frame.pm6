@@ -9,7 +9,8 @@ unit class QA::Gui::Frame;
 also is Gnome::Gtk3::Frame;
 
 #-------------------------------------------------------------------------------
-submethod new ( |c ) {
+method new ( |c ) {
+#note 'new QA::Gui::Frame';
   # let the Gnome::Gtk3::Frame class process the options
   self.bless( :GtkFrame, |c);
 }
