@@ -100,28 +100,28 @@ The structure of a value provided by the caller or returned by the program, can 
 
 The formats used are shown below for each input type with the variables which control this output format.
 
-|Field Type        |Repeatable|Selectlist|Returned|
-|------------------|----------|----------|--------|
-|**QACheckButton** |ignored   |ignored   |`[ $value, … ]`
-|**QAColorChooser**|ignored   |ignored   |`$value`
-|**QAComboBox**    |ignored   |ignored   |`$value`
-|**QAEntry**       |False     |ignored   |`$value`
-|                  |True      |∅         |`[ $value, … ]`
+|Field Type        |Repeatable|Selectlist         |Returned       |
+|------------------|----------|-------------------|---------------|
+|**QACheckButton** |ignored   |ignored            |`[ $value, … ]`
+|**QAColorChooser**|ignored   |ignored            |`$value`
+|**QAComboBox**    |ignored   |ignored            |`$value`
+|**QAEntry**       |False     |ignored            |`$value`
+|                  |True      |∅                  |`[ $value, … ]`
 |                  |True      |`[ $category, … ]` |`[ :$category($value), … ]`
-|**QAFileChooser** |False     |ignored   |`$value`
-|                  |True      |∅         |`[ $value, … ]`
+|**QAFileChooser** |False     |ignored            |`$value`
+|                  |True      |∅                  |`[ $value, … ]`
 |                  |True      |`[ $category, … ]` |`[ :$category($value), … ]`
-|**QAImage**       |False     |ignored   |`$value`
-|                  |True      |∅         |`[ $value, … ]`
+|**QAImage**       |False     |ignored            |`$value`
+|                  |True      |∅                  |`[ $value, … ]`
 |                  |True      |`[ $category, … ]` |`[ :$category($value), … ]`
-|**QAList**        |ignored   |ignored   |`[ $value, … ]`
-|**QARadioButton** |ignored   |ignored   |`$value`
-|**QAScale**       |ignored   |ignored   |`$value`
-|**QASwitch**      |ignored   |ignored   |`$value`
-|**QATextView**    |ignored   |ignored   |`$value`
-|**QAToggleButton**|ignored   |ignored   |`$value`
-|**QASpinButton**  |ignored   |ignored   |`$value`
-|**QAUserWidget**  |user definable|user definable|user definable
+|**QAList**        |ignored   |ignored            |`[ $value, … ]`
+|**QARadioButton** |ignored   |ignored            |`$value`
+|**QAScale**       |ignored   |ignored            |`$value`
+|**QASwitch**      |ignored   |ignored            |`$value`
+|**QATextView**    |ignored   |ignored            |`$value`
+|**QAToggleButton**|ignored   |ignored            |`$value`
+|**QASpinButton**  |ignored   |ignored            |`$value`
+|**QAUserWidget**  |user definable|user definable |user definable
 
 <br/>
 #### A table where field specs are shown for each field type
