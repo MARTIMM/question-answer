@@ -108,9 +108,11 @@ method !create-combobox ( Array $select-list --> Gnome::Gtk3::ComboBoxText ) {
 method add-new-row ( --> Int ) {
   # Create a new input row if widget didn't exist. Number of rows
   # is equal to number of elements
-  my Int $row = $!input-widgets.elems;
+  #my Int $row = $!input-widgets.elems;
 
-  if ! $!input-widgets[$row].defined {
+  #if ! $!input-widgets[$!row-count].defined {
+    self.create-widget-object($!row-count);
+    self.check-widget-value( $!input-widgets[$!row-count], $!row-count);
 
     # get the toolbutton from the previous row to adjust its settings.
     # $row always > 0 because there is always one field created.
@@ -118,27 +120,71 @@ method add-new-row ( --> Int ) {
     #  :native-object($!repeat-grid.get-child-at( QAButtonColumn, $row - 1))
     #);
     my Gnome::Gtk3::ToolButton $toolbutton = $!repeat-grid.get-child-at-rk(
-      QAButtonColumn, $row - 1
+      QAButtonColumn, $!row-count - 1
     );
 
     # extend by emitting a signal which triggers the 'add-row' method.
     $toolbutton.emit-by-name('clicked');
-  }
+  #}
 
-  $row
+  $!row-count++
 }
 
 #-------------------------------------------------------------------------------
 # Repeating values,
-multi method set-values ( Array $values is rw ) {
+method set-repeated-values ( Array $values is rw, $selectlist ) {
 note 'array values: ', self.^name;
-  my @values = @$values;
+  #my Int $row = 0;
+  my @ok-values = @$values;
+  for @$values -> $value {
+    # if empty or undefined, skip the value, don't save it
+    next unless ?$value;
 
+    # Check if row is 0. If so, row is already made. Otherwise create
+    # a new row and new widget
+    if $!row-count > 0 {
+#`{{
+      my Str $widget-name = $!question.name;
+      self.set-name($widget-name);
+      my $input-widget = self.create-widget($widget-name);
+      self.set-hexpand(True);
+      $row = self.create-input-row( $input-widget, $!question.selectlist);
+}}
+      self.create-widget-object($!row-count);
+    }
+
+    if $selectlist.defined {
+      # no types, can be anything and undefined
+      my ( $select-item, $input) = $value.kv;
+
+      self.set-value( $!input-widgets[$!row-count], $input);
+      self.check-widget-value( $!input-widgets[$!row-count], $!row-count);
+
+      my Int $value-index =
+        $selectlist.first( $select-item, :k) // 0;
+      my Gnome::Gtk3::ComboBoxText $cbt =
+        $!repeat-grid.get-child-at-rk( QACatColumn, $!row-count);
+      $cbt.set-active($value-index);
+    }
+
+    else {
+      self.set-value( $!input-widgets[$!row-count], $value);
+      self.check-widget-value( $!input-widgets[$!row-count], $!row-count);
+    }
+
+
+    # save displayed value
+    @ok-values.push($value);
+
+    $!row-count++;
+  }
+
+  $values = @ok-values;
 }
 
 #-------------------------------------------------------------------------------
-# Single value:
-multi method set-values ( Any $value where * !~~ Array ) {
+# Single value: $!row-count = 0;
+method set-one-value ( Any $value where * !~~ Array ) {
 note 'single value: ', self.^name;
   if ?$value {
     self.set-value( $!input-widgets[0], $value);
