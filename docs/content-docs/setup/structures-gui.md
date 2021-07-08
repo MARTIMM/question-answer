@@ -89,7 +89,6 @@ mindmapDiagram {
 
 Each set is a row in the grid.
 
-
 ```plantuml
 @startmindmap
 scale 0.9
@@ -105,10 +104,11 @@ mindmapDiagram {
 }
 </style>
 
-* Grid
-** set layout <<rose>>
+* Viewport
+** Grid
+*** set layout <<rose>>
 '** set layout <<rose>>
-** … <<rose>>
+*** … <<rose>>
 
 @endmindmap
 ```
