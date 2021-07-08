@@ -4,17 +4,21 @@ use Gnome::Gtk3::ComboBoxText;
 
 use QA::Types;
 use QA::Question;
-use QA::Gui::Value;
+use QA::Gui::SingleValue;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::QAComboBox;
-also does QA::Gui::Value;
+also does QA::Gui::SingleValue;
 
 #-------------------------------------------------------------------------------
+# this widget is not repeatable and cannot have a combobox to category
+# the choice of the input
+
 submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part
 ) {
   $!question.repeatable = False;
+  $!question.selectlist = [];
   self.initialize;
 }
 
@@ -26,6 +30,7 @@ method create-widget ( Str $widget-name --> Any ) {
   $combobox.set-hexpand(True);
   self.add-class( $combobox, 'QAComboBoxText');
 
+  # add items from the fieldlist in the combobox
   my @fieldlist = @($!question.fieldlist // []);
   for @fieldlist -> $fielditem {
     $combobox.append-text($fielditem);
@@ -53,9 +58,7 @@ method set-value ( Any:D $combobox, $text ) {
 # called when a selection changes in the input widget combobox.
 # it must adjust the user data. no checks are needed.
 method changed-event ( :_widget($combobox) ) {
-#  my ( $n, $row ) = $combobox.get-name.split(':');
-#  $row .= Int;
-  self.process-widget-signal( $combobox, 0, :!do-check);
+  self.process-widget-signal( $combobox, :!do-check);
 }
 
 

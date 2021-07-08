@@ -4,17 +4,21 @@ use Gnome::Gtk3::Switch;
 
 use QA::Types;
 use QA::Question;
-use QA::Gui::Value;
+use QA::Gui::SingleValue;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::QASwitch;
-also does QA::Gui::Value;
+also does QA::Gui::SingleValue;
 
 #-------------------------------------------------------------------------------
+# this widget is not repeatable and cannot have a combobox to category
+# the choice of the input
+
 submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part
 ) {
   $!question.repeatable = False;
+  $!question.selectlist = [];
   self.initialize;
 }
 
@@ -42,9 +46,7 @@ method set-value ( Any:D $switch, $state ) {
 
 #-------------------------------------------------------------------------------
 method changed-state ( Int $state, :_widget($switch) ) {
-#  my ( $n, $row ) = $switch.get-name.split(':');
-#  $row .= Int;
-  self.process-widget-signal( $switch, 0, :!do-check, :input($state.Bool));
+  self.process-widget-signal( $switch, :!do-check, :input($state.Bool));
 }
 
 

@@ -5,17 +5,21 @@ use Gnome::Gtk3::Grid;
 
 use QA::Types;
 use QA::Question;
-use QA::Gui::Value;
+use QA::Gui::SingleValue;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::QACheckButton;
-also does QA::Gui::Value;
+also does QA::Gui::SingleValue;
 
 #-------------------------------------------------------------------------------
+# this widget is not repeatable and cannot have a combobox to category
+# the choice of the input
+
 submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part
 ) {
   $!question.repeatable = False;
+  $!question.selectlist = [];
   self.initialize;
 }
 
@@ -77,13 +81,14 @@ method button-selected ( :_widget($cb) ) {
 
   # must get the grid because the unit is a grid
   my Gnome::Gtk3::Grid $grid .= new(:native-object($cb.get-parent));
+
 #  my ( $n, $row ) = $grid.get-name.split(':');
 
 #  return unless ?$row;
 #  $row .= Int;
 
   # store in user data without checks
-  self.process-widget-signal( $grid, 0, :!do-check);
+  self.process-widget-signal( $grid, :!do-check);
 }
 
 
