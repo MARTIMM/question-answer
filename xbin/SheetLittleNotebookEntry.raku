@@ -28,7 +28,8 @@ class EH {
   method show-notebook ( ) {
 
     my QA::Gui::SheetNotebook $sheet-dialog .= new(
-      :sheet-name<LittleNotebookTest>, :show-cancel-warning, :save-data
+      :sheet-name<LittleNotebookTestEntry>,
+      :show-cancel-warning, :save-data
     );
 
     my Int $response = $sheet-dialog.show-sheet;

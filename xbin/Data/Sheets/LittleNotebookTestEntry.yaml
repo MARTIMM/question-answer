@@ -1,0 +1,22 @@
+---
+width: 500
+pages:
+  -
+    page-name: questions
+    description: "Specification of a set and a lot more info to talk about but we won't, not now anyways."
+    title: "2nd Specification"
+    sets:
+      -
+        questions:
+          -
+            name: single
+            description: Single entry
+            fieldtype: QAEntry
+#        description: "Specify the fields that makup this question"
+#        title: "Entry Specification"
+        set-name: entry
+height: 500
+button-map:
+  finish: donnit
+  cancel: stop
+...
