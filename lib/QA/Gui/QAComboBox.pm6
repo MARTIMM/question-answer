@@ -4,11 +4,18 @@ use Gnome::Gtk3::ComboBoxText;
 
 use QA::Types;
 use QA::Question;
+use QA::Gui::ValueTools;
 use QA::Gui::SingleValue;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::QAComboBox;
 also does QA::Gui::SingleValue;
+also does QA::Gui::ValueTools;
+
+#-------------------------------------------------------------------------------
+# Make attributes readable so that the roles can access them using self.question
+has QA::Question $.question;
+has Hash $.user-data-set-part;
 
 #-------------------------------------------------------------------------------
 # this widget is not repeatable and cannot have a combobox to category
@@ -23,7 +30,7 @@ submethod BUILD (
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( Str $widget-name --> Any ) {
+method create-widget ( --> Any ) {
 
   # create a text input widget
   my Gnome::Gtk3::ComboBoxText $combobox .= new;

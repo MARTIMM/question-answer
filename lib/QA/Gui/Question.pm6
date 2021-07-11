@@ -1,24 +1,26 @@
 use v6;
 
+use Gnome::Gtk3::Enums;
+use Gnome::Gtk3::Grid;
+use Gnome::Gtk3::Label;
+use Gnome::Gtk3::StyleContext;
+
 use QA::Types;
 use QA::Set;
 use QA::Question;
 
 use QA::Gui::QALabel;
-use QA::Gui::QAEntry;
-use QA::Gui::QATextView;
-use QA::Gui::QAComboBox;
-use QA::Gui::QASwitch;
-use QA::Gui::QAFileChooser;
-use QA::Gui::QAImage;
-use QA::Gui::QARadioButton;
-use QA::Gui::QACheckButton;
-use QA::Gui::QASpinButton;
+#use QA::Gui::QAEntry;
+#use QA::Gui::QAFileChooser;
+#use QA::Gui::QAImage;
 
-use Gnome::Gtk3::Enums;
-use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::Label;
-use Gnome::Gtk3::StyleContext;
+use QA::Gui::QACheckButton;
+use QA::Gui::QAComboBox;
+use QA::Gui::QARadioButton;
+use QA::Gui::QASpinButton;
+use QA::Gui::QASwitch;
+use QA::Gui::QATextView;
+
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::Question:auth<github:MARTIMM>;

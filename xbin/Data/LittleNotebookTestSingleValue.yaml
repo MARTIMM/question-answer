@@ -1,0 +1,12 @@
+---
+questions: 
+  entry: 
+    color: pink
+    colors: 
+      - pink
+      - green
+    fieldtype: QATextView
+    doorgaan: true
+    describe-col: "wer werf\nghfg vb"
+    spin-it: 11.5
+...

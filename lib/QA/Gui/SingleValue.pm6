@@ -4,7 +4,7 @@ use Gnome::Gtk3::Enums;
 
 #use QA::Gui::Statusbar;
 use QA::Gui::Frame;
-use QA::Gui::ValueTools;
+#use QA::Gui::ValueTools;
 use QA::Types;
 use QA::Question;
 
@@ -18,8 +18,12 @@ use QA::Question;
 
 unit role QA::Gui::SingleValue:auth<github:MARTIMM>;
 also is QA::Gui::Frame;
-also does QA::Gui::ValueTools;
+#also does QA::Gui::ValueTools;
 
+#-------------------------------------------------------------------------------
+#has $!input-widget;
+
+#`{{
 #-------------------------------------------------------------------------------
 has $!input-widget;
 has $!value;
@@ -32,14 +36,15 @@ has Hash $.user-data-set-part;
 
 # state of current variable. value is True when answer is incorrect
 #has Bool $.faulty-state;
+}}
 
 #-------------------------------------------------------------------------------
-method initialize ( ) {
+method initialize ( ) { #( QA::Question $question, Hash $user-data-set-part) {
 
   # check if things are defined properly. must be done here because
   # user defined widgets may forget to handle them
   die 'question data not defined'
-    unless ?$!question and ?$!question.name;
+    unless ?self.question and ?self.question.name;
 #  die 'user data not defined' unless ?$!user-data-set-part;
 
   # clear values
@@ -49,8 +54,8 @@ method initialize ( ) {
   # Initialize repetition and add a grid to the frame.
   #self.add(self.init-repeat($!question.repeatable));
 
-  my $widget-name = $!question.name;
-  self.setup-tools(:$widget-name);
+#  my $widget-name = self.question.name;
+#  self.setup-tools(:$widget-name);
 
   # make frame invisible if not repeatable
   self.set-shadow-type(GTK_SHADOW_NONE);
@@ -73,13 +78,15 @@ method initialize ( ) {
   $input-widget.set-name("$!widget-name:0");
   self.create-input-row( $input-widget, $!question.selectlist);
 }}
-  $!input-widget = self.create-widget-object;
-  $!input-widget.set-name($widget-name);
-  self.add($!input-widget);
+  my $input-widget = self.create-widget-object; #(self.question);
+  $input-widget.set-name(self.question.name);
+  self.add($input-widget);
 
 
   # fill in user data
-  self.set-one-value($!user-data-set-part{$widget-name});
+  self.set-one-value(
+    $input-widget, self.user-data-set-part{self.question.name}
+  );
 
   # add a classname to this frame
   self.add-class( self, 'QAFrame');
@@ -89,11 +96,11 @@ method initialize ( ) {
 
 #-------------------------------------------------------------------------------
 # Single value. May still be an array but is to be given whole to the widget.
-method set-one-value ( $value ) {
+method set-one-value ( $input-widget, $value ) {
 note 'single value: ', self.^name;
   if ?$value {
-    self.set-value( $!input-widget, $value);
-    self.check-widget-value($!input-widget);
+    self.set-value( $input-widget, $value);
+    self.check-widget-value($input-widget);
   }
 }
 

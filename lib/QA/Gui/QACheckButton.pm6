@@ -1,15 +1,22 @@
 use v6.d;
 
-use Gnome::Gtk3::CheckButton;
-use Gnome::Gtk3::Grid;
-
 use QA::Types;
 use QA::Question;
+use QA::Gui::ValueTools;
 use QA::Gui::SingleValue;
+
+use Gnome::Gtk3::Grid;
+use Gnome::Gtk3::CheckButton;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::QACheckButton;
 also does QA::Gui::SingleValue;
+also does QA::Gui::ValueTools;
+
+#-------------------------------------------------------------------------------
+# Make attributes readable so that the roles can access them using self.question
+has QA::Question $.question;
+has Hash $.user-data-set-part;
 
 #-------------------------------------------------------------------------------
 # this widget is not repeatable and cannot have a combobox to category
@@ -20,11 +27,11 @@ submethod BUILD (
 ) {
   $!question.repeatable = False;
   $!question.selectlist = [];
-  self.initialize;
+  self.initialize; #( $!question, $!user-data-set-part);
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( Str $widget-name --> Any ) {
+method create-widget ( --> Any ) {
 
   # create a grid with checkbuttons
   my Gnome::Gtk3::Grid $button-grid .= new;

@@ -1,26 +1,34 @@
 use v6.d;
 
-use Gnome::Gtk3::RadioButton;
-use Gnome::Gtk3::Grid;
-
 use QA::Types;
 use QA::Question;
+use QA::Gui::ValueTools;
 use QA::Gui::SingleValue;
+
+use Gnome::Gtk3::Grid;
+use Gnome::Gtk3::RadioButton;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::QARadioButton;
 also does QA::Gui::SingleValue;
+also does QA::Gui::ValueTools;
+
+#-------------------------------------------------------------------------------
+# Make attributes readable so that the roles can access them using self.question
+has QA::Question $.question;
+has Hash $.user-data-set-part;
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part
 ) {
   $!question.repeatable = False;
+  $!question.selectlist = [];
   self.initialize;
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( Str $widget-name --> Any ) {
+method create-widget ( --> Any ) {
 
   # create a grid with radiobuttons
   my Gnome::Gtk3::Grid $button-grid .= new;

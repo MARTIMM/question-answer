@@ -1,15 +1,22 @@
 use v6.d;
 
-use Gnome::Gtk3::SpinButton;
-use Gnome::Gtk3::Adjustment;
-
 use QA::Types;
 use QA::Question;
+use QA::Gui::ValueTools;
 use QA::Gui::SingleValue;
+
+use Gnome::Gtk3::SpinButton;
+use Gnome::Gtk3::Adjustment;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::QASpinButton;
 also does QA::Gui::SingleValue;
+also does QA::Gui::ValueTools;
+
+#-------------------------------------------------------------------------------
+# Make attributes readable so that the roles can access them using self.question
+has QA::Question $.question;
+has Hash $.user-data-set-part;
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
@@ -20,7 +27,7 @@ submethod BUILD (
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( Str $widget-name --> Any ) {
+method create-widget ( --> Any ) {
 
   # create a spin button input widget
   my Num $minimum = ($!question.minimum // 0).Num;

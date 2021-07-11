@@ -28,7 +28,6 @@ Several methods for use by the other B<QA::Gui::…Value> roles.
 unit role QA::Gui::ValueTools:auth<github:MARTIMM>:ver<0.1.0>;
 
 #-------------------------------------------------------------------------------
-has Str $!widget-name;
 has Int $!msg-id;
 has Bool $.faulty-state;
 has Bool $.initialized is rw = False;
@@ -39,7 +38,7 @@ has Bool $.initialized is rw = False;
 =end pod
 
 #-------------------------------------------------------------------------------
-method setup-tools ( :$!widget-name ) { }
+#method setup-tools ( :$!widget-name ) { }
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -55,13 +54,13 @@ Returns the input widget
 =end pod
 
 #TM:2:create-widget-object:
-method create-widget-object ( --> Any ) {
-#  my Str $widget-name = $question.name;
-  my Str $tooltip = self.question.tooltip;
+method create-widget-object ( ) { #( QA::Question $question --> Any ) {
+#  my Str $widget-name = self.question.name;
 CONTROL { when CX::Warn {  note .gist; .resume; } }
 
-  self.set-name($!widget-name);
-  my $input-widget = self.create-widget($!widget-name);
+  self.set-name(self.question.name);
+  my $input-widget = self.create-widget;  (self.question.name);
+  my Str $tooltip = self.question.tooltip;
   $input-widget.set-tooltip-text($tooltip) if ?$tooltip;
 
   $input-widget
@@ -71,9 +70,9 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
 method adjust-user-data ( $input ) {
 
 #  CONTROL { when CX::Warn {  note .gist; .resume; } }
-  note "$?LINE, $!widget-name, $input";
+  note "$?LINE, self.question.name, $input";
 
-  self.user-data-set-part{$!widget-name} = $input;
+  self.user-data-set-part{self.question.name} = $input;
 }
 
 #-------------------------------------------------------------------------------
@@ -133,12 +132,12 @@ method check-widget-value ( $w, :$input is copy ) {
 #`{{
   elsif ? self.question.required or self.question.callback.defined {
     self.set-status-hint( $w, QAStatusOk);
-#    self.adjust-user-data( $!widget-name, $input);
+#    self.adjust-user-data( self.question.name, $input);
   }
 }}
   else {
     self.set-status-hint( $w, QAStatusNormal);
-#    self.adjust-user-data( $!widget-name, $input);
+#    self.adjust-user-data( self.question.name, $input);
   }
 }
 
@@ -248,7 +247,7 @@ method process-widget-signal (
   note "$?LINE, faulty: {$!faulty-state//'-'}";
 
   if ! $!faulty-state {
-    #self.adjust-user-data( $!widget-name, $input);
+    #self.adjust-user-data( self.question.name, $input);
     self.adjust-user-data($input);
     self.check-users-action( $input, self.question.action) if $!initialized;
   }
@@ -267,4 +266,4 @@ method set-value ( Any:D $widget, Any:D $value ) { ... }
 method get-value ( $widget --> Any ) { ... }
 
 #-------------------------------------------------------------------------------
-method create-widget ( Str $widget-name --> Any ) { ... }
+method create-widget ( ) { ... } #( Str $widget-name --> Any ) { ... }
