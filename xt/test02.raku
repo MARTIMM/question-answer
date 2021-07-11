@@ -2,14 +2,14 @@
 
 use v6;
 
-role R[Str $s]   { method role-type { note $s; } };
-role R[Int $i]   { method role-type { note $i; } };
-role R[Array $a] { method role-type { note $a.join(', '); } };
-role R['abc']    { method role-type { note '>> abc'; } };
+role R[Str $s]   { method role-type { print $s, ' ---> '; } };
+role R[Int $i]   { method role-type { print $i, ' ---> '; } };
+role R[Array $a] { method role-type { print $a.join(', '), ' ---> '; } };
+role R['abc']    { method role-type { print '>> abc', ' ---> '; } };
 
 class X {
   method new ( Int :$select, |c ) {
-note "select {$select % 4 }";
+    print "select {$select % 4 }: ";
 
     given $select % 4 {
       when 0 {
