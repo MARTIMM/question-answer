@@ -1,12 +1,13 @@
 ---
 questions: 
   entry: 
-    color: pink
+    fieldtype: QAToggleButton
+    spin-it: 10
     colors: 
       - pink
+      - orange
       - green
-    fieldtype: QATextView
+    color: orange
     doorgaan: true
-    describe-col: "wer werf\nghfg vb"
-    spin-it: 11.5
+    describe-col: "wer df werf\nghfg vb"
 ...
