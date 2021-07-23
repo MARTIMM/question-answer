@@ -7,6 +7,8 @@ use Gnome::Gtk3::Entry;
 use QA::Types;
 use QA::Gui::Frame;
 use QA::Question;
+#use QA::Gui::SingleValue;
+#use QA::Gui::MultiValue;
 use QA::Gui::Value;
 
 use Gnome::N::X;
@@ -14,7 +16,14 @@ use Gnome::N::X;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::QAEntry;
+#also does QA::Gui::SingleValue;
+#also does QA::Gui::MultiValue;
 also does QA::Gui::Value;
+
+#-------------------------------------------------------------------------------
+# Make attributes readable so that the roles can access them using self.question
+has QA::Question $.question;
+has Hash $.user-data-set-part;
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
@@ -24,7 +33,7 @@ submethod BUILD (
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( Str $widget-name --> Any ) {
+method create-widget ( --> Any ) { #( Str $widget-name --> Any ) {
 
   # create a text input widget
   given my Gnome::Gtk3::Entry $entry .= new {
@@ -33,7 +42,7 @@ method create-widget ( Str $widget-name --> Any ) {
     .set-size-request( 70, 1);
     .set-hexpand(True);
 
-    my Bool $visibility = !$!question.invisible;
+    my Bool $visibility = ! $!question.invisible;
     .set-visibility($visibility);
 
     my Str $example = $!question.example;
@@ -75,9 +84,10 @@ method check-on-focus-change (
   N-GdkEventFocus $no, :_widget($entry) --> Int
 ) {
   #self!check-value( $w, $row, :input(self.get-value($w)));
-  my ( $n, $row ) = $entry.get-name.split(':');
-  $row .= Int;
-  self.process-widget-signal( $entry, $row, :do-check);
+#  my ( $n, $row ) = $entry.get-name.split(':');
+#  $row .= Int;
+#  self.process-widget-signal( $entry, $row, :do-check);
+  self.process-widget-signal( $entry, :do-check);
 
   # must propogate further to prevent messages when notebook page is switched
   # otherwise it would do ok to return 1.

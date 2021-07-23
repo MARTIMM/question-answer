@@ -2,16 +2,14 @@ use v6.d;
 
 use QA::Types;
 use QA::Question;
-use QA::Gui::ValueTools;
-use QA::Gui::SingleValue;
+use QA::Gui::Value;
 
 use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::RadioButton;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::QARadioButton;
-also does QA::Gui::SingleValue;
-also does QA::Gui::ValueTools;
+also does QA::Gui::Value;
 
 #-------------------------------------------------------------------------------
 # Make attributes readable so that the roles can access them using self.question

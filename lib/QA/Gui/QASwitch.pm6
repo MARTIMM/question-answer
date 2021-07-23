@@ -4,13 +4,11 @@ use Gnome::Gtk3::Switch;
 
 use QA::Types;
 use QA::Question;
-use QA::Gui::ValueTools;
-use QA::Gui::SingleValue;
+use QA::Gui::Value;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::QASwitch;
-also does QA::Gui::SingleValue;
-also does QA::Gui::ValueTools;
+also does QA::Gui::Value;
 
 #-------------------------------------------------------------------------------
 # Make attributes readable so that the roles can access them using self.question
