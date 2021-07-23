@@ -3,6 +3,9 @@
 use v6.d;
 
 use Gnome::Gtk3::StyleContext;
+use Gnome::Gtk3::Enums;
+
+use QA::Gui::Frame;
 use QA::Gui::Statusbar;
 
 use QA::Question;
@@ -26,6 +29,7 @@ Several methods for use by the other B<QA::Gui::…Value> roles.
 =end pod
 
 unit role QA::Gui::ValueTools:auth<github:MARTIMM>:ver<0.1.0>;
+also is QA::Gui::Frame;
 
 #-------------------------------------------------------------------------------
 has Int $!msg-id;
@@ -39,6 +43,77 @@ has Bool $.initialized is rw = False;
 
 #-------------------------------------------------------------------------------
 #method setup-tools ( :$!widget-name ) { }
+
+#-------------------------------------------------------------------------------
+method initialize ( Bool :$single-value = True ) {
+  #( QA::Question $question, Hash $user-data-set-part) {
+
+  # check if things are defined properly. must be done here because
+  # user defined widgets may forget to handle them
+  die 'question data not defined'
+    unless ?self.question and ?self.question.name;
+#  die 'user data not defined' unless ?$!user-data-set-part;
+
+  # clear values
+#  $!input-widgets = [];
+#  $!values = [];
+
+  # Initialize repetition and add a grid to the frame.
+  #self.add(self.init-repeat($!question.repeatable));
+
+#  my $widget-name = self.question.name;
+#  self.setup-tools(:$widget-name);
+
+  # make frame invisible if not repeatable
+  self.set-shadow-type(GTK_SHADOW_NONE);
+  self.set-hexpand(True);
+
+#`{{
+  # fiddle a bit
+  self.set-name($!widget-name);
+  self.set-hexpand(True);
+
+  # add a grid to the frame. a grid is used to cope with repeatable values.
+  # the input fields are placed under each other in one column. furthermore,
+  # a pulldown can be shown when the input can be categorized.
+  #$!grid .= new;
+  #self.add($!grid);
+
+  my $input-widget = self.create-widget($!widget-name);
+  my Str $tooltip = $!question.tooltip;
+  $input-widget.set-tooltip-text($tooltip) if ?$tooltip;
+  $input-widget.set-name("$!widget-name:0");
+  self.create-input-row( $input-widget, $!question.selectlist);
+}}
+  my $input-widget = self.create-widget-object; #(self.question);
+  $input-widget.set-name(self.question.name);
+  self.add($input-widget);
+
+  # fill in user data
+  if $single-value {
+    self!set-one-value(
+      $input-widget, self.user-data-set-part{self.question.name}
+    );
+  }
+
+  else {
+  }
+
+  # add a classname to this frame
+  self.add-class( self, 'QAFrame');
+
+  self.initialized = True;
+}
+
+#-------------------------------------------------------------------------------
+# Single value. May still be an array but is to be given whole to the widget.
+method !set-one-value ( $input-widget, $value ) {
+note 'single value: ', self.^name;
+  if ?$value {
+    self.set-value( $input-widget, $value);
+    self.check-widget-value($input-widget);
+  }
+}
 
 #-------------------------------------------------------------------------------
 =begin pod

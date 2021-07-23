@@ -3,7 +3,7 @@ use v6.d;
 use Gnome::Gtk3::Enums;
 
 #use QA::Gui::Statusbar;
-use QA::Gui::Frame;
+#use QA::Gui::Frame;
 #use QA::Gui::ValueTools;
 use QA::Types;
 use QA::Question;
@@ -17,7 +17,7 @@ use QA::Question;
 =end pod
 
 unit role QA::Gui::SingleValue:auth<github:MARTIMM>;
-also is QA::Gui::Frame;
+#also is QA::Gui::Frame;
 #also does QA::Gui::ValueTools;
 
 #-------------------------------------------------------------------------------
@@ -38,6 +38,7 @@ has Hash $.user-data-set-part;
 #has Bool $.faulty-state;
 }}
 
+#`{{
 #-------------------------------------------------------------------------------
 method initialize ( ) { #( QA::Question $question, Hash $user-data-set-part) {
 
@@ -93,6 +94,7 @@ method initialize ( ) { #( QA::Question $question, Hash $user-data-set-part) {
 
   self.initialized = True;
 }
+}}
 
 #-------------------------------------------------------------------------------
 # Single value. May still be an array but is to be given whole to the widget.
