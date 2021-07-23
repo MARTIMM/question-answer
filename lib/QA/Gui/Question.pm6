@@ -10,7 +10,8 @@ use QA::Set;
 use QA::Question;
 
 use QA::Gui::QALabel;
-#use QA::Gui::QAEntry;
+
+use QA::Gui::QAEntry;
 #use QA::Gui::QAFileChooser;
 #use QA::Gui::QAImage;
 

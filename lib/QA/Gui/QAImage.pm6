@@ -37,6 +37,9 @@ unit class QA::Gui::QAImage;
 also does QA::Gui::Value;
 
 #-------------------------------------------------------------------------------
+enum IMAGEGRID <FCHOOSER-ROW IMAGE-ROW>;
+
+#-------------------------------------------------------------------------------
 submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part
 ) {
@@ -81,7 +84,7 @@ method create-widget ( Str $widget-name --> Any ) {
   }
 
   self.add-class( $fcb, 'QAFileChooserButton');
-  $widget-grid.grid-attach( $fcb, 0, 0, 1, 1);
+  $widget-grid.grid-attach( $fcb, 0, FCHOOSER-ROW, 1, 1);
 
   # When drag and drop is requested, prepare a drag destination. Then,
   # also no file chooser button is necessary. Button is made invisible
@@ -89,7 +92,7 @@ method create-widget ( Str $widget-name --> Any ) {
   self.setup-as-drag-destination( $image, $!question.dnd, $fcb, $widget-grid)
     if ?$!question.dnd;
 
-  $widget-grid.grid-attach( $image, 0, 1, 1, 1);
+  $widget-grid.grid-attach( $image, 0, IMAGE-ROW, 1, 1);
 
 #note "DND Target: ", $!question.dnd//'-';
 
@@ -120,6 +123,7 @@ method file-selected ( Gnome::Gtk3::FileChooserButton :_widget($fcb) ) {
 
   # must get the grid because the unit is a grid
   my Gnome::Gtk3::Grid $grid .= new(:native-object($fcb.get-parent));
+note "$fcb.get-name(), $grid.get-name()";
   my ( $n, $row ) = $grid.get-name.split(':');
   $row .= Int;
 
@@ -167,7 +171,7 @@ note "$?LINE, $filename, $width, $height";
 #-------------------------------------------------------------------------------
 method setup-as-drag-destination (
   $destination-widget, Str $target-list, Gnome::Gtk3::FileChooserButton $fcb,
-  Gnome::Gtk3::Grid $grid
+  Gnome::Gtk3::Grid $widget-grid
 ) {
 
   my Array[N-GtkTargetEntry] $target-entries = Array[N-GtkTargetEntry].new;
@@ -193,7 +197,7 @@ method setup-as-drag-destination (
   );
 
   $destination-widget.register-signal(
-    self, 'received', 'drag-data-received', :$fcb, :$destination, :$grid
+    self, 'received', 'drag-data-received', :$fcb, :$destination, :$widget-grid
   );
 }
 
@@ -267,7 +271,7 @@ method received (
   N-GObject $context-no, Int $x, Int $y,
   N-GObject $selection-data-no, UInt $info, UInt $time,
   :_widget($destination-widget), Gnome::Gtk3::DragDest :$destination,
-  Gnome::Gtk3::FileChooserButton :$fcb is copy, Gnome::Gtk3::Grid :$grid
+  Gnome::Gtk3::FileChooserButton :$fcb is copy, Gnome::Gtk3::Grid :$widget-grid
 ) {
 note "\ndst received:, $x, $y, $info, $time";
   my Gnome::Gtk3::SelectionData $selection-data .= new(
@@ -289,7 +293,7 @@ note "\ndst received:, $x, $y, $info, $time";
 CONTROL { when CX::Warn {  note .gist; .resume; } }
 #CATCH { default { .message.note; .backtrace.concise.note } }
     # only first image is replaced, rest is added to the end.
-    my Bool $add = False;
+#    my Bool $append = False;
     my ( $n, $row );
 
     $source-data = $selection-data.get-uris;
@@ -301,18 +305,20 @@ note "$?LINE, $uri";
         $uri ~~ s:g/'%20'/ /;
 
         my Gnome::Gtk3::Grid $grid .= new(:native-object($fcb.get-parent));
-note "$?LINE, $fcb.is-valid(), $grid.is-valid(), $add";
+note "$?LINE, $fcb.is-valid(), $grid.is-valid()";
 
-        if $add {
-          $row = self.add-new-row.Int;
+#        if $append {
+          # All entries from list are appended
+          $row = self.add-new-row;
 #note "$?LINE, $grid.get-name()";
 #          my Gnome::Gtk3::Grid $widget-grid = $grid.get-child-at-rk( 0, $row+1);
 #note "$?LINE, $widget-grid.get-name()";
 #          $fcb = $widget-grid.get-child-at-rk( 0, 0);
-        }
-
+#        }
+#`{{
         else {
-          $add = True;
+          # first image of list will replace current entry
+          $append = True;
 note "$?LINE, {$row//'-'}, $grid.get-name()";
 
           # must get the grid because the unit is a grid
@@ -321,6 +327,7 @@ note "$?LINE, {$row//'-'}, $grid.get-name()";
 #note "$?LINE, {$row//'-'}";
         }
 #note "$?LINE, $row";
+}}
 
         # repaint and store image locally
         #self!set-image( $grid, $fcb.get-filename);
