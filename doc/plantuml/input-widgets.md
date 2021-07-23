@@ -9,28 +9,16 @@ hide empty members
 
 'classes and interfaces
 
-Interface QA::Gui::SingleValue <Interface>
-class QA::Gui::SingleValue <<(R,#80ffff)>> {
+Interface QA::Gui::Value <Interface>
+class QA::Gui::Value <<(R,#80ffff)>> {
+  Array $!values
+  Any $!value
+
   {abstract} create-widget()
   {abstract} set-value()
   {abstract} get-value()
-}
 
-Interface QA::Gui::MultiValue <Interface>
-class QA::Gui::MultiValue <<(R,#80ffff)>>
-
-'Interface QA::Gui::SelectValue <Interface>
-'class QA::Gui::SelectValue <<(R,#80ffff)>>
-
-Interface QA::Gui::MultiSelectValue <Interface>
-class QA::Gui::MultiSelectValue <<(R,#80ffff)>>
-
-class QA::Gui::QAComboBox {
-  create-widget()
-}
-
-Interface QA::Gui::MultiValue <Interface>
-class QA::Gui::ValueTools <<(R,#80ffff)>> {
+  initialize( :single, :select)
   create-widget-object()
   run-users-action()
   set-status-hint()
@@ -38,20 +26,26 @@ class QA::Gui::ValueTools <<(R,#80ffff)>> {
   remove-class()
 }
 
+
+class QA::Gui::QAComboBox {
+  create-widget()
+  set-value()
+  get-value()
+}
+
+class QA::Gui::QAEntry {
+  create-widget()
+  set-value()
+  get-value()
+}
+
+
 'connections
-QA::Gui::ValueTools <|.. QA::Gui::SingleValue
-QA::Gui::ValueTools <|.. QA::Gui::MultiValue
-'QA::Gui::ValueTools <|.. QA::Gui::SelectValue
-QA::Gui::ValueTools <|.. QA::Gui::MultiSelectValue
 
-QA::Gui::Frame <|-- QA::Gui::SingleValue
-QA::Gui::SingleValue <|.. QA::Gui::QAComboBox
+QA::Gui::Frame <|-- QA::Gui::Value
+QA::Gui::Value <|.. QA::Gui::QAComboBox
 
-QA::Gui::SingleValue <|.. QA::Gui::QAEntry
-QA::Gui::MultiValue <|.. QA::Gui::QAEntry
-'QA::Gui::SelectValue <|.. QA::Gui::QAEntry
-QA::Gui::MultiSelectValue <|.. QA::Gui::QAEntry
-note bottom of QA::Gui::QAEntry: A choice is made, depending\non the question parameters,\nwhich interface is used.
+QA::Gui::Value <|.. QA::Gui::QAEntry
 
 @enduml
 ```
