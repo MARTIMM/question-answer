@@ -1,7 +1,5 @@
 use v6.d;
 
-unit role QA::Gui::Repeat:auth<github:MARTIMM>;
-
 use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::ToolButton;
 use Gnome::Gtk3::ComboBoxText;
@@ -12,6 +10,38 @@ use QA::Types;
 
 #use Gnome::N::X;
 #Gnome::N::debug(:on);
+
+#-------------------------------------------------------------------------------
+unit class QA::Gui::RepeatValues:auth<github:MARTIMM>;
+
+#-------------------------------------------------------------------------------
+has Gnome::Gtk3::Grid $!repeat-grid;
+
+has Int $!row-count;
+has Array $!input-widgets;
+has Array $!values;
+
+#-------------------------------------------------------------------------------
+submethod BUILD ( ) {
+note 'repeat values build';
+
+  $!row-count = 0;
+  $!input-widgets = [];
+  $!values = [];
+
+  $!repeat-grid .= new;
+  $!repeat-grid
+}
+
+
+
+
+
+
+
+
+
+=finish
 
 #`{{
 a grid is used to cope with repeatable values.
@@ -34,12 +64,13 @@ has Bool $!repeatable;
   * $!input-widgets; Widget array. These are the widgets in $!repeat-grid.
   * $!values; Values from the input widgets.
 }}
+
 has Int $!row-count;
 has Array $!input-widgets;
 has Array $!values;
 
 #-------------------------------------------------------------------------------
-submethod init-repeat ( Bool $!repeatable = False --> Gnome::Gtk3::Grid ) {
+submethod BUILD ( ) {
   $!row-count = 0;
   $!input-widgets = [];
   $!values = [];
