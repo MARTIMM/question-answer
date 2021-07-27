@@ -28,6 +28,7 @@ use QA::Gui::Frame;
 use QA::Gui::Page;
 use QA::Gui::YNMsgDialog;
 use QA::Gui::OkMsgDialog;
+use QA::Gui::Statusbar;
 
 #-------------------------------------------------------------------------------
 =begin pod
