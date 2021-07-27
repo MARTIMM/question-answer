@@ -44,16 +44,18 @@ method create-widget ( --> Any ) {
   );
 
   $spin-button.set-hexpand(False);
-  $spin-button.register-signal( self, 'changed', 'value-changed');
+  $spin-button.register-signal( self, 'input-change-handler', 'value-changed');
   self.add-class( $spin-button, 'QASpinButton');
 
   $spin-button
 }
 
+#`{{
 #-------------------------------------------------------------------------------
 method get-value ( $spin-button --> Any ) {
   $spin-button.get-value;
 }
+}}
 
 #-------------------------------------------------------------------------------
 method set-value ( Any:D $spin-button, $value ) {
@@ -61,6 +63,6 @@ method set-value ( Any:D $spin-button, $value ) {
 }
 
 #-------------------------------------------------------------------------------
-method changed ( :_widget($spin-button) ) {
-  self.process-widget-signal( $spin-button, :!do-check);
+method input-change-handler ( :_widget($spin-button) ) {
+  self.process-widget-signal( $spin-button, $spin-button.get-value, :!do-check);
 }

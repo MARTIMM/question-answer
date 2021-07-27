@@ -25,7 +25,7 @@ submethod BUILD (
 ) {
   $!question.repeatable = False;
   $!question.selectlist = [];
-  self.initialize;
+#  self.initialize;
 }
 
 #-------------------------------------------------------------------------------
@@ -39,7 +39,7 @@ method create-widget ( --> Any ) {
   for @($!question.fieldlist) -> $label {
     my Gnome::Gtk3::CheckButton $rb .= new(:$label);
     $rb.set-hexpand(True);
-    $rb.register-signal( self, 'button-selected', 'clicked');
+    $rb.register-signal( self, 'input-change-handler', 'clicked');
     self.add-class( $rb, 'QACheckButton');
     $button-grid.grid-attach( $rb, 0, $button-grid-row++, 1, 1);
   }
@@ -48,17 +48,12 @@ method create-widget ( --> Any ) {
 }
 
 #-------------------------------------------------------------------------------
-method get-value ( $button-grid --> Any ) {
+method !get-value ( $button-grid --> Any ) {
 
   my Array $labels = [];
   loop ( my Int $row = 0; $row < $!question.fieldlist.elems; $row++ ) {
-    my Gnome::Gtk3::CheckButton $cb .= new(
-      :native-object($button-grid.get-child-at( 0, $row))
-    );
-
-    if ?$cb.get-active {
-      $labels.push: $cb.get-label;
-    }
+    my Gnome::Gtk3::CheckButton $cb = $button-grid.get-child-at-rk( 0, $row);
+    $labels.push: $cb.get-label if ?$cb.get-active;
   }
 
   $labels
@@ -79,13 +74,13 @@ method set-value ( Any:D $button-grid, $labels ) {
 }
 
 #-------------------------------------------------------------------------------
-method button-selected ( :_widget($cb) ) {
+method input-change-handler ( :_widget($cb) ) {
 
   # must get the grid because the unit is a grid
   my Gnome::Gtk3::Grid $grid .= new(:native-object($cb.get-parent));
 
   # store in user data without checks
-  self.process-widget-signal( $grid, :!do-check);
+  self.process-widget-signal( $grid, self!get-value($grid), :!do-check);
 }
 
 

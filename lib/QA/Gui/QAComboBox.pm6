@@ -11,7 +11,8 @@ unit class QA::Gui::QAComboBox;
 also does QA::Gui::Value;
 
 #-------------------------------------------------------------------------------
-# Make attributes readable so that the roles can access them using self.question
+# Make attributes readable so that the roles can access them using
+# self.question and
 has QA::Question $.question;
 has Hash $.user-data-set-part;
 
@@ -24,7 +25,7 @@ submethod BUILD (
 ) {
   $!question.repeatable = False;
   $!question.selectlist = [];
-  self.initialize;
+#  self.initialize;
 }
 
 #-------------------------------------------------------------------------------
@@ -41,19 +42,20 @@ method create-widget ( --> Any ) {
     $combobox.append-text($fielditem);
   }
   $combobox.set-active(0);
-  $combobox.register-signal( self, 'changed-event', 'changed');
+  $combobox.register-signal( self, 'input-change-handler', 'changed');
 
   $combobox
 }
 
+#`{{
 #-------------------------------------------------------------------------------
 method get-value ( $combobox --> Any ) {
   $combobox.get-active-text // $!question.fieldlist[0];
 }
+}}
 
 #-------------------------------------------------------------------------------
 method set-value ( Any:D $combobox, $text ) {
-
   my Int $value-index;
   $value-index = ?$text ?? $!question.fieldlist.first( $text, :k) // 0 !! 0;
   $combobox.set-active($value-index);
@@ -62,8 +64,10 @@ method set-value ( Any:D $combobox, $text ) {
 #-------------------------------------------------------------------------------
 # called when a selection changes in the input widget combobox.
 # it must adjust the user data. no checks are needed.
-method changed-event ( :_widget($combobox) ) {
-  self.process-widget-signal( $combobox, :!do-check);
+method input-change-handler ( :_widget($combobox) ) {
+  self.process-widget-signal(
+    $combobox, $combobox.get-active-text // $!question.fieldlist[0], :!do-check
+  );
 }
 
 

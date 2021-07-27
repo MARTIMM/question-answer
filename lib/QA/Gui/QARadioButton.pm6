@@ -22,7 +22,7 @@ submethod BUILD (
 ) {
   $!question.repeatable = False;
   $!question.selectlist = [];
-  self.initialize;
+#  self.initialize;
 }
 
 #-------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ method create-widget ( --> Any ) {
     # joining a group seems to trigger the signal too, the name of the
     # grid is then not yet set. therefore register a signal after
     # attached to grid.
-    $rb.register-signal( self, 'button-selected', 'clicked');
+    $rb.register-signal( self, 'input-change-handler', 'clicked');
   }
 
   # set first button on
@@ -58,6 +58,7 @@ method create-widget ( --> Any ) {
   $button-grid
 }
 
+#`{{
 #-------------------------------------------------------------------------------
 method get-value ( $button-grid --> Any ) {
 
@@ -75,6 +76,7 @@ method get-value ( $button-grid --> Any ) {
 
   $label
 }
+}}
 
 #-------------------------------------------------------------------------------
 method set-value ( Any:D $button-grid, $label ) {
@@ -94,13 +96,11 @@ method set-value ( Any:D $button-grid, $label ) {
 }
 
 #-------------------------------------------------------------------------------
-method button-selected ( :_widget($radiobutton) ) {
+method input-change-handler ( :_widget($radiobutton) ) {
 
   # must get the grid because the unit is a grid
   my Gnome::Gtk3::Grid $grid .= new(:native-object($radiobutton.get-parent));
 
   # store in user data without checks
-  self.process-widget-signal(
-    $grid, :input($radiobutton.get-label), :!do-check
-  );
+  self.process-widget-signal( $grid, $radiobutton.get-label, :!do-check);
 }

@@ -25,7 +25,7 @@ submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part
 ) {
   $!question.repeatable = False;
-  self.initialize;
+#  self.initialize;
 }
 
 #-------------------------------------------------------------------------------
@@ -37,7 +37,7 @@ method create-widget ( --> Any ) {
     .set-size-request( 1, $!question.height // 50);
     .set-wrap-mode(GTK_WRAP_WORD);
     .set-border-width(1);
-    .register-signal( self, 'check-on-focus-change', 'focus-out-event');
+    .register-signal( self, 'input-change-handler', 'focus-out-event');
   }
 
   self.add-class( $textview, 'QATextView');
@@ -46,7 +46,7 @@ method create-widget ( --> Any ) {
 }
 
 #-------------------------------------------------------------------------------
-method get-value ( $textview --> Any ) {
+method !get-value ( $textview --> Any ) {
   my Gnome::Gtk3::TextBuffer $textbuffer .= new(
     :native-object($textview.get-buffer)
   );
@@ -83,10 +83,10 @@ method check-value ( Str $input --> Str ) {
 }
 
 #-------------------------------------------------------------------------------
-method check-on-focus-change (
+method input-change-handler (
   N-GdkEventFocus $, :_widget($textview) --> Int
 ) {
-  self.process-widget-signal( $textview, :do-check);
+  self.process-widget-signal( $textview, self!get-value($textview), :do-check);
 
   # must propogate further to prevent messages when notebook page is switched
   # otherwise it would do ok to return 1.

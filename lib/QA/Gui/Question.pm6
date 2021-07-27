@@ -10,35 +10,37 @@ use QA::Set;
 use QA::Question;
 
 use QA::Gui::QALabel;
+use QA::Gui::InputWidget;
 
-use QA::Gui::QAEntry;
+#use QA::Gui::QAEntry;
 #use QA::Gui::QAFileChooser;
 #use QA::Gui::QAImage;
 
-use QA::Gui::QACheckButton;
-use QA::Gui::QAComboBox;
-use QA::Gui::QARadioButton;
-use QA::Gui::QASpinButton;
-use QA::Gui::QASwitch;
-use QA::Gui::QATextView;
-
+#use QA::Gui::QACheckButton;
+#use QA::Gui::QAComboBox;
+#use QA::Gui::QARadioButton;
+#use QA::Gui::QASpinButton;
+#use QA::Gui::QASwitch;
+#use QA::Gui::QATextView;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::Question:auth<github:MARTIMM>;
 
 #-------------------------------------------------------------------------------
+# Defined by calling method to show which row in the grid can be occupied
 has Gnome::Gtk3::Grid $!question-grid;
 has Int $!grid-row;
+
 has Hash $!user-data-set-part;
 has QA::Question $!question;
-#has Array $!input-widgets;
-has $!input-widget;
+has QA::Gui::InputWidget $!widget-object;
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
-  QA::Question :$!question, Gnome::Gtk3::Grid:D :$!question-grid,
-  Int:D :row($!grid-row), Hash:D :$!user-data-set-part
+  QA::Question:D :$!question, Hash:D :$!user-data-set-part,
+  Gnome::Gtk3::Grid:D :$!question-grid, Int:D :row($!grid-row)
 ) {
+  die 'Missing name field in question data' unless ? $!question.name;
 
   self.display;
 }
@@ -50,6 +52,7 @@ method display ( ) {
   # left. Then, in the middle, an optional '*' when the user is required to
   # provide an answer. And finally on the right, an input widget.
 
+  # description text
   my Str $text = $!question.description // $!question.title ~ ':';
   $!question-grid.attach(
     QA::Gui::QALabel.new(:$text), QAQuestion, $!grid-row, 1, 1
@@ -68,19 +71,27 @@ method display ( ) {
   }
   $!question-grid.attach( $r-label, QARequired, $!grid-row, 1, 1);
 
+  # input widget object
+  $!widget-object .= new( :$!question, :$!user-data-set-part);
+  $!question-grid.attach(
+    $!widget-object, QAAnswer, $!grid-row, 1, 1
+  ) if $!widget-object.defined;
+
+
+#`{{
   # find and load the module for this input type. if found, initialize
   # the module and store in array.
   my Str $module-name = 'QA::Gui::' ~ $!question.fieldtype.Str;
-#note "Input widget class: $module-name, $!grid-row";
+note "Input widget class: $module-name, $!grid-row";
 
   # if this is a user widget, the object is already created. get the object
   # from <userwidget> and get the object, then call .init-widget().
   if $!question.fieldtype eq QAUserWidget {
     my QA::Types $qa-types .= instance;
-    $!input-widget = $qa-types.get-widget-object($!question.userwidget);
-    if ?$!input-widget and $!input-widget.^lookup('init-widget') ~~ Method {
-      $!input-widget.init-widget( :$!question, :$!user-data-set-part);
-      $!question-grid.attach( $!input-widget, QAAnswer, $!grid-row, 1, 1);
+    $!widget-object = $qa-types.get-widget-object($!question.userwidget);
+    if ?$!widget-object and $!widget-object.^lookup('init-widget') ~~ Method {
+      $!widget-object.init-widget( :$!question, :$!user-data-set-part);
+      $!question-grid.attach( $!widget-object, QAAnswer, $!grid-row, 1, 1);
     }
 
     else {
@@ -88,29 +99,32 @@ method display ( ) {
     }
   }
 
-  # test existence of an abstract method 'set-value'. it must be defined here.
   # save module in $m, when module is not found, a failure can then be handled.
   # otherwise there are unhandled failure problems in DESTROY.
-  elsif (my $m = ::($module-name)).^lookup('set-value') ~~ Method {
-    $!input-widget = ::($module-name).new(
-      :$!question, :$!user-data-set-part
-    );
-    $!question-grid.attach( $!input-widget, QAAnswer, $!grid-row, 1, 1);
+#  elsif (my $m = ::($module-name)).^lookup('set-value') ~~ Method {
+  else {
+    $!widget-object = ::($module-name).new( :$!question, :$!user-data-set-part);
+note "IO: $!widget-object.gist()";
+    $!question-grid.attach( $!widget-object, QAAnswer, $!grid-row, 1, 1);
   }
-
+#`{{
   else {
     # handle failure
     $m.Bool;
     note "fail to use  $module-name";
   }
+}}
+}}
+
+
 }
 
 #-------------------------------------------------------------------------------
 method query-state ( --> Bool ) {
 
   # not all widgets are implemented
-  if $!input-widget.defined {
-    $!input-widget.faulty-state
+  if $!widget-object.defined {
+    $!widget-object.faulty-state
   }
 
   else {
@@ -129,7 +143,7 @@ method query-state ( --> Bool ) {
 #`{{
 #-------------------------------------------------------------------------------
 method set-values ( ) {
-for @$!input-widgets -> $input-widget {
+for @$!widget-objects -> $input-widget {
 my Str $widget-name = $input-widget.get-name;
 $input-widget.set-value($!user-data-set-part{$!question.name} // '');
 }

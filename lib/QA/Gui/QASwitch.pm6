@@ -24,7 +24,7 @@ submethod BUILD (
 ) {
   $!question.repeatable = False;
   $!question.selectlist = [];
-  self.initialize;
+#  self.initialize;
 }
 
 #-------------------------------------------------------------------------------
@@ -33,16 +33,18 @@ method create-widget ( --> Any ) {
   # create a text input widget
   my Gnome::Gtk3::Switch $switch .= new;
   $switch.set-hexpand(False);
-  $switch.register-signal( self, 'changed-state', 'state-set');
+  $switch.register-signal( self, 'input-change-handler', 'state-set');
   self.add-class( $switch, 'QASwitch');
 
   $switch
 }
 
+#`{{
 #-------------------------------------------------------------------------------
 method get-value ( $switch --> Any ) {
   $switch.get-active.Bool;
 }
+}}
 
 #-------------------------------------------------------------------------------
 method set-value ( Any:D $switch, $state ) {
@@ -50,6 +52,6 @@ method set-value ( Any:D $switch, $state ) {
 }
 
 #-------------------------------------------------------------------------------
-method changed-state ( Int $state, :_widget($switch) ) {
-  self.process-widget-signal( $switch, :!do-check, :input($state.Bool));
+method input-change-handler ( Int $state, :_widget($switch) ) {
+  self.process-widget-signal( $switch, $switch.get-active.Bool, :!do-check);
 }

@@ -7,17 +7,13 @@ use Gnome::Gtk3::Entry;
 use QA::Types;
 use QA::Gui::Frame;
 use QA::Question;
-#use QA::Gui::SingleValue;
-#use QA::Gui::MultiValue;
 use QA::Gui::Value;
 
-use Gnome::N::X;
+#use Gnome::N::X;
 #Gnome::N::debug(:on);
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::QAEntry;
-#also does QA::Gui::SingleValue;
-#also does QA::Gui::MultiValue;
 also does QA::Gui::Value;
 
 #-------------------------------------------------------------------------------
