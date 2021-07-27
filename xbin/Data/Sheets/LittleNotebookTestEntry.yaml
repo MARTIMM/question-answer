@@ -7,14 +7,21 @@ pages:
     title: "2nd Specification"
     sets:
       -
+        set-name: entry
         questions:
           -
             name: single
             description: Single entry
             fieldtype: QAEntry
+            required: true
 #        description: "Specify the fields that makup this question"
 #        title: "Entry Specification"
-        set-name: entry
+          -
+            name: words
+            description: short words
+            fieldtype: QAEntry
+            title: Enter short words
+            repeatable: true
 height: 500
 button-map:
   finish: donnit

@@ -1,13 +1,23 @@
 ---
 questions: 
-  entry: 
-    fieldtype: QAToggleButton
-    spin-it: 10
+  single-value: 
+    doorgaan: true
+    fieldtype: QACheckButton
     colors: 
       - pink
+      - blue
       - orange
       - green
-    color: orange
+    color: red
+    spin-it: -6.5
+    describe-col: "foo bar baz"
+  entry: 
+    fieldtype: QAToggleButton
+    colors: 
+      - blue
+      - orange
+    spin-it: 11.5
+    color: pink
+    describe-col: "wdfsdf dsfer df werf\nghfg vb"
     doorgaan: true
-    describe-col: "wer df werf\nghfg vb"
 ...
