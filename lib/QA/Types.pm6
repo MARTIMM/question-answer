@@ -122,9 +122,14 @@ Column numbers for the grid in the answer part of the QA
 =item QACatColumn;
 =item QAInputColumn;
 =item QAButtonColumn;
+=item QAToolButtonAddColumn;
+=item QAToolButtonDelColumn;
 =end pod
 #tt:1::AGridColSpec
-enum AGridColSpec is export <QACatColumn QAInputColumn QAButtonColumn>;
+enum AGridColSpec is export <
+  QACatColumn QAInputColumn QAButtonColumn
+  QAToolButtonAddColumn QAToolButtonDelColumn
+>;
 
 
 #-------------------------------------------------------------------------------

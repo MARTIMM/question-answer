@@ -6,46 +6,76 @@ skinparam stereotypeCBackgroundColor #80ffff
 set namespaceSeparator ::
 hide empty members
 
+'-------------------------------------------------------------------------------
+'Classes and interfaces
 
-'classes and interfaces
+Interface QA::Gui::InputTools <Interface>
+class QA::Gui::InputTools <<R,#80ffff>> {
+  add-class()
+  remove-class()
 
-Interface QA::Gui::Value <Interface>
-class QA::Gui::Value <<(R,#80ffff)>> {
-  Array $!values
-  Any $!value
+  process-widget-signal()
+
+  run-users-action()
+  set-status-hint()
+  check-widget-value()
 
   {abstract} create-widget()
   {abstract} set-value()
-  {abstract} get-value()
+'  {abstract} get-value()
+  {abstract} input-change-handler()
+}
 
-  initialize( :single, :select)
-  create-widget-object()
-  run-users-action()
-  set-status-hint()
-  add-class()
-  remove-class()
+'Interface QA::Gui::InputWidget <Interface>
+class QA::Gui::InputWidget {
+  QA::Question $!question
+  Hash $!user-data-set-part
+  Array $!values
+  Bool $.faulty-state;
+
+'  initialize()
+  !create-widget-object()
+  !create-user-widget-object()
+  !append-grid-row()
+  !create-toolbutton()
+  !create-combobox()
+  !apply-values()
+
+  add-row()
+  delete-row()
+  hide-tb-add()
 }
 
 
-class QA::Gui::QAComboBox {
+class QA::Gui::some_input_widget {
+  QA::Question $!question
+  Hash $!user-data-set-part
+
   create-widget()
   set-value()
-  get-value()
+'  get-value()
+  input-change-handler()
 }
 
-class QA::Gui::QAEntry {
-  create-widget()
-  set-value()
-  get-value()
+class QA::Gui::Statusbar {
+  instance()
+  invalidate()
 }
 
+'-------------------------------------------------------------------------------
+'Connections
+QA::Gui::Set *-> "*" QA::Gui::Question
+QA::Gui::Question *-> QA::Gui::InputWidget
 
-'connections
+QA::Gui::Frame <|-- QA::Gui::InputWidget
+QA::Gui::InputWidget *-> "*" QA::Gui::some_input_widget
+'QA::Gui::some_input_widget -> QA::Gui::InputWidget
+QA::Gui::InputTools <|.. QA::Gui::some_input_widget
 
-QA::Gui::Frame <|-- QA::Gui::Value
-QA::Gui::Value <|.. QA::Gui::QAComboBox
+QA::Gui::Statusbar <--o QA::Gui::InputTools
 
-QA::Gui::Value <|.. QA::Gui::QAEntry
+'Gnome::Gtk3::Statusbar <|-- QA::Gui::Statusbar
+'Gnome::Gtk3::Frame <|-- QA::Gui::Frame
 
 @enduml
 ```

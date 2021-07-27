@@ -5,7 +5,7 @@ use v6.d;
 use Gnome::Gtk3::StyleContext;
 use Gnome::Gtk3::Enums;
 
-use QA::Gui::Frame;
+#use QA::Gui::Frame;
 use QA::Gui::Statusbar;
 
 use QA::Question;
@@ -29,12 +29,13 @@ Several methods to handle the widgets value.
 =end pod
 
 unit role QA::Gui::Value:auth<github:MARTIMM>:ver<0.1.0>;
-also is QA::Gui::Frame;
+#also is QA::Gui::Frame;
 
 #-------------------------------------------------------------------------------
 has Int $!msg-id;
 has Bool $.faulty-state = False;
 has Bool $!initialized = False;
+
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -50,8 +51,8 @@ method initialize ( ) {
 
   # check if things are defined properly. must be done here because
   # user defined widgets may forget to handle them
-  die 'question data not defined'
-    unless ?self.question and ?self.question.name;
+#  die 'question data not defined'
+#    unless ?self.question and ?self.question.name;
 #  die 'user data not defined' unless ?$!user-data-set-part;
 
   # clear values
@@ -65,8 +66,8 @@ method initialize ( ) {
 #  self.setup-tools(:$widget-name);
 
   # make frame invisible if not repeatable
-  self.set-shadow-type(GTK_SHADOW_NONE);
-  self.set-hexpand(True);
+  #self.set-shadow-type(GTK_SHADOW_NONE);
+  #self.set-hexpand(True);
 
 #`{{
   # fiddle a bit
@@ -85,6 +86,7 @@ method initialize ( ) {
   $input-widget.set-name("$!widget-name:0");
   self.create-input-row( $input-widget, $!question.selectlist);
 }}
+#`{{
   my $input-widget = self.create-widget-object; #(self.question);
   $input-widget.set-name(self.question.name);
   self.add($input-widget);
@@ -103,8 +105,10 @@ method initialize ( ) {
   self.add-class( self, 'QAFrame');
 
   $!initialized = True;
+}}
 }
 
+#`{{
 #-------------------------------------------------------------------------------
 # Single value. May still be an array but is to be given whole to the widget.
 method !set-one-value ( $input-widget, $value ) {
@@ -114,7 +118,9 @@ note 'single value: ', self.^name;
     self.check-widget-value($input-widget);
   }
 }
+}}
 
+#`{{
 #-------------------------------------------------------------------------------
 =begin pod
 =head2 create-widget-object
@@ -140,23 +146,24 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
 
   $input-widget
 }
+}}
 
 #-------------------------------------------------------------------------------
 method adjust-user-data ( $input ) {
 
 #  CONTROL { when CX::Warn {  note .gist; .resume; } }
-  note "$?LINE, self.question.name, $input";
+  note "$?LINE, {self.question.name}, $input";
 
   self.user-data-set-part{self.question.name} = $input;
 }
 
 #-------------------------------------------------------------------------------
-method check-widget-value ( $w, :$input is copy ) {
+method check-widget-value ( Any:D $input-widget, Any:D $input ) {
 
   $!faulty-state = False;
 
   # if not delivered, get the value ourselves
-  $input //= self.get-value($w);
+  #$input //= self.get-value($input-widget);
   my Str $message;
 
   # get a context id. same string returns same context id.
@@ -197,22 +204,36 @@ method check-widget-value ( $w, :$input is copy ) {
     $!msg-id = 0;
   }
 
+#note "F: $!faulty-state, ", self.question.name;
   if $!faulty-state {
-    self.set-status-hint( $w, QAStatusFail);
+    self.set-status-hint( $input-widget, QAStatusFail);
     # don't add a new message if there is already a message placed
     # on the statusbar
-    $message = "self.question.description(): $message";
+    $message = self.question.description ~ ": $message";
     $!msg-id = $statusbar.statusbar-push( $cid, $message) unless $!msg-id;
   }
 #`{{
   elsif ? self.question.required or self.question.callback.defined {
-    self.set-status-hint( $w, QAStatusOk);
-#    self.adjust-user-data( self.question.name, $input);
+    self.set-status-hint( $input-widget, QAStatusOk);
+#    self.adjust-user-data($input);
   }
 }}
   else {
-    self.set-status-hint( $w, QAStatusNormal);
-#    self.adjust-user-data( self.question.name, $input);
+    self.set-status-hint( $input-widget, QAStatusNormal);
+    self.adjust-user-data($input);
+  }
+}
+
+#-------------------------------------------------------------------------------
+# Called when an input widget has new data. It must adjust the user data Hash.
+# Optionally checks are performed on the incoming data.
+method process-widget-signal (
+  $input-widget, Any:D $input, Bool :$do-check = False
+) {
+  self.check-widget-value( $input-widget, $input) if $do-check;
+  if ! $!faulty-state {
+    self.adjust-user-data($input);
+    self.check-users-action( $input, self.question.action) if $!initialized;
   }
 }
 
@@ -274,58 +295,41 @@ method run-users-action ( $input, Str:D $action-key = '' --> Array ) {
 }
 
 #-------------------------------------------------------------------------------
-method set-status-hint ( $widget, InputStatusHint $status ) {
+method set-status-hint ( $input-widget, InputStatusHint $status ) {
   # remove classes first
   #$context.remove-class('dontcare');
-  self.remove-class( $widget, 'QAStatusNormal');
-  self.remove-class( $widget, 'QAStatusOk');
-  self.remove-class( $widget, 'QAStatusFail');
+  self.remove-class( $input-widget, 'QAStatusNormal');
+  self.remove-class( $input-widget, 'QAStatusOk');
+  self.remove-class( $input-widget, 'QAStatusFail');
 
   # add class depending on status
   if $status ~~ QAStatusNormal {
-    self.add-class( $widget, 'QAStatusNormal');
+    self.add-class( $input-widget, 'QAStatusNormal');
   }
 
   elsif $status ~~ QAStatusOk {
-    self.add-class( $widget, 'QAStatusOk');
+    self.add-class( $input-widget, 'QAStatusOk');
   }
 
   elsif $status ~~ QAStatusFail {
-    self.add-class( $widget, 'QAStatusFail');
+    self.add-class( $input-widget, 'QAStatusFail');
   }
 }
 
 #-------------------------------------------------------------------------------
-method add-class ( $widget, Str $class-name ) {
+method add-class ( $input-widget, Str $class-name ) {
   my Gnome::Gtk3::StyleContext $context .= new(
-    :native-object($widget.get-style-context)
+    :native-object($input-widget.get-style-context)
   );
   $context.add-class($class-name);
 }
 
 #-------------------------------------------------------------------------------
-method remove-class ( $widget, Str $class-name ) {
+method remove-class ( $input-widget, Str $class-name ) {
   my Gnome::Gtk3::StyleContext $context .= new(
-    :native-object($widget.get-style-context)
+    :native-object($input-widget.get-style-context)
   );
   $context.remove-class($class-name);
-}
-
-#-------------------------------------------------------------------------------
-# called when a selection changes in the input widget combobox.
-# it must adjust the user data. no checks are needed.
-method process-widget-signal (
-  $widget, Bool :$do-check = False, :$input is copy
-) {
-  $input //= self.get-value($widget);
-  self.check-widget-value( $widget, :$input) if $do-check;
-  note "$?LINE, faulty: {$!faulty-state//'-'}";
-
-  if ! $!faulty-state {
-    #self.adjust-user-data( self.question.name, $input);
-    self.adjust-user-data($input);
-    self.check-users-action( $input, self.question.action) if $!initialized;
-  }
 }
 
 #-------------------------------------------------------------------------------
@@ -333,17 +337,20 @@ method process-widget-signal (
 #-------------------------------------------------------------------------------
 # no typing of arguments because widget can be any input widget and value
 # can be any of text-, number- or boolean
-method set-value ( Any:D $widget, Any:D $value ) { ... }
+method set-value ( Any:D $input-widget, Any:D $value ) { ... }
 
+#`{{
 #-------------------------------------------------------------------------------
 # no typing for return value because it can be a single value, an Array of
 # single values or and Array of Pairs.
-method get-value ( $widget --> Any ) { ... }
+method get-value ( $input-widget --> Any ) { ... }
+}}
 
 #-------------------------------------------------------------------------------
 method create-widget ( ) { ... } #( Str $widget-name --> Any ) { ... }
 
-
+#-------------------------------------------------------------------------------
+method input-change-handler ( |c ) { ... }
 
 
 
