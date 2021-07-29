@@ -148,17 +148,36 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
 }
 }}
 
+#`{{
 #-------------------------------------------------------------------------------
-method adjust-user-data ( $input ) {
+method !adjust-user-data ( $input ) {
 
 #  CONTROL { when CX::Warn {  note .gist; .resume; } }
   note "$?LINE, {self.question.name}, $input";
 
   self.user-data-set-part{self.question.name} = $input;
 }
+}}
 
 #-------------------------------------------------------------------------------
-method check-widget-value ( Any:D $input-widget, Any:D $input ) {
+# Called when an input widget has new data. It must adjust the user data Hash.
+# Optionally checks are performed on the incoming data.
+method process-widget-signal (
+  $input-widget, Any:D $input, Bool :$do-check = False, Int() :$row
+) {
+note "$?LINE, process-widget-signal, $input, $row";
+  self.check-widget-value( $input-widget, $input, :$row) if $do-check;
+  if ! $!faulty-state {
+    self!adjust-user-data( $input, :$row);
+    self.check-users-action( $input, self.question.action) if $!initialized;
+  }
+}
+
+#-------------------------------------------------------------------------------
+method check-widget-value (
+  Any:D $input-widget, Any:D $input, Int() :$row = -1
+) {
+note "$?LINE, check-widget-value, $input, $row";
 
   $!faulty-state = False;
 
@@ -209,31 +228,49 @@ method check-widget-value ( Any:D $input-widget, Any:D $input ) {
     self.set-status-hint( $input-widget, QAStatusFail);
     # don't add a new message if there is already a message placed
     # on the statusbar
-    $message = self.question.description ~ ": $message";
+#    $message = self.question.description ~ ": $message";
+    $message = self.question.name ~ ": $message";
     $!msg-id = $statusbar.statusbar-push( $cid, $message) unless $!msg-id;
   }
 #`{{
   elsif ? self.question.required or self.question.callback.defined {
     self.set-status-hint( $input-widget, QAStatusOk);
-#    self.adjust-user-data($input);
+#    self!adjust-user-data( $input, :$row);
   }
 }}
   else {
     self.set-status-hint( $input-widget, QAStatusNormal);
-    self.adjust-user-data($input);
+    self!adjust-user-data( $input, :$row);
   }
 }
 
-#-------------------------------------------------------------------------------
-# Called when an input widget has new data. It must adjust the user data Hash.
-# Optionally checks are performed on the incoming data.
-method process-widget-signal (
-  $input-widget, Any:D $input, Bool :$do-check = False
-) {
-  self.check-widget-value( $input-widget, $input) if $do-check;
-  if ! $!faulty-state {
-    self.adjust-user-data($input);
-    self.check-users-action( $input, self.question.action) if $!initialized;
+#-----------------------------------------------------------------------------
+method !adjust-user-data ( Any $input, Int() :$row = -1 ) {
+
+CONTROL { when CX::Warn {  note .gist; .resume; } }
+note "$?LINE, adjust-user-data, $input, $row";
+#note "$?LINE, self.question.repeatable(), {self.question.selectlist.defined()//'-'}";
+
+
+  if ? self.question.repeatable {
+    if self.question.selectlist.defined {
+#`{{
+      my Gnome::Gtk3::ComboBoxText $cbt .= new(
+        :native-object($!grid.get-child-at( QACatColumn, $row))
+      );
+
+      my Str $select-item = $cbt.get-active-text // self.question.selectlist[0];
+      $!user-data-set-part{$!widget-name}[$row] = $select-item => $input;
+}}
+    }
+
+    else {
+      self.user-data-set-part{self.question.name}[$row] = $input;
+    }
+  }
+
+  else {
+    self.user-data-set-part{self.question.name} = $input;
   }
 }
 
@@ -1128,7 +1165,8 @@ role QA::Gui::Value:auth<github:MARTIMM> {
       self!set-status-hint( $w, QAStatusFail);
       # don't add a new message if there is already a message placed
       # on the statusbar
-      $message = "$!question.description(): $message";
+#      $message = "$!question.description(): $message";
+      $message = "$!question.name(): $message";
       $!msg-id = $statusbar.statusbar-push( $cid, $message) unless $!msg-id;
     }
   #`{{

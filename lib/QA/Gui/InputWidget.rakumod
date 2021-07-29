@@ -11,7 +11,7 @@ use QA::Question;
 
 use QA::Gui::Frame;
 
-#use QA::Gui::QAEntry;
+use QA::Gui::QAEntry;
 #use QA::Gui::QAFileChooser;
 #use QA::Gui::QAImage;
 
@@ -115,14 +115,16 @@ method !create-user-widget-object ( ) {
 
 #-------------------------------------------------------------------------------
 method !append-grid-row ( ) {
-  given my $input-widget = $!widget-object.create-widget {
+  my Int $current-row = $!grid-row-data.elems;
+note "append-grid-row, nrows: $current-row";
+
+  given my $input-widget = $!widget-object.create-widget(:row($current-row)) {
     my Str $tooltip = $!question.tooltip;
     .set-tooltip-text($tooltip) if ?$tooltip;
     .set-name($!question.name);
     .set-hexpand(True);
   }
 
-  my Int $current-row = $!grid-row-data.elems;
   $!grid-row-data[$current-row] = [];
   $!grid-row-data[$current-row][QAInputColumn] = $input-widget;
 
@@ -132,9 +134,20 @@ method !append-grid-row ( ) {
     my Gnome::Gtk3::ToolButton $tb;
     $tb = self!create-toolbutton( $current-row, :add);
     $!grid.grid-attach( $tb, QAToolButtonAddColumn, $current-row, 1, 1);
+    $!grid-row-data[$current-row][QAToolButtonAddColumn] = $tb;
+
     $tb = self!create-toolbutton($current-row, :!add);
     $!grid.grid-attach( $tb, QAToolButtonDelColumn, $current-row, 1, 1);
+    $!grid-row-data[$current-row][QAToolButtonDelColumn] = $tb;
   }
+
+  $!grid.show-all;
+
+  self.hide-tb-add;
+#  for ^$!grid-row-data.elems -> $row {
+#    last if $row == $!grid-row-data.elems - 1;
+#    $!grid-row-data[$row][QAToolButtonAddColumn].hide;
+#  }
 }
 
 #-------------------------------------------------------------------------------
@@ -163,6 +176,7 @@ method !create-toolbutton (
     .register-signal( self, $tb-handler, 'clicked', :$row);
     .register-signal( self, 'hide-tb-add', 'show', :$row)
       if $tb-name eq 'tb-add';
+#    .show;
   }
 
   $!widget-object.add-class( $tb, 'QAToolButtonRowControl');
@@ -186,12 +200,45 @@ method !create-combobox ( Array $select-list --> Gnome::Gtk3::ComboBoxText ) {
 #-------------------------------------------------------------------------------
 method !apply-values ( ) {
 
+CONTROL { when CX::Warn {  note .gist; .resume; } }
+
   if $!question.repeatable {
-note 'repeated values: ', $!widget-object.^name;
+#note 'repeated values: ', ($!widget-object.^name, $!user-data-set-part{$!question.name}).join(', ');
+
+    # Make sure the input values is an Array, if not, initialize and return.
+    my $values = $!user-data-set-part{$!question.name};
+    if !$values or $values !~~ Array {
+      $!user-data-set-part{$!question.name} = [];
+      return;
+    }
+
+
+    # Loop through the values to set the input widgets
+    my Int $i = 0;
+    while $i < $values.elems {
+      # Skip empty/undefined values
+      unless ?$values[$i] {
+        $values.splice( $i, 1);
+        next;
+      }
+
+      # First row is always created. When more than 1 value, create more rows
+      self!append-grid-row if $i > 0;
+
+      my $input-widget = $!grid-row-data[$i][QAInputColumn];
+      $!widget-object.set-value( $input-widget, $values[$i]);
+      $!widget-object.check-widget-value(
+        $input-widget, $values[$i], :row($i)
+      );
+      $i++;
+    }
+
+    # Restore to remove any undefined or empty values
+    $!user-data-set-part{$!question.name} = $values;
   }
 
   else {
-note 'single value: ', $!widget-object.^name;
+note 'single value: ', ($!widget-object.^name, $!user-data-set-part{$!question.name}).join(', ');
 
     my $value = $!user-data-set-part{$!question.name};
     if ?$value {
@@ -208,6 +255,7 @@ note 'single value: ', $!widget-object.^name;
 method add-row (
   Gnome::Gtk3::ToolButton :_widget($tb), Int :$_handler-id, Int :$row
 ) {
+note "add row, name: $tb.get-name()";
 #`{{
 #Gnome::N::debug(:on);
   # modify this buttons icon
@@ -224,12 +272,41 @@ method add-row (
   $!user-data-set-part{$!widget-name}.push('');
 #  note 'add nrows: ', $!input-widgets.elems;
 }}
+
+  self!append-grid-row;
+#  $tb.hide;
+
+#`{{
+  my $next-row = $!grid-row-data.elems;
+
+  my Gnome::Gtk3::ToolButton $tb2;
+  $tb2 = self!create-toolbutton( $next-row, :add);
+  $!grid.grid-attach( $tb2, QAToolButtonAddColumn, $next-row, 1, 1);
+  $tb2 = self!create-toolbutton($next-row, :!add);
+  $!grid.grid-attach( $tb2, QAToolButtonDelColumn, $next-row, 1, 1);
+}}
+
 }
 
 #-------------------------------------------------------------------------------
-method delete-row (
+method del-row (
   Gnome::Gtk3::ToolButton :_widget($tb), Int :$_handler-id, Int :$row
 ) {
+note "delete row, name: $tb.get-name()";
+
+  $!grid-row-data[$row][QAToolButtonAddColumn].hide;
+
+  $!grid-row-data[$row][QAInputColumn].destroy;
+  if $!question.repeatable {
+    $!grid-row-data[$row][QAToolButtonAddColumn].destroy;
+    $!grid-row-data[$row][QAToolButtonDelColumn].destroy;
+
+    $!grid-row-data[$row][QACatColumn].destroy
+      if $!question.selectlist.defined;
+  }
+
+  $!user-data-set-part{$!question.name}.splice( $row, 1);
+
 #`{{
   my ( $x, $row ) = $tb.get-name.split(':');
   $row .= Int;
@@ -263,18 +340,11 @@ method delete-row (
 }
 
 #-------------------------------------------------------------------------------
-method hide-tb-add (
-  Gnome::Gtk3::ToolButton :_widget($tb), Int :$_handler-id, Int :$row
-) {
-note "hide-tb-add, name: $tb.get-name()";
-
-  my Int $nrows = $!grid-row-data.elems;
-
-  if $row != $nrows - 1 {
-    $tb.hide;
-  }
-
-  elsif not $tb.get-visible {
-    $tb.show;
+# Called from !append-grid-row() or as a callback from the 'show' event
+# when .show-all() is called.
+method hide-tb-add ( ) {
+  for ^$!grid-row-data.elems -> $row {
+    last if $row == $!grid-row-data.elems - 1;
+    $!grid-row-data[$row][QAToolButtonAddColumn].hide;
   }
 }

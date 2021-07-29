@@ -29,7 +29,7 @@ submethod BUILD (
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( --> Any ) { #( Str $widget-name --> Any ) {
+method create-widget ( Int() :$row --> Any ) {
 
   # create a text input widget
   given my Gnome::Gtk3::Entry $entry .= new {
@@ -44,16 +44,18 @@ method create-widget ( --> Any ) { #( Str $widget-name --> Any ) {
     my Str $example = $!question.example;
     .set-placeholder-text($example) if ?$example;
 
-    .register-signal( self, 'check-on-focus-change', 'focus-out-event');
+    .register-signal( self, 'input-change-handler', 'focus-out-event', :$row);
   }
 
   $entry
 }
 
+#`{{
 #-------------------------------------------------------------------------------
 method get-value ( $entry --> Any ) {
   $entry.get-text
 }
+}}
 
 #-------------------------------------------------------------------------------
 method set-value ( Any:D $entry, $text ) {
@@ -76,14 +78,15 @@ method check-value ( Str $input --> Str ) {
 }
 
 #-------------------------------------------------------------------------------
-method check-on-focus-change (
-  N-GdkEventFocus $no, :_widget($entry) --> Int
+method input-change-handler (
+  N-GdkEventFocus $no, :_widget($entry), Int() :$row --> Int
 ) {
+note "\nEntry input: $entry, $row";
   #self!check-value( $w, $row, :input(self.get-value($w)));
 #  my ( $n, $row ) = $entry.get-name.split(':');
 #  $row .= Int;
 #  self.process-widget-signal( $entry, $row, :do-check);
-  self.process-widget-signal( $entry, :do-check);
+  self.process-widget-signal( $entry, $entry.get-text, :$row, :do-check);
 
   # must propogate further to prevent messages when notebook page is switched
   # otherwise it would do ok to return 1.
