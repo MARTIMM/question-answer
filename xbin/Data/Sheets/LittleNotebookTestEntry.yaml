@@ -7,6 +7,8 @@ pages:
     title: "2nd Specification"
     sets:
       -
+        description: "Specify the fields that makup this question"
+        title: "Entry Specification"
         set-name: entry
         questions:
           -
@@ -14,8 +16,12 @@ pages:
             description: Single entry
             fieldtype: QAEntry
             required: true
-#        description: "Specify the fields that makup this question"
-#        title: "Entry Specification"
+          -
+            name: single-mm
+            description: Single entry 4 <= chars <= 10
+            fieldtype: QAEntry
+            minimum: 4
+            maximum: 10
           -
             name: words
             description: short words

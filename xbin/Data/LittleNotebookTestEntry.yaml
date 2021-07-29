@@ -1,13 +1,18 @@
 ---
 questions: 
   entry: 
+    single: asd
+    fieldtype: QASwitch
+    words: 
+      - gf
+      - "sdf dfg"
+      - "asd dfg dfg"
+    color: green
+    describe-col: "dfgdfgdfgdfg\ndfgdfgdfg"
     spin-it: 97.5
+    single-mm: aaassdfsdf
     colors: 
       - pink
       - orange
-    describe-col: "dfgdfgdfgdfg\ndfgdfgdfg"
-    fieldtype: QASwitch
-    color: green
-    single: "zxc zxc"
     doorgaan: false
 ...
