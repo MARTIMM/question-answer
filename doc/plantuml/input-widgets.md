@@ -30,7 +30,10 @@ class QA::Gui::InputTools <<R,#80ffff>> {
 class QA::Gui::InputWidget {
   QA::Question $!question
   Hash $!user-data-set-part
-  Array $!values
+'  Array $!values
+  Gnome::Gtk3::Widget $!widget-object
+  Array $!grid-row-data
+  Gnome::Gtk3::Grid $!grid
   Bool $.faulty-state;
 
 '  initialize()
