@@ -68,6 +68,15 @@ method set-value ( Any:D $textview, $text ) {
 }
 
 #-------------------------------------------------------------------------------
+method clear-value ( Any:D $textview ) {
+  my Gnome::Gtk3::TextBuffer $textbuffer .= new(
+    :native-object($textview.get-buffer)
+  );
+
+  $textbuffer.set-text('');
+}
+
+#-------------------------------------------------------------------------------
 method check-value ( Str $input --> Str ) {
   my Str $message;
   my Int $nw = $input.comb(/\w+/).elems;

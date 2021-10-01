@@ -66,10 +66,16 @@ method set-value ( Any:D $button-grid, $labels ) {
   my Hash $reversed-v = $v.kv.reverse.hash;
 
   loop ( my Int $row = 0; $row < $!question.fieldlist.elems; $row++ ) {
-    my Gnome::Gtk3::CheckButton $cb .= new(
-      :native-object($button-grid.get-child-at( 0, $row))
-    );
+    my Gnome::Gtk3::CheckButton $cb = $button-grid.get-child-at( 0, $row);
     $cb.set-active($reversed-v{$!question.fieldlist[$row]}:exists);
+  }
+}
+
+#-------------------------------------------------------------------------------
+method clear-value ( Any:D $button-grid ) {
+  loop ( my Int $row = 0; $row < $!question.fieldlist.elems; $row++ ) {
+    my Gnome::Gtk3::CheckButton $cb = $button-grid.get-child-at-rk( 0, $row);
+    $cb.set-active(False);
   }
 }
 

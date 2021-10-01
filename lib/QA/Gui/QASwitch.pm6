@@ -52,6 +52,10 @@ method set-value ( Any:D $switch, $state ) {
 }
 
 #-------------------------------------------------------------------------------
+method clear-value ( Any:D $switch ) {
+}
+
+#-------------------------------------------------------------------------------
 method input-change-handler ( Int $state, :_widget($switch) ) {
   self.process-widget-signal( $switch, $switch.get-active.Bool, :!do-check);
 }

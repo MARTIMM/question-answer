@@ -25,7 +25,7 @@ has Hash $.user-data-set-part;
 submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part
 ) {
-  self.initialize;
+#  self.initialize;
 }
 
 #-------------------------------------------------------------------------------
@@ -60,6 +60,11 @@ method get-value ( $entry --> Any ) {
 #-------------------------------------------------------------------------------
 method set-value ( Any:D $entry, $text ) {
   $entry.set-text($text) if ?$text;
+}
+
+#-------------------------------------------------------------------------------
+method clear-value ( Any:D $entry ) {
+  $entry.set-text('');
 }
 
 #-------------------------------------------------------------------------------

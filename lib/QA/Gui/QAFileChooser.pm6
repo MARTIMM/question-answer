@@ -39,8 +39,11 @@ method get-value ( $filechooserbutton --> Any ) {
 
 #-------------------------------------------------------------------------------
 method set-value ( Any:D $filechooserbutton, $filename ) {
-
   $filechooserbutton.set-filename($filename) if ?$filename;
+}
+
+#-------------------------------------------------------------------------------
+method clear-value ( Any:D $filechooserbutton ) {
 }
 
 #-------------------------------------------------------------------------------

@@ -63,6 +63,10 @@ method set-value ( Any:D $spin-button, $value ) {
 }
 
 #-------------------------------------------------------------------------------
+method clear-value ( Any:D $spin-button ) {
+}
+
+#-------------------------------------------------------------------------------
 method input-change-handler ( :_widget($spin-button) ) {
   self.process-widget-signal( $spin-button, $spin-button.get-value, :!do-check);
 }

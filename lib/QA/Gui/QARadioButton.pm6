@@ -96,6 +96,10 @@ method set-value ( Any:D $button-grid, $label ) {
 }
 
 #-------------------------------------------------------------------------------
+method clear-value ( Any:D $button-grid ) {
+}
+
+#-------------------------------------------------------------------------------
 method input-change-handler ( :_widget($radiobutton) ) {
 
   # must get the grid because the unit is a grid

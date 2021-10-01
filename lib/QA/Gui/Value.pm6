@@ -1,4 +1,4 @@
-#TL:2:QA::Gui::ValueTools:
+#TL:2:QA::Gui::Value:
 
 use v6.d;
 
@@ -35,7 +35,6 @@ unit role QA::Gui::Value:auth<github:MARTIMM>:ver<0.1.0>;
 has Int $!msg-id;
 has Bool $.faulty-state = False;
 has Bool $!initialized = False;
-
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -163,7 +162,7 @@ method !adjust-user-data ( $input ) {
 # Called when an input widget has new data. It must adjust the user data Hash.
 # Optionally checks are performed on the incoming data.
 method process-widget-signal (
-  $input-widget, Any:D $input, Bool :$do-check = False, Int() :$row
+  $input-widget, Any:D $input, Int() :$row, Bool :$do-check = False
 ) {
 note "$?LINE, process-widget-signal, $input, $row";
   self.check-widget-value( $input-widget, $input, :$row) if $do-check;
@@ -388,6 +387,9 @@ method create-widget ( ) { ... } #( Str $widget-name --> Any ) { ... }
 
 #-------------------------------------------------------------------------------
 method input-change-handler ( |c ) { ... }
+
+#-------------------------------------------------------------------------------
+method clear-value ( |c ) { ... }
 
 
 

@@ -62,6 +62,10 @@ method set-value ( Any:D $combobox, $text ) {
 }
 
 #-------------------------------------------------------------------------------
+method clear-value ( Any:D $combobox ) {
+}
+
+#-------------------------------------------------------------------------------
 # called when a selection changes in the input widget combobox.
 # it must adjust the user data. no checks are needed.
 method input-change-handler ( :_widget($combobox) ) {

@@ -119,6 +119,10 @@ method set-value ( Any:D $grid, $filename ) {
 }
 
 #-------------------------------------------------------------------------------
+method clear-value ( Any:D $grid ) {
+}
+
+#-------------------------------------------------------------------------------
 method file-selected ( Gnome::Gtk3::FileChooserButton :_widget($fcb) ) {
 
   # must get the grid because the unit is a grid
