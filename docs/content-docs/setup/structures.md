@@ -69,15 +69,16 @@ Questions are what it is all about. In short a piece of text to pose the questio
 
 #### Notes
 * Default fieldtype is QAEntry
-* Boolean values like required, hide is `False` if not mentioned.
-* Default values are '' or 0 when absent. Min and Max are -Inf and Inf when absent.
+* Boolean values like required and hide is `False` if not mentioned.
+* Other values are '' or 0 by default when absent. Min and Max are -Inf and Inf when absent.
 * Select lists in a question descriptions are always arrays.
 * Defaults are always single valued.
 * Callback and action names are keys referring to method names in a user class. To provide this information there are several routines defined for this in **QA::QATypes**.
 
+
 ### Answer value format to questions
 
-Result returned from the QA dialog is a **Hash**. The keys to a questions answer is following a path through the sheet name, set name and questions name like shown below
+The result returned from the QA dialog is a **Hash**. The keys to a questions answer is following a path through the sheet name, set name and questions name like shown below;
 
 ```
 page-name1 => {
@@ -95,6 +96,7 @@ page-name2 => {
   ...
 }
 ```
+
 
 The structure of a value provided by the caller or returned by the program, can differ for each input type.
 
