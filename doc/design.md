@@ -294,10 +294,42 @@ finished: save data if requested
 ```
 
 # UML Diagrams
+
+## Overall view
 ```plantuml
 scale 0.9
 skinparam packageStyle rectangle
 skinparam stereotypeCBackgroundColor #80ffff
+set namespaceSeparator ::
+hide empty members
+
+'Class and interface decorations
+'class
+
+
+UserApp *-up-> QA::Gui::SheetSimple
+QA::Gui::Dialog <|-- QA::Gui::SheetSimple
+Gnome::Gtk3::Dialog <|-- QA::Gui::Dialog
+
+QA::Gui::SheetSimple *-> "*" QA::Gui::Page
+QA::Gui::Page *-> "*" QA::Gui::Set
+QA::Gui::Set *-right-> "*" QA::Gui::Question
+QA::Gui::Question *-right-> "*" QA::Gui::InputWidget
+
+'QA::Gui::InputWidget -> QA::Gui::QAEntry
+'QA::Gui::Value <|.. QA::Gui::QAEntry
+
+'QA::Gui:: <-- QA::Gui::InputWidget
+'QA::Gui:: <-- QA::Gui::InputWidget
+'QA::Gui:: <-- QA::Gui::InputWidget
+```
+
+## Input widget details
+```plantuml
+scale 0.9
+skinparam packageStyle rectangle
+skinparam stereotypeCBackgroundColor #80ffff
+skinparam groupInheritance 2
 set namespaceSeparator ::
 hide empty members
 
@@ -316,20 +348,21 @@ class QA::Gui::Value <<(R,#80ffff)>> {
   -adjust-user-data()
   {abstract} set-value()
   {abstract} create-widget()
+  {abstract} clear-value()
   {abstract} input-change-handler()
 }
 
 
-UserApp *-up-> QA::Gui::SheetSimple
-QA::Gui::Dialog <|-- QA::Gui::SheetSimple
-Gnome::Gtk3::Dialog <|-- QA::Gui::Dialog
+'UserApp *-up-> QA::Gui::SheetSimple
+'QA::Gui::Dialog <|-- QA::Gui::SheetSimple
+'Gnome::Gtk3::Dialog <|-- QA::Gui::Dialog
 
-QA::Gui::SheetSimple *-> "*" QA::Gui::Page
-QA::Gui::Page *-> "*" QA::Gui::Set
-QA::Gui::Set *-right-> "*" QA::Gui::Question
-QA::Gui::Question *-right-> "*" QA::Gui::InputWidget
+'QA::Gui::SheetSimple *-> "*" QA::Gui::Page
+'QA::Gui::Page *-> "*" QA::Gui::Set
+'QA::Gui::Set *-right-> "*" QA::Gui::Question
+'QA::Gui::Question *-right-> "*" QA::Gui::InputWidget
 
-QA::Gui::InputWidget -> QA::Gui::QAEntry
+QA::Gui::InputWidget -up-> QA::Gui::QAEntry
 QA::Gui::Value <|.. QA::Gui::QAEntry
 
 'QA::Gui:: <-- QA::Gui::InputWidget
