@@ -42,11 +42,11 @@ submethod BUILD (
 ) {
   die 'Missing name field in question data' unless ? $!question.name;
 
-  self.display;
+  self!display-question;
 }
 
 #-------------------------------------------------------------------------------
-method display ( ) {
+method !display-question ( ) {
 
   # on each row in the provided grid, a label with the question comes on the
   # left. Then, in the middle, an optional '*' when the user is required to
