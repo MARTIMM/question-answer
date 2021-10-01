@@ -101,16 +101,18 @@ enum ActionReturnType is export <
 >;
 
 #-------------------------------------------------------------------------------
-#tt:1::QAGridColSpec
 =begin pod
 =head2 QAGridColSpec
 
 Column numbers for the question-answer row in a grid
 
-=item QAQuestion;
-=item QARequired;
-=item QAAnswer;
+=item QAQuestion; Column were the question is asked
+=item QARequired; Column to show a '*' when question is required to answer
+=item QAAnswer; Column for the input widget
+
 =end pod
+
+#tt:1::QAGridColSpec
 enum QAGridColSpec is export <QAQuestion QARequired QAAnswer>;
 
 #-------------------------------------------------------------------------------
@@ -119,18 +121,19 @@ enum QAGridColSpec is export <QAQuestion QARequired QAAnswer>;
 
 Column numbers for the grid in the answer part of the QA
 
-=item QACatColumn;
-=item QAInputColumn;
-=item QAButtonColumn;
-=item QAToolButtonAddColumn;
-=item QAToolButtonDelColumn;
+=item QACatColumn; Location in the input widget where optionally a combobox is displayed
+=item QAInputColumn; The widget to set the input. This can be an Entry, Checkbox, etc.
+=item QAToolButtonAddColumn; Toolbutton to add a new input row when input is repeatable
+=item QAToolButtonDelColumn; Toolbutton to remove an input row when input is repeatable
+
 =end pod
+
 #tt:1::AGridColSpec
 enum AGridColSpec is export <
-  QACatColumn QAInputColumn QAButtonColumn
-  QAToolButtonAddColumn QAToolButtonDelColumn
+  QACatColumn QAInputColumn QAToolButtonAddColumn QAToolButtonDelColumn
 >;
 
+#QAButtonColumn
 
 #-------------------------------------------------------------------------------
 =begin pod
