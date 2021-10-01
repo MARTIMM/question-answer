@@ -292,3 +292,47 @@ finished: save data if requested
 
 @enduml
 ```
+
+# UML Diagrams
+```plantuml
+scale 0.9
+skinparam packageStyle rectangle
+skinparam stereotypeCBackgroundColor #80ffff
+set namespaceSeparator ::
+hide empty members
+
+'Class and interface decorations
+'class
+
+Interface QA::Gui::Value <Interface>
+class QA::Gui::Value <<(R,#80ffff)>> {
+  +process-widget-signal()
+  +check-widget-value()
+  +check-users-action()
+  +run-users-action()
+  +set-status-hint()
+  +add-class()
+  +remove-class()
+  -adjust-user-data()
+  {abstract} set-value()
+  {abstract} create-widget()
+  {abstract} input-change-handler()
+}
+
+
+UserApp *-up-> QA::Gui::SheetSimple
+QA::Gui::Dialog <|-- QA::Gui::SheetSimple
+Gnome::Gtk3::Dialog <|-- QA::Gui::Dialog
+
+QA::Gui::SheetSimple *-> "*" QA::Gui::Page
+QA::Gui::Page *-> "*" QA::Gui::Set
+QA::Gui::Set *-right-> "*" QA::Gui::Question
+QA::Gui::Question *-right-> "*" QA::Gui::InputWidget
+
+QA::Gui::InputWidget -> QA::Gui::QAEntry
+QA::Gui::Value <|.. QA::Gui::QAEntry
+
+'QA::Gui:: <-- QA::Gui::InputWidget
+'QA::Gui:: <-- QA::Gui::InputWidget
+'QA::Gui:: <-- QA::Gui::InputWidget
+```
