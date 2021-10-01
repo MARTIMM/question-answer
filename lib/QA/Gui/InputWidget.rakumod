@@ -10,11 +10,9 @@ use QA::Types;
 use QA::Question;
 
 use QA::Gui::Frame;
-
 use QA::Gui::QAEntry;
 #use QA::Gui::QAFileChooser;
 #use QA::Gui::QAImage;
-
 use QA::Gui::QACheckButton;
 use QA::Gui::QAComboBox;
 use QA::Gui::QARadioButton;
@@ -27,22 +25,22 @@ unit class QA::Gui::InputWidget:auth<github:MARTIMM>:ver<0.1.0>;
 also is QA::Gui::Frame;
 
 #-------------------------------------------------------------------------------
-#| Array of question parameters
+# Array of question parameters
 has QA::Question $!question;
 
-#| Location in larger Hash, a location for the answer on this question
+# Location in larger Hash, a location for the answer on this question
 has Hash $!user-data-set-part;
 
-#| The place to hold the widget object
+# The place to hold the widget object
 has $!widget-object;
 
-#| Grid rows holding the real input widgets
+# Grid rows holding the real input widgets
 has Array $!grid-row-data;
 
-#| The grid which displays the input widgets and other sub widgets
+# The grid which displays the input widgets and other sub widgets
 has Gnome::Gtk3::Grid $!grid;
 
-#| state of the input widgets held in the $!grid-row-data
+# state of the input widgets held in the $!grid-row-data
 has Bool $.faulty-state = False;
 
 #-------------------------------------------------------------------------------
@@ -143,7 +141,8 @@ note "append-grid-row, nrows: $current-row";
 
   $!grid.show-all;
 
-  self.hide-tb-add;
+  self.hide-tb-add if $!question.repeatable;
+
 #  for ^$!grid-row-data.elems -> $row {
 #    last if $row == $!grid-row-data.elems - 1;
 #    $!grid-row-data[$row][QAToolButtonAddColumn].hide;
@@ -185,6 +184,7 @@ method !create-toolbutton (
 }
 
 #-------------------------------------------------------------------------------
+# A selection made from $!question.select-list and repeatable is turned on
 method !create-combobox ( Array $select-list --> Gnome::Gtk3::ComboBoxText ) {
 
   my Gnome::Gtk3::ComboBoxText $cbt .= new;
@@ -292,20 +292,33 @@ note "add row, name: $tb.get-name()";
 method del-row (
   Gnome::Gtk3::ToolButton :_widget($tb), Int :$_handler-id, Int :$row
 ) {
-note "delete row, name: $tb.get-name()";
 
-  $!grid-row-data[$row][QAToolButtonAddColumn].hide;
+#  my Bool $is-last-row =
+#    $!grid-row-data[$row][QAToolButtonAddColumn].get-visible;
+note "delete row, name: $tb.get-name(), $row, $!grid-row-data.elems()";
 
-  $!grid-row-data[$row][QAInputColumn].destroy;
-  if $!question.repeatable {
+#  $!grid-row-data[$row][QAToolButtonAddColumn].hide;
+
+  # remove all widgets from this row except the last one
+  if $!grid-row-data.elems() > 1 {
+    $!grid-row-data[$row][QAInputColumn].destroy;
     $!grid-row-data[$row][QAToolButtonAddColumn].destroy;
     $!grid-row-data[$row][QAToolButtonDelColumn].destroy;
-
-    $!grid-row-data[$row][QACatColumn].destroy
-      if $!question.selectlist.defined;
+    $!grid-row-data[$row][QACatColumn].destroy if $!question.selectlist.defined;
+    $!grid-row-data.splice( $row, 1);
   }
 
+  else {
+note 'Clear ', $!grid-row-data[$row][QAInputColumn].^name, ', ', $!widget-object.^name;
+    $!widget-object.clear-value($!grid-row-data[$row][QAInputColumn]);
+    #$!grid-row-data[$row][QAInputColumn].clear-value;
+  }
+
+  # cut out the data of this row
   $!user-data-set-part{$!question.name}.splice( $row, 1);
+
+  self.hide-tb-add;
+
 
 #`{{
   my ( $x, $row ) = $tb.get-name.split(':');
@@ -343,8 +356,21 @@ note "delete row, name: $tb.get-name()";
 # Called from !append-grid-row() or as a callback from the 'show' event
 # when .show-all() is called.
 method hide-tb-add ( ) {
-  for ^$!grid-row-data.elems -> $row {
-    last if $row == $!grid-row-data.elems - 1;
-    $!grid-row-data[$row][QAToolButtonAddColumn].hide;
+  my Int $nrows = $!grid-row-data.elems;
+  if $nrows == 1 {
+    $!grid-row-data[0][QAToolButtonAddColumn].show;
+    $!grid-row-data[0][QAToolButtonDelColumn].show;
+  }
+
+  else {
+    for ^$nrows -> $row {
+      if $nrows - 1 == $row {
+        $!grid-row-data[$row][QAToolButtonAddColumn].show;
+      }
+
+      else {
+        $!grid-row-data[$row][QAToolButtonAddColumn].hide;
+      }
+    }
   }
 }
