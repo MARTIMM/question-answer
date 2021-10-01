@@ -22,9 +22,9 @@ use QA::Sheet;
 use QA::Types;
 
 use QA::Gui::Dialog;
-use QA::Gui::Set;
-use QA::Gui::Question;
-use QA::Gui::Frame;
+#use QA::Gui::Set;
+#use QA::Gui::Question;
+#use QA::Gui::Frame;
 use QA::Gui::Page;
 use QA::Gui::YNMsgDialog;
 use QA::Gui::OkMsgDialog;
