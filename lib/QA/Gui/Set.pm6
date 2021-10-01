@@ -96,7 +96,8 @@ submethod BUILD (
   my $c := $!set.clone;
   for $c -> QA::Question $question {
     my QA::Gui::Question $gui-q .= new(
-      :$question, :$question-grid, :row($question-grid-row), :$!user-data-set-part
+      :$question, :$question-grid, :row($question-grid-row),
+      :$!user-data-set-part
     );
     $!questions.push: $gui-q;
     $question-grid-row++;
