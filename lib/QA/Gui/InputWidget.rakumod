@@ -310,7 +310,9 @@ note "delete row, name: $tb.get-name(), $row, $!grid-row-data.elems()";
 
   else {
 note 'Clear ', $!grid-row-data[$row][QAInputColumn].^name, ', ', $!widget-object.^name;
-    $!widget-object.clear-value($!grid-row-data[$row][QAInputColumn]);
+    $!widget-object.clear-value($!grid-row-data[$row][QAInputColumn])
+      if $!widget-object.^can('clear-value');
+
     #$!grid-row-data[$row][QAInputColumn].clear-value;
   }
 
