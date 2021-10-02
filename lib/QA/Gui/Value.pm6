@@ -161,10 +161,11 @@ method !adjust-user-data ( $input ) {
 #-------------------------------------------------------------------------------
 # Called when an input widget has new data. It must adjust the user data Hash.
 # Optionally checks are performed on the incoming data.
-method process-widget-signal (
-  $input-widget, Any:D $input, Int() :$row, Bool :$do-check = False
+method process-widget-input (
+  $input-widget, Any:D $input, Int() $row, Bool :$do-check = False
 ) {
-note "$?LINE, process-widget-signal, $input, $row";
+CONTROL { when CX::Warn {  note .gist; .resume; } }
+note "$?LINE, process-widget-signal, {$input//'-'}, $row";
   self.check-widget-value( $input-widget, $input, :$row) if $do-check;
   if ! $!faulty-state {
     self!adjust-user-data( $input, :$row);
@@ -176,6 +177,7 @@ note "$?LINE, process-widget-signal, $input, $row";
 method check-widget-value (
   Any:D $input-widget, Any:D $input, Int() :$row = -1
 ) {
+#CONTROL { when CX::Warn {  note .gist; .resume; } }
 note "$?LINE, check-widget-value, $input, $row";
 
   $!faulty-state = False;
@@ -383,10 +385,10 @@ method get-value ( $input-widget --> Any ) { ... }
 }}
 
 #-------------------------------------------------------------------------------
-method clear-value ( |c ) { ... }
+#method clear-value ( |c ) { ... }
 
 #-------------------------------------------------------------------------------
-method create-widget ( ) { ... } #( Str $widget-name --> Any ) { ... }
+method create-widget ( |c ) { ... } #( Str $widget-name --> Any ) { ... }
 
 #-------------------------------------------------------------------------------
 method input-change-handler ( |c ) { ... }
