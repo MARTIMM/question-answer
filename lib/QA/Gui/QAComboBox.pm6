@@ -25,11 +25,10 @@ submethod BUILD (
 ) {
   $!question.repeatable = False;
   $!question.selectlist = [];
-#  self.initialize;
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( --> Any ) {
+method create-widget ( Int() :$row --> Any ) {
 
   # create a text input widget
   my Gnome::Gtk3::ComboBoxText $combobox .= new;
@@ -42,7 +41,7 @@ method create-widget ( --> Any ) {
     $combobox.append-text($fielditem);
   }
   $combobox.set-active(0);
-  $combobox.register-signal( self, 'input-change-handler', 'changed');
+  $combobox.register-signal( self, 'input-change-handler', 'changed', :$row);
 
   $combobox
 }
@@ -61,16 +60,19 @@ method set-value ( Any:D $combobox, $text ) {
   $combobox.set-active($value-index);
 }
 
+#`{{
 #-------------------------------------------------------------------------------
 method clear-value ( Any:D $combobox ) {
 }
+}}
 
 #-------------------------------------------------------------------------------
 # called when a selection changes in the input widget combobox.
 # it must adjust the user data. no checks are needed.
-method input-change-handler ( :_widget($combobox) ) {
-  self.process-widget-signal(
-    $combobox, $combobox.get-active-text // $!question.fieldlist[0], :!do-check
+method input-change-handler ( :_widget($combobox), Int() :$row ) {
+  self.process-widget-input(
+    $combobox, $combobox.get-active-text // $!question.fieldlist[0],
+    $row, :!do-check
   );
 }
 

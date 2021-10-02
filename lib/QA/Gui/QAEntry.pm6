@@ -90,8 +90,8 @@ note "\nEntry input: $entry, $row";
   #self!check-value( $w, $row, :input(self.get-value($w)));
 #  my ( $n, $row ) = $entry.get-name.split(':');
 #  $row .= Int;
-#  self.process-widget-signal( $entry, $row, :do-check);
-  self.process-widget-signal( $entry, $entry.get-text, :$row, :do-check);
+#  self.process-widget-input( $entry, $row, :do-check);
+  self.process-widget-input( $entry, $entry.get-text, $row, :do-check);
 
   # must propogate further to prevent messages when notebook page is switched
   # otherwise it would do ok to return 1.

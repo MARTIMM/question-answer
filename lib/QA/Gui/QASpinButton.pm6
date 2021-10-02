@@ -21,11 +21,11 @@ submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part
 ) {
   $!question.repeatable = False;
-  self.initialize;
+  $!question.selectlist = [];
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( --> Any ) {
+method create-widget ( Int() :$row --> Any ) {
 
   # create a spin button input widget
   my Num $minimum = ($!question.minimum // 0).Num;
@@ -44,7 +44,9 @@ method create-widget ( --> Any ) {
   );
 
   $spin-button.set-hexpand(False);
-  $spin-button.register-signal( self, 'input-change-handler', 'value-changed');
+  $spin-button.register-signal(
+    self, 'input-change-handler', 'value-changed', :$row
+  );
   self.add-class( $spin-button, 'QASpinButton');
 
   $spin-button
@@ -67,6 +69,8 @@ method clear-value ( Any:D $spin-button ) {
 }
 
 #-------------------------------------------------------------------------------
-method input-change-handler ( :_widget($spin-button) ) {
-  self.process-widget-signal( $spin-button, $spin-button.get-value, :!do-check);
+method input-change-handler ( :_widget($spin-button), Int() :$row ) {
+  self.process-widget-input(
+    $spin-button, $spin-button.get-value, $row, :!do-check
+  );
 }

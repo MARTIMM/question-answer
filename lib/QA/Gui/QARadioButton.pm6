@@ -22,11 +22,10 @@ submethod BUILD (
 ) {
   $!question.repeatable = False;
   $!question.selectlist = [];
-#  self.initialize;
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( --> Any ) {
+method create-widget ( Int() :$row --> Any ) {
 
   # create a grid with radiobuttons
   my Gnome::Gtk3::Grid $button-grid .= new;
@@ -49,7 +48,7 @@ method create-widget ( --> Any ) {
     # joining a group seems to trigger the signal too, the name of the
     # grid is then not yet set. therefore register a signal after
     # attached to grid.
-    $rb.register-signal( self, 'input-change-handler', 'clicked');
+    $rb.register-signal( self, 'input-change-handler', 'clicked', :$row);
   }
 
   # set first button on
@@ -84,9 +83,7 @@ method set-value ( Any:D $button-grid, $label ) {
   return unless ?$label;
 
   loop ( my Int $row = 0; $row < $!question.fieldlist.elems; $row++ ) {
-    my Gnome::Gtk3::RadioButton $rb .= new(
-      :native-object($button-grid.get-child-at( 0, $row))
-    );
+    my Gnome::Gtk3::RadioButton $rb = $button-grid.get-child-at-rk( 0, $row);
     if $rb.get-label eq $label {
       # set-active() will also trigger signal
       $rb.set-active(True);
@@ -100,11 +97,11 @@ method clear-value ( Any:D $button-grid ) {
 }
 
 #-------------------------------------------------------------------------------
-method input-change-handler ( :_widget($radiobutton) ) {
+method input-change-handler ( :_widget($radiobutton), Int() :$row ) {
 
   # must get the grid because the unit is a grid
-  my Gnome::Gtk3::Grid $grid .= new(:native-object($radiobutton.get-parent));
+  my Gnome::Gtk3::Grid $grid = $radiobutton.get-parent-rk;
 
   # store in user data without checks
-  self.process-widget-signal( $grid, $radiobutton.get-label, :!do-check);
+  self.process-widget-input( $grid, $radiobutton.get-label, $row, :!do-check);
 }

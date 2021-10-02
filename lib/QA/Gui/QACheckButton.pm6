@@ -25,11 +25,10 @@ submethod BUILD (
 ) {
   $!question.repeatable = False;
   $!question.selectlist = [];
-#  self.initialize;
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( --> Any ) {
+method create-widget ( Int() :$row --> Any ) {
 
   # create a grid with checkbuttons
   my Gnome::Gtk3::Grid $button-grid .= new;
@@ -39,7 +38,7 @@ method create-widget ( --> Any ) {
   for @($!question.fieldlist) -> $label {
     my Gnome::Gtk3::CheckButton $rb .= new(:$label);
     $rb.set-hexpand(True);
-    $rb.register-signal( self, 'input-change-handler', 'clicked');
+    $rb.register-signal( self, 'input-change-handler', 'clicked', :$row);
     self.add-class( $rb, 'QACheckButton');
     $button-grid.grid-attach( $rb, 0, $button-grid-row++, 1, 1);
   }
@@ -66,11 +65,12 @@ method set-value ( Any:D $button-grid, $labels ) {
   my Hash $reversed-v = $v.kv.reverse.hash;
 
   loop ( my Int $row = 0; $row < $!question.fieldlist.elems; $row++ ) {
-    my Gnome::Gtk3::CheckButton $cb = $button-grid.get-child-at( 0, $row);
+    my Gnome::Gtk3::CheckButton $cb = $button-grid.get-child-at-rk( 0, $row);
     $cb.set-active($reversed-v{$!question.fieldlist[$row]}:exists);
   }
 }
 
+#`{{
 #-------------------------------------------------------------------------------
 method clear-value ( Any:D $button-grid ) {
   loop ( my Int $row = 0; $row < $!question.fieldlist.elems; $row++ ) {
@@ -78,15 +78,16 @@ method clear-value ( Any:D $button-grid ) {
     $cb.set-active(False);
   }
 }
+}}
 
 #-------------------------------------------------------------------------------
-method input-change-handler ( :_widget($cb) ) {
+method input-change-handler ( :_widget($cb), Int() :$row ) {
 
   # must get the grid because the unit is a grid
   my Gnome::Gtk3::Grid $grid .= new(:native-object($cb.get-parent));
 
   # store in user data without checks
-  self.process-widget-signal( $grid, self!get-value($grid), :!do-check);
+  self.process-widget-input( $grid, self!get-value($grid), $row, :!do-check);
 }
 
 

@@ -29,7 +29,7 @@ submethod BUILD (
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( --> Any ) {
+method create-widget ( Int() :$row --> Any ) {
 
   # create a text input widget
   given my Gnome::Gtk3::TextView $textview .= new {
@@ -37,7 +37,7 @@ method create-widget ( --> Any ) {
     .set-size-request( 1, $!question.height // 50);
     .set-wrap-mode(GTK_WRAP_WORD);
     .set-border-width(1);
-    .register-signal( self, 'input-change-handler', 'focus-out-event');
+    .register-signal( self, 'input-change-handler', 'focus-out-event', :$row);
   }
 
   self.add-class( $textview, 'QATextView');
@@ -93,9 +93,11 @@ method check-value ( Str $input --> Str ) {
 
 #-------------------------------------------------------------------------------
 method input-change-handler (
-  N-GdkEventFocus $, :_widget($textview) --> Int
+  N-GdkEventFocus $, :_widget($textview), Int() :$row --> Int
 ) {
-  self.process-widget-signal( $textview, self!get-value($textview), :do-check);
+  self.process-widget-input(
+   $textview, self!get-value($textview), $row, :do-check
+  );
 
   # must propogate further to prevent messages when notebook page is switched
   # otherwise it would do ok to return 1.

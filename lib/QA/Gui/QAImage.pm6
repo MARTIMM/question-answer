@@ -52,7 +52,7 @@ submethod BUILD (
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( Str $widget-name --> Any ) {
+method create-widget ( Str $widget-name, Int() :$row --> Any ) {
 
   # We need a grid with 2 rows. one for the file chooser button
   # and one for the image. If DND, 1st row is made invisible.
@@ -79,7 +79,7 @@ method create-widget ( Str $widget-name --> Any ) {
     .set-vexpand(True);
     .set_filter($filter);
     .set-border-width(2) if $!question.dnd;
-    .register-signal( self, 'file-selected', 'file-set');
+    .register-signal( self, 'input-change-handler', 'file-set', :$row);
     .register-signal( self, 'must-hide', 'show', :dnd($!question.dnd));
   }
 
@@ -118,25 +118,29 @@ method set-value ( Any:D $grid, $filename ) {
   }
 }
 
+#`{{
 #-------------------------------------------------------------------------------
 method clear-value ( Any:D $grid ) {
 }
+}}
 
 #-------------------------------------------------------------------------------
-method file-selected ( Gnome::Gtk3::FileChooserButton :_widget($fcb) ) {
+method input-change-handler (
+  Gnome::Gtk3::FileChooserButton :_widget($fcb), Int() :$row
+) {
 
   # must get the grid because the unit is a grid
   my Gnome::Gtk3::Grid $grid .= new(:native-object($fcb.get-parent));
 note "$fcb.get-name(), $grid.get-name()";
-  my ( $n, $row ) = $grid.get-name.split(':');
-  $row .= Int;
+#  my ( $n, $row ) = $grid.get-name.split(':');
+#  $row .= Int;
 
   # repaint and store image locally
   self!set-image( $grid, $fcb.get-filename);
 
 note "selected; $row, $fcb.get-filename()";
   # store in user data without checks
-  self.process-widget-signal( $grid, $row, :!do-check);
+  self.process-widget-input( $grid, $fcb.get-filename, $row, :!do-check);
 }
 
 #-------------------------------------------------------------------------------
@@ -341,7 +345,7 @@ note "$?LINE, {$row//'-'}, $grid.get-name()";
 #        self.set-value( $grid, $uri);
 #note $?LINE, ", selected; $fcb.get-filename()";
         # store in user data without checks
-        self.process-widget-signal( $grid, $row, :!do-check, :input($uri));
+        self.process-widget-input( $grid, $row, :!do-check, :input($uri));
 note "$?LINE, $uri, {$fcb.get-filename() // '-'}";
 
         #my Gnome::Gdk3::Pixbuf $pixbuf .= new(
