@@ -235,7 +235,7 @@ method set-status-hint ( $widget, InputStatusHint $status ) {
 #-------------------------------------------------------------------------------
 # called when a selection changes in the input widget combobox.
 # it must adjust the user data. no checks are needed.
-method process-widget-signal (
+method process-widget-input (
   $widget, Bool :$do-check = False, :$input is copy
 ) {
   $input //= self.get-value($widget);

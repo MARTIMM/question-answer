@@ -254,7 +254,7 @@ method create-widget ( Str $widget-name --> Any ) { ... }
 #-----------------------------------------------------------------------------
 # called when a selection changes in the input widget combobox.
 # it must adjust the user data. no checks are needed.
-method process-widget-signal (
+method process-widget-input (
   $widget, Bool :$do-check = False, :$input is copy
 ) {
   $input //= self.get-value($widget);
@@ -894,7 +894,7 @@ method delete-row ( Gnome::Gtk3::ToolButton :_widget($tb), Int :$_handler-id ) {
 # input field is not changed.
 method combobox-change ( :_widget($w), :$input-widget, Int :$row --> Int ) {
 
-  self.process-widget-signal( $input-widget, $row, :!do-check);
+  self.process-widget-input( $input-widget, $row, :!do-check);
 
   # must propogate further to prevent messages when notebook page is switched
   # otherwise it would do ok to return 1.
@@ -904,7 +904,7 @@ method combobox-change ( :_widget($w), :$input-widget, Int :$row --> Int ) {
 #-----------------------------------------------------------------------------
 # called when a selection changes in the input widget combobox.
 # it must adjust the user data. no checks are needed.
-method process-widget-signal (
+method process-widget-input (
   $w, Int $row, Bool :$do-check = False, :$input is copy
 ) {
   $input //= self.get-value($w);
