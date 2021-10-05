@@ -15,6 +15,7 @@ use Gnome::Gtk3::TargetEntry;
 use Gnome::Gtk3::DragDest;
 use Gnome::Gtk3::TargetList;
 use Gnome::Gtk3::SelectionData;
+use Gnome::Gtk3::Enums;
 
 use Gnome::Gdk3::Events;
 
@@ -39,11 +40,16 @@ also does QA::Gui::Value;
 #-------------------------------------------------------------------------------
 enum IMAGEGRID <FCHOOSER-ROW IMAGE-ROW>;
 
+has QA::Question $.question;
+has Hash $.user-data-set-part;
+has $!input-widget;
+
 #-------------------------------------------------------------------------------
 submethod BUILD (
-  QA::Question:D :$!question, Hash:D :$!user-data-set-part
+  QA::Question:D :$!question, Hash:D :$!user-data-set-part,
+  :$!input-widget where *.^name eq 'QA::Gui::InputWidget'
 ) {
-  self.initialize;
+#  self.initialize;
 
 #  my Gnome::Gtk3::StyleContext $context .= new(
 #    :native-object(self.get-style-context)
@@ -52,7 +58,7 @@ submethod BUILD (
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( Str $widget-name, Int() :$row --> Any ) {
+method create-widget ( Int() :$row --> Any ) {
 
   # We need a grid with 2 rows. one for the file chooser button
   # and one for the image. If DND, 1st row is made invisible.
@@ -66,9 +72,6 @@ method create-widget ( Str $widget-name, Int() :$row --> Any ) {
     .add-mime-type('image/*');
     .add-mime-type('text/uri-list');
   }
-
-  my Gnome::Gtk3::Image $image .= new;
-  self.add-class( $image, 'QAImage');
 
   my Gnome::Gtk3::Grid $widget-grid .= new;
   self.add-class( $widget-grid, 'QAGrid');
@@ -86,11 +89,16 @@ method create-widget ( Str $widget-name, Int() :$row --> Any ) {
   self.add-class( $fcb, 'QAFileChooserButton');
   $widget-grid.grid-attach( $fcb, 0, FCHOOSER-ROW, 1, 1);
 
+  my Gnome::Gtk3::Image $image .= new;
+  self.add-class( $image, 'QAImage');
+  $image.set-from-icon-name( 'viewimage', GTK_ICON_SIZE_DIALOG);
+
   # When drag and drop is requested, prepare a drag destination. Then,
   # also no file chooser button is necessary. Button is made invisible
   # on the show event
-  self.setup-as-drag-destination( $image, $!question.dnd, $fcb, $widget-grid)
-    if ?$!question.dnd;
+  self.setup-as-drag-destination(
+     $image, $!question.dnd, $fcb, $widget-grid, $row
+  ) if ?$!question.dnd;
 
   $widget-grid.grid-attach( $image, 0, IMAGE-ROW, 1, 1);
 
@@ -118,11 +126,21 @@ method set-value ( Any:D $grid, $filename ) {
   }
 }
 
-#`{{
 #-------------------------------------------------------------------------------
 method clear-value ( Any:D $grid ) {
+  my Gnome::Gtk3::FileChooserButton $fcb = $grid.get-child-at-rk(
+    0, FCHOOSER-ROW
+  );
+
+note "clear value: $grid.raku(), $fcb.raku()";
+  $fcb.set-filename('');
+  my Gnome::Gtk3::Image $image = $grid.get-child-at-rk(
+    0, IMAGE-ROW
+  );
+
+note "clear value: image.raku()";
+  $image.set-from-icon-name( 'viewimage', GTK_ICON_SIZE_DIALOG);
 }
-}}
 
 #-------------------------------------------------------------------------------
 method input-change-handler (
@@ -158,7 +176,7 @@ method !set-image ( Gnome::Gtk3::Grid $grid, Str $filename ) {
   my Gnome::Gdk3::Pixbuf $pb .= new( :file($filename), :$width, :$height);
   note $pb.last-error.message if $pb.last-error.is-valid;
 
-  my Gnome::Gtk3::Image $image = $grid.get-child-at-rk( 0, 1);
+  my Gnome::Gtk3::Image $image = $grid.get-child-at-rk( 0, IMAGE-ROW);
   $image.set-from-pixbuf($pb);
 note "$?LINE, $filename, $width, $height";
 
@@ -179,7 +197,7 @@ note "$?LINE, $filename, $width, $height";
 #-------------------------------------------------------------------------------
 method setup-as-drag-destination (
   $destination-widget, Str $target-list, Gnome::Gtk3::FileChooserButton $fcb,
-  Gnome::Gtk3::Grid $widget-grid
+  Gnome::Gtk3::Grid $widget-grid, Int() $row
 ) {
 
   my Array[N-GtkTargetEntry] $target-entries = Array[N-GtkTargetEntry].new;
@@ -205,7 +223,8 @@ method setup-as-drag-destination (
   );
 
   $destination-widget.register-signal(
-    self, 'received', 'drag-data-received', :$fcb, :$destination, :$widget-grid
+    self, 'received', 'drag-data-received', :$fcb, :$destination,
+    :$widget-grid, :$row
   );
 }
 
@@ -279,7 +298,8 @@ method received (
   N-GObject $context-no, Int $x, Int $y,
   N-GObject $selection-data-no, UInt $info, UInt $time,
   :_widget($destination-widget), Gnome::Gtk3::DragDest :$destination,
-  Gnome::Gtk3::FileChooserButton :$fcb is copy, Gnome::Gtk3::Grid :$widget-grid
+  Gnome::Gtk3::FileChooserButton :$fcb is copy, Gnome::Gtk3::Grid :$widget-grid,
+  Int() :$row
 ) {
 note "\ndst received:, $x, $y, $info, $time";
   my Gnome::Gtk3::SelectionData $selection-data .= new(
@@ -287,9 +307,7 @@ note "\ndst received:, $x, $y, $info, $time";
   );
 
   my $source-data;
-  my Gnome::Gdk3::DragContext $context .= new(
-    :native-object($context-no)
-  );
+  my Gnome::Gdk3::DragContext $context .= new(:native-object($context-no));
 
   my Gnome::Gdk3::Atom $target-atom = $destination.find-target(
     $destination-widget, $context,
@@ -302,9 +320,43 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
 #CATCH { default { .message.note; .backtrace.concise.note } }
     # only first image is replaced, rest is added to the end.
 #    my Bool $append = False;
-    my ( $n, $row );
+#    my ( $n, $row );
+
+    my Gnome::Gtk3::Grid $grid .= new(:native-object($fcb.get-parent));
 
     $source-data = $selection-data.get-uris;
+    # Replace if only one. Otherwise append all if more than one.
+    if $source-data.elems == 1 {
+      my Str $uri = $source-data[0];
+      if $uri.IO.extension ~~ any(<jpg png jpeg svg gif>) {
+        $uri ~~ s/^ 'file://' //;
+        $uri ~~ s:g/'%20'/ /;
+
+        $fcb.set-filename($uri);
+        self!set-image( $grid, $uri);
+        self.process-widget-input( $grid, $uri, $row, :!do-check);
+      }
+    }
+
+    else {
+      for @$source-data -> $uri is copy {
+note "$?LINE, $uri";
+        if $uri.IO.extension ~~ any(<jpg png jpeg svg gif>) {
+          $uri ~~ s/^ 'file://' //;
+          $uri ~~ s:g/'%20'/ /;
+
+          my ( $added-widget, $added-row) = $!input-widget.append-grid-row;
+
+          $fcb = $added-widget.get-child-at-rk( 0, FCHOOSER-ROW);
+          $fcb.set-filename($uri);
+          self!set-image( $added-widget, $uri);
+          self.process-widget-input(
+            $added-widget, $uri, $added-row, :!do-check
+          );
+        }
+      }
+    }
+#`{{
 #note $?LINE, ', ', $source-data.elems, ', ', $source-data;
     for @$source-data -> $uri is copy {
 note "$?LINE, $uri";
@@ -317,7 +369,7 @@ note "$?LINE, $fcb.is-valid(), $grid.is-valid()";
 
 #        if $append {
           # All entries from list are appended
-          $row = self.add-new-row;
+#          $row = self.add-new-row;
 #note "$?LINE, $grid.get-name()";
 #          my Gnome::Gtk3::Grid $widget-grid = $grid.get-child-at-rk( 0, $row+1);
 #note "$?LINE, $widget-grid.get-name()";
@@ -339,14 +391,18 @@ note "$?LINE, {$row//'-'}, $grid.get-name()";
 
         # repaint and store image locally
         #self!set-image( $grid, $fcb.get-filename);
+note "$?LINE set filename $uri";
         $fcb.set-filename($uri);
+note "$?LINE set done";
 
         self!set-image( $grid, $uri);
 #        self.set-value( $grid, $uri);
 #note $?LINE, ", selected; $fcb.get-filename()";
         # store in user data without checks
-        self.process-widget-input( $grid, $row, :!do-check, :input($uri));
-note "$?LINE, $uri, {$fcb.get-filename() // '-'}";
+note "$?LINE, call widget input";
+        self.process-widget-input( $grid, $uri, $row, :!do-check);
+note "$?LINE, done widget input";
+note "$?LINE, done widget input";
 
         #my Gnome::Gdk3::Pixbuf $pixbuf .= new(
         #  :file($uri), :380width, :380height, :preserve_aspect_ration
@@ -355,5 +411,6 @@ note "$?LINE, $uri, {$fcb.get-filename() // '-'}";
 #        last;
       }
     }
+}}
   }
 }

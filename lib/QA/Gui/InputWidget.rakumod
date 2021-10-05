@@ -11,8 +11,8 @@ use QA::Question;
 
 use QA::Gui::Frame;
 use QA::Gui::QAEntry;
-#use QA::Gui::QAFileChooser;
-#use QA::Gui::QAImage;
+use QA::Gui::QAFileChooser;
+use QA::Gui::QAImage;
 use QA::Gui::QACheckButton;
 use QA::Gui::QAComboBox;
 use QA::Gui::QARadioButton;
@@ -43,6 +43,10 @@ has Gnome::Gtk3::Grid $!grid;
 # state of the input widgets held in the $!grid-row-data
 has Bool $.faulty-state = False;
 
+# When filling in values from user data, the combobox events will fire when
+# selection is changed. Use this flag to stop responding when it is not needed.
+has Bool $!inhibit-combobox-events = False;
+
 #-------------------------------------------------------------------------------
 submethod BUILD ( QA::Question:D :$!question, Hash:D :$!user-data-set-part ) {
   $!grid-row-data = [];
@@ -71,11 +75,14 @@ submethod BUILD ( QA::Question:D :$!question, Hash:D :$!user-data-set-part ) {
   }
 
   if ? $!widget-object {
+    $!inhibit-combobox-events = True;
+
     # Add at least one row if widget object is valid
-    self!append-grid-row;
+    self.append-grid-row;
 
     # And set values from user data.
     self!apply-values;
+    $!inhibit-combobox-events = False;
   }
 
   $!faulty-state = False;
@@ -85,7 +92,9 @@ submethod BUILD ( QA::Question:D :$!question, Hash:D :$!user-data-set-part ) {
 method !create-widget-object ( ) {
   my Str $module-name = 'QA::Gui::' ~ $!question.fieldtype.Str;
   if (my $m = ::($module-name)).^lookup('set-value') ~~ Method {
-    $!widget-object = ::($module-name).new( :$!question, :$!user-data-set-part);
+    $!widget-object = ::($module-name).new(
+      :$!question, :$!user-data-set-part, :input-widget(self)
+    );
   }
 
   else {
@@ -112,9 +121,9 @@ method !create-user-widget-object ( ) {
 }
 
 #-------------------------------------------------------------------------------
-method !append-grid-row ( ) {
+method append-grid-row ( --> List ) {
   my Int $current-row = $!grid-row-data.elems;
-note "append-grid-row, nrows: $current-row";
+#note "append-grid-row, nrows: $current-row";
 
   given my $input-widget = $!widget-object.create-widget(:row($current-row)) {
     my Str $tooltip = $!question.tooltip;
@@ -129,6 +138,16 @@ note "append-grid-row, nrows: $current-row";
   $!grid.attach( $input-widget, QAInputColumn, $current-row, 1, 1);
 
   if $!question.repeatable {
+    # create comboboxes on the left when selectlist is a non-empty Array
+    my Array $select-list = $!question.selectlist // [];
+    if $select-list.elems {
+      my Gnome::Gtk3::ComboBoxText $cbt = self!create-combobox(
+        $select-list, $input-widget, $current-row
+      );
+      $!grid.grid-attach( $cbt, QACatColumn, $current-row, 1, 1);
+      $!grid-row-data[$current-row][QACatColumn] = $cbt;
+    }
+
     my Gnome::Gtk3::ToolButton $tb;
     $tb = self!create-toolbutton( $current-row, :add);
     $!grid.grid-attach( $tb, QAToolButtonAddColumn, $current-row, 1, 1);
@@ -147,6 +166,8 @@ note "append-grid-row, nrows: $current-row";
 #    last if $row == $!grid-row-data.elems - 1;
 #    $!grid-row-data[$row][QAToolButtonAddColumn].hide;
 #  }
+
+  ( $input-widget, $current-row)
 }
 
 #-------------------------------------------------------------------------------
@@ -185,12 +206,17 @@ method !create-toolbutton (
 
 #-------------------------------------------------------------------------------
 # A selection made from $!question.select-list and repeatable is turned on
-method !create-combobox ( Array $select-list --> Gnome::Gtk3::ComboBoxText ) {
-
+method !create-combobox (
+  Array $select-list, $input-widget, $row --> Gnome::Gtk3::ComboBoxText
+) {
   my Gnome::Gtk3::ComboBoxText $cbt .= new;
   for @$select-list -> $select-item {
     $cbt.append-text($select-item);
   }
+
+  $cbt.register-signal(
+    self, 'combobox-change', 'changed', :$input-widget, :$row
+  );
 
   $!widget-object.add-class( $cbt, 'QAComboBoxText');
   $cbt.set-active(0);
@@ -223,13 +249,31 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
       }
 
       # First row is always created. When more than 1 value, create more rows
-      self!append-grid-row if $i > 0;
+      self.append-grid-row if $i > 0;
 
       my $input-widget = $!grid-row-data[$i][QAInputColumn];
-      $!widget-object.set-value( $input-widget, $values[$i]);
-      $!widget-object.check-widget-value(
-        $input-widget, $values[$i], :row($i)
-      );
+      my $value;
+      if ? $!question.selectlist {
+note "apply: $i, $values[$i].raku(), $!question.selectlist.raku()";
+        my ( $select-item, $select-input) = $values[$i].kv;
+
+        $value = $select-input;
+
+        my Int $value-index =
+          $!question.selectlist.first( $select-item, :k) // 0;
+
+        my Gnome::Gtk3::ComboBoxText $cbt = $!grid-row-data[$i][QACatColumn];
+#        $cbt = $!grid.get-child-at-rk( QACatColumn, $i);
+        $cbt.set-active($value-index);
+      }
+
+      else {
+note "apply: $i, $values[$i]";
+        $value = $values[$i];
+      }
+
+      $!widget-object.set-value( $input-widget, $value);
+      $!widget-object.check-widget-value( $input-widget, $value, :row($i));
       $i++;
     }
 
@@ -238,7 +282,7 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
   }
 
   else {
-note 'single value: ', ($!widget-object.^name, $!user-data-set-part{$!question.name}).join(', ');
+note "single value: $!question.name(), $!widget-object.^name, $!user-data-set-part{$!question.name}.raku()";
 
     my $value = $!user-data-set-part{$!question.name};
     if ?$value {
@@ -252,10 +296,32 @@ note 'single value: ', ($!widget-object.^name, $!user-data-set-part{$!question.n
 #-------------------------------------------------------------------------------
 #--[ Signal Handlers ]----------------------------------------------------------
 #-------------------------------------------------------------------------------
-method add-row (
-  Gnome::Gtk3::ToolButton :_widget($tb), Int :$_handler-id, Int :$row
+# called when a selection changes in the $!question.selectlist combobox.
+# it must adjust the selection value. no check is needed because
+# input field is not changed.
+method combobox-change (
+  :_widget($combobox), :$input-widget, Int :$row --> Int
 ) {
-note "add row, name: $tb.get-name()";
+  unless $!inhibit-combobox-events {
+note "cbx iw: $row, ", $input-widget.^name;
+note 'cbx 0: ', $combobox.get-active;
+note 'cbx 1: ', $!question.selectlist[$combobox.get-active];
+note 'cbx 2: ', $!widget-object.get-value($input-widget);
+    $!widget-object.process-widget-input(
+      $input-widget, $!widget-object.get-value($input-widget), $row, :!do-check
+    );
+  }
+
+  # must propogate further to prevent messages when notebook page is switched
+  # otherwise it would do ok to return 1.
+  0
+}
+
+#-------------------------------------------------------------------------------
+method add-row (
+#  Gnome::Gtk3::ToolButton :_widget($tb), Int :$_handler-id, Int :$row
+) {
+#note "add row, name: $tb.get-name()";
 #`{{
 #Gnome::N::debug(:on);
   # modify this buttons icon
@@ -273,7 +339,7 @@ note "add row, name: $tb.get-name()";
 #  note 'add nrows: ', $!input-widgets.elems;
 }}
 
-  self!append-grid-row;
+  self.append-grid-row
 #  $tb.hide;
 
 #`{{
@@ -295,7 +361,7 @@ method del-row (
 
 #  my Bool $is-last-row =
 #    $!grid-row-data[$row][QAToolButtonAddColumn].get-visible;
-note "delete row, name: $tb.get-name(), $row, $!grid-row-data.elems()";
+#note "delete row, name: $tb.get-name(), $row, $!grid-row-data.elems()";
 
 #  $!grid-row-data[$row][QAToolButtonAddColumn].hide;
 
@@ -309,15 +375,17 @@ note "delete row, name: $tb.get-name(), $row, $!grid-row-data.elems()";
   }
 
   else {
-note 'Clear ', $!grid-row-data[$row][QAInputColumn].^name, ', ', $!widget-object.^name;
+#note 'Clear ', $!grid-row-data[$row][QAInputColumn].^name, ', ', $!widget-object.^name;
     $!widget-object.clear-value($!grid-row-data[$row][QAInputColumn])
-      if $!widget-object.^can('clear-value');
+      if $!widget-object.^can('clear-value') and
+         ? $!grid-row-data[$row][QAInputColumn];
 
     #$!grid-row-data[$row][QAInputColumn].clear-value;
   }
 
   # cut out the data of this row
-  $!user-data-set-part{$!question.name}.splice( $row, 1);
+  my $array := $!user-data-set-part{$!question.name};
+  $array.splice( $row, 1) if ?$array;
 
   self.hide-tb-add;
 
@@ -355,7 +423,7 @@ note 'Clear ', $!grid-row-data[$row][QAInputColumn].^name, ', ', $!widget-object
 }
 
 #-------------------------------------------------------------------------------
-# Called from !append-grid-row() or as a callback from the 'show' event
+# Called from .append-grid-row() or as a callback from the 'show' event
 # when .show-all() is called.
 method hide-tb-add ( ) {
   my Int $nrows = $!grid-row-data.elems;

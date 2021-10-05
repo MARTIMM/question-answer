@@ -22,7 +22,7 @@ submethod BUILD (
 }
 
 #-------------------------------------------------------------------------------
-method create-widget ( Str $widget-name, Int() :$row --> Any ) {
+method create-widget ( Int() :$row --> Any ) {
 
   # create a text input widget
   my Gnome::Gtk3::FileChooserButton $filechooserbutton .= new(

@@ -2,6 +2,10 @@
 
 use v6.d;
 
+use Gnome::N::N-GObject;
+
+use Gnome::Gtk3::Grid;
+use Gnome::Gtk3::ComboBoxText;
 use Gnome::Gtk3::StyleContext;
 use Gnome::Gtk3::Enums;
 
@@ -162,14 +166,17 @@ method !adjust-user-data ( $input ) {
 # Called when an input widget has new data. It must adjust the user data Hash.
 # Optionally checks are performed on the incoming data.
 method process-widget-input (
-  $input-widget, Any:D $input, Int() $row, Bool :$do-check = False
+  $input-widget, Any $input, Int() $row, Bool :$do-check = False
 ) {
 CONTROL { when CX::Warn {  note .gist; .resume; } }
 note "$?LINE, process-widget-signal, {$input//'-'}, $row";
+
+  return unless ?$input;
+  
   self.check-widget-value( $input-widget, $input, :$row) if $do-check;
-  if ! $!faulty-state {
-    self!adjust-user-data( $input, :$row);
-    self.check-users-action( $input, self.question.action) if $!initialized;
+  unless $!faulty-state {
+    self!adjust-user-data( $input-widget, $input, $row);
+    self.check-users-action( $input, self.question.action);
   }
 }
 
@@ -236,42 +243,44 @@ note "$?LINE, check-widget-value, $input, $row";
 #`{{
   elsif ? self.question.required or self.question.callback.defined {
     self.set-status-hint( $input-widget, QAStatusOk);
-#    self!adjust-user-data( $input, :$row);
+#    self!adjust-user-data( $input-widget, $input, $row);
   }
 }}
   else {
     self.set-status-hint( $input-widget, QAStatusNormal);
-    self!adjust-user-data( $input, :$row);
+    self!adjust-user-data( $input-widget, $input, $row);
   }
 }
 
-#-----------------------------------------------------------------------------
-method !adjust-user-data ( Any $input, Int() :$row = -1 ) {
+#-------------------------------------------------------------------------------
+method !adjust-user-data ( $input-widget, Any $input, Int() $row ) {
 
 CONTROL { when CX::Warn {  note .gist; .resume; } }
-note "$?LINE, adjust-user-data, $input, $row";
+note "\n$?LINE, adjust-user-data, $input, $row";
 #note "$?LINE, self.question.repeatable(), {self.question.selectlist.defined()//'-'}";
 
-
+  my Str $name = self.question.name;
   if ? self.question.repeatable {
-    if self.question.selectlist.defined {
-#`{{
-      my Gnome::Gtk3::ComboBoxText $cbt .= new(
-        :native-object($!grid.get-child-at( QACatColumn, $row))
+    if ? self.question.selectlist {
+note "ajd iw: $input-widget.raku()";
+      my Gnome::Gtk3::Grid $grid = $input-widget.get-parent-rk;
+note "ajd grid: $grid.raku()";
+      my Gnome::Gtk3::ComboBoxText $cbt = $grid.get-child-at-rk(
+        QACatColumn, $row, :child-type<Gnome::Gtk3::ComboBoxText>
       );
-
-      my Str $select-item = $cbt.get-active-text // self.question.selectlist[0];
-      $!user-data-set-part{$!widget-name}[$row] = $select-item => $input;
-}}
+note "ajd combobox: $cbt.raku()";
+      my Str $select = self.question.selectlist[$cbt.get-active];
+      self.user-data-set-part{$name}[$row] = $select => $input;
+note "ajd user data: $name, $select => $input";
     }
 
     else {
-      self.user-data-set-part{self.question.name}[$row] = $input;
+      self.user-data-set-part{$name}[$row] = $input;
     }
   }
 
   else {
-    self.user-data-set-part{self.question.name} = $input;
+    self.user-data-set-part{$name} = $input;
   }
 }
 
@@ -998,8 +1007,8 @@ role QA::Gui::Value:auth<github:MARTIMM> {
 
           my Int $value-index =
             $!question.selectlist.first( $select-item, :k) // 0;
-          my Gnome::Gtk3::ComboBoxText $cbt .= new(
-            :native-object($!grid.get-child-at( QACatColumn, $row))
+          my Gnome::Gtk3::ComboBoxText $cbt = $!grid.get-child-at-rk(
+            QACatColumn, $row
           );
           $cbt.set-active($value-index);
         }
