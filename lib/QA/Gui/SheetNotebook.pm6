@@ -1,22 +1,6 @@
 #tl:1:QA::Gui::SheetDialog
 use v6.d;
 
-#use Gnome::N::X;
-use Gnome::N::GlibToRakuTypes;
-
-use Gnome::Gio::Resource;
-
-use Gnome::Gtk3::Widget;
-use Gnome::Gtk3::Enums;
-use Gnome::Gtk3::Dialog;
-use Gnome::Gtk3::Notebook;
-use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::Label;
-use Gnome::Gtk3::Button;
-use Gnome::Gtk3::CssProvider;
-use Gnome::Gtk3::StyleContext;
-use Gnome::Gtk3::StyleProvider;
-
 use QA::Set;
 use QA::Sheet;
 use QA::Types;
@@ -29,6 +13,22 @@ use QA::Gui::Page;
 use QA::Gui::YNMsgDialog;
 use QA::Gui::OkMsgDialog;
 use QA::Gui::Statusbar;
+
+#use Gnome::N::X;
+use Gnome::N::GlibToRakuTypes;
+
+use Gnome::Gio::Resource;
+
+#use Gnome::Gtk3::Widget;
+use Gnome::Gtk3::Enums;
+use Gnome::Gtk3::Dialog;
+use Gnome::Gtk3::Notebook;
+use Gnome::Gtk3::Grid;
+use Gnome::Gtk3::Label;
+use Gnome::Gtk3::Button;
+use Gnome::Gtk3::CssProvider;
+use Gnome::Gtk3::StyleContext;
+use Gnome::Gtk3::StyleProvider;
 
 #-------------------------------------------------------------------------------
 =begin pod
