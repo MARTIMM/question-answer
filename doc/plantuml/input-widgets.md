@@ -14,7 +14,7 @@ class QA::Gui::InputTools <<R,#80ffff>> {
   add-class()
   remove-class()
 
-  process-widget-signal()
+  process-widget-input()
 
   run-users-action()
   set-status-hint()

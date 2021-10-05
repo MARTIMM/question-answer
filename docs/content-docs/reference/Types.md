@@ -314,7 +314,7 @@ An example widget could be something like the one shown below. This widget shows
 
         my ( $n, $row ) = $button.get-name.split(':');
         $row .= Int;
-        self.process-widget-signal( $button, $row, :!do-check);
+        self.process-widget-input( $button, $row, :!do-check);
       }
     }
 
