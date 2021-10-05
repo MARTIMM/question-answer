@@ -1,48 +1,51 @@
 {
-  "page2": {
-    "entry-spec": {
-      "name": "asda",
-      "invisible": true,
-      "mywidget": "3",
-      "tooltip": [
-        {
-          "tt1": "vbn"
-        },
-        {
-          "tt2": "dfgtyu"
-        }
-      ],
-      "callback": ""
-    }
-  },
   "page1": {
     "set-spec": {
-      "filename": [
-      ],
-      "name": "cvb",
-      "title": "qwe asd d",
-      "spinbutton": -0.999e0,
       "more-image": [
         {
-          "Icon": "/home/marcel/Pictures/Puzzles/sci-fi/1224884.jpg"
-        },
-        {
-          "Icon": "/home/marcel/Pictures/Puzzles/old things/9ff462c33b947ab471a4f41760c681fd.jpg"
+          "Etc": "/home/marcel/Pictures/Puzzles/.Old/Beauty/Jolanda/FaceApp/set 21/IMG_11092021_221436_(1080_x_1080_pixel).jpg"
         }
       ],
-      "onefilename": "/home/marcel/Pictures/Puzzles/old things/9ff462c33b947ab471a4f41760c681fd.jpg",
-      "radio": "Classic FM",
-      "description": "vbn vbn bvn\t",
-      "an-image": "/home/marcel/Pictures/Puzzles/sci-fi/1576849.jpg",
+      "name": "cvb",
       "images": [
-        "/home/marcel/Pictures/Puzzles/sci-fi/1224884.jpg",
-        "/home/marcel/Pictures/Puzzles/sci-fi/1224100.jpg",
-        "/home/marcel/Pictures/Puzzles/sci-fi/1224231.jpg"
+        "/home/marcel/Pictures/Puzzles/.Old/Beauty/Jolanda/FaceApp/set 21/FaceApp_1631340140164.jpg"
       ],
+      "description": "vbn vbn bvn\t",
+      "radio": "Classic FM",
       "check": [
         "Red",
         "Orange"
-      ]
+      ],
+      "filename": [
+        {
+          "Output": "/home/marcel/Pictures/Puzzles/.Old/Beauty/Jolanda/FaceApp/set 19/FaceApp_1631086533954.jpg"
+        },
+        {
+          "Config": "/home/marcel/Pictures/Puzzles/.Old/Beauty/Jolanda/FaceApp/set 19/FaceApp_1631085042184.jpg"
+        }
+      ],
+      "an-image": "/home/marcel/Pictures/Puzzles/buildings/4307258.jpg",
+      "onefilename": "/home/marcel/Pictures/Puzzles/old things/9ff462c33b947ab471a4f41760c681fd.jpg",
+      "title": "qwe asd d",
+      "spinbutton": -1e0
+    }
+  },
+  "page2": {
+    "entry-spec": {
+      "callback": "",
+      "name": "asda",
+      "tooltip": [
+        {
+          "tt2": "dfg"
+        },
+        {
+          "tt1": "sdf"
+        }
+      ],
+      "maximum": "23",
+      "mywidget": "3",
+      "invisible": true,
+      "minimum": "11"
     }
   }
 }

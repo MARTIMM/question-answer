@@ -25,6 +25,10 @@ use QA::Types;
 class MyWidget does QA::Gui::Value {
 
   #---------
+  has QA::Question $.question;
+  has Hash $.user-data-set-part;
+
+  #---------
   method init-widget (
     QA::Question:D :$!question, Hash:D :$!user-data-set-part
   ) {
@@ -36,13 +40,13 @@ class MyWidget does QA::Gui::Value {
   }
 
   #---------
-  method create-widget ( Str $widget-name --> Any ) {
+  method create-widget ( Int() :$row --> Any ) {
 
     # create a text input widget
     my Gnome::Gtk3::Button $button .= new;
     $button.set-label('0');
     $button.set-hexpand(False);
-    $button.register-signal( self, 'change-label', 'clicked');
+    $button.register-signal( self, 'input-change-handler', 'clicked', :$row);
 
     $button
   }
@@ -58,12 +62,10 @@ class MyWidget does QA::Gui::Value {
   }
 
   #---------
-  method change-label ( :_widget($button) ) {
-    $button.set-label((($button.get-label // '0').Int + 1).Str);
-
-    my ( $n, $row ) = $button.get-name.split(':');
-    $row .= Int;
-    self.process-widget-signal( $button, $row, :!do-check);
+  method input-change-handler ( :_widget($button), Int() :$row ) {
+    my Str $label = (($button.get-label // '0').Int + 1).Str;
+    $button.set-label($label);
+    self.process-widget-input( $button, $label, $row, :!do-check);
   }
 }
 

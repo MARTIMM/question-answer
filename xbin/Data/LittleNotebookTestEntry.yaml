@@ -9,8 +9,15 @@
     "doorgaan": false
     "fieldtype": "QASwitch"
     "single": "asd"
-    "single-mm": "aaass"
+    "single-mm": "aaassv bvb"
     "spin-it": 97.5
+    "tooltip": 
+      - 
+        "tt2": "sdf"
+      - 
+        "tt3": "zx"
+      - 
+        "tt1": "fgh"
     "words": 
       - "sdfgf"
       - "xcvfd"

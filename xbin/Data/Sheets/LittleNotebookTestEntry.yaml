@@ -28,6 +28,18 @@ pages:
             fieldtype: QAEntry
             title: Enter short words
             repeatable: true
+
+          -
+            fieldtype: QAEntry
+            description: Extra info shown when hoovering above input field
+            title": Tooltip
+            required: false
+            name: tooltip
+            repeatable: true
+            selectlist:
+              - tt1
+              - tt2
+              - tt3
 height: 500
 button-map:
   finish: donnit

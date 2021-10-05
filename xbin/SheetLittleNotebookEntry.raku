@@ -3,14 +3,6 @@
 use v6;
 #use lib '../gnome-gobject/lib';
 
-use Gnome::Gtk3::Dialog;
-use Gnome::Gtk3::Main;
-#use Gnome::Gtk3::Enums;
-use Gnome::Gtk3::Window;
-use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::Button;
-use Gnome::Gtk3::Label;
-
 use QA::Gui::SheetNotebook;
 #use QA::Gui::Frame;
 #use QA::Gui::Value;
@@ -19,6 +11,14 @@ use QA::Types;
 
 #use Gnome::N::X;
 #Gnome::N::debug(:on);
+
+#use Gnome::Gtk3::Enums;
+use Gnome::Gtk3::Window;
+use Gnome::Gtk3::Grid;
+use Gnome::Gtk3::Button;
+use Gnome::Gtk3::Label;
+use Gnome::Gtk3::Dialog;
+use Gnome::Gtk3::Main;
 
 
 #-------------------------------------------------------------------------------
