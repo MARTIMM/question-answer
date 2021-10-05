@@ -1,18 +1,18 @@
 use v6.d;
 
+use Gnome::Gtk3::Grid;
+use Gnome::Gtk3::Button;
+#use Gnome::Gtk3::Widget;
+use Gnome::Gtk3::Window;
+use Gnome::Gtk3::StyleContext;
+use Gnome::Gtk3::Dialog;
+use Gnome::Gtk3::Enums;
+use Gnome::Gtk3::Box;
+
 use Gnome::N::X;
 use Gnome::N::N-GObject;
 
 use Gnome::Glib::Error;
-
-use Gnome::Gtk3::Box;
-use Gnome::Gtk3::Enums;
-use Gnome::Gtk3::Dialog;
-use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::Button;
-use Gnome::Gtk3::Widget;
-use Gnome::Gtk3::Window;
-use Gnome::Gtk3::StyleContext;
 
 #-------------------------------------------------------------------------------
 =begin pod
