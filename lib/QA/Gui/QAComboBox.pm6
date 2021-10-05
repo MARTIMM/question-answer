@@ -47,11 +47,11 @@ method create-widget ( Int() :$row --> Any ) {
 }
 
 #`{{
+}}
 #-------------------------------------------------------------------------------
 method get-value ( $combobox --> Any ) {
   $combobox.get-active-text // $!question.fieldlist[0];
 }
-}}
 
 #-------------------------------------------------------------------------------
 method set-value ( Any:D $combobox, $text ) {

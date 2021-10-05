@@ -51,14 +51,15 @@ method create-widget ( Int() :$row --> Any ) {
 }
 
 #`{{
+}}
 #-------------------------------------------------------------------------------
 method get-value ( $entry --> Any ) {
   $entry.get-text
 }
-}}
 
 #-------------------------------------------------------------------------------
 method set-value ( Any:D $entry, $text ) {
+note 'entry: ', $entry.^name, ', ', $text // '-';
   $entry.set-text($text) if ?$text;
 }
 
@@ -87,10 +88,7 @@ method input-change-handler (
   N-GdkEventFocus $no, :_widget($entry), Int() :$row --> Int
 ) {
 note "\nEntry input: $entry, $row";
-  #self!check-value( $w, $row, :input(self.get-value($w)));
-#  my ( $n, $row ) = $entry.get-name.split(':');
-#  $row .= Int;
-#  self.process-widget-input( $entry, $row, :do-check);
+
   self.process-widget-input( $entry, $entry.get-text, $row, :do-check);
 
   # must propogate further to prevent messages when notebook page is switched
