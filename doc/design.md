@@ -331,7 +331,7 @@ hide empty members
 
 Interface QA::Gui::Value <Interface>
 class QA::Gui::Value <<(R,#80ffff)>> {
-  +process-widget-signal()
+  +process-widget-input()
   +check-widget-value()
   +check-users-action()
   +run-users-action()
@@ -341,8 +341,30 @@ class QA::Gui::Value <<(R,#80ffff)>> {
   -adjust-user-data()
   {abstract} set-value()
   {abstract} create-widget()
-  {abstract} clear-value()
+'  {abstract} clear-value()
   {abstract} input-change-handler()
+}
+
+class QA::Gui::InputWidget {
+  QA::Question $!question
+  Hash $!user-data-set-part
+'  Array $!values
+  Gnome::Gtk3::Widget $!widget-object
+  Array $!grid-row-data
+  Gnome::Gtk3::Grid $!grid
+  Bool $.faulty-state;
+
+'  initialize()
+  !create-widget-object()
+  !create-user-widget-object()
+  !append-grid-row()
+  !create-toolbutton()
+  !create-combobox()
+  !apply-values()
+
+  add-row()
+  delete-row()
+  hide-tb-add()
 }
 
 
