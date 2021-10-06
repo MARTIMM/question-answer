@@ -17,4 +17,7 @@ _site
 .sass-cache
 .jekyll-metadata
 .bundle/
+
 xbin/Data/*
+!xbin/Data/Sets
+!xbin/Data/Sheets
