@@ -256,22 +256,21 @@ note "$?LINE, check-widget-value, $input, $row";
 method !adjust-user-data ( $input-widget, Any $input, Int() $row ) {
 
 CONTROL { when CX::Warn {  note .gist; .resume; } }
-note "\n$?LINE, adjust-user-data, $input, $row";
-#note "$?LINE, self.question.repeatable(), {self.question.selectlist.defined()//'-'}";
+#note "\n$?LINE, adjust-user-data, $input, $row";
 
   my Str $name = self.question.name;
   if ? self.question.repeatable {
     if ? self.question.selectlist {
-note "ajd iw: $input-widget.raku()";
+#note "ajd iw: $input-widget.raku()";
       my Gnome::Gtk3::Grid $grid = $input-widget.get-parent-rk;
-note "ajd grid: $grid.raku()";
+#note "ajd grid: $grid.raku()";
       my Gnome::Gtk3::ComboBoxText $cbt = $grid.get-child-at-rk(
         QACatColumn, $row, :child-type<Gnome::Gtk3::ComboBoxText>
       );
-note "ajd combobox: $cbt.raku()";
+#note "ajd combobox: $cbt.raku()";
       my Str $select = self.question.selectlist[$cbt.get-active];
       self.user-data-set-part{$name}[$row] = $select => $input;
-note "ajd user data: $name, $select => $input";
+#note "ajd user data: $name, $select => $input";
     }
 
     else {

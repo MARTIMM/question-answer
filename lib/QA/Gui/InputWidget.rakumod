@@ -128,7 +128,7 @@ method append-grid-row ( --> List ) {
   my Int $current-grid-index = $!grid-access-index.elems;
   $!grid-access-index[$current-grid-index] = $current-grid-row;
 
-#note "append-grid-row, nrows: $current-grid-row";
+note "append-grid-row, nrows: $current-grid-row, $current-grid-index, $!grid-access-index.raku()";
 
   given my $input-widget = $!widget-object.create-widget(
     :row($current-grid-index)
@@ -142,7 +142,7 @@ method append-grid-row ( --> List ) {
   $!grid-row-data[$current-grid-row] = [];
   $!grid-row-data[$current-grid-row][QAInputColumn] = $input-widget;
 
-  $!grid.attach( $input-widget, QAInputColumn, $current-grid-row, 1, 1);
+  $!grid.attach( $input-widget, QAInputColumn, $current-grid-index, 1, 1);
 
   if $!question.repeatable {
     # create comboboxes on the left when selectlist is a non-empty Array
@@ -151,19 +151,19 @@ method append-grid-row ( --> List ) {
       my Gnome::Gtk3::ComboBoxText $cbt = self!create-combobox(
         $select-list, $input-widget, $current-grid-row, $current-grid-index
       );
-      $!grid.grid-attach( $cbt, QACatColumn, $current-grid-row, 1, 1);
+      $!grid.attach( $cbt, QACatColumn, $current-grid-index, 1, 1);
       $!grid-row-data[$current-grid-row][QACatColumn] = $cbt;
     }
 
     my Gnome::Gtk3::ToolButton $tb;
     $tb = self!create-toolbutton( $current-grid-row, $current-grid-index, :add);
-    $!grid.grid-attach( $tb, QAToolButtonAddColumn, $current-grid-row, 1, 1);
+    $!grid.attach( $tb, QAToolButtonAddColumn, $current-grid-index, 1, 1);
     $!grid-row-data[$current-grid-row][QAToolButtonAddColumn] = $tb;
 
     $tb = self!create-toolbutton(
       $current-grid-row, $current-grid-index, :!add
     );
-    $!grid.grid-attach( $tb, QAToolButtonDelColumn, $current-grid-row, 1, 1);
+    $!grid.attach( $tb, QAToolButtonDelColumn, $current-grid-index, 1, 1);
     $!grid-row-data[$current-grid-row][QAToolButtonDelColumn] = $tb;
   }
 
@@ -263,7 +263,7 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
       my $input-widget = $!grid-row-data[$i][QAInputColumn];
       my $value;
       if ? $!question.selectlist {
-note "apply: $i, $values[$i].raku(), $!question.selectlist.raku()";
+#note "apply: $i, $values[$i].raku(), $!question.selectlist.raku()";
         my ( $select-item, $select-input) = $values[$i].kv;
 
         $value = $select-input;
@@ -277,7 +277,7 @@ note "apply: $i, $values[$i].raku(), $!question.selectlist.raku()";
       }
 
       else {
-note "apply: $i, $values[$i]";
+#note "apply: $i, $values[$i]";
         $value = $values[$i];
       }
 
@@ -291,7 +291,7 @@ note "apply: $i, $values[$i]";
   }
 
   else {
-note "single value: $!question.name(), $!widget-object.^name, $!user-data-set-part{$!question.name}.raku()";
+#note "single value: $!question.name(), $!widget-object.^name, $!user-data-set-part{$!question.name}.raku()";
 
     my $value = $!user-data-set-part{$!question.name};
     if ?$value {
@@ -312,10 +312,10 @@ method combobox-change (
   :_widget($combobox), :$input-widget, Int :$row-grid --> Int
 ) {
   unless $!inhibit-combobox-events {
-note "cbx iw: $row-grid, ", $input-widget.^name;
-note 'cbx 0: ', $combobox.get-active;
-note 'cbx 1: ', $!question.selectlist[$combobox.get-active];
-note 'cbx 2: ', $!widget-object.get-value($input-widget);
+#note "cbx iw: $row-grid, ", $input-widget.^name;
+#note 'cbx 0: ', $combobox.get-active;
+#note 'cbx 1: ', $!question.selectlist[$combobox.get-active];
+#note 'cbx 2: ', $!widget-object.get-value($input-widget);
     $!widget-object.process-widget-input(
       $input-widget, $!widget-object.get-value($input-widget),
       $row-grid, :!do-check
@@ -357,9 +357,9 @@ method add-row (
 
   my Gnome::Gtk3::ToolButton $tb2;
   $tb2 = self!create-toolbutton( $next-row, :add);
-  $!grid.grid-attach( $tb2, QAToolButtonAddColumn, $next-row, 1, 1);
+  $!grid.attach( $tb2, QAToolButtonAddColumn, $next-row, 1, 1);
   $tb2 = self!create-toolbutton($next-row, :!add);
-  $!grid.grid-attach( $tb2, QAToolButtonDelColumn, $next-row, 1, 1);
+  $!grid.attach( $tb2, QAToolButtonDelColumn, $next-row, 1, 1);
 }}
 
 }
@@ -385,9 +385,11 @@ note "delete row: $row-index, $row-grid, $!grid-access-index.elems(), $!grid-row
     $!grid-row-data[$row-grid][QACatColumn].destroy if $!question.selectlist.defined;
     $!grid-row-data.splice( $row-grid, 1);
 
+note "indices 0: $!grid-access-index.raku()";
     for ($row-index..^$!grid-access-index.elems) -> $index {
       $!grid-access-index[$index]--;
     }
+note "indices 1: $!grid-access-index.raku()";
   }
 
   else {
