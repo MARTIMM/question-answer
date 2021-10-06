@@ -172,7 +172,7 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
 note "$?LINE, process-widget-signal, {$input//'-'}, $row";
 
   return unless ?$input;
-  
+
   self.check-widget-value( $input-widget, $input, :$row) if $do-check;
   unless $!faulty-state {
     self!adjust-user-data( $input-widget, $input, $row);

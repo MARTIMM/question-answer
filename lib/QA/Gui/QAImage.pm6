@@ -138,7 +138,7 @@ note "clear value: $grid.raku(), $fcb.raku()";
     0, IMAGE-ROW
   );
 
-note "clear value: image.raku()";
+note "clear value: $image.raku()";
   $image.set-from-icon-name( 'viewimage', GTK_ICON_SIZE_DIALOG);
 }
 
