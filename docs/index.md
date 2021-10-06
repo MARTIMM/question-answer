@@ -14,7 +14,11 @@ nav_menu: default-nav
 
 ## Description
 
-Questionnaires and configurations have all some form of key - value sheets serving all kinds of purposes. This library tries to help setting up a question/answer sheet and store it in the managers environment. Then a user application can retrieve a sheet to display and store the results.
+Questionnaires, assistants and configurations, all types have the same in common. A series of questions which can be answered in the provided space nearby the question. The questions are often grouped into sections and or pages. This package has several ways to display these questionnares and to store the data from the answer areas in a `JSON`, `TOML` or `YAML` format. Also, when opened again, the previous provided values are restored in the display.
+
+There are several types of input possible of which the textual input is the most important (or most used) one. Other examples of input are check and radio buttons, combo boxes and file selections.
+
+Some control of what can be input is available. For instance, the text field might be required to fill in. The user may also provide their own checking routines to see if the answer is right.
 
 
 # Versions of involved software
@@ -26,7 +30,7 @@ Questionnaires and configurations have all some form of key - value sheets servi
 
 # Installation
 
-Simple and strait forward.
+Simple and straight forward.
 
 `zef install QAManager`
 
@@ -34,6 +38,7 @@ Simple and strait forward.
 # Issues
 
 There are always some problems! If you find one, please help by filing an issue at [my github project](https://github.com/MARTIMM/qa-manager/issues).
+
 
 # See also
 The section at [About](content-docs/About/about.html)
