@@ -166,12 +166,12 @@ method !adjust-user-data ( $input ) {
 # Called when an input widget has new data. It must adjust the user data Hash.
 # Optionally checks are performed on the incoming data.
 method process-widget-input (
-  $input-widget, Any $input, Int() $row, Bool :$do-check = False
+  $input-widget, Any $input is copy, Int() $row, Bool :$do-check = False
 ) {
 CONTROL { when CX::Warn {  note .gist; .resume; } }
 note "$?LINE, process-widget-signal, {$input//'-'}, $row";
 
-  return unless ?$input;
+  $input //= '';
 
   self.check-widget-value( $input-widget, $input, :$row) if $do-check;
   unless $!faulty-state {
