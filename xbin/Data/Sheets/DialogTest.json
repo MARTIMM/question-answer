@@ -22,7 +22,8 @@
               "description": "Secret key",
               "required": true,
               "invisible": true,
-              "fieldtype": "QAEntry"
+              "fieldtype": "QAEntry",
+              "minimum": 4
             }
           ],
           "set-name": "login",
