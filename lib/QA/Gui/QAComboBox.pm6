@@ -46,8 +46,6 @@ method create-widget ( Int() :$row --> Any ) {
   $combobox
 }
 
-#`{{
-}}
 #-------------------------------------------------------------------------------
 method get-value ( $combobox --> Any ) {
   $combobox.get-active-text // $!question.fieldlist[0];
