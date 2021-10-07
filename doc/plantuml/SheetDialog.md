@@ -14,8 +14,6 @@ class QA::Gui::StatusBar <Singleton>
 'class Gnome::N::TopLevelClassSupport < Catch all class >
 
 class QA::Gui::Value <<(R,#80ffff)>> {
-  +initialize()
-
   -set-values()
   -create-input-row()
   -set-status-hint()

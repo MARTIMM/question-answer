@@ -36,7 +36,6 @@ class QA::Gui::InputWidget {
   Gnome::Gtk3::Grid $!grid
   Bool $.faulty-state;
 
-'  initialize()
   !create-widget-object()
   !create-user-widget-object()
   !append-grid-row()

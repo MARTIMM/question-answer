@@ -25,7 +25,6 @@ submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part
 ) {
   $!question.repeatable = False;
-#  self.initialize;
 }
 
 #-------------------------------------------------------------------------------

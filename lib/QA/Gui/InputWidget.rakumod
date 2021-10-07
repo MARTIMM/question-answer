@@ -238,7 +238,7 @@ method !apply-values ( ) {
   if $!question.repeatable {
 #note "\nrepeated values: ", ($!widget-object.^name, $!user-data-set-part{$!question.name}).join(', ');
 
-    # Make sure the input values is an Array, if not, initialize and return.
+    # Make sure the input values is an Array, if not, create empty and return.
     my $values = $!user-data-set-part{$!question.name};
     if !$values or $values !~~ Array {
       $!user-data-set-part{$!question.name} = [];

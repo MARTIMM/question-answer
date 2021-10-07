@@ -49,12 +49,6 @@ submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part,
   :$!input-widget where *.^name eq 'QA::Gui::InputWidget'
 ) {
-#  self.initialize;
-
-#  my Gnome::Gtk3::StyleContext $context .= new(
-#    :native-object(self.get-style-context)
-#  );
-#  $context.add-class('QAImage');
 }
 
 #-------------------------------------------------------------------------------

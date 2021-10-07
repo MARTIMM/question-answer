@@ -559,8 +559,6 @@ An example widget could be something like the one shown below. This widget shows
 
       # widget is not repeatable
       $!question.repeatable = False;
-
-      self.initialize;
     }
 
     method create-widget ( Str $widget-name, Int $row --> Any ) {

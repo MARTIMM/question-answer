@@ -286,8 +286,6 @@ An example widget could be something like the one shown below. This widget shows
 
         # widget is not repeatable
         $!question.repeatable = False;
-
-        self.initialize;
       }
 
       method create-widget ( Str $widget-name, Int $row --> Any ) {
@@ -335,4 +333,3 @@ reinit-dirs
 When config or data directories are changed after the initialization of **QA::Types**, this call is needed to prepare the directories.
 
     method reinit-dirs ( )
-
