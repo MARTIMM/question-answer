@@ -102,7 +102,7 @@ method !create-widget-object ( ) {
   else {
     # handle failure
     $m.Bool;
-    note "fail to use  $module-name";
+    die "fail to use  $module-name";
   }
 }
 
@@ -118,7 +118,7 @@ method !create-user-widget-object ( ) {
   }
 
   else {
-    note "failed to use QAUserWidget, $!question.userwidget().init-widget\()";
+    die "failed to use QAUserWidget, $!question.userwidget().init-widget\()";
   }
 }
 
@@ -127,8 +127,6 @@ method append-grid-row ( --> List ) {
   my Int $current-grid-row = $!grid-row-data.elems;
   my Int $current-grid-index = $!grid-access-index.elems;
   $!grid-access-index[$current-grid-index] = $current-grid-row;
-
-note "append-grid-row, nrows: $current-grid-row, $current-grid-index, $!grid-access-index.raku()";
 
   given my $input-widget = $!widget-object.create-widget(
     :row($current-grid-index)
@@ -235,10 +233,10 @@ method !create-combobox (
 #-------------------------------------------------------------------------------
 method !apply-values ( ) {
 
-CONTROL { when CX::Warn {  note .gist; .resume; } }
+#CONTROL { when CX::Warn {  note .gist; .resume; } }
 
   if $!question.repeatable {
-#note 'repeated values: ', ($!widget-object.^name, $!user-data-set-part{$!question.name}).join(', ');
+#note "\nrepeated values: ", ($!widget-object.^name, $!user-data-set-part{$!question.name}).join(', ');
 
     # Make sure the input values is an Array, if not, initialize and return.
     my $values = $!user-data-set-part{$!question.name};
@@ -251,33 +249,41 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
     # Loop through the values to set the input widgets
     my Int $i = 0;
     while $i < $values.elems {
-      # Skip empty/undefined values
-      unless ?$values[$i] {
-        $values.splice( $i, 1);
-        next;
-      }
+#note "\napply: $i, $values[$i].raku(), {($!question.selectlist // []).raku()}";
 
-      # First row is always created. When more than 1 value, create more rows
-      self.append-grid-row if $i > 0;
-
-      my $input-widget = $!grid-row-data[$i][QAInputColumn];
+      my $input-widget;
       my $value;
       if ? $!question.selectlist {
-#note "apply: $i, $values[$i].raku(), $!question.selectlist.raku()";
         my ( $select-item, $select-input) = $values[$i].kv;
 
+        # Skip empty/undefined values
+#note "v: $i, $select-item => ", $select-input ?? $select-input !! '---';
+        unless ?$select-input {
+          $values.splice( $i, 1);
+          next;
+        }
+        # First row is always created. When more than 1 value, create more rows
+        self.append-grid-row if $i > 0;
+        $input-widget = $!grid-row-data[$i][QAInputColumn];
         $value = $select-input;
 
         my Int $value-index =
           $!question.selectlist.first( $select-item, :k) // 0;
 
         my Gnome::Gtk3::ComboBoxText $cbt = $!grid-row-data[$i][QACatColumn];
-#        $cbt = $!grid.get-child-at-rk( QACatColumn, $i);
         $cbt.set-active($value-index);
       }
 
       else {
-#note "apply: $i, $values[$i]";
+        # Skip empty/undefined values
+        unless ?$values[$i] {
+          $values.splice( $i, 1);
+          next;
+        }
+
+        # First row is always created. When more than 1 value, create more rows
+        self.append-grid-row if $i > 0;
+        $input-widget = $!grid-row-data[$i][QAInputColumn];
         $value = $values[$i];
       }
 
@@ -291,7 +297,6 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
   }
 
   else {
-#note "single value: $!question.name(), $!widget-object.^name, $!user-data-set-part{$!question.name}.raku()";
 
     my $value = $!user-data-set-part{$!question.name};
     if ?$value {
@@ -312,10 +317,6 @@ method combobox-change (
   :_widget($combobox), :$input-widget, Int :$row-grid --> Int
 ) {
   unless $!inhibit-combobox-events {
-#note "cbx iw: $row-grid, ", $input-widget.^name;
-#note 'cbx 0: ', $combobox.get-active;
-#note 'cbx 1: ', $!question.selectlist[$combobox.get-active];
-#note 'cbx 2: ', $!widget-object.get-value($input-widget);
     $!widget-object.process-widget-input(
       $input-widget, $!widget-object.get-value($input-widget),
       $row-grid, :!do-check
@@ -331,51 +332,15 @@ method combobox-change (
 method add-row (
 #  Gnome::Gtk3::ToolButton :_widget($tb), Int :$_handler-id, Int :$row-index
 ) {
-#note "add row, name: $tb.get-name()";
-#`{{
-#Gnome::N::debug(:on);
-  # modify this buttons icon
-  my Gnome::Gtk3::Image $image .= new;
-  $image.set-from-icon-name( 'list-remove', GTK_ICON_SIZE_BUTTON);
-  $tb.set-icon-widget($image);
-
-  # and signal handler
-  $tb.handler-disconnect($_handler-id);
-  $tb.register-signal( self, 'delete-row', 'clicked');
-
-  # create a new row
-  self!create-input-row($!input-widgets.elems);
-  $!user-data-set-part{$!widget-name}.push('');
-#  note 'add nrows: ', $!input-widgets.elems;
-}}
-
   self.append-grid-row
-#  $tb.hide;
-
-#`{{
-  my $next-row = $!grid-row-data.elems;
-
-  my Gnome::Gtk3::ToolButton $tb2;
-  $tb2 = self!create-toolbutton( $next-row, :add);
-  $!grid.attach( $tb2, QAToolButtonAddColumn, $next-row, 1, 1);
-  $tb2 = self!create-toolbutton($next-row, :!add);
-  $!grid.attach( $tb2, QAToolButtonDelColumn, $next-row, 1, 1);
-}}
-
 }
 
 #-------------------------------------------------------------------------------
-#TODO deleting a row will not shift the row number given to the event handlers
 method del-row (
   Gnome::Gtk3::ToolButton :_widget($tb), Int :$_handler-id, Int :$row-index
 ) {
-
-#  my Bool $is-last-row =
-#    $!grid-row-data[$row-grid][QAToolButtonAddColumn].get-visible;
   my Int $row-grid = $!grid-access-index[$row-index];
-note "delete row: $row-index, $row-grid, $!grid-access-index.elems(), $!grid-row-data.elems()";
-
-#  $!grid-row-data[$row-grid][QAToolButtonAddColumn].hide;
+#note "delete row: $row-index, $row-grid, $!grid-access-index.elems(), $!grid-row-data.elems()";
 
   # remove all widgets from this row except the last one
   if $!grid-row-data.elems() > 1 {
@@ -385,15 +350,12 @@ note "delete row: $row-index, $row-grid, $!grid-access-index.elems(), $!grid-row
     $!grid-row-data[$row-grid][QACatColumn].destroy if $!question.selectlist.defined;
     $!grid-row-data.splice( $row-grid, 1);
 
-note "indices 0: $!grid-access-index.raku()";
     for ($row-index..^$!grid-access-index.elems) -> $index {
       $!grid-access-index[$index]--;
     }
-note "indices 1: $!grid-access-index.raku()";
   }
 
   else {
-#note 'Clear ', $!grid-row-data[$row-grid][QAInputColumn].^name, ', ', $!widget-object.^name;
     $!widget-object.clear-value($!grid-row-data[$row-grid][QAInputColumn])
       if $!widget-object.^can('clear-value') and
          ? $!grid-row-data[$row-grid][QAInputColumn];
@@ -406,38 +368,6 @@ note "indices 1: $!grid-access-index.raku()";
   $array.splice( $row-grid, 1) if ?$array;
 
   self.hide-tb-add;
-
-
-#`{{
-  my ( $x, $row ) = $tb.get-name.split(':');
-  $row .= Int;
-#note "del nr: $row, $!input-widgets.elems()";
-
-  # all toolbuttons below this one must change its name
-  loop ( my Int $r = $row.Int + 1; $r < $!input-widgets.elems; $r++ ) {
-    my Gnome::Gtk3::ToolButton $tbn .= new(
-      :native-object($!grid.get-child-at( QAButtonColumn, $r))
-    );
-    my ( $x, $row) = $tbn.get-name.split(':');
-#print "rename $row of $tbn.get-name() to ";
-    $tbn.set-name("tb:{$row.Int - 1}");
-#note $tbn.get-name;
-  }
-
-  # delete a row from grid, an item from the widget and user data array
-  $!grid.remove-row($row);
-#note "A: $row, $!input-widgets.elems(), $!input-widgets.gist()";
-  $!input-widgets.splice( $row, 1);
-#note "U: $row, $!user-data-set-part.elems(), $!user-data-set-part.gist()";
-  $!user-data-set-part{$!widget-name}.splice( $row, 1);
-
-  # rename input widgets
-  $row = 0;
-  for @$!input-widgets -> $iw {
-    $iw.set-name("$!widget-name:$row");
-    $row++;
-  }
-}}
 }
 
 #-------------------------------------------------------------------------------
