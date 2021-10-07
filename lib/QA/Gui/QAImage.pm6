@@ -64,11 +64,6 @@ method create-widget ( Int() :$row --> Any ) {
   # and one for the image. If DND, 1st row is made invisible.
   given my Gnome::Gtk3::FileFilter $filter .= new {
     .set-name('images');
-#    .add-mime-type('image/x-icon');
-#    .add-mime-type('image/jpeg');
-#    .add-mime-type('image/png');
-#    .add-mime-type('image/gif');
-#    .add-mime-type('image/svg+xml');
     .add-mime-type('image/*');
     .add-mime-type('text/uri-list');
   }
@@ -102,17 +97,12 @@ method create-widget ( Int() :$row --> Any ) {
 
   $widget-grid.grid-attach( $image, 0, IMAGE-ROW, 1, 1);
 
-#note "DND Target: ", $!question.dnd//'-';
-
   $widget-grid
 }
 
 #-------------------------------------------------------------------------------
 method get-value ( $grid --> Any ) {
   my Gnome::Gtk3::FileChooserButton $fcb = $grid.get-child-at-rk( 0, 0);
-#  my $filename = $fcb.get-filename // '';
-#note "F: $filename";
-#  $filename
   $fcb.get-filename // ''
 }
 
@@ -132,13 +122,11 @@ method clear-value ( Any:D $grid ) {
     0, FCHOOSER-ROW
   );
 
-note "clear value: $grid.raku(), $fcb.raku()";
   $fcb.set-filename('');
   my Gnome::Gtk3::Image $image = $grid.get-child-at-rk(
     0, IMAGE-ROW
   );
 
-note "clear value: $image.raku()";
   $image.set-from-icon-name( 'viewimage', GTK_ICON_SIZE_DIALOG);
 }
 
@@ -149,14 +137,10 @@ method input-change-handler (
 
   # must get the grid because the unit is a grid
   my Gnome::Gtk3::Grid $grid .= new(:native-object($fcb.get-parent));
-note "$fcb.get-name(), $grid.get-name()";
-#  my ( $n, $row ) = $grid.get-name.split(':');
-#  $row .= Int;
 
   # repaint and store image locally
   self!set-image( $grid, $fcb.get-filename);
 
-note "selected; $row, $fcb.get-filename()";
   # store in user data without checks
   self.process-widget-input( $grid, $fcb.get-filename, $row, :!do-check);
 }
@@ -178,20 +162,6 @@ method !set-image ( Gnome::Gtk3::Grid $grid, Str $filename ) {
 
   my Gnome::Gtk3::Image $image = $grid.get-child-at-rk( 0, IMAGE-ROW);
   $image.set-from-pixbuf($pb);
-note "$?LINE, $filename, $width, $height";
-
-#  my Gnome::GObject::Value $gv .= new(:init(G_TYPE_STRING));
-#  $image.get-property( 'file', $gv);
-#  $gv.set-string($filename);
-#note 'image set: ', $gv.get-string;
-
-#  $image.set-name($filename);
-
-#note $?LINE;
-#  $image.set-data(
-#    'image-filename', nativecast( Pointer, CArray[Str].new($filename))
-#  );
-#note $?LINE;
 }
 
 #-------------------------------------------------------------------------------
@@ -234,7 +204,6 @@ method motion (
   :_widget($destination-widget), Gnome::Gtk3::DragDest :$destination
   --> Bool
 ) {
-#note "\ndst motion: $x, $y, $time";
   my Bool $status;
 
   my Gnome::Gdk3::DragContext $context .= new(:native-object($context-no));
@@ -242,8 +211,6 @@ method motion (
     $destination-widget, $context,
     $destination.get-target-list($destination-widget)
   );
-
-#note $?LINE, ', Target match: ', $target-atom.name;
 
   if $target-atom.name ~~ 'NONE' {
     $context.status( GDK_ACTION_NONE, $time);
@@ -264,7 +231,6 @@ method leave (
   N-GObject $context-no, UInt $time,
   :_widget($destination-widget), Gnome::Gtk3::DragDest :$destination
 ) {
-#note "\ndst leave: $time";
   $destination.unhighlight($destination-widget);
 }
 
@@ -274,15 +240,11 @@ method drop (
   :_widget($destination-widget), Gnome::Gtk3::DragDest :$destination
   --> Bool
 ) {
-note "\ndst drop: $x, $y, $time";
-
   my Gnome::Gdk3::DragContext $context .= new(:native-object($context-no));
   my Gnome::Gdk3::Atom $target-atom = $destination.find-target(
     $destination-widget, $context,
     $destination.get-target-list($destination-widget)
   );
-
-#note $?LINE, ', Target match: ', (?$target-atom ?? $target-atom.name !! 'NONE');
 
   # ask for data. triggers drag-data-get on source. when data is received or
   # error, drag-data-received on destination is triggered
@@ -301,7 +263,6 @@ method received (
   Gnome::Gtk3::FileChooserButton :$fcb is copy, Gnome::Gtk3::Grid :$widget-grid,
   Int() :$row
 ) {
-note "\ndst received:, $x, $y, $info, $time";
   my Gnome::Gtk3::SelectionData $selection-data .= new(
     :native-object($selection-data-no)
   );
@@ -313,14 +274,10 @@ note "\ndst received:, $x, $y, $info, $time";
     $destination-widget, $context,
     $destination.get-target-list($destination-widget)
   );
-#note $?LINE, ', Target match: ', (?$target-atom ?? $target-atom.name !! 'NONE');
 
   if $target-atom.name eq 'text/uri-list' {
-CONTROL { when CX::Warn {  note .gist; .resume; } }
+#CONTROL { when CX::Warn {  note .gist; .resume; } }
 #CATCH { default { .message.note; .backtrace.concise.note } }
-    # only first image is replaced, rest is added to the end.
-#    my Bool $append = False;
-#    my ( $n, $row );
 
     my Gnome::Gtk3::Grid $grid .= new(:native-object($fcb.get-parent));
 
@@ -340,7 +297,6 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
 
     else {
       for @$source-data -> $uri is copy {
-note "$?LINE, $uri";
         if $uri.IO.extension ~~ any(<jpg png jpeg svg gif>) {
           $uri ~~ s/^ 'file://' //;
           $uri ~~ s:g/'%20'/ /;
@@ -356,61 +312,5 @@ note "$?LINE, $uri";
         }
       }
     }
-#`{{
-#note $?LINE, ', ', $source-data.elems, ', ', $source-data;
-    for @$source-data -> $uri is copy {
-note "$?LINE, $uri";
-      if $uri.IO.extension ~~ any(<jpg png jpeg svg gif>) {
-        $uri ~~ s/^ 'file://' //;
-        $uri ~~ s:g/'%20'/ /;
-
-        my Gnome::Gtk3::Grid $grid .= new(:native-object($fcb.get-parent));
-note "$?LINE, $fcb.is-valid(), $grid.is-valid()";
-
-#        if $append {
-          # All entries from list are appended
-#          $row = self.add-new-row;
-#note "$?LINE, $grid.get-name()";
-#          my Gnome::Gtk3::Grid $widget-grid = $grid.get-child-at-rk( 0, $row+1);
-#note "$?LINE, $widget-grid.get-name()";
-#          $fcb = $widget-grid.get-child-at-rk( 0, 0);
-#        }
-#`{{
-        else {
-          # first image of list will replace current entry
-          $append = True;
-note "$?LINE, {$row//'-'}, $grid.get-name()";
-
-          # must get the grid because the unit is a grid
-          ( $n, $row ) = $grid.get-name.split(':');
-          $row .= Int;
-#note "$?LINE, {$row//'-'}";
-        }
-#note "$?LINE, $row";
-}}
-
-        # repaint and store image locally
-        #self!set-image( $grid, $fcb.get-filename);
-note "$?LINE set filename $uri";
-        $fcb.set-filename($uri);
-note "$?LINE set done";
-
-        self!set-image( $grid, $uri);
-#        self.set-value( $grid, $uri);
-#note $?LINE, ", selected; $fcb.get-filename()";
-        # store in user data without checks
-note "$?LINE, call widget input";
-        self.process-widget-input( $grid, $uri, $row, :!do-check);
-note "$?LINE, done widget input";
-note "$?LINE, done widget input";
-
-        #my Gnome::Gdk3::Pixbuf $pixbuf .= new(
-        #  :file($uri), :380width, :380height, :preserve_aspect_ration
-        #);
-        #$destination-widget.set-from-pixbuf($pixbuf);
-#        last;
-      }
-    }
-}}
   }
 }
