@@ -21,13 +21,6 @@ There are several types of input possible of which the textual input is the most
 Some control of what can be input is available. For instance, the text field might be required to fill in. The user may also provide their own checking routines to see if the answer is right.
 
 
-# Versions of involved software
-
-* Programs and libraries are tested against the latest version of **Raku** on **Rakudo** en **Moarvm**.
-
-* Gtk library used **Gtk 3.24**. The versioning of GTK+ is a bit different in that there is also a 3.90 and up. This is only meant as a prelude to version 4. So do not use those versions for the Raku packages.
-
-
 # Installation
 
 Simple and straight forward.
