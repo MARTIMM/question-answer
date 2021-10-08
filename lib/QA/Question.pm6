@@ -25,6 +25,7 @@ has Any $.minimum is rw;        # optional range for string or number type
 has Str $.name is required;     # key to values and name in widgets
 has Any $.page-incr is rw;      # optional page increment for adjustable ranges
 has Any $.page-size is rw;      # optional page size for adjustable ranges
+has Int $.page-type is rw;      # optional page type mostly used for Assistant
 has Bool $.repeatable is rw;    # when value is repeatable
 has Bool $.required is rw;      # when value is required
 has Array $.selectlist is rw;   # when a list is displayed in e.g. combobox
@@ -80,6 +81,7 @@ submethod BUILD ( Str:D :$!name, Hash :$qa-data ) {
   $!maximum = $qa-data<maximum> if $qa-data<maximum>.defined;
   $!page-incr = $qa-data<page-incr> if $qa-data<page-incr>.defined;
   $!page-size = $qa-data<page-size> if $qa-data<page-size>.defined;
+  $!page-type = $qa-data<page-type> if $qa-data<page-type>.defined;
   $!repeatable = $qa-data<repeatable> if $qa-data<repeatable>.defined;
   $!required = $qa-data<required> if $qa-data<required>.defined;
   $!selectlist = $qa-data<selectlist> if $qa-data<selectlist>.defined;
@@ -114,6 +116,7 @@ method qa-data ( --> Hash ) {
   $qa-data<maximum> = $!maximum if $!maximum.defined;
   $qa-data<page-incr> = $!page-incr if $!page-incr.defined;
   $qa-data<page-size> = $!page-size if $!page-size.defined;
+  $qa-data<page-type> = $!page-type if $!page-type.defined;
   $qa-data<required> = $!required if $!required.defined;
   $qa-data<repeatable> = $!repeatable if $!repeatable.defined;
   $qa-data<selectlist> = $!selectlist if $!selectlist.defined;
