@@ -8,6 +8,11 @@ layout: sidebar
 
 See [semantic versioning](http://semver.org/). Please note point 4. on that page: **_Major version zero (0.y.z) is for initial development. Anything may change at any time. The public API should not be considered stable._**
 
+#### 2021-10-10 0.14.6
+* Value refactored. New module is InputWidget.
+* Simple, Notebook and Stack sheets are working.
+* Needed a change for the Assistant sheet because the status was handled in the statusbar widget and is not used with Assistant. Therefore needed another mechanism to communicate the status of a page. A new module Status is created as a singleton class and Statusbar is turned into a normal one. The status info is transported using Supplies.
+
 #### 2021-04-24 0.14.5
 * Improved **QA::Gui::Value** and other QA widgets by adding class names. Names are like QAEntry and QAFrame.
 * Bugfixed **QA::Gui::Value**; returned data from repeatable input fields were extended with an empty value each time.

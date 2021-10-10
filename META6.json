@@ -17,6 +17,7 @@
   "provides": {
     "QA::Gui::Dialog": "lib/QA/Gui/Dialog.pm6",
     "QA::Gui::Frame": "lib/QA/Gui/Frame.pm6",
+    "QA::Gui::InputWidget": "lib/QA/Gui/InputWidget.rakumod",
     "QA::Gui::OkMsgDialog": "lib/QA/Gui/OkMsgDialog.pm6",
     "QA::Gui::Page": "lib/QA/Gui/Page.pm6",
     "QA::Gui::QACheckButton": "lib/QA/Gui/QACheckButton.pm6",
@@ -31,6 +32,7 @@
     "QA::Gui::QATextView": "lib/QA/Gui/QATextView.pm6",
     "QA::Gui::Question": "lib/QA/Gui/Question.pm6",
     "QA::Gui::Set": "lib/QA/Gui/Set.pm6",
+    "QA::Gui::SheetAssistant": "lib/QA/Gui/SheetAssistant.rakumod",
     "QA::Gui::SheetNotebook": "lib/QA/Gui/SheetNotebook.pm6",
     "QA::Gui::SheetSimple": "lib/QA/Gui/SheetSimple.pm6",
     "QA::Gui::SheetStack": "lib/QA/Gui/SheetStack.pm6",
@@ -41,6 +43,7 @@
     "QA::Question": "lib/QA/Question.pm6",
     "QA::Set": "lib/QA/Set.pm6",
     "QA::Sheet": "lib/QA/Sheet.pm6",
+    "QA::Status": "lib/QA/Status.rakumod",
     "QA::Types": "lib/QA/Types.pm6"
   },
 
