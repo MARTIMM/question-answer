@@ -10,7 +10,8 @@ use Gnome::Gtk3::StyleContext;
 use Gnome::Gtk3::Enums;
 
 #use QA::Gui::Frame;
-use QA::Gui::Statusbar;
+#use QA::Gui::Statusbar;
+use QA::Status;
 
 use QA::Question;
 use QA::Types;
@@ -36,8 +37,8 @@ unit role QA::Gui::Value:auth<github:MARTIMM>:ver<0.1.0>;
 #also is QA::Gui::Frame;
 
 #-------------------------------------------------------------------------------
-has Int $!msg-id;
-has Bool $.faulty-state = False;
+has Str $!msg-id;
+#has Bool $.faulty-state = False;
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -56,7 +57,8 @@ method process-widget-input (
   $input //= '';
 
   self.check-widget-value( $input-widget, $input, :$row) if $do-check;
-  unless $!faulty-state {
+  my QA::Status $status .= instance;
+  unless $status.get-faulty-state(self.question.name) {
     self!adjust-user-data( $input-widget, $input, $row);
     self.check-users-action( $input, self.question.action);
   }
@@ -66,18 +68,19 @@ method process-widget-input (
 method check-widget-value (
   Any:D $input-widget, Any:D $input, Int() :$row = -1
 ) {
-#CONTROL { when CX::Warn {  note .gist; .resume; } }
+CONTROL { when CX::Warn {  note .gist; .resume; } }
 #note "$?LINE, check-widget-value, $input, $row";
 
-  $!faulty-state = False;
+#  $!faulty-state = False;
 
   # if not delivered, get the value ourselves
   #$input //= self.get-value($input-widget);
   my Str $message;
 
   # get a context id. same string returns same context id.
-  my QA::Gui::Statusbar $statusbar .= instance;
-  my Int $cid = $statusbar.get-context-id('input errors');
+#  my QA::Gui::Statusbar $statusbar .= instance;
+#  my Int $cid = $statusbar.get-context-id('input errors');
+  my QA::Status $status .= instance;
 
   # check if there is a user routine which can check data. requiredness
   # must be checked too by the routine.
@@ -89,38 +92,51 @@ method check-widget-value (
       |$qa-types.get-check-handler(self.question.callback);
     $message = $handler-object."$method-name"( $input, |%$options) // '';
 
-    # if routine founds an error, a message returns.
-    $!faulty-state = True if ?$message;
+    # if routine finds an error, state is faulty and a message returns.
+    $status.set-faulty-state( self.question.name, True) if ?$message;
   }
 
   # if there is no callback, check a widgets check method
   # cannot use .? pseudo op because the FALLBACK routine from the gnome
   # packages will spoil your ideas.
-  if !$!faulty-state and self.^lookup("check-value") {
+  if !$status.get-faulty-state(self.question.name)
+     and self.^lookup("check-value") {
+
     $message = self.check-value($input);
-    $!faulty-state = True if ?$message;
+    $status.set-faulty-state( self.question.name, True) if ?$message;
   }
 
   # if there is no check mehod, check if it is required
-  if !$!faulty-state and ?self.question.required {
-    $!faulty-state = ($!faulty-state or (?self.question.required and !$input));
-    $message = "is required" if $!faulty-state;
+  if !$status.get-faulty-state(self.question.name) and ?self.question.required {
+    $status.set-faulty-state(
+      self.question.name, ( ?self.question.required and !$input )
+    );
+    $message = "is required" if $status.get-faulty-state(self.question.name);
   }
 
   # no errors, check if there is a message id from previous mesage, remove it.
-  if !$!faulty-state and ?$!msg-id {
-    $statusbar.remove( $cid, $!msg-id);
-    $!msg-id = 0;
+  if !$status.get-faulty-state(self.question.name) and ?$!msg-id {
+#    $statusbar.remove( $cid, $!msg-id);
+    $status.send( %(
+        :statusbar, :id<input-errors>, :message($!msg-id => '')
+      )
+    );
+    $!msg-id = '';
   }
 
 #note "F: $!faulty-state, ", self.question.name;
-  if $!faulty-state {
+  if $status.get-faulty-state(self.question.name) {
     self.set-status-hint( $input-widget, QAStatusFail);
     # don't add a new message if there is already a message placed
     # on the statusbar
 #    $message = self.question.description ~ ": $message";
     $message = self.question.name ~ ": $message";
-    $!msg-id = $statusbar.statusbar-push( $cid, $message) unless $!msg-id;
+    #$!msg-id = $statusbar.statusbar-push( $cid, $message) unless $!msg-id;
+    $!msg-id = $message;
+    $status.send( %(
+        :statusbar, :id<input-errors>, :message($!msg-id => $message)
+      )
+    );
   }
 #`{{
   elsif ? self.question.required or self.question.callback.defined {
@@ -131,6 +147,7 @@ method check-widget-value (
   else {
     self.set-status-hint( $input-widget, QAStatusNormal);
     self!adjust-user-data( $input-widget, $input, $row);
+    $status.set-faulty-state( self.question.name, False);
   }
 }
 

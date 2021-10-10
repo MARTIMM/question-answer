@@ -5,6 +5,8 @@ use Gnome::N::GlibToRakuTypes;
 use Gnome::Gtk3::Statusbar;
 use Gnome::Gtk3::StyleContext;
 
+use QA::Status;
+
 #use QA::Types;
 #use QA::Gui::Frame;
 #use QA::Question;
@@ -12,14 +14,17 @@ use Gnome::Gtk3::StyleContext;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::Statusbar;
-also is Gnome::Gtk3::Statusbar;
+also is Gnome::Gtk3::Statusbar:auth<github:MARTIMM>:ver<0.1.0>;
 
 #-------------------------------------------------------------------------------
-my QA::Gui::Statusbar $instance;
-has %cids = %();
+#my QA::Gui::Statusbar $instance;
+has %!cids = %();
+has %!mids = %();
 
 #-------------------------------------------------------------------------------
-method new ( ) { !!! }
+method new ( |c ) {
+  self.bless( :GtkStatusbar, |c)
+}
 
 #-------------------------------------------------------------------------------
 submethod BUILD ( ) {
@@ -33,16 +38,52 @@ submethod BUILD ( ) {
   # failed
   #
   # so next call must recreate the statusbar
-  self.register-signal( self, 'invalidate', 'destroy');
+#  self.register-signal( self, 'invalidate', 'destroy');
 
-  %cids = %();
+  %!cids = %();
+  %!mids = %();
 
   my Gnome::Gtk3::StyleContext $context .= new(
     :native-object(self.get-style-context)
   );
   $context.add-class('QAStatusbar');
+
+  self!listen-status;
 }
 
+#-------------------------------------------------------------------------------
+method !listen-status ( ) {
+  my QA::Status $status .= instance;
+  $status.tap( -> Hash $status-info {
+note "Status info: $status-info.raku()";
+
+CONTROL { when CX::Warn {  note .gist; .resume; } }
+
+      # Test for statusbar messages
+      if $status-info<statusbar>:exists {
+        %!cids{$status-info<id>} //= self.get-context-id($status-info<id>);
+
+        my $cid = %!cids{$status-info<id>};
+        my Str ( $kmsg, $vmsg ) = $status-info<message>.kv;
+note "kv $cid: $kmsg, $vmsg";
+        if %!mids{$kmsg} and !$vmsg {
+          self.remove( $cid, %!mids{$kmsg});
+          %!mids{$kmsg}:delete;
+        }
+
+        elsif $vmsg {
+          %!mids{$kmsg} = self.statusbar-push( $cid, $vmsg);
+        }
+
+        else {
+          note 'sts: ', $status-info;
+        }
+      }
+    }
+  );
+}
+
+#`{{
 #-------------------------------------------------------------------------------
 method instance ( |c --> QA::Gui::Statusbar ) {
   $instance //= self.bless( :GtkStatusbar, |c);
@@ -54,6 +95,7 @@ method instance ( |c --> QA::Gui::Statusbar ) {
 method invalidate ( ) {
   $instance = Nil;
 }
+}}
 
 #-------------------------------------------------------------------------------
 #`{{

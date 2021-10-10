@@ -158,7 +158,7 @@
           "questions": [
             {
               "required": true,
-              "name": "name",
+              "name": "othername",
               "fieldtype": "QAEntry",
               "title": "Name",
               "description": "Key of this input fieldtype"

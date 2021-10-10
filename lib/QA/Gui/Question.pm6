@@ -81,14 +81,20 @@ method !display-question ( ) {
 #-------------------------------------------------------------------------------
 method query-state ( --> Bool ) {
 
+
+  my Bool $state;
+
   # not all widgets are implemented
   if $!widget-object.defined {
-    $!widget-object.faulty-state
+    $state = $!widget-object.faulty-state;
   }
 
   else {
-    False
+    $state = False;
   }
+
+note "FS: $!widget-object.defined(), $state";
+  $state
 }
 
 

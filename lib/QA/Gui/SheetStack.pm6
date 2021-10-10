@@ -29,6 +29,7 @@ use QA::Gui::Frame;
 use QA::Gui::Page;
 use QA::Gui::YNMsgDialog;
 use QA::Gui::OkMsgDialog;
+use QA::Gui::Statusbar;
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -104,6 +105,7 @@ submethod BUILD (
 
   # catch button presses
   self.register-signal( self, 'dialog-response', 'response');
+
   my QA::Gui::Statusbar $statusbar .= new;
   $!grid.attach( $statusbar, 0, 2, 1, 1);
 
