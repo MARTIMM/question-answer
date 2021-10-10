@@ -302,7 +302,7 @@ method !apply-values ( ) {
     if ?$value {
       my $input-widget = $!grid-row-data[0][QAInputColumn];
       $!widget-object.set-value( $input-widget, $value);
-      $!widget-object.check-widget-value( $input-widget, $value);
+      $!widget-object.check-widget-value( $input-widget, $value, :row(0));
     }
   }
 }
