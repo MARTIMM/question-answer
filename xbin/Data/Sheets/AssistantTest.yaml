@@ -1,0 +1,31 @@
+---
+pages:
+- page-name: p1
+  sets:
+  - set-name: s1
+    questions:
+    - name: q1-1-1
+      description: d1 1 1
+
+
+- page-name: p2
+  sets:
+  - set-name: s1
+    questions:
+    - name: q2-1-1
+      description: d2 1 1
+    - name: q2-1-2
+      description: d2 1 2
+
+  - set-name: s2
+    questions:
+    - name: q2-2-1
+      description: d2 2 1
+
+
+- page-name: p3
+  sets:
+  - set-name: s1
+    questions:
+    - name: q3-1-1
+      description: d3 1 1
