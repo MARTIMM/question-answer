@@ -104,7 +104,7 @@ submethod BUILD (
 
   # catch button presses
   self.register-signal( self, 'dialog-response', 'response');
-  my QA::Gui::Statusbar $statusbar .= instance;
+  my QA::Gui::Statusbar $statusbar .= new;
   $!grid.attach( $statusbar, 0, 2, 1, 1);
 
   # select content pages only

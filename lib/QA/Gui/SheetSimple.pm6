@@ -91,7 +91,7 @@ submethod BUILD (
 
   # catch button presses
   self.register-signal( self, 'dialog-response', 'response');
-  my QA::Gui::Statusbar $statusbar .= instance;
+  my QA::Gui::Statusbar $statusbar .= new;
   $!grid.grid-attach( $statusbar, 0, 1, 1, 1);
 
   # find first content page. This simple sheet display takes the first page

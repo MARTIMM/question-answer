@@ -6,9 +6,6 @@ use QA::Sheet;
 use QA::Types;
 
 use QA::Gui::Dialog;
-#use QA::Gui::Set;
-#use QA::Gui::Question;
-#use QA::Gui::Frame;
 use QA::Gui::Page;
 use QA::Gui::YNMsgDialog;
 use QA::Gui::OkMsgDialog;
@@ -19,7 +16,6 @@ use Gnome::N::GlibToRakuTypes;
 
 use Gnome::Gio::Resource;
 
-#use Gnome::Gtk3::Widget;
 use Gnome::Gtk3::Enums;
 use Gnome::Gtk3::Dialog;
 use Gnome::Gtk3::Notebook;
@@ -36,7 +32,7 @@ use Gnome::Gtk3::StyleProvider;
 
 =end pod
 
-unit class QA::Gui::SheetNotebook:auth<github:MARTIMM>;
+unit class QA::Gui::SheetNotebook:auth<github:MARTIMM>:ver<0.2.0>;
 also is QA::Gui::Dialog;
 
 #-------------------------------------------------------------------------------
@@ -95,7 +91,7 @@ submethod BUILD (
 
   # catch button presses
   self.register-signal( self, 'dialog-response', 'response');
-  my QA::Gui::Statusbar $statusbar .= instance;
+  my QA::Gui::Statusbar $statusbar .= new;
   $!grid.attach( $statusbar, 0, 1, 1, 1);
 
   # create the notebook and add pages to it
