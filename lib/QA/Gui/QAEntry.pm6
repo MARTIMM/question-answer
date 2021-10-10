@@ -46,8 +46,6 @@ method create-widget ( Int() :$row --> Any ) {
   $entry
 }
 
-#`{{
-}}
 #-------------------------------------------------------------------------------
 method get-value ( $entry --> Any ) {
   $entry.get-text
