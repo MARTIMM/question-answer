@@ -19,6 +19,7 @@ use Gnome::Gtk3::StyleProvider;
 use QA::Set;
 use QA::Sheet;
 use QA::Types;
+use QA::Status;
 
 use QA::Gui::Dialog;
 use QA::Gui::Set;
@@ -27,6 +28,7 @@ use QA::Gui::Frame;
 use QA::Gui::Page;
 use QA::Gui::YNMsgDialog;
 use QA::Gui::OkMsgDialog;
+use QA::Gui::Statusbar;
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -44,7 +46,7 @@ has Hash $!user-data;
 has Hash $.result-user-data;
 has Array $!sets = [];
 has Array $!pages = [];
-has Bool $.faulty-state;
+#has Bool $.faulty-state;
 has Bool $!show-cancel-warning;
 has Bool $!save-data;
 has Int $!response;
@@ -87,10 +89,10 @@ submethod BUILD (
 
   # when buttons are pressed, this will prevent return to the caller until
   # the state of the sheet is ok. assume a faulty sheet for now.
-  $!faulty-state = True;
+#  $!faulty-state = True;
 
   # catch button presses
-  self.register-signal( self, 'dialog-response', 'response');
+#  self.register-signal( self, 'dialog-response', 'response');
   my QA::Gui::Statusbar $statusbar .= new;
   $!grid.grid-attach( $statusbar, 0, 1, 1, 1);
 
@@ -163,6 +165,7 @@ method !create-page( Hash $page, Bool :$description = True --> QA::Gui::Page ) {
   $gui-page
 }
 
+#`{{
 #-------------------------------------------------------------------------------
 method query-state ( ) {
 
@@ -178,12 +181,59 @@ method query-state ( ) {
 
   $!faulty-state = $faulty-state;
 }
+}}
 
 #-------------------------------------------------------------------------------
 method show-sheet ( --> Int ) {
 
-  while $!faulty-state {
-    $!response = self.show-dialog;
+  my QA::Status $status .= instance;
+
+  loop {
+    given GtkResponseType($!response = self.show-dialog) {
+note "response: ", GtkResponseType($!response);
+      when GTK_RESPONSE_DELETE_EVENT {
+        self.hide;
+        sleep(0.3);
+        self.destroy;
+        last;
+      }
+
+      when GTK_RESPONSE_OK {
+        if $status.faulty-state {
+          my QA::Gui::OkMsgDialog $ok .= new(
+            :message(
+              "There are still missing or wrong answers, cannot save data"
+            )
+          );
+
+          $ok.dialog-run;
+          $ok.destroy;
+        }
+
+        else {
+          self.save-data;
+
+          # must hide instead of destroy, otherwise the return status
+          # is set to GTK_RESPONSE_NONE
+          self.hide;
+          last;
+        }
+      }
+
+      when GTK_RESPONSE_CANCEL {
+        if self.show-cancel {
+          self.hide;
+          last;
+        }
+      }
+    }
+
+#`{{
+    my QA::Status $status .= instance;
+    while $status.faulty-state {
+      $!response = self.show-dialog;
+note "response: ", GtkResponseType($!response);
+}}
   }
 
   $!response
@@ -195,7 +245,7 @@ method show-sheet ( --> Int ) {
 method dialog-response ( gint $response, QA::Gui::Dialog :_widget($dialog) ) {
 
   if GtkResponseType($response) ~~ GTK_RESPONSE_DELETE_EVENT {
-    $!faulty-state = False;
+#    $!faulty-state = False;
     $!response = $response;
 
     $dialog.hide;
@@ -205,8 +255,9 @@ method dialog-response ( gint $response, QA::Gui::Dialog :_widget($dialog) ) {
 
   elsif GtkResponseType($response) ~~ GTK_RESPONSE_OK {
 
-    self.query-state;
-    if $!faulty-state {
+#    self.query-state;
+    my QA::Status $status .= instance;
+    if $status.faulty-state {
       my QA::Gui::OkMsgDialog $ok .= new(
         :message("There are still missing or wrong answers, cannot save data")
       );
@@ -228,7 +279,7 @@ method dialog-response ( gint $response, QA::Gui::Dialog :_widget($dialog) ) {
   elsif GtkResponseType($response) ~~ GTK_RESPONSE_CANCEL {
     if self.show-cancel {
       $!response = $response;
-      $!faulty-state = False;
+#      $!faulty-state = False;
       self.hide;
     }
   }
@@ -236,6 +287,8 @@ method dialog-response ( gint $response, QA::Gui::Dialog :_widget($dialog) ) {
 
 #-------------------------------------------------------------------------------
 method show-cancel ( --> Bool ) {
+
+note 'show-cancel';
 
   my Bool $done = True;
   if $!show-cancel-warning {

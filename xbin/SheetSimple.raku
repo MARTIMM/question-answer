@@ -20,6 +20,7 @@ class EH {
       :sheet-name<DialogTest>,
       :!show-cancel-warning, :!save-data
     );
+#CONTROL { when CX::Warn {  note .gist; .resume; } }
 
     my Int $response = $sheet-dialog.show-sheet;
     self.display-result( $response, $sheet-dialog);
@@ -28,7 +29,7 @@ class EH {
   #---------
   method display-result ( Int $response, QA::Gui::Dialog $dialog ) {
 
-    note "Dialog return status: ", GtkResponseType($response);
+    note "Dialog return status: ", GtkResponseType($response) // 'no response';
     self.show-hash($dialog.result-user-data) if $response ~~ GTK_RESPONSE_OK;
     $dialog.widget-destroy unless $response ~~ GTK_RESPONSE_NONE;
   }
