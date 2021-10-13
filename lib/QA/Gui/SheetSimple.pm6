@@ -189,12 +189,14 @@ method show-sheet ( --> Int ) {
   my QA::Status $status .= instance;
 
   loop {
+    $status.clear-status;
+
     given GtkResponseType($!response = self.show-dialog) {
-note "response: ", GtkResponseType($!response);
+#note "response: ", GtkResponseType($!response);
       when GTK_RESPONSE_DELETE_EVENT {
+#        sleep(0.3);
+#        self.destroy;
         self.hide;
-        sleep(0.3);
-        self.destroy;
         last;
       }
 

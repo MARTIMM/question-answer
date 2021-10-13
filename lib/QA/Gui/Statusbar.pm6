@@ -57,7 +57,7 @@ method !listen-status ( ) {
   $status.tap( -> Hash $status-info {
 note "Status info: $status-info.raku()";
 
-CONTROL { when CX::Warn {  note .gist; .resume; } }
+#CONTROL { when CX::Warn {  note .gist; .resume; } }
 
       # Test for statusbar messages
       if $status-info<statusbar>:exists {
@@ -65,19 +65,22 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
 
         my $cid = %!cids{$status-info<id>};
         my Str ( $kmsg, $vmsg ) = $status-info<message>.kv;
-note "kv $cid: $kmsg, $vmsg";
-        if %!mids{$kmsg} and !$vmsg {
-          self.remove( $cid, %!mids{$kmsg});
-          %!mids{$kmsg}:delete;
-        }
+note "kv $cid: {$kmsg//'-'}, {$vmsg//'-'}";
+#        if ?$kmsg {
 
-        elsif $vmsg {
-          %!mids{$kmsg} = self.statusbar-push( $cid, $vmsg);
-        }
+          if %!mids{$kmsg} and ?$status-info<drop-msg> {
+            self.remove( $cid, %!mids{$kmsg});
+            %!mids{$kmsg}:delete;
+          }
 
-        else {
-          note 'sts: ', $status-info;
-        }
+          elsif $vmsg and ?$status-info<set-msg> {
+            %!mids{$kmsg} = self.statusbar-push( $cid, $vmsg);
+          }
+
+          else {
+            note 'sts: ', $status-info;
+          }
+#        }
       }
     }
   );

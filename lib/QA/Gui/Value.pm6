@@ -68,19 +68,109 @@ method process-widget-input (
 method check-widget-value (
   Any:D $input-widget, Any:D $input, Int() :$row = -1
 ) {
-CONTROL { when CX::Warn {  note .gist; .resume; } }
+#CONTROL { when CX::Warn {  note .gist; .resume; } }
 #note "$?LINE, check-widget-value, $input, $row";
 
 #  $!faulty-state = False;
 
   # if not delivered, get the value ourselves
   #$input //= self.get-value($input-widget);
-  my Str $message;
+  my Str $message = '';
 
   # get a context id. same string returns same context id.
 #  my QA::Gui::Statusbar $statusbar .= instance;
 #  my Int $cid = $statusbar.get-context-id('input errors');
   my QA::Status $status .= instance;
+
+note "\n", 'status: ', (self.question.name, $status.get-faulty-state(self.question.name), (self.question.callback)//'-', (self.^lookup("check-value").gist())//'-', (?(self.question.required) and ($input ~~ m/^ \s* $/))).join(', ');
+
+  if ! $status.get-faulty-state(self.question.name) {
+    # check if there is a user routine which can check data. requiredness
+    # must be checked too by the routine.
+
+    if ?self.question.callback {
+      my QA::Types $qa-types .= instance;
+      #my Array $cb-spec = $qa-types.get-check-handler(self.question.callback);
+      #my ( $handler-object, $method-name, $options) = @$cb-spec;
+      my ( $handler-object, $method-name, $options) =
+        |$qa-types.get-check-handler(self.question.callback);
+      $message = $handler-object."$method-name"( $input, |%$options) // '';
+
+      # if routine finds an error, state is faulty and a message returns.
+      if ?$message {
+        $status.set-faulty-state( self.question.name, True);
+        $status.send( %(
+            :statusbar, :set-msg, :id<input-errors>,
+            :message($!msg-id => "$!msg-id: $message")
+          )
+        );
+      }
+    }
+
+    # if there is no callback, check a widgets check method
+    # cannot use .? pseudo op because the FALLBACK routine from the gnome
+    # packages will spoil your ideas.
+    if !$message and self.^lookup("check-value") {
+      if ?($message = self.check-value($input) // '') {
+        $status.set-faulty-state( self.question.name, True);
+      }
+#note "check-value(): ", self.question.name, ', ', $message;
+    }
+
+    # if there is no check mehod, check if it is required
+    if !$message and ?self.question.required and $input ~~ m/^ \s* $/ {
+      $status.set-faulty-state( self.question.name, True);
+      $message = "is required";
+    }
+
+#`{{
+    # no errors, check if there is a message id from previous mesage, remove it.
+    if ?$!msg-id {
+  #    $statusbar.remove( $cid, $!msg-id);
+      $!msg-id = '';
+      $status.send( %( :statusbar, :id<input-errors>, :message(:$!msg-id)));
+    }
+}}
+  }
+
+  if $message {
+note "check message: ", self.question.name, ', ', $message;
+    self.set-status-hint( $input-widget, QAStatusFail);
+    # don't add a new message if there is already a message placed
+    # on the statusbar
+#    $message = self.question.description ~ ": $message";
+    $!msg-id = self.question.name;
+    #$!msg-id = $statusbar.statusbar-push( $cid, $message) unless $!msg-id;
+    $status.send( %(
+        :statusbar, :set-msg, :id<input-errors>,
+        :message($!msg-id => "$!msg-id: $message")
+      )
+    );
+  }
+
+  else {
+note "no message: ", self.question.name, ', ', $!msg-id//'-';
+    if ?$!msg-id {
+  #    $statusbar.remove( $cid, $!msg-id);
+      $status.send( %(
+          :statusbar, :drop-msg, :id<input-errors>, :message(:$!msg-id)
+        )
+      );
+      $!msg-id = '';
+    }
+
+    self.set-status-hint( $input-widget, QAStatusNormal);
+    self!adjust-user-data( $input-widget, $input, $row);
+    $status.set-faulty-state( self.question.name, False);
+  }
+
+
+
+
+
+
+
+#`{{
 
   # check if there is a user routine which can check data. requiredness
   # must be checked too by the routine.
@@ -107,21 +197,18 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
   }
 
   # if there is no check mehod, check if it is required
-  if !$status.get-faulty-state(self.question.name) and ?self.question.required {
-    $status.set-faulty-state(
-      self.question.name, ( ?self.question.required and !$input )
-    );
-    $message = "is required" if $status.get-faulty-state(self.question.name);
+  if !$status.get-faulty-state(self.question.name)
+      and ?self.question.required and !$input {
+
+    $status.set-faulty-state( self.question.name, True);
+    $message = "is required";
   }
 
   # no errors, check if there is a message id from previous mesage, remove it.
   if !$status.get-faulty-state(self.question.name) and ?$!msg-id {
 #    $statusbar.remove( $cid, $!msg-id);
-    $status.send( %(
-        :statusbar, :id<input-errors>, :message($!msg-id => '')
-      )
-    );
     $!msg-id = '';
+    $status.send( %( :statusbar, :id<input-errors>, :message(:$!msg-id)));
   }
 
 #note "F: $!faulty-state, ", self.question.name;
@@ -130,11 +217,11 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
     # don't add a new message if there is already a message placed
     # on the statusbar
 #    $message = self.question.description ~ ": $message";
-    $message = self.question.name ~ ": $message";
+    $!msg-id = self.question.name;
     #$!msg-id = $statusbar.statusbar-push( $cid, $message) unless $!msg-id;
-    $!msg-id = $message;
     $status.send( %(
-        :statusbar, :id<input-errors>, :message($!msg-id => $message)
+        :statusbar, :id<input-errors>,
+        :message($!msg-id => "$!msg-id: $message")
       )
     );
   }
@@ -149,12 +236,13 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
     self!adjust-user-data( $input-widget, $input, $row);
     $status.set-faulty-state( self.question.name, False);
   }
+}}
 }
 
 #-------------------------------------------------------------------------------
 method !adjust-user-data ( $input-widget, Any $input, Int() $row ) {
 
-CONTROL { when CX::Warn {  note .gist; .resume; } }
+#CONTROL { when CX::Warn {  note .gist; .resume; } }
 #note "\n$?LINE, adjust-user-data, $input, $row";
 
   my Str $name = self.question.name;

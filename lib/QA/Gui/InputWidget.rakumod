@@ -233,7 +233,7 @@ method !create-combobox (
 #-------------------------------------------------------------------------------
 method !apply-values ( ) {
 
-#CONTROL { when CX::Warn {  note .gist; .resume; } }
+CONTROL { when CX::Warn {  note .gist; .resume; } }
 
   if $!question.repeatable {
 #note "\nrepeated values: ", ($!widget-object.^name, $!user-data-set-part{$!question.name}).join(', ');
@@ -297,13 +297,12 @@ method !apply-values ( ) {
   }
 
   else {
+    my $value = $!user-data-set-part{$!question.name} // '';
+#note "\nsingle values: ", ($!widget-object.^name, '$value').join(', ');
 
-    my $value = $!user-data-set-part{$!question.name};
-    if ?$value {
-      my $input-widget = $!grid-row-data[0][QAInputColumn];
-      $!widget-object.set-value( $input-widget, $value);
-      $!widget-object.check-widget-value( $input-widget, $value, :row(0));
-    }
+    my $input-widget = $!grid-row-data[0][QAInputColumn];
+    $!widget-object.set-value( $input-widget, $value);
+    $!widget-object.check-widget-value( $input-widget, $value, :row(0));
   }
 }
 

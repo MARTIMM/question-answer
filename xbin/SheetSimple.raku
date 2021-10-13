@@ -17,7 +17,7 @@ class EH {
 
   method show-dialog ( ) {
     my QA::Gui::SheetSimple $sheet-dialog .= new(
-      :sheet-name<DialogTest>,
+      :sheet-name<SimpleTest>,
       :!show-cancel-warning, :!save-data
     );
 #CONTROL { when CX::Warn {  note .gist; .resume; } }
