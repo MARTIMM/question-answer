@@ -44,6 +44,7 @@ method set-faulty-state ( Str $name, Bool:D $faulty-state ) {
 
 #-------------------------------------------------------------------------------
 method get-faulty-state ( Str $name --> Bool ) {
+note "get-faulty-state: $name, ", $!faulty-states.raku;
   $!faulty-states{$name} // False;
 }
 
@@ -62,5 +63,6 @@ Return overall faulty state. It is the or-ed value of all states noted in this o
 =end pod
 #TS:2:faulty-state
 method faulty-state ( --> Bool ) {
+note 'faulty-state: ', $!faulty-states.raku;
   [or] $!faulty-states.values;
 }
