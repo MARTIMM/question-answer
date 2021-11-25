@@ -8,6 +8,10 @@ layout: sidebar
 
 See [semantic versioning](http://semver.org/). Please note point 4. on that page: **_Major version zero (0.y.z) is for initial development. Anything may change at any time. The public API should not be considered stable._**
 
+#### 2021-10-10 0.15.0
+* Sheet modules are refactored and a module **QA::Gui::SheetTools** is created.
+* New set of modules to be able to show sheets in a widget instead of a dialog window to be free in choice of container. Necessary for the assistant type.
+
 #### 2021-10-10 0.14.6
 * Value refactored. New module is InputWidget.
 * Simple, Notebook and Stack sheets are working.

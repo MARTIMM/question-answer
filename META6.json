@@ -1,7 +1,7 @@
 {
   "description": "Question Answer",
   "name": "QA",
-  "version": "0.14.5",
+  "version": "0.15.0",
   "authors": [ "Marcel Timmerman"],
   "tags": [
     "questionnaire", "configuration", "gtk", "question", "answer", "Raku"
@@ -34,7 +34,8 @@
     "QA::Gui::Set": "lib/QA/Gui/Set.pm6",
     "QA::Gui::SheetAssistant": "lib/QA/Gui/SheetAssistant.rakumod",
     "QA::Gui::SheetNotebook": "lib/QA/Gui/SheetNotebook.rakumod",
-    "QA::Gui::SheetSimple": "lib/QA/Gui/SheetSimple.rakumod",
+    "QA::Gui::SheetSimpleDialog": "lib/QA/Gui/SheetSimpleDialog.rakumod",
+    "QA::Gui::SheetSimpleWindow": "lib/QA/Gui/SheetSimpleWindow.rakumod",
     "QA::Gui::SheetStack": "lib/QA/Gui/SheetStack.rakumod",
     "QA::Gui::SheetTools": "lib/QA/Gui/SheetTools.rakumod",
     "QA::Gui::Statusbar": "lib/QA/Gui/Statusbar.pm6",
