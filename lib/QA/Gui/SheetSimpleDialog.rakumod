@@ -1,4 +1,4 @@
-#tl:1:QA::Gui::SheetDialog
+#tl:1:QA::Gui::SheetSimpleDialog
 use v6.d;
 
 #use Gnome::N::X;
@@ -20,11 +20,11 @@ use QA::Gui::SheetTools;
 
 #-------------------------------------------------------------------------------
 =begin pod
-=head1 QA::Gui::SheetSimple
+=head1 QA::Gui::SheetSimpleDialog
 
 =end pod
 
-unit class QA::Gui::SheetSimple:auth<github:MARTIMM>;
+unit class QA::Gui::SheetSimpleDialog:auth<github:MARTIMM>;
 also is QA::Gui::Dialog;
 also does QA::Gui::SheetTools;
 
@@ -57,42 +57,23 @@ submethod BUILD (
   self.set-grid-content( self, $!sheet);
 
   # add some buttons specific for this notebook
-  self.add-button(
-    'cancel', 'cancel-dialog', GTK_RESPONSE_CANCEL, :default, :dialog(self)
-  );
-
-  self.add-button(
-    'finish', 'finish-dialog', GTK_RESPONSE_OK, :dialog(self)
-  );
+  self.add-button( 'cancel', GTK_RESPONSE_CANCEL, :default);
+  self.add-button( 'finish', GTK_RESPONSE_OK);
 }
 
 #-------------------------------------------------------------------------------
 method add-button (
-  Str $widget-name, Str $method-name, GtkResponseType $response-type,
-  Bool :$default = False, QA::Gui::Dialog :$dialog
+  Str $widget-name, GtkResponseType $response-type, Bool :$default = False
 ) {
 
-#`{{
-  # change text of label on button when defined in the button map structure
-  my Hash $button-map = $!sheet.button-map // %();
-  my Gnome::Gtk3::Button $button .= new;
-  my Str $button-text = $widget-name;
-  $button-text = $button-map{$widget-name} if ?$button-map{$widget-name};
-
-  # change some other parameters and register a signal
-  $button.set-name($widget-name);
-  $button.set-label($button-text.tc);
-}}
-  my Gnome::Gtk3::Button $button = self.create-button(
-    $widget-name, $method-name
-  );
+  my Gnome::Gtk3::Button $button = self.create-button($widget-name);
 
   if $default {
     $button.set-can-default(True);
-    $dialog.set-default-response($response-type);
+    self.set-default-response($response-type);
   }
 
-  $dialog.add-action-widget( $button, $response-type);
+  self.add-action-widget( $button, $response-type);
 }
 
 #-------------------------------------------------------------------------------
