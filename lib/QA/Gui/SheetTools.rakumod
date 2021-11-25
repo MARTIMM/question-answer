@@ -42,14 +42,15 @@ method set-grid ( $container ) {
 
     when / Window / {
       $!grid .= new;
-      $container.add($!grid)
+      $container.add($!grid);
     }
   }
 }
 
 #-------------------------------------------------------------------------------
-method set-grid-content ( $pager-type, QA::Sheet $sheet ) {
+method set-grid-content ( $pager-type, QA::Sheet $sheet --> Int ) {
 
+note 'Pager: ', $pager-type.^name;
   given $pager-type.^name {
     when / SheetSimple / {
       my QA::Gui::Statusbar $statusbar .= new;
@@ -61,7 +62,7 @@ method set-grid-content ( $pager-type, QA::Sheet $sheet ) {
       for $pages -> Hash $page-data {
         if $page-data<page-type> ~~ QAContent {
           my QA::Gui::Page $page = self!create-page( $page-data, :!description);
-          $!grid.grid-attach( $page.create-content, 0, 0, 1, 1);
+          $!grid.attach( $page.create-content, 0, 0, 1, 1);
 
           last;
         }
@@ -76,24 +77,45 @@ method set-grid-content ( $pager-type, QA::Sheet $sheet ) {
 
     when / SheetAssistant / {
     }
+
+    # when default, it is a user container with a grid
+    default {
+      my QA::Gui::Statusbar $statusbar .= new;
+      $!grid.grid-attach( $statusbar, 0, 1, 1, 1);
+
+      # find first content page. This simple sheet display takes the first page
+      # marked as content only.
+      my $pages := $sheet.clone;
+      for $pages -> Hash $page-data {
+        if $page-data<page-type> ~~ QAContent {
+          my QA::Gui::Page $page = self!create-page( $page-data, :!description);
+          $!grid.attach( $page.create-content, 0, 0, 1, 1);
+
+          last;
+        }
+      }
+    }
   }
 }
 
 #-------------------------------------------------------------------------------
 method create-button (
-  Str $widget-name, Str $method-name
+  Str $widget-name, Any :$method-object?, Str :$method-name?
   --> Gnome::Gtk3::Button
 ) {
-
   # change text of label on button when defined in the button map structure
   my Hash $button-map = $!sheet.button-map // %();
-  my Gnome::Gtk3::Button $button .= new;
-  my Str $button-text = $widget-name;
-  $button-text = $button-map{$widget-name} if ?$button-map{$widget-name};
+  my Str $button-text = $button-map{$widget-name} // $widget-name;
 
-  # change some other parameters and register a signal
-  $button.set-name($widget-name);
-  $button.set-label($button-text.tc);
+  with my Gnome::Gtk3::Button $button .= new {
+    # change some other parameters
+    .set-name($widget-name);
+    .set-label($button-text.tc);
+
+    # and register a signal if user object and method name are provided
+    .register-signal( $method-object, $method-name, 'clicked')
+      if ?$method-object and ?$method-name;
+  }
 
   $button
 }
