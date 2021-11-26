@@ -7,6 +7,7 @@ use Gnome::N::GlibToRakuTypes;
 use Gnome::Gtk3::Enums;
 use Gnome::Gtk3::Button;
 use Gnome::Gtk3::Widget;
+use Gnome::Gtk3::Box;
 use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Dialog;
 
@@ -18,7 +19,7 @@ use QA::Status;
 use QA::Gui::YNMsgDialog;
 use QA::Gui::OkMsgDialog;
 use QA::Gui::SheetTools;
-use QA::Gui::QALabel;
+#use QA::Gui::QALabel;
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -33,12 +34,15 @@ also does QA::Gui::SheetTools;
 has Bool $!show-cancel-warning;
 has Int $!response;
 has Gnome::Gtk3::Widget $!widget;
+has Any $!result-handler-object;
+has Str $!result-handler-method;
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
   Str :$!sheet-name, Hash :$user-data? is copy,
   Bool :$!show-cancel-warning = True, Bool :$!save-data = True,
-  Gnome::Gtk3::Widget :$!widget
+  Gnome::Gtk3::Widget :$!widget,
+  Any :$!result-handler-object?, Str :$!result-handler-method?
 ) {
   $!sheet .= new(:$!sheet-name);
   self.load-user-data($user-data);
@@ -56,12 +60,22 @@ submethod BUILD (
 
   # add some buttons specific for this notebook
   with my Gnome::Gtk3::Grid $button-grid .= new {
-    .attach( QA::Gui::QALabel.new(:text('')), 0, 0, 1, 1);
+    given my Gnome::Gtk3::Box $strut .= new {
+      .set-hexpand(True);
+      .set-vexpand(False);
+      .set-halign(GTK_ALIGN_START);
+      .set-valign(GTK_ALIGN_START);
+      .set-margin-top(0);
+      .set-margin-start(0);
+    }
+    .attach( $strut, 0, 0, 1, 1);
+
     .attach(
       self.create-button(
         'cancel', :method-object(self), :method-name<cancel-response>
       ), 1, 0, 1, 1
     );
+
     .attach(
       self.create-button(
         'finish', :method-object(self), :method-name<ok-response>
@@ -102,6 +116,13 @@ method ok-response ( ) {
   else {
     self.save-data;
 
+    if ?$!result-handler-object and
+        $!result-handler-object.^can($!result-handler-method) {
+      $!result-handler-object."$!result-handler-method"(
+        $!result-user-data
+      );
+    }
+
     # must hide instead of destroy, otherwise the return status
     # is set to GTK_RESPONSE_NONE
     $!widget.destroy;
@@ -110,99 +131,8 @@ method ok-response ( ) {
 
 #-------------------------------------------------------------------------------
 method show-sheet ( ) {
-
   $!widget.show-all;
-
-#`{{
-  my QA::Status $status .= instance;
-
-  loop {
-    $status.clear-status;
-
-    given GtkResponseType($!response = self.show-dialog) {
-      when GTK_RESPONSE_DELETE_EVENT {
-        self.hide;
-        last;
-      }
-
-      when GTK_RESPONSE_OK {
-        if $status.faulty-state {
-          my QA::Gui::OkMsgDialog $ok .= new(
-            :message(
-              "There are still missing or wrong answers, cannot save data"
-            )
-          );
-
-          $ok.dialog-run;
-          $ok.destroy;
-        }
-
-        else {
-          self.save-data;
-
-          # must hide instead of destroy, otherwise the return status
-          # is set to GTK_RESPONSE_NONE
-          self.hide;
-          last;
-        }
-      }
-
-      when GTK_RESPONSE_CANCEL {
-        if self.show-cancel {
-          self.hide;
-          last;
-        }
-      }
-    }
-  }
-
-  $!response
-}}
 }
-
-#-------------------------------------------------------------------------------
-#--[ Signal Handlers ]----------------------------------------------------------
-#-------------------------------------------------------------------------------
-#`{{
-method dialog-response ( gint $response, QA::Gui::Dialog :_widget($dialog) ) {
-  if GtkResponseType($response) ~~ GTK_RESPONSE_DELETE_EVENT {
-    $!response = $response;
-
-    $dialog.hide;
-    sleep(0.3);
-    $dialog.destroy;
-  }
-
-  elsif GtkResponseType($response) ~~ GTK_RESPONSE_OK {
-
-    my QA::Status $status .= instance;
-    if $status.faulty-state {
-      my QA::Gui::OkMsgDialog $ok .= new(
-        :message("There are still missing or wrong answers, cannot save data")
-      );
-
-      $ok.dialog-run;
-      $ok.destroy;
-    }
-
-    else {
-      self.save-data;
-      $!response = $response;
-
-      # must hide instead of destroy, otherwise the return status
-      # is set to GTK_RESPONSE_NONE
-      $dialog.hide;
-    }
-  }
-
-  elsif GtkResponseType($response) ~~ GTK_RESPONSE_CANCEL {
-    if self.show-cancel {
-      $!response = $response;
-      self.hide;
-    }
-  }
-}
-}}
 
 #-------------------------------------------------------------------------------
 method show-cancel ( --> Bool ) {

@@ -25,45 +25,16 @@ class EH {
     $!sheet-window .= new(
       :sheet-name<SimpleTest>,
       :!show-cancel-warning, :!save-data
-      :widget($window)
+      :widget($window),
+      :result-handler-object(self), :result-handler-method<display-result>
     );
-#CONTROL { when CX::Warn {  note .gist; .resume; } }
+
     $!sheet-window.show-sheet;
   }
 
   #---------
-  method show-data ( ) {
-    self.show-hash($!sheet-window.result-user-data);
-  }
-
-  #---------
-  method show-hash ( Hash $h, Int :$i is copy ) {
-    if $i.defined {
-      $i++;
-    }
-
-    else {
-      note '';
-      $i = 0;
-    }
-
-    for $h.keys.sort -> $k {
-      if $h{$k} ~~ Hash {
-        note '  ' x $i, "$k => \{";
-        self.show-hash( $h{$k}, :$i);
-        note '  ' x $i, '}';
-      }
-
-      elsif $h{$k} ~~ Array {
-        note '  ' x $i, "$k => $h{$k}.perl()";
-      }
-
-      else {
-        note '  ' x $i, "$k => $h{$k}";
-      }
-    }
-
-    $i--;
+  method display-result ( Hash $result-user-data ) {
+    $!sheet-window.show-hash($result-user-data);
   }
 
   #---------
@@ -83,8 +54,6 @@ given my QA::Types $qa-types {
   .cfgloc-sheet('xbin/Data/Sheets');
 }
 
-my Gnome::Gtk3::Window $top-window .= new;
-
 my Gnome::Gtk3::Label $description .= new(:text(''));
 $description.set-markup(Q:to/EOLABEL/);
 
@@ -94,18 +63,16 @@ $description.set-markup(Q:to/EOLABEL/);
 
   EOLABEL
 
+my Gnome::Gtk3::Window $top-window .= new;
+
 my Gnome::Gtk3::Button $dialog-button .= new(:label<QASimpleWindow>);
 $dialog-button.register-signal(
   $eh, 'show-window', 'clicked', :app-window($top-window)
 );
 
-my Gnome::Gtk3::Button $showdata-button .= new(:label<Data>);
-$showdata-button.register-signal( $eh, 'show-data', 'clicked');
-
 with my Gnome::Gtk3::Grid $grid .= new {
   .attach( $description, 0, 0, 1, 1);
   .attach( $dialog-button, 0, 1, 1, 1);
-  .attach( $showdata-button, 0, 2, 1, 1);
 }
 
 given $top-window {
