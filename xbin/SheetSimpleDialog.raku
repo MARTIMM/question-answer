@@ -81,11 +81,7 @@ given my QA::Types $qa-types {
   .cfgloc-sheet('xbin/Data/Sheets');
 }
 
-given my Gnome::Gtk3::Window $top-window .= new {
-  .set-title('Simple Sheet Test');
-  .register-signal( $eh, 'exit-app', 'destroy');
-  .set-border-width(20);
-}
+my Gnome::Gtk3::Window $top-window .= new;
 
 my Gnome::Gtk3::Label $description .= new(:text(''));
 $description.set-markup(Q:to/EOLABEL/);
@@ -103,7 +99,12 @@ my Gnome::Gtk3::Grid $grid .= new;
 $grid.attach( $description, 0, 0, 1, 1);
 $grid.attach( $dialog-button, 0, 1, 1, 1);
 
-$top-window.add($grid);
-$top-window.show-all;
+given $top-window {
+  .set-title('Simple Sheet Test');
+  .register-signal( $eh, 'exit-app', 'destroy');
+  .set-border-width(20);
+  .add($grid);
+  .show-all;
+}
 
 Gnome::Gtk3::Main.new.gtk-main;
