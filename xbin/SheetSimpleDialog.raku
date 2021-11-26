@@ -62,9 +62,10 @@ $description.set-markup(Q:to/EOLABEL/);
 my Gnome::Gtk3::Button $dialog-button .= new(:label<QASimpleDialog>);
 $dialog-button.register-signal( $eh, 'show-dialog', 'clicked');
 
-my Gnome::Gtk3::Grid $grid .= new;
-$grid.attach( $description, 0, 0, 1, 1);
-$grid.attach( $dialog-button, 0, 1, 1, 1);
+with my Gnome::Gtk3::Grid $grid .= new {
+  .attach( $description, 0, 0, 1, 1);
+  .attach( $dialog-button, 0, 1, 1, 1);
+}
 
 given my Gnome::Gtk3::Window $top-window .= new {
   .set-title('Simple Sheet Test');
