@@ -13,42 +13,27 @@ use QA::Types;
 
 #-------------------------------------------------------------------------------
 class EH {
+  has QA::Gui::SheetSimpleWindow $!sheet-window;
+
+  #---------
   method show-window ( :$app-window ) {
     with my Gnome::Gtk3::Window $window .= new {
       .set-title('sheet in window');
       .set-transient-for($app-window);
     }
 
-    my QA::Gui::SheetSimpleWindow $sheet-window .= new(
+    $!sheet-window .= new(
       :sheet-name<SimpleTest>,
       :!show-cancel-warning, :!save-data
       :widget($window)
     );
 #CONTROL { when CX::Warn {  note .gist; .resume; } }
-
-    my Int $response = $sheet-window.show-sheet;
-    self.display-result( $response, $sheet-window);
+    $!sheet-window.show-sheet;
   }
-
-#`{{
-  method show-dialog ( ) {
-    my QA::Gui::SheetSimpleDialog $sheet-window .= new(
-      :sheet-name<SimpleTest>,
-      :!show-cancel-warning, :!save-data
-    );
-#CONTROL { when CX::Warn {  note .gist; .resume; } }
-
-    my Int $response = $sheet-window.show-sheet;
-    self.display-result( $response, $sheet-window);
-  }
-}}
 
   #---------
-  method display-result ( Int $response, QA::Gui::SheetSimpleWindow $window ) {
-
-#    note "Dialog return status: ", GtkResponseType($response) // 'no response';
-    self.show-hash($window.result-user-data); # if $response ~~ GTK_RESPONSE_OK;
-#    $window.widget-destroy; # unless $response ~~ GTK_RESPONSE_NONE;
+  method show-data ( ) {
+    self.show-hash($!sheet-window.result-user-data);
   }
 
   #---------
@@ -98,11 +83,7 @@ given my QA::Types $qa-types {
   .cfgloc-sheet('xbin/Data/Sheets');
 }
 
-given my Gnome::Gtk3::Window $top-window .= new {
-  .set-title('Simple Sheet Test');
-  .register-signal( $eh, 'exit-app', 'destroy');
-  .set-border-width(20);
-}
+my Gnome::Gtk3::Window $top-window .= new;
 
 my Gnome::Gtk3::Label $description .= new(:text(''));
 $description.set-markup(Q:to/EOLABEL/);
@@ -118,11 +99,21 @@ $dialog-button.register-signal(
   $eh, 'show-window', 'clicked', :app-window($top-window)
 );
 
-my Gnome::Gtk3::Grid $grid .= new;
-$grid.attach( $description, 0, 0, 1, 1);
-$grid.attach( $dialog-button, 0, 1, 1, 1);
+my Gnome::Gtk3::Button $showdata-button .= new(:label<Data>);
+$showdata-button.register-signal( $eh, 'show-data', 'clicked');
 
-$top-window.add($grid);
-$top-window.show-all;
+with my Gnome::Gtk3::Grid $grid .= new {
+  .attach( $description, 0, 0, 1, 1);
+  .attach( $dialog-button, 0, 1, 1, 1);
+  .attach( $showdata-button, 0, 2, 1, 1);
+}
+
+given $top-window {
+  .set-title('Simple Sheet Test');
+  .register-signal( $eh, 'exit-app', 'destroy');
+  .set-border-width(20);
+  .add($grid);
+  .show-all;
+}
 
 Gnome::Gtk3::Main.new.gtk-main;
