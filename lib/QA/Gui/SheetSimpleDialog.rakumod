@@ -54,7 +54,7 @@ submethod BUILD (
 
   # set the grid and fill it
   self.set-grid(self);
-  self.set-grid-content( self, $!sheet);
+  self.set-grid-content(self);
 
   # add some buttons specific for this notebook
   self.add-button( 'cancel', GTK_RESPONSE_CANCEL, :default);
