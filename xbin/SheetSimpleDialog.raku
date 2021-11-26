@@ -1,4 +1,5 @@
 #!/usr/bin/env raku
+#tp:1:SheetSimpleDialog.raku
 
 use v6.d;
 
@@ -14,54 +15,22 @@ use QA::Types;
 
 #-------------------------------------------------------------------------------
 class EH {
+  has QA::Gui::SheetSimpleDialog $!sheet-dialog;
 
+  #---------
   method show-dialog ( ) {
-    my QA::Gui::SheetSimpleDialog $sheet-dialog .= new(
+    $!sheet-dialog .= new(
       :sheet-name<SimpleTest>,
-      :!show-cancel-warning, :!save-data
+      :!show-cancel-warning, :!save-data,
+      :result-handler-object(self), :result-handler-method<display-result>
     );
-#CONTROL { when CX::Warn {  note .gist; .resume; } }
 
-    my Int $response = $sheet-dialog.show-sheet;
-    self.display-result( $response, $sheet-dialog);
+    $!sheet-dialog.show-sheet;
   }
 
   #---------
-  method display-result ( Int $response, QA::Gui::Dialog $dialog ) {
-
-    note "Dialog return status: ", GtkResponseType($response) // 'no response';
-    self.show-hash($dialog.result-user-data) if $response ~~ GTK_RESPONSE_OK;
-    $dialog.widget-destroy unless $response ~~ GTK_RESPONSE_NONE;
-  }
-
-  #---------
-  method show-hash ( Hash $h, Int :$i is copy ) {
-    if $i.defined {
-      $i++;
-    }
-
-    else {
-      note '';
-      $i = 0;
-    }
-
-    for $h.keys.sort -> $k {
-      if $h{$k} ~~ Hash {
-        note '  ' x $i, "$k => \{";
-        self.show-hash( $h{$k}, :$i);
-        note '  ' x $i, '}';
-      }
-
-      elsif $h{$k} ~~ Array {
-        note '  ' x $i, "$k => $h{$k}.perl()";
-      }
-
-      else {
-        note '  ' x $i, "$k => $h{$k}";
-      }
-    }
-
-    $i--;
+  method display-result ( Hash $result-user-data ) {
+    $!sheet-dialog.show-hash($result-user-data);
   }
 
   #---------
@@ -81,8 +50,6 @@ given my QA::Types $qa-types {
   .cfgloc-sheet('xbin/Data/Sheets');
 }
 
-my Gnome::Gtk3::Window $top-window .= new;
-
 my Gnome::Gtk3::Label $description .= new(:text(''));
 $description.set-markup(Q:to/EOLABEL/);
 
@@ -99,7 +66,7 @@ my Gnome::Gtk3::Grid $grid .= new;
 $grid.attach( $description, 0, 0, 1, 1);
 $grid.attach( $dialog-button, 0, 1, 1, 1);
 
-given $top-window {
+given my Gnome::Gtk3::Window $top-window .= new {
   .set-title('Simple Sheet Test');
   .register-signal( $eh, 'exit-app', 'destroy');
   .set-border-width(20);

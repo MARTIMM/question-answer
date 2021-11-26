@@ -30,7 +30,8 @@ also does QA::Gui::SheetTools;
 
 #-------------------------------------------------------------------------------
 has Bool $!show-cancel-warning;
-has Int $!response;
+has Any $!result-handler-object;
+has Str $!result-handler-method;
 
 #-------------------------------------------------------------------------------
 # initialize the Gtk Dialog
@@ -41,7 +42,8 @@ submethod new ( |c ) {
 #-------------------------------------------------------------------------------
 submethod BUILD (
   Str :$!sheet-name, Hash :$user-data? is copy,
-  Bool :$!show-cancel-warning = True, Bool :$!save-data = True
+  Bool :$!show-cancel-warning = True, Bool :$!save-data = True,
+  Any :$!result-handler-object?, Str :$!result-handler-method?
 ) {
   $!sheet .= new(:$!sheet-name);
   self.load-user-data($user-data);
@@ -77,16 +79,18 @@ method add-button (
 }
 
 #-------------------------------------------------------------------------------
-method show-sheet ( --> Int ) {
+method show-sheet ( ) {
 
   my QA::Status $status .= instance;
 
   loop {
     $status.clear-status;
 
-    given GtkResponseType($!response = self.show-dialog) {
+    given GtkResponseType(self.show-dialog) {
       when GTK_RESPONSE_DELETE_EVENT {
         self.hide;
+        sleep(0.3);
+        self.destroy;
         last;
       }
 
@@ -104,65 +108,28 @@ method show-sheet ( --> Int ) {
 
         else {
           self.save-data;
+          if ?$!result-handler-object and
+              $!result-handler-object.^can($!result-handler-method) {
+            $!result-handler-object."$!result-handler-method"(
+              $!result-user-data
+            );
+          }
 
-          # must hide instead of destroy, otherwise the return status
-          # is set to GTK_RESPONSE_NONE
-          self.hide;
+          self.destroy;
           last;
         }
       }
 
       when GTK_RESPONSE_CANCEL {
         if self.show-cancel {
-          self.hide;
+          self.destroy;
           last;
         }
       }
-    }
-  }
 
-  $!response
-}
-
-#-------------------------------------------------------------------------------
-#--[ Signal Handlers ]----------------------------------------------------------
-#-------------------------------------------------------------------------------
-method dialog-response ( gint $response, QA::Gui::Dialog :_widget($dialog) ) {
-
-  if GtkResponseType($response) ~~ GTK_RESPONSE_DELETE_EVENT {
-    $!response = $response;
-
-    $dialog.hide;
-    sleep(0.3);
-    $dialog.destroy;
-  }
-
-  elsif GtkResponseType($response) ~~ GTK_RESPONSE_OK {
-
-    my QA::Status $status .= instance;
-    if $status.faulty-state {
-      my QA::Gui::OkMsgDialog $ok .= new(
-        :message("There are still missing or wrong answers, cannot save data")
-      );
-
-      $ok.dialog-run;
-      $ok.destroy;
-    }
-
-    else {
-      self.save-data;
-      $!response = $response;
-
-      # must hide instead of destroy, otherwise the return status
-      # is set to GTK_RESPONSE_NONE
-      $dialog.hide;
-    }
-  }
-
-  elsif GtkResponseType($response) ~~ GTK_RESPONSE_CANCEL {
-    if self.show-cancel {
-      $!response = $response;
-      self.hide;
+      default {
+        die "Response type '$_' not supported";
+      }
     }
   }
 }
