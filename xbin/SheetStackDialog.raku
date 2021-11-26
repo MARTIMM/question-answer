@@ -1,7 +1,7 @@
 #!/usr/bin/env raku
+#tp:1:SheetStackDialog.raku
 
-use v6;
-#use lib '../gnome-gobject/lib';
+use v6.d;
 
 use Gnome::Gtk3::Dialog;
 use Gnome::Gtk3::Main;
@@ -11,7 +11,7 @@ use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Button;
 use Gnome::Gtk3::Label;
 
-use QA::Gui::SheetStack;
+use QA::Gui::SheetStackDialog;
 use QA::Types;
 
 #-------------------------------------------------------------------------------
