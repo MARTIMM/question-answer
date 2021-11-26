@@ -48,17 +48,19 @@ method set-grid ( $container ) {
 }
 
 #-------------------------------------------------------------------------------
-method set-grid-content ( $pager-type, QA::Sheet $sheet --> Int ) {
+# grid row, column
+#        0, 0   a page, stack, notebook or container. assistant is a container
+#        0, 1   a statusbar
+#
+method set-grid-content ( $pager-type ) {
 
 note 'Pager: ', $pager-type.^name;
   given $pager-type.^name {
     when / SheetSimple / {
-      my QA::Gui::Statusbar $statusbar .= new;
-      $!grid.grid-attach( $statusbar, 0, 1, 1, 1);
 
       # find first content page. This simple sheet display takes the first page
       # marked as content only.
-      my $pages := $sheet.clone;
+      my $pages := $!sheet.clone;
       for $pages -> Hash $page-data {
         if $page-data<page-type> ~~ QAContent {
           my QA::Gui::Page $page = self!create-page( $page-data, :!description);
@@ -67,6 +69,9 @@ note 'Pager: ', $pager-type.^name;
           last;
         }
       }
+
+      my QA::Gui::Statusbar $statusbar .= new;
+      $!grid.grid-attach( $statusbar, 0, 1, 1, 1);
     }
 
     when / SheetStack / {
@@ -80,12 +85,9 @@ note 'Pager: ', $pager-type.^name;
 
     # when default, it is a user container with a grid
     default {
-      my QA::Gui::Statusbar $statusbar .= new;
-      $!grid.grid-attach( $statusbar, 0, 1, 1, 1);
-
       # find first content page. This simple sheet display takes the first page
       # marked as content only.
-      my $pages := $sheet.clone;
+      my $pages := $!sheet.clone;
       for $pages -> Hash $page-data {
         if $page-data<page-type> ~~ QAContent {
           my QA::Gui::Page $page = self!create-page( $page-data, :!description);
@@ -94,6 +96,9 @@ note 'Pager: ', $pager-type.^name;
           last;
         }
       }
+
+      my QA::Gui::Statusbar $statusbar .= new;
+      $!grid.grid-attach( $statusbar, 0, 1, 1, 1);
     }
   }
 }
@@ -167,4 +172,35 @@ method !create-page( Hash $page, Bool :$description = True --> QA::Gui::Page ) {
   $!pages.push: $gui-page;
 
   $gui-page
+}
+
+#-------------------------------------------------------------------------------
+# hash displayer tool
+method show-hash ( Hash $h, Int :$i is copy ) {
+  if $i.defined {
+    $i++;
+  }
+
+  else {
+    note '';
+    $i = 0;
+  }
+
+  for $h.keys.sort -> $k {
+    if $h{$k} ~~ Hash {
+      note '  ' x $i, "$k => \{";
+      self.show-hash( $h{$k}, :$i);
+      note '  ' x $i, '}';
+    }
+
+    elsif $h{$k} ~~ Array {
+      note '  ' x $i, "$k => $h{$k}.perl()";
+    }
+
+    else {
+      note '  ' x $i, "$k => $h{$k}";
+    }
+  }
+
+  $i--;
 }
