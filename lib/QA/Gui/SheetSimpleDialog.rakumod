@@ -49,7 +49,6 @@ submethod BUILD (
   self.load-user-data($user-data);
   self.set-style('QASheetSimple');
 
-  # todo width and height spec must go to sets
   with $!sheet {
     self.set-dialog-size( .width, .height) if ? .width and ? .height;
   }
