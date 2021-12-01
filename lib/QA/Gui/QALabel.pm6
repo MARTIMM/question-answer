@@ -18,7 +18,7 @@ submethod new ( |c ) {
 #-------------------------------------------------------------------------------
 submethod BUILD ( *%options ) {
 
-  given self {
+  with self {
     .set-use-markup(%options<do-markup>:exists);
     .set-hexpand(True);
     .set-line-wrap(True);

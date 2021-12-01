@@ -28,7 +28,7 @@ submethod BUILD ( QA::Question:D :$!question, Hash:D :$!user-data-set-part ) { }
 method create-widget ( Int() :$row --> Any ) {
 
   # create a text input widget
-  given my Gnome::Gtk3::Entry $entry .= new {
+  with my Gnome::Gtk3::Entry $entry .= new {
     self.add-class( $entry, 'QAEntry');
 
     .set-size-request( 70, 1);

@@ -56,7 +56,7 @@ method create-widget ( Int() :$row --> Any ) {
 
   # We need a grid with 2 rows. one for the file chooser button
   # and one for the image. If DND, 1st row is made invisible.
-  given my Gnome::Gtk3::FileFilter $filter .= new {
+  with my Gnome::Gtk3::FileFilter $filter .= new {
     .set-name('images');
     .add-mime-type('image/*');
     .add-mime-type('text/uri-list');
@@ -66,7 +66,7 @@ method create-widget ( Int() :$row --> Any ) {
   self.add-class( $widget-grid, 'QAGrid');
 
   my Str $title = $!question.title;
-  given my Gnome::Gtk3::FileChooserButton $fcb .= new(:$title) {
+  with my Gnome::Gtk3::FileChooserButton $fcb .= new(:$title) {
     .set-hexpand(True);
     .set-vexpand(True);
     .set_filter($filter);

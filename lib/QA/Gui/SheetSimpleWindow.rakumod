@@ -11,8 +11,6 @@ use Gnome::Gtk3::Box;
 use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Dialog;
 
-use QA::Set;
-use QA::Sheet;
 use QA::Types;
 use QA::Status;
 
@@ -60,7 +58,7 @@ submethod BUILD (
 
   # add some buttons specific for this notebook
   with my Gnome::Gtk3::Grid $button-grid .= new {
-    given my Gnome::Gtk3::Box $strut .= new {
+    with my Gnome::Gtk3::Box $strut .= new {
       .set-hexpand(True);
       .set-vexpand(False);
       .set-halign(GTK_ALIGN_START);

@@ -31,7 +31,7 @@ submethod BUILD (
 method create-widget ( Int() :$row --> Any ) {
 
   # create a text input widget
-  given my Gnome::Gtk3::TextView $textview .= new {
+  with my Gnome::Gtk3::TextView $textview .= new {
     .set-hexpand(True);
     .set-size-request( 1, $!question.height // 50);
     .set-wrap-mode(GTK_WRAP_WORD);

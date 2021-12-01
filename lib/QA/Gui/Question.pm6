@@ -60,7 +60,7 @@ method !display-question ( ) {
 
   # mark required fields with a bold star
   $text = $!question.required ?? ' <b>*</b> ' !! ' ';
-  given my $r-label = Gnome::Gtk3::Label.new(:$text) {
+  with my $r-label = Gnome::Gtk3::Label.new(:$text) {
     .set-use-markup(True);
     .set-valign(GTK_ALIGN_START);
     .set-margin-top(6);
@@ -81,19 +81,20 @@ method !display-question ( ) {
 #-------------------------------------------------------------------------------
 method query-state ( --> Bool ) {
 
-
   my Bool $state;
+note "$?LINE, query state: $!widget-object.raku()";
 
   # not all widgets are implemented
   if $!widget-object.defined {
     $state = $!widget-object.faulty-state;
+note "$?LINE, query state: $state";
   }
 
   else {
     $state = False;
+note "$?LINE, query state: $state";
   }
 
-note "FS: $!widget-object.defined(), $state";
   $state
 }
 

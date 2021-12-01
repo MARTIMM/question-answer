@@ -86,7 +86,7 @@ method !description ( ) {
   $!page-grid.grid-attach( $page-frame, 0, $!page-row++, 2, 1);
 
   # place description as text in this frame
-  given my Gnome::Gtk3::Label $page-descr .= new(:text($!page<description>)) {
+  with my Gnome::Gtk3::Label $page-descr .= new(:text($!page<description>)) {
     .set-line-wrap(True);
     .widget-set-halign(GTK_ALIGN_START);
     .widget-set-margin-bottom(3);
