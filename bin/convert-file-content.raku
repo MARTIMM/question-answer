@@ -24,8 +24,8 @@ sub data ( Str:D $f, $data? is copy --> Any ) {
 #  $f = IO.absolute;
   my $t = $f.IO.extension;
 
-  given $t {
-    when 'json' {
+  with $t {
+    given 'json' {
       if $load {
         $data = from-json($f.IO.slurp);
       }
@@ -45,7 +45,7 @@ sub data ( Str:D $f, $data? is copy --> Any ) {
       }
     }
 
-    when 'yaml' {
+    when /yaml || yml/ {
       if $load {
         $data = load-yaml($f.IO.slurp);
       }
