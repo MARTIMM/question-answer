@@ -43,6 +43,10 @@ Name: **Marcel Timmerman**
 Github account name: **MARTIMM**
 
 
+# Copyright
+
+© 2020-2021. Marcel Timmerman
+
 
 <!-- ---- [refs] ----------------------------------------------------------- -->
 [logo]: resources/icons8-invoice-100.png
