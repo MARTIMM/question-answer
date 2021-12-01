@@ -317,7 +317,7 @@ An example widget could be something like the one shown below. This widget shows
     }
 
     # later ...
-    my QA::Types $qa-types .= new;
+    my QA::Types $qa-types .= instance;
     $qa-types.set-widget-object( 'my-widget', MyWidget.new);
 
 get-widget-object
