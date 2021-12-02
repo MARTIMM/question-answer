@@ -76,7 +76,7 @@ method create-widget ( Int() :$row --> Any ) {
   }
 
   self.add-class( $fcb, 'QAFileChooserButton');
-  $widget-grid.grid-attach( $fcb, 0, FCHOOSER-ROW, 1, 1);
+  $widget-grid.attach( $fcb, 0, FCHOOSER-ROW, 1, 1);
 
   my Gnome::Gtk3::Image $image .= new;
   self.add-class( $image, 'QAImage');
@@ -89,7 +89,7 @@ method create-widget ( Int() :$row --> Any ) {
      $image, $!question.dnd, $fcb, $widget-grid, $row
   ) if ?$!question.dnd;
 
-  $widget-grid.grid-attach( $image, 0, IMAGE-ROW, 1, 1);
+  $widget-grid.attach( $image, 0, IMAGE-ROW, 1, 1);
 
   $widget-grid
 }

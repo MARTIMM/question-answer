@@ -9,6 +9,9 @@ use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Switch;
 use Gnome::Gtk3::Enums;
 
+use Gnome::N::X;
+#Gnome::N::debug(:on);
+
 #-------------------------------------------------------------------------------
 unit class QA::Gui::QASwitch;
 also does QA::Gui::Value;
@@ -42,13 +45,13 @@ method create-widget ( Int() :$row --> Any ) {
   $switch.register-signal( self, 'input-change-handler', 'state-set', :$row);
   self.add-class( $switch, 'QASwitch');
 
-  $switch-grid.grid-attach( $switch, 0, 0, 1, 1);
+  $switch-grid.attach( $switch, 0, 0, 1, 1);
 
   my Gnome::Gtk3::Label $label .= new(:text(''));
   $label.set-hexpand(True);
 #  $label.set-justify(GTK_JUSTIFY_FILL);
 #  $label.set-halign(GTK_ALIGN_START);
-  $switch-grid.grid-attach( $label, 1, 0, 1, 1);
+  $switch-grid.attach( $label, 1, 0, 1, 1);
 
   $switch-grid
 }
@@ -73,10 +76,14 @@ method clear-value ( Any:D $switch ) {
 }}
 
 #-------------------------------------------------------------------------------
-method input-change-handler ( Int $state, :_widget($switch), :$row ) {
+method input-change-handler ( Int $state, :_widget($switch), :$row --> Int ) {
   my Gnome::Gtk3::Grid $switch-grid = $switch.get-parent-rk;
 #  my Gnome::Gtk3::Switch $switch = $switch-grid.get-child-at-rk( 0, 0);
+
   self.process-widget-input(
     $switch-grid, $switch.get-active.Bool, $row, :!do-check
   );
+note "$?LINE, QASwitch $state, $!question.name()";
+
+  1
 }

@@ -128,7 +128,7 @@ method !scale-field (
   $w.set-digits(2);
   $w.set-value($question.default // $question.minimum // 0e0);
   $w.set-tooltip-text($question.tooltip) if ?$question.tooltip;
-  $!question-grid.grid-attach( $w, 2, $set-row, 1, 1);
+  $!question-grid.attach( $w, 2, $set-row, 1, 1);
 
 #  $!main-handler.add-widget( $g, $!invoice-title, $set, $question);
 }

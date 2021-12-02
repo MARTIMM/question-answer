@@ -260,7 +260,7 @@ $description.set-markup(Q:to/EOLABEL/);
 
 #`{{
 my Gnome::Gtk3::Button $dialog-button .= new(:label<QADialog>);
-$grid.grid-attach( $dialog-button, 0, 1, 1, 1);
+$grid.attach( $dialog-button, 0, 1, 1, 1);
 $dialog-button.register-signal( $eh, 'show-dialog', 'clicked');
 }}
 my Gnome::Gtk3::Button $dialog-button .= new(:label<QANotebook>);
@@ -268,16 +268,16 @@ $dialog-button.register-signal( $eh, 'show-notebook', 'clicked');
 
 
 my Gnome::Gtk3::Grid $grid .= new;
-$grid.grid-attach( $description, 0, 0, 1, 1);
-$grid.grid-attach( $dialog-button, 0, 1, 1, 1);
+$grid.attach( $description, 0, 0, 1, 1);
+$grid.attach( $dialog-button, 0, 1, 1, 1);
 
 #`{{
 my Gnome::Gtk3::Button $dialog-button .= new(:label<QAStack>);
-$grid.grid-attach( $dialog-button, 0, 1, 1, 1);
+$grid.attach( $dialog-button, 0, 1, 1, 1);
 $dialog-button.register-signal( $eh, 'show-stack', 'clicked');
 
 my Gnome::Gtk3::Button $dialog-button .= new(:label<QAAssistant>);
-$grid.grid-attach( $dialog-button, 0, 1, 1, 1);
+$grid.attach( $dialog-button, 0, 1, 1, 1);
 $dialog-button.register-signal( $eh, 'show-assistant', 'clicked');
 }}
 

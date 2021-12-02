@@ -40,7 +40,7 @@ method create-widget ( Int() :$row --> Any ) {
     $rb.set-hexpand(True);
     $rb.register-signal( self, 'input-change-handler', 'clicked', :$row);
     self.add-class( $rb, 'QACheckButton');
-    $button-grid.grid-attach( $rb, 0, $button-grid-row++, 1, 1);
+    $button-grid.attach( $rb, 0, $button-grid-row++, 1, 1);
   }
 
   $button-grid
@@ -145,7 +145,7 @@ method set-value (
     $entry .= new( :$text, :$!example, :$!tooltip, :$!visibility);
 
     $entry.register-signal( self, 'check-on-focus-change', 'focus-out-event');
-    $!grid.grid-attach( $entry, 0, $row, 1, 1);
+    $!grid.attach( $entry, 0, $row, 1, 1);
     $!input-widgets.push($entry);
   }
 

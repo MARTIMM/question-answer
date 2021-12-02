@@ -83,7 +83,7 @@ method query-page-state ( --> Bool ) {
 method !description ( ) {
   # place page title in frame if wished
   my QA::Gui::Frame $page-frame .= new(:label(''));
-  $!page-grid.grid-attach( $page-frame, 0, $!page-row++, 2, 1);
+  $!page-grid.attach( $page-frame, 0, $!page-row++, 2, 1);
 
   # place description as text in this frame
   with my Gnome::Gtk3::Label $page-descr .= new(:text($!page<description>)) {

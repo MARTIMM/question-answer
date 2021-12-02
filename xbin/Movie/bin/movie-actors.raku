@@ -53,7 +53,7 @@ given my Gnome::Gtk3::Window $top-window .= new {
   .add($grid);
 
   my Gnome::Gtk3::Button $dialog-button .= new(:label<QANotebook>);
-  $grid.grid-attach( $dialog-button, 1, 0, 1, 1);
+  $grid.attach( $dialog-button, 1, 0, 1, 1);
   $dialog-button.register-signal(
     $movie-handlers, 'show-movie-form', 'clicked'
   );

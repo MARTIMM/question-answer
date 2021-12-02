@@ -128,7 +128,7 @@ method set-value (
     $entry .= new( :$text, :$!example, :$!tooltip, :$!visibility);
 
     $entry.register-signal( self, 'check-on-focus-change', 'focus-out-event');
-    $!grid.grid-attach( $entry, 0, $row, 1, 1);
+    $!grid.attach( $entry, 0, $row, 1, 1);
     $!input-widgets.push($entry);
   }
 

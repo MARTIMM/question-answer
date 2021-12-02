@@ -173,8 +173,8 @@ my Gnome::Gtk3::Button $dialog-button .= new(:label<QAAssistant>);
 $dialog-button.register-signal( $eh, 'show-assistant', 'clicked');
 
 my Gnome::Gtk3::Grid $grid .= new;
-$grid.grid-attach( $description, 0, 0, 1, 1);
-$grid.grid-attach( $dialog-button, 0, 1, 1, 1);
+$grid.attach( $description, 0, 0, 1, 1);
+$grid.attach( $dialog-button, 0, 1, 1, 1);
 
 
 $top-window.add($grid);
