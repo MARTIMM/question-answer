@@ -10,11 +10,11 @@ use QA::Types;
 use QA::Question;
 
 use QA::Gui::Frame;
+use QA::Gui::QAImage;
+use QA::Gui::QAComboBox;
 use QA::Gui::QAEntry;
 use QA::Gui::QAFileChooser;
-use QA::Gui::QAImage;
 use QA::Gui::QACheckButton;
-use QA::Gui::QAComboBox;
 use QA::Gui::QARadioButton;
 use QA::Gui::QASpinButton;
 use QA::Gui::QASwitch;
@@ -50,6 +50,7 @@ has Bool $!inhibit-combobox-events = False;
 
 #-------------------------------------------------------------------------------
 submethod BUILD ( QA::Question:D :$!question, Hash:D :$!user-data-set-part ) {
+
   $!grid-row-data = [];
   $!grid-access-index = [];
   $!grid .= new;
@@ -61,7 +62,7 @@ submethod BUILD ( QA::Question:D :$!question, Hash:D :$!user-data-set-part ) {
   self.set-name($!question.name);
 
   # make frame invisible if input is not repeatable
-  if not $!question.repeatable {
+  unless ?$!question.repeatable {
     self.set-shadow-type(GTK_SHADOW_NONE);
     self.set-hexpand(True);
   }
@@ -93,6 +94,7 @@ submethod BUILD ( QA::Question:D :$!question, Hash:D :$!user-data-set-part ) {
 #-------------------------------------------------------------------------------
 method !create-widget-object ( ) {
   my Str $module-name = 'QA::Gui::' ~ $!question.fieldtype.Str;
+#  (try require ::($module-name); CATCH {die "fail to use  $module-name"});
   if (my $m = ::($module-name)).^lookup('set-value') ~~ Method {
     $!widget-object = ::($module-name).new(
       :$!question, :$!user-data-set-part, :input-widget(self)
@@ -124,11 +126,14 @@ method !create-user-widget-object ( ) {
 
 #-------------------------------------------------------------------------------
 method append-grid-row ( --> List ) {
+
+CONTROL { when CX::Warn {  note .gist; .resume; } }
+
   my Int $current-grid-row = $!grid-row-data.elems;
   my Int $current-grid-index = $!grid-access-index.elems;
   $!grid-access-index[$current-grid-index] = $current-grid-row;
 
-  given my $input-widget = $!widget-object.create-widget(
+  with my $input-widget = $!widget-object.create-widget(
     :row($current-grid-index)
   ) {
     my Str $tooltip = $!question.tooltip;
@@ -142,9 +147,11 @@ method append-grid-row ( --> List ) {
 
   $!grid.attach( $input-widget, QAInputColumn, $current-grid-index, 1, 1);
 
-  if $!question.repeatable {
+#note "$?LINE, $!question.name(), repeat: {?$!question.repeatable}";
+  if ?$!question.repeatable {
     # create comboboxes on the left when selectlist is a non-empty Array
     my Array $select-list = $!question.selectlist // [];
+#note "$?LINE, $current-grid-index";
     if $select-list.elems {
       my Gnome::Gtk3::ComboBoxText $cbt = self!create-combobox(
         $select-list, $input-widget, $current-grid-row, $current-grid-index
@@ -167,7 +174,7 @@ method append-grid-row ( --> List ) {
 
   $!grid.show-all;
 
-  self.hide-tb-add if $!question.repeatable;
+  self.hide-tb-add if ?$!question.repeatable;
 
 #  for ^$!grid-row-data.elems -> $row {
 #    last if $row == $!grid-row-data.elems - 1;
@@ -186,23 +193,25 @@ method !create-toolbutton (
   my Gnome::Gtk3::Image $image .= new;
   my Str ( $tb-name, $tb-handler);
 
+  # add '+' (add) button
   if $add {
     $image.set-from-icon-name( 'list-add', GTK_ICON_SIZE_BUTTON);
     $tb-name = 'tb-add';
     $tb-handler = 'add-row';
   }
 
+  #  add '-' (remove) button
   else {
     $image.set-from-icon-name( 'list-remove', GTK_ICON_SIZE_BUTTON);
     $tb-name = 'tb-del';
     $tb-handler = 'del-row';
   }
 
-  given my Gnome::Gtk3::ToolButton $tb .= new(:icon($image)) {
+  with my Gnome::Gtk3::ToolButton $tb .= new(:icon($image)) {
     .set-name($tb-name);
     .register-signal( self, $tb-handler, 'clicked', :$row-index);
-    .register-signal( self, 'hide-tb-add', 'show')
-;#      if $tb-name eq 'tb-add';
+    .register-signal( self, 'hide-tb-add', 'show');
+    # if $tb-name eq 'tb-add';
   }
 
   $!widget-object.add-class( $tb, 'QAToolButtonRowControl');
@@ -216,17 +225,19 @@ method !create-combobox (
   Array $select-list, $input-widget, Int $row-grid, Int $row-index
   --> Gnome::Gtk3::ComboBoxText
 ) {
-  my Gnome::Gtk3::ComboBoxText $cbt .= new;
-  for @$select-list -> $select-item {
-    $cbt.append-text($select-item);
+  with my Gnome::Gtk3::ComboBoxText $cbt .= new {
+    $!widget-object.add-class( $cbt, 'QAComboBoxText');
+
+    for @$select-list -> $select-item {
+      .append-text($select-item);
+    }
+
+    .set-active(0);
+    .register-signal(
+      self, 'combobox-change', 'changed', :$input-widget, :$row-grid
+    );
   }
 
-  $cbt.register-signal(
-    self, 'combobox-change', 'changed', :$input-widget, :$row-grid
-  );
-
-  $!widget-object.add-class( $cbt, 'QAComboBoxText');
-  $cbt.set-active(0);
   $cbt
 }
 
@@ -235,7 +246,7 @@ method !apply-values ( ) {
 
 CONTROL { when CX::Warn {  note .gist; .resume; } }
 
-  if $!question.repeatable {
+  if ?$!question.repeatable {
 #note "\nrepeated values: ", ($!widget-object.^name, $!user-data-set-part{$!question.name}).join(', ');
 
     # Make sure the input values is an Array, if not, create empty and return.
@@ -287,6 +298,8 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
         $value = $values[$i];
       }
 
+
+#note "v: $?LINE, $input-widget, $value";
       $!widget-object.set-value( $input-widget, $value);
       $!widget-object.check-widget-value( $input-widget, $value, :row($i));
       $i++;
@@ -315,6 +328,8 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
 method combobox-change (
   :_widget($combobox), :$input-widget, Int :$row-grid --> Int
 ) {
+#note "combobox-change, $!inhibit-combobox-events, $input-widget, $row-grid";
+
   unless $!inhibit-combobox-events {
     $!widget-object.process-widget-input(
       $input-widget, $!widget-object.get-value($input-widget),

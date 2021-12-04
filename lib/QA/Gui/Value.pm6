@@ -52,16 +52,19 @@ method process-widget-input (
   $input-widget, Any $input is copy, Int() $row, Bool :$do-check = False
 ) {
 #CONTROL { when CX::Warn {  note .gist; .resume; } }
-#note "$?LINE, process-widget-signal, {$input//'-'}, $row";
 
   $input //= '';
 
   self.check-widget-value( $input-widget, $input, :$row) if $do-check;
+
   my QA::Status $status .= instance;
+#note "$?LINE, process-widget-input, $input, $row, $status.get-faulty-state(self.question.name())";
+
   unless $status.get-faulty-state(self.question.name) {
     self!adjust-user-data( $input-widget, $input, $row);
     self.check-users-action( $input, self.question.action);
   }
+#note "$?LINE, process-widget-input, state: ", self.question.name, ', ', $status.get-faulty-state(self.question.name);
 }
 
 #-------------------------------------------------------------------------------
@@ -82,7 +85,7 @@ method check-widget-value (
 #  my Int $cid = $statusbar.get-context-id('input errors');
   my QA::Status $status .= instance;
 
-note "\n", 'status: ', (self.question.name, $status.get-faulty-state(self.question.name), (self.question.callback)//'-', (self.^lookup("check-value").gist())//'-', (?(self.question.required) and ($input ~~ m/^ \s* $/))).join(', ');
+#note "\n", 'status: ', (self.question.name, $status.get-faulty-state(self.question.name), (self.question.callback)//'-', (self.^lookup("check-value").gist())//'-', ?self.question.required, $input  ).join(', ');
 
   if ! $status.get-faulty-state(self.question.name) {
     # check if there is a user routine which can check data. requiredness
@@ -134,7 +137,7 @@ note "\n", 'status: ', (self.question.name, $status.get-faulty-state(self.questi
   }
 
   if $message {
-note "check message: ", self.question.name, ', ', $message;
+#note "check message: ", self.question.name, ', ', $message;
     self.set-status-hint( $input-widget, QAStatusFail);
     # don't add a new message if there is already a message placed
     # on the statusbar
@@ -149,7 +152,7 @@ note "check message: ", self.question.name, ', ', $message;
   }
 
   else {
-note "no message: ", self.question.name, ', ', $!msg-id//'-';
+#note "no message: ", self.question.name, ', ', $!msg-id//'-';
     if ?$!msg-id {
   #    $statusbar.remove( $cid, $!msg-id);
       $status.send( %(
@@ -163,7 +166,6 @@ note "no message: ", self.question.name, ', ', $!msg-id//'-';
     self!adjust-user-data( $input-widget, $input, $row);
     $status.set-faulty-state( self.question.name, False);
   }
-
 
 
 
@@ -245,6 +247,7 @@ method !adjust-user-data ( $input-widget, Any $input, Int() $row ) {
 #CONTROL { when CX::Warn {  note .gist; .resume; } }
 #note "\n$?LINE, adjust-user-data, $input, $row";
 
+#note "$?LINE, adjust-user-data, {self.question.name}, $input, $row";
   my Str $name = self.question.name;
   if ? self.question.repeatable {
     if ? self.question.selectlist {
@@ -252,7 +255,9 @@ method !adjust-user-data ( $input-widget, Any $input, Int() $row ) {
       my Gnome::Gtk3::ComboBoxText $cbt = $grid.get-child-at-rk(
         QACatColumn, $row, :child-type<Gnome::Gtk3::ComboBoxText>
       );
+#note "$?LINE, $cbt.is-valid(), $row";
       my Str $select = self.question.selectlist[$cbt.get-active];
+#note $?LINE;
       self.user-data-set-part{$name}[$row] = $select => $input;
     }
 

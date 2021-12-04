@@ -10,6 +10,8 @@ use Gnome::Gtk3::StyleProvider;
 use Gnome::Gtk3::Window;
 use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Button;
+use Gnome::Gtk3::Stack;
+use Gnome::Gtk3::StackSwitcher;
 
 use QA::Sheet;
 use QA::Types;
@@ -29,12 +31,27 @@ has Hash $.result-user-data;
 has Hash $!user-data;
 has Bool $!save-data;
 
+has Gnome::Gtk3::Stack $!stack;
+
 #-------------------------------------------------------------------------------
 method set-grid ( $container ) {
+note 'set-grid: ', $container.^name;
 
   given $container.^name {
-    when / SheetSimple || SheetStack || SheetNotebook / {
+    when / SheetSimple || SheetNotebook / {
       $!grid = $container.dialog-content;
+    }
+
+    when / SheetStack / {
+      $!grid = $container.dialog-content;
+
+      # create the stack and add pages to it
+      $!stack .= new;
+      $!grid.attach( $!stack, 0, 0, 1, 1);
+
+      my Gnome::Gtk3::StackSwitcher $stack-switcher .= new;
+      $stack-switcher.set-stack($!stack);
+      $!grid.attach( $stack-switcher, 0, 1, 1, 1);
     }
 
     when / SheetAssistant / {
@@ -55,9 +72,9 @@ method set-grid ( $container ) {
 method set-grid-content ( $pager-type ) {
 
 note 'Pager: ', $pager-type.^name;
+
   given $pager-type.^name {
     when / SheetSimple / {
-
       # find first content page. This simple sheet display takes the first page
       # marked as content only.
       my $pages := $!sheet.clone;
@@ -71,10 +88,20 @@ note 'Pager: ', $pager-type.^name;
       }
 
       my QA::Gui::Statusbar $statusbar .= new;
-      $!grid.grid-attach( $statusbar, 0, 1, 1, 1);
+      $!grid.attach( $statusbar, 0, 1, 1, 1);
     }
 
     when / SheetStack / {
+      # select content pages only
+      my $pages := $!sheet.clone;
+      for $pages -> Hash $page-data {
+        if $page-data<page-type> ~~ QAContent {
+          my QA::Gui::Page $page = self!create-page( $page-data, :!description);
+          $!stack.add-titled(
+            $page.create-content, $page-data<page-name>, $page-data<title>
+          );
+        }
+      }
     }
 
     when / SheetNotebook / {
@@ -98,7 +125,7 @@ note 'Pager: ', $pager-type.^name;
       }
 
       my QA::Gui::Statusbar $statusbar .= new;
-      $!grid.grid-attach( $statusbar, 0, 1, 1, 1);
+      $!grid.attach( $statusbar, 0, 1, 1, 1);
     }
   }
 }
@@ -151,9 +178,7 @@ method set-style ( Str:D $class-name ) {
 #-------------------------------------------------------------------------------
 method load-user-data ( Hash $user-data ) {
   my QA::Types $qa-types .= instance;
-  $!user-data = $user-data //
-                $qa-types.qa-load( $!sheet-name, :userdata) //
-                %();
+  $!user-data = $user-data // $qa-types.qa-load( $!sheet-name, :userdata);
 }
 
 #-------------------------------------------------------------------------------
@@ -168,6 +193,7 @@ method save-data ( ) {
 # create page with all widgets on it. it always will return a
 # scrollable window
 method !create-page( Hash $page, Bool :$description = True --> QA::Gui::Page ) {
+  note "\npage: ", $page.raku;
   my QA::Gui::Page $gui-page .= new( :$page, :$description, :$!user-data);
   $!pages.push: $gui-page;
 

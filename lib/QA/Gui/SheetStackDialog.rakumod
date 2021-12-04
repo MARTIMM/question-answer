@@ -9,8 +9,6 @@ use Gnome::Gio::Resource;
 use Gnome::Gtk3::Widget;
 use Gnome::Gtk3::Enums;
 use Gnome::Gtk3::Dialog;
-use Gnome::Gtk3::Stack;
-use Gnome::Gtk3::StackSwitcher;
 use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Label;
 use Gnome::Gtk3::Button;
@@ -18,9 +16,8 @@ use Gnome::Gtk3::CssProvider;
 use Gnome::Gtk3::StyleContext;
 use Gnome::Gtk3::StyleProvider;
 
-use QA::Set;
-use QA::Sheet;
 use QA::Types;
+use QA::Status;
 
 use QA::Gui::Dialog;
 use QA::Gui::Set;
@@ -30,6 +27,7 @@ use QA::Gui::Page;
 use QA::Gui::YNMsgDialog;
 use QA::Gui::OkMsgDialog;
 use QA::Gui::Statusbar;
+use QA::Gui::SheetTools;
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -39,21 +37,26 @@ use QA::Gui::Statusbar;
 
 unit class QA::Gui::SheetStack:auth<github:MARTIMM>;
 also is QA::Gui::Dialog;
+also does QA::Gui::SheetTools;
 
 #-------------------------------------------------------------------------------
-has QA::Sheet $!sheet;
-has Str $!sheet-name;
-has Hash $!user-data;
-has Hash $.result-user-data;
-has Array $!sets = [];
-has Array $!pages = [];
-has Bool $.faulty-state;
+#has QA::Sheet $!sheet;
+#has Str $!sheet-name;
+#has Hash $!user-data;
+#has Hash $.result-user-data;
+#has Array $!sets = [];
+#has Array $!pages = [];
+#has Bool $.faulty-state;
 has Bool $!show-cancel-warning;
-has Bool $!save-data;
-has Int $!response;
-has Gnome::Gtk3::Stack $!stack;
-has Gnome::Gtk3::StackSwitcher $!stack-switcher;
-has Gnome::Gtk3::Grid $!grid;
+#has Bool $!save-data;
+#has Int $!response;
+#has Gnome::Gtk3::Stack $!stack;
+#has Gnome::Gtk3::StackSwitcher $!stack-switcher;
+#has Gnome::Gtk3::Grid $!grid;
+
+
+has Any $!result-handler-object;
+has Str $!result-handler-method;
 
 #-------------------------------------------------------------------------------
 # initialize the Gtk Dialog
@@ -64,16 +67,33 @@ submethod new ( |c ) {
 #-------------------------------------------------------------------------------
 submethod BUILD (
   Str :$!sheet-name, Hash :$user-data? is copy,
-  Bool :$!show-cancel-warning = True, Bool :$!save-data = True
+  Bool :$!show-cancel-warning = True, Bool :$!save-data = True,
+  Any :$!result-handler-object?, Str :$!result-handler-method?
 ) {
 
+#`{{
   my QA::Types $qa-types .= instance;
   $!user-data = $user-data //
                 $qa-types.qa-load( $!sheet-name, :userdata) //
                 %();
+}}
+note "sheet name: $!sheet-name";
 
   $!sheet .= new(:$!sheet-name);
 
+  self.load-user-data($user-data);
+  self.set-style('QASheetStack');
+
+  with $!sheet {
+    self.set-dialog-size( .width, .height) if ? .width and ? .height;
+  }
+
+  # set the grid and fill it
+  self.set-grid(self);
+  self.set-grid-content(self);
+note 'sheetstack pages done';
+
+#`{{
   self!set-style;
 
   # todo width and height spec must go to sets
@@ -81,7 +101,8 @@ submethod BUILD (
     if ?$!sheet.width and ?$!sheet.height;
 
   $!grid = self.dialog-content;
-
+}}
+#`{{
   # create the stack and add pages to it
   $!stack .= new;
   $!grid.attach( $!stack, 0, 0, 1, 1);
@@ -89,16 +110,13 @@ submethod BUILD (
   $!stack-switcher .= new;
   $!stack-switcher.set-stack($!stack);
   $!grid.attach( $!stack-switcher, 0, 1, 1, 1);
-
+}}
   # add some buttons specific for this stack
-  self.create-button(
-    'cancel', 'cancel-dialog', GTK_RESPONSE_CANCEL, :default, :dialog(self)
-  );
+  self.add-button( 'cancel', GTK_RESPONSE_CANCEL, :default);
+  self.add-button( 'finish', GTK_RESPONSE_OK);
+note 'buttons added';
 
-  self.create-button(
-    'finish', 'finish-dialog', GTK_RESPONSE_OK, :dialog(self)
-  );
-
+#`{{
   # when buttons are pressed, this will prevent return to the caller until
   # the state of the sheet is ok. assume a faulty sheet for now.
   $!faulty-state = True;
@@ -119,8 +137,25 @@ submethod BUILD (
       );
     }
   }
+}}
 }
 
+#-------------------------------------------------------------------------------
+method add-button (
+  Str $widget-name, GtkResponseType $response-type, Bool :$default = False
+) {
+
+  my Gnome::Gtk3::Button $button = self.create-button($widget-name);
+
+  if $default {
+    $button.set-can-default(True);
+    self.set-default-response($response-type);
+  }
+
+  self.add-action-widget( $button, $response-type);
+}
+
+#`{{
 #-------------------------------------------------------------------------------
 method !set-style ( ) {
   # load the gtk resource file and register resource to make data global to app
@@ -143,7 +178,9 @@ method !set-style ( ) {
 
   $context.add-class('QASheetStack');
 }
+}}
 
+#`{{
 #-------------------------------------------------------------------------------
 method create-button (
   Str $widget-name, Str $method-name, GtkResponseType $response-type,
@@ -202,7 +239,67 @@ method show-sheet ( --> Int ) {
 
   $!response
 }
+}}
 
+#-------------------------------------------------------------------------------
+method show-sheet ( ) {
+
+CATCH { .note; }
+note 'show sheet';
+
+  my QA::Status $status .= instance;
+  $status.clear-status;
+
+  loop {
+    given GtkResponseType(self.show-dialog) {
+      when GTK_RESPONSE_DELETE_EVENT {
+        self.hide;
+        sleep(0.3);
+        self.destroy;
+        last;
+      }
+
+      when GTK_RESPONSE_OK {
+        if $status.faulty-state {
+          my QA::Gui::OkMsgDialog $ok .= new(
+            :message(
+              "There are still missing or wrong answers, cannot save data"
+            )
+          );
+
+          $ok.dialog-run;
+          $ok.destroy;
+        }
+
+        else {
+          self.save-data;
+          if ?$!result-handler-object and
+              $!result-handler-object.^can($!result-handler-method) {
+            $!result-handler-object."$!result-handler-method"(
+              $!result-user-data
+            );
+          }
+
+          self.destroy;
+          last;
+        }
+      }
+
+      when GTK_RESPONSE_CANCEL {
+        if self.show-cancel {
+          self.destroy;
+          last;
+        }
+      }
+
+      default {
+        die "Response type '$_' not supported";
+      }
+    }
+  }
+}
+
+#`{{
 #-------------------------------------------------------------------------------
 #--[ Signal Handlers ]----------------------------------------------------------
 #-------------------------------------------------------------------------------
@@ -247,6 +344,7 @@ method dialog-response ( gint $response, QA::Gui::Dialog :_widget($dialog) ) {
     }
   }
 }
+}}
 
 #-------------------------------------------------------------------------------
 method show-cancel ( --> Bool ) {
@@ -265,6 +363,7 @@ method show-cancel ( --> Bool ) {
   $done
 }
 
+#`{{
 #-------------------------------------------------------------------------------
 method save-data ( ) {
   $!result-user-data = $!user-data;
@@ -272,3 +371,4 @@ method save-data ( ) {
   $qa-types.qa-save( $!sheet-name, $!result-user-data, :userdata)
     if $!save-data;
 }
+}}
