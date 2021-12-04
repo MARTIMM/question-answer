@@ -43,11 +43,15 @@ class EH {
 # data structure
 my EH $eh .= new;
 
-# modify some path for tests to come
+# modify some path for tests to come. Use given because $qa-types is not defined
 given my QA::Types $qa-types {
   .data-file-type(QAJSON);
   .cfgloc-userdata('xbin/Data');
   .cfgloc-sheet('xbin/Data/Sheets');
+  note 'dirs ', .list-dirs;
+  note 'sheets: ', .qa-list(:sheet);
+  note 'sets: ', .qa-list(:set);
+  note 'data: ', .qa-list(:userdata);
 }
 
 my Gnome::Gtk3::Label $description .= new(:text(''));
@@ -67,7 +71,7 @@ with my Gnome::Gtk3::Grid $grid .= new {
   .attach( $dialog-button, 0, 1, 1, 1);
 }
 
-given my Gnome::Gtk3::Window $top-window .= new {
+with my Gnome::Gtk3::Window $top-window .= new {
   .set-title('Simple Sheet Test');
   .register-signal( $eh, 'exit-app', 'destroy');
   .set-border-width(20);
