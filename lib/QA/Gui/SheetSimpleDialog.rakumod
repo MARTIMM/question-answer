@@ -46,6 +46,7 @@ submethod BUILD (
   Any :$!result-handler-object?, Str :$!result-handler-method?
 ) {
   $!sheet .= new(:$!sheet-name);
+
   self.load-user-data($user-data);
   self.set-style('QASheetSimple');
 
@@ -81,10 +82,9 @@ method add-button (
 method show-sheet ( ) {
 
   my QA::Status $status .= instance;
+  $status.clear-status;
 
   loop {
-    $status.clear-status;
-
     given GtkResponseType(self.show-dialog) {
       when GTK_RESPONSE_DELETE_EVENT {
         self.hide;
