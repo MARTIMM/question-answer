@@ -283,7 +283,11 @@ method qa-load( Str:D $qa-filename, *%options --> Hash ) {
     }
   }
 
-  $qa-data // %()
+  # sheet or set config files must be found, userdata may be absent
+  die "Can not read file '$qa-path'"
+    unless %options<userdata>:exists or $qa-path.IO.r;
+
+  $qa-data // %();
 }
 
 #-------------------------------------------------------------------------------
@@ -589,8 +593,8 @@ An example widget could be something like the one shown below. This widget shows
     }
   }
 
-  # later ...
-  my QA::Types $qa-types .= new;
+  # init ...
+  my QA::Types $qa-types .= instance;
   $qa-types.set-widget-object( 'my-widget', MyWidget.new);
 
 
