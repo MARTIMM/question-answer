@@ -178,7 +178,7 @@ mindmapDiagram {
 
 
 ## Input Field
-Each grid row contains a selection list if `$!question.selectlist` is valid, the input widget and a tool button when `$!question.repeatable` is on. The tool button show a '+' on the last row to add a new row. Otherwise it shows a '-' to delete the row.
+Each grid row contains a selection list if `$!question.selectlist` is valid, the input widget and a tool button when `$!question.repeatable` is on. The tool button shows a '+' and another button for a '-' on the last row to add a new row or to remove that row. Otherwise it shows a '-' to delete the row.
 
 ```plantuml
 @startmindmap
