@@ -193,7 +193,7 @@ method save-data ( ) {
 # create page with all widgets on it. it always will return a
 # scrollable window
 method !create-page( Hash $page, Bool :$description = True --> QA::Gui::Page ) {
-  note "\npage: ", $page.raku;
+#  note "\npage: ", $page.raku;
   my QA::Gui::Page $gui-page .= new( :$page, :$description, :$!user-data);
   $!pages.push: $gui-page;
 

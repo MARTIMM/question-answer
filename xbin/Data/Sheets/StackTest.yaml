@@ -1,0 +1,172 @@
+
+"width": 800
+"height": 500
+"button-map":
+  "cancel": "stop"
+  "finish": "donnit"
+
+"pages":
+  - "page-name": "page1"
+    "description": "Specification of a set. Below you can fill in the necessary fields required for a description of an input field."
+    "title": "Set Specification"
+
+    "sets":
+      - "set-name": "entry-spec"
+        "description": "Specify the fields that makup this question"
+        "title": "Entry Specification"
+
+        "questions":
+          - "name": "name"
+            "required": true
+            "fieldtype": "QAEntry"
+            "description": "Key of this input field"
+            "title": "Name"
+
+          - "name": "radio-station"
+            "fieldtype": "QARadioButton"
+            "description": "Select your favorite radio station"
+            "fieldlist":
+              - "Classic FM"
+              - "Radio 1"
+              - "Pop 90-ies"
+
+          - "name": "spinbutton"
+            "fieldtype": "QASpinButton"
+            "description": "spin it a bit"
+            "climbrate": 0.03
+            "digits": 3
+            "minimum": -1
+            "maximum": 1
+            "page-incr": 0.05
+            "page-size": 0.1
+            "step-incr": 0.001
+
+          - "name": "check"
+            "fieldtype": "QACheckButton"
+            "description": "select some colors"
+            "fieldlist":
+              - "Red"
+              - "Purple"
+              - "Orange"
+
+          - "name": "title"
+            "fieldtype": "QAEntry"
+            "description": "Title text"
+            "title": "Title"
+            "minimum": 4
+            "maximum": 10
+            tooltip: 4 to 10 chars
+
+          - "name": "onedirname"
+            "fieldtype": "QAFileChooser"
+            "description": "One directory"
+            "title": "Select a directory"
+            options:
+              action: select
+
+          - "name": "an-image"
+            "fieldtype": "QAImage"
+            "description": "A Picture"
+            "title": "Select an Image"
+            "width": 100
+
+          - "name": "filename"
+            "fieldtype": "QAFileChooser"
+            "description": "Your files"
+            "title": "Select Files"
+            "repeatable": true
+            "selectlist":
+              - "Config"
+              - "Output"
+              - "Log"
+
+          - "name": "more-image"
+            "fieldtype": "QAImage"
+            "description": "A Picture"
+            "title": "Select an Image"
+            "height": 400
+            "width": 400
+            "repeatable": true
+            "selectlist":
+              - "Icon"
+              - "P2"
+              - "Etc"
+
+          - "name": "description"
+            "fieldtype": "QATextView"
+            "description": "Description of this input field"
+            "title": "Description"
+            "required": false
+            "repeatable": true
+            "minimum": 5
+            tooltip: At least 5 words
+
+  - "page-name": "page2"
+    "description": "Something new."
+    "title": "2nd Specification"
+    "sets":
+      - "set-name": "entry-spec"
+        "description": "Specify the fields that makup this question"
+        "title": "Entry Specification"
+        "questions":
+
+          - "name": "title"
+            "required": false
+            "description": "Title text"
+            "title": "Title"
+            "fieldtype": "QAEntry"
+
+          - "name": "required"
+            "fieldtype": "QASwitch"
+            "default": false
+            "title": "Required"
+            "description": "Required input"
+            "required": false
+
+          - "name": "encode"
+            "default": false,
+            "fieldtype": "QASwitch"
+            "title": "Encode"
+            "description": "Encode input value before returning"
+            "required": false
+
+
+  - "page-name": "page3"
+    "description": "Something else."
+    "title": "3rd Specification"
+    "sets":
+      - "set-name": "somespec"
+        "description": "Specify the fields that makup this question"
+        "title": "Entry Specification"
+        "questions":
+
+          - "name": "othername"
+            "required": true
+            "fieldtype": "QAEntry"
+            "title": "Name"
+            "description": "Key of this input fieldtype"
+
+          - "name": "fieldtype"
+            "fieldlist":
+              - "QAEntry"
+              - "QATextView"
+              - "QASwitch"
+              - "QAComboBox"
+              - "QARadioButton"
+              - "QACheckButton"
+              - "QAToggleButton"
+            "fieldtype": "QAComboBox"
+            "default": "QAEntry"
+            "title": "Field"
+            "description": "Type of input field"
+            "action": "show-select1"
+
+          - "name": "dnd-image"
+            "fieldtype": "QAImage"
+            "description": "Pictures"
+            "title": "drop Images"
+            "height": 400
+            "width": 400
+            "repeatable": true
+            options:
+              dnd: "image/*, text/uri-list, text/plain"

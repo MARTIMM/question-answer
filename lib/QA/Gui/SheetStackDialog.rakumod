@@ -77,7 +77,7 @@ submethod BUILD (
                 $qa-types.qa-load( $!sheet-name, :userdata) //
                 %();
 }}
-note "sheet name: $!sheet-name";
+#note "sheet name: $!sheet-name";
 
   $!sheet .= new(:$!sheet-name);
 
@@ -91,7 +91,7 @@ note "sheet name: $!sheet-name";
   # set the grid and fill it
   self.set-grid(self);
   self.set-grid-content(self);
-note 'sheetstack pages done';
+#note 'sheetstack pages done';
 
 #`{{
   self!set-style;
@@ -114,7 +114,7 @@ note 'sheetstack pages done';
   # add some buttons specific for this stack
   self.add-button( 'cancel', GTK_RESPONSE_CANCEL, :default);
   self.add-button( 'finish', GTK_RESPONSE_OK);
-note 'buttons added';
+#note 'buttons added';
 
 #`{{
   # when buttons are pressed, this will prevent return to the caller until
@@ -245,7 +245,7 @@ method show-sheet ( --> Int ) {
 method show-sheet ( ) {
 
 CATCH { .note; }
-note 'show sheet';
+#note 'show sheet';
 
   my QA::Status $status .= instance;
   $status.clear-status;
