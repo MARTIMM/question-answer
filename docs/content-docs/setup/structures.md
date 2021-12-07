@@ -44,34 +44,59 @@ Questions are what it is all about. In short a piece of text to pose the questio
 * **callback**; A name of a method which can be called on a previously provided object. The handler must check for correctness of the input value for that question and return an error message if test fails.
 * **default**; A default value when no input is provided.
 * **description**; A question. When empty, title is taken.
-* **dnd**; Make widget a drag destination for images, documents and text. Its value is a list of target names such as `text/plain, text/x-perl`. You can also makeup targets as long as you have some source application supporting the targets.
-* **example**; An example answer/format in light gray in an text field.
 * **fieldlist**; The fieldlist is used to fill e.g. a combobox or a list input field.
 * **fieldtype**; The widget type to use to provide the answer with. Current enumerated types are: `QAEntry` for text, `QATextView` for multiline text, `QAComboBox` a list of possibilities to chose from, `QARadioButton` a select of one of a set of posibilities, `QACheckButton`, one or more possebilities `QAToggleButton` boolean input, `QAScale` a slider, `QASwitch` also boolean input, `QAUserWidget` with a user definable input. Other types are `QAColorChooser`, `QAFileChooser`, `QAList`, `QASpin` and `QAImage`. Some of these are not yet implemented.
 * **height**; Sometimes a height is needed for a widget.
 * **hide**; Hide this question. A use for it to hide or view a set in an action handler.
-* **invisible**; Make text input unreadable by showing stars (\*) e.g. password input.
-* **maximum**; Upper limit of the input or widget. E.g. Scale.
-* **minimum**; Lower limit of the input or widget. E.g. Scale.
 * **name**; Used in Gui to set and retrieve data. This name is also set on the input widget to be able to find it.
+* **options**; A hash of options for the input objects
 * **repeatable**; A field can be extended with another input for the same question. E.g. email addresses or telephone numbers.
 * **required**; An input is required. It is shown with a star at the front of the input.
 * **selectlist**; The selectlist is used with input fields where a combobox is placed in front of the input field. E.g. a text input of a telephone number can be set for a home, work or mobile phone. The names 'home', 'work' or 'mobile' are then showed in the combobox. Other types might also have these possibilities.
-* **step**; Step size for the slider.
 * **title**; unused if there is a description, otherwise it is used as the question text.
 * **tooltip**; Some helpful message shown on the input field.
 * **userwidget**; Key to the previously stored user widget as input widget.
 * **width**; sometimes a width is needed for a widget.
 
-<!--
-* **keymap**; Keyed control of widgets like `<CTRL>V` to paste from clipboard. By default turned off. When on, there will be a set of keys defined to add, delete and paste text or documents. All other keyboard keys are by default on, e.g. input of text (of course), arrow keys, tab key etc.
--->
+### List of options for input widgets
 
-#### Notes
+* **QACheckButton**
+* **QAColorChooser**
+* **QAComboBox**
+* **QAEntry**
+  * **example**; An example answer/format in light gray in an text field.
+  * **invisible**; Make text input unreadable by showing stars (\*) e.g. password input.
+  * **maximum**; Maximum number of characters.
+  * **minimum**; Minimum number of characters.
+* **QAFileChooser**
+  * **action**; The way the chooser selects a file or directory. This can be one of
+    `open`; Indicates open mode. The file chooser will only let the user pick an existing file.
+    `save`; Indicates save mode. The file chooser will let the user pick an existing file, or type in a new filename.
+    `select`; Indicates an Open mode for selecting folders. The file chooser will let the user pick an existing folder.
+    `create`; Indicates a mode for creating a new folder. The file chooser will let the user name an existing or new folder.
+* **QAImage**
+  * **dnd**; Make this widget a drag destinatio. Its value is a list of target names such as `text/plain, text/x-perl`. You can also makeup targets as long as you have some source application supporting the targets.
+* **QARadioButton**
+* **QASwitch**
+* **QATextView**
+  * **maximum**; Maximum number of words.
+  * **minimum**; Minimum number of words.
+* **QAToggleButton**
+* **QASpinButton**
+  * **climbrate**; specifies by how much the rate of change in the value will accelerate if you continue to hold down an up/down button or arrow key. default set to 1.5e0.
+  * **digits**; The number of decimal places to display.
+  * **maximum**; Upper limit of the input. Default is 1e2.
+  * **minimum**; Lower limit of the input. Default is 0e0.
+  * **page-incr**; Sets the page increment. Default is 2e0.
+  * **page-size**; Sets the page size. Default is 1e1.
+  * **step-incr**; Sets the step increment. Default is 1e0.
+* **QAUserWidget**
+
+### Notes
 * Default fieldtype is QAEntry
 * Boolean values like required and hide is `False` if not mentioned.
-* Other values are '' or 0 by default when absent. Min and Max are -Inf and Inf when absent.
-* Select lists in a question descriptions are always arrays.
+* Other values are '' or 0 by default when absent. Minimum and maximum are -Inf and Inf when absent.
+* Select lists in question descriptions are always arrays.
 * Defaults are always single valued.
 * Callback and action names are keys referring to method names in a user class. To provide this information there are several routines defined for this in **QA::QATypes**.
 
@@ -98,7 +123,7 @@ page-name2 => {
 ```
 
 
-The structure of a value provided by the caller or returned by the program, can differ for each input type.
+The structure of a value-spec provided by the caller or returned by the program, can differ for each input type.
 
 The formats used are shown below for each input type with the variables which control this output format.
 
@@ -126,7 +151,8 @@ The formats used are shown below for each input type with the variables which co
 |**QAUserWidget**  |user definable|user definable |user definable
 
 <br/>
-#### A table where field specs are shown for each field type
+
+### A table where field specs are shown for each field type
 
 | Symbol | Explanation
 |--------|-------------------------------------------|
@@ -157,36 +183,23 @@ The formats used are shown below for each input type with the variables which co
 |             |En|Cb|Co|Im|Li|Rb|Sc|Sw|Tv|Tb|Cc|Fc|Sp|Uw|
 |-------------|--|--|--|--|--|--|--|--|--|--|--|--|--|--|
 |action       |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
-|buttons      |o |- |- |o |- |- |- |- |  |- |o |o |  |  |
-|callback     |o |- |- |  |  |- |  |  |o |  |  |  |  |  |
-|climbrate    |- |- |- |- |- |- |o |- |- |- |- |- |o |  |
-|default      |o |o |o |o |o |o |o |o |o |o |o |o |o |  |
-|description  |o |o |o |o |o |o |o |o |o |o |o |o |o |  |
-|digits       |- |- |- |- |- |- |o |- |- |- |- |- |o |  |
-|dnd          |- |- |- |o |- |- |- |- |- |- |- |o |- |  |
-|example      |o |- |- |- |- |- |- |- |- |- |- |- |- |  |
-|fieldlist    |- |! |! |- |! |! |  |  |  |  |  |  |  |  |
+|buttons      |o |- |- |o |- |- |- |- |  |- |o |o |  |  | <!-- optional? -->
+|callback     |o |- |- |  |  |- |  |  |o |  |  |  |  |  | <!-- optional? -->
+|default      |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
+|description  |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
+|fieldlist    |- |! |! |- |! |! |  |  |  |  |  |  |  |o | <!-- optional? -->
 |fieldtype    |o |! |! |! |! |! |! |! |! |! |! |! |! |! |
-|height       |- |- |- |o |  |- |  |  |o |  |  |  |  |  |
-|hide         |o |o |o |o |o |o |o |o |o |o |o |o |o |  |
-|invisible    |o |- |- |- |- |- |- |- |- |- |- |- |- |  |
-|maximum      |o |- |- |- |- |- |o |- |o |- |- |- |o |  |
-|minimum      |o |- |- |- |- |- |o |- |o |- |- |- |o |  |
+|height       |- |- |- |o |  |- |  |  |o |  |  |  |  |o | <!-- optional? -->
+|hide         |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
 |name         |! |! |! |! |! |! |! |! |! |! |! |! |! |! |
-|page-incr    |- |- |- |- |- |- |o |- |- |- |- |- |o |  |
-|page-size    |- |- |- |- |- |- |o |- |- |- |- |- |o |  |
-|repeatable   |o |- |- |o |  |- |  |  |  |  |o |o |  |  |
-|required     |o |o |o |o |o |o |o |o |o |o |o |o |o |  |
-|selectlist   |o |- |- |o |- |- |- |- |- |- |o |o |- |  |
-|step-incr    |- |- |- |- |- |- |o |- |- |- |- |- |o |  |
+|options      |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
+|repeatable   |o |- |- |o |  |- |  |  |  |  |o |o |  |  | <!-- optional? -->
+|required     |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
+|selectlist   |o |- |- |o |- |- |- |- |- |- |o |o |- |  | <!-- optional? -->
 |title        |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
 |tooltip      |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
 |userwidget   |- |- |- |- |- |- |- |- |- |- |- |- |- |! |
-|width        |- |- |- |o |  |- |  |  |  |  |  |  |  |  |
-
-<!--
-|keymap       |o |o |o |o |o |o |  |  |  |  |o |o |  |  |
--->
+|width        |- |- |- |o |  |- |  |  |  |  |  |  |  |  | <!-- optional? -->
 
 ## Sheet
 
