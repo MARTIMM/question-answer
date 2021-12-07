@@ -75,7 +75,7 @@ with my Gnome::Gtk3::Grid $grid .= new {
   .attach( $dialog-button, 0, 1, 1, 1);
 }
 
-given $top-window {
+with $top-window {
   .set-title('Simple Sheet Test');
   .register-signal( $eh, 'exit-app', 'destroy');
   .set-border-width(20);
