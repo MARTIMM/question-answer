@@ -20,7 +20,9 @@
               "invisible": true,
               "fieldtype": "QAEntry",
               "minimum": 4,
-              "example": "At least 4 characters!"
+              "options": {
+                "example": "At least 4 characters!"
+              }
             }
           ],
           "set-name": "login",

@@ -23,8 +23,9 @@
           "description": "spin it a bit",
           "climbrate": 0.03,
           "digits": 3,
-          "minimum": -1,
-          "maximum": 1,
+          options:
+            "minimum": -1,
+            "maximum": 1,
           "page-incr": 0.05,
           "page-size": 0.1,
           "step-incr": 0.001
@@ -44,8 +45,9 @@
           "fieldtype": "QAEntry",
           "description": "Title text",
           "title": "Title",
-          "minimum": 4,
-          "maximum": 10
+          options:
+            "minimum": 4,
+            "maximum": 10
         },
         {
           "name": "onefilename",
@@ -92,8 +94,9 @@
           "name": "description",
           "required": false,
           "repeatable": true,
-          "minimum": 2,
-          "maximum": 4
+          options:
+            "minimum": 2,
+            "maximum": 4
         }
       ],
       "name": "set-spec",
