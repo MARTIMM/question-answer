@@ -25,7 +25,7 @@ class EH {
       :show-cancel-warning, :save-data,
       :result-handler-object(self), :result-handler-method<display-result>
     );
-note 'build done';
+#note 'build done';
 
     $!sheet-dialog.show-sheet;
   }
