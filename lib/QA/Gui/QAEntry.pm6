@@ -20,9 +20,14 @@ also does QA::Gui::Value;
 # Make attributes readable so that the roles can access them using self.question
 has QA::Question $.question;
 has Hash $.user-data-set-part;
+# take a Num for char count because ∞ and -∞ is a Num
+has Num ( $!maximum, $!minimum);
 
 #-------------------------------------------------------------------------------
-submethod BUILD ( QA::Question:D :$!question, Hash:D :$!user-data-set-part ) { }
+submethod BUILD ( QA::Question:D :$!question, Hash:D :$!user-data-set-part ) {
+  $!maximum = $!question.options<maximum> // ∞;
+  $!minimum = $!question.options<minimum> // -∞;
+}
 
 #-------------------------------------------------------------------------------
 method create-widget ( Int() :$row --> Any ) {
@@ -37,7 +42,7 @@ method create-widget ( Int() :$row --> Any ) {
     my Bool $visibility = ! $!question.invisible;
     .set-visibility($visibility);
 
-    my Str $example = $!question.example;
+    my Str $example = $!question.options<example> // '';
     .set-placeholder-text($example) if ?$example;
 
     .register-signal( self, 'input-change-handler', 'focus-out-event', :$row);
@@ -65,12 +70,12 @@ method clear-value ( Any:D $entry ) {
 method check-value ( Str $input --> Str ) {
   my Str $message;
   my Int $nc = $input.chars;
-  if ?$!question.minimum and $nc < $!question.minimum {
-    $message = "Minimum number of characters = $!question.minimum()";
+  if $nc < $!minimum {
+    $message = "Minimum number of characters = $!minimum()";
   }
 
-  elsif ?$!question.maximum and $nc > $!question.maximum {
-    $message = "Maximum number of characters = $!question.maximum()";
+  elsif $nc > $!maximum {
+    $message = "Maximum number of characters = $!maximum()";
   }
 
   $message

@@ -20,10 +20,16 @@ also does QA::Gui::Value;
 has QA::Question $.question;
 has Hash $.user-data-set-part;
 
+# take a Num for word count because ∞ and -∞ is a Num
+has Num ( $!maximum, $!minimum);
+
 #-------------------------------------------------------------------------------
 submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part
 ) {
+  $!maximum = $!question.options<maximum> // ∞;
+  $!minimum = $!question.options<minimum> // -∞;
+
   $!question.repeatable = False;
 }
 
@@ -79,12 +85,12 @@ method clear-value ( Any:D $textview ) {
 method check-value ( Str $input --> Str ) {
   my Str $message;
   my Int $nw = $input.comb(/\w+/).elems;
-  if ?$!question.minimum and $nw < $!question.minimum {
-    $message = "Minimum number of words = $!question.minimum()";
+  if $nw < $!minimum {
+    $message = "Minimum number of words = $!minimum()";
   }
 
-  elsif ?$!question.maximum and $nw > $!question.maximum {
-    $message = "Maximum number of words = $!question.maximum()";
+  elsif $nw > $!maximum {
+    $message = "Maximum number of words = $!maximum()";
   }
 
   $message

@@ -28,19 +28,19 @@ submethod BUILD (
 method create-widget ( Int() :$row --> Any ) {
 
   # create a spin button input widget
-  my Num $minimum = ($!question.minimum // 0).Num;
+  my Num $minimum = ($!question.options<minimum> // 0).Num;
   my Gnome::Gtk3::Adjustment $adjustment .= new(
     :value($minimum),
     :lower($minimum),
-    :upper($!question.maximum // 100),
-    :step-increment($!question.step-incr // 1),
-    :page-increment($!question.page-incr // 2),
-    :page-size($!question.page-size // 10)
+    :upper($!question.options<maximum> // 100),
+    :step-increment($!question.options<step-incr> // 1),
+    :page-increment($!question.options<page-incr> // 2),
+    :page-size($!question.options<page-size> // 10)
   );
 
   my Gnome::Gtk3::SpinButton $spin-button .= new(
-    :$adjustment, :climb-rate($!question.climbrate // 2),
-    :digits($!question.digits // 0)
+    :$adjustment, :climb-rate($!question.options<climbrate> // 1.5e0),
+    :digits($!question.options<digits> // 0)
   );
 
   $spin-button.set-hexpand(False);

@@ -43,12 +43,14 @@ enum IMAGEGRID <FCHOOSER-ROW IMAGE-ROW>;
 has QA::Question $.question;
 has Hash $.user-data-set-part;
 has $!input-widget;
+has Str $!dnd-targets;
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part,
   :$!input-widget where *.^name eq 'QA::Gui::InputWidget'
 ) {
+  $!dnd-targets = $!question.options<dnd> // '';
 }
 
 #-------------------------------------------------------------------------------
@@ -70,9 +72,9 @@ method create-widget ( Int() :$row --> Any ) {
     .set-hexpand(True);
     .set-vexpand(True);
     .set_filter($filter);
-    .set-border-width(2) if $!question.dnd;
+    .set-border-width(2) if ?$!dnd-targets;
     .register-signal( self, 'input-change-handler', 'file-set', :$row);
-    .register-signal( self, 'must-hide', 'show', :dnd($!question.dnd));
+    .register-signal( self, 'must-hide', 'show');
   }
 
   self.add-class( $fcb, 'QAFileChooserButton');
@@ -85,9 +87,7 @@ method create-widget ( Int() :$row --> Any ) {
   # When drag and drop is requested, prepare a drag destination. Then,
   # also no file chooser button is necessary. Button is made invisible
   # on the show event
-  self.setup-as-drag-destination(
-     $image, $!question.dnd, $fcb, $widget-grid, $row
-  ) if ?$!question.dnd;
+  self.setup-as-drag-destination( $image, $fcb, $widget-grid, $row);
 
   $widget-grid.attach( $image, 0, IMAGE-ROW, 1, 1);
 
@@ -142,8 +142,8 @@ method input-change-handler (
 #-------------------------------------------------------------------------------
 # Make widget invisible when dnd is turned on. Wait until widgets are shown
 # to be able to turn it off.
-method must-hide ( Gnome::Gtk3::FileChooserButton :_widget($fcb), Str :$dnd ) {
-  $fcb.hide if ?$dnd;
+method must-hide ( Gnome::Gtk3::FileChooserButton :_widget($fcb) ) {
+  $fcb.hide if ?$!dnd-targets;
 }
 
 #-------------------------------------------------------------------------------
@@ -160,12 +160,12 @@ method !set-image ( Gnome::Gtk3::Grid $grid, Str $filename ) {
 
 #-------------------------------------------------------------------------------
 method setup-as-drag-destination (
-  $destination-widget, Str $target-list, Gnome::Gtk3::FileChooserButton $fcb,
+  $destination-widget, Gnome::Gtk3::FileChooserButton $fcb,
   Gnome::Gtk3::Grid $widget-grid, Int() $row
 ) {
 
   my Array[N-GtkTargetEntry] $target-entries = Array[N-GtkTargetEntry].new;
-  for $target-list.split(/\s* ',' \s*/) -> $target {
+  for $!dnd-targets.split(/\s* ',' \s*/) -> $target {
     $target-entries.push:  N-GtkTargetEntry.new( :$target, :flags(0), :info(0));
   }
 

@@ -83,7 +83,6 @@ method input-change-handler ( Int $state, :_widget($switch), :$row --> Int ) {
   self.process-widget-input(
     $switch-grid, $switch.get-active.Bool, $row, :!do-check
   );
-note "$?LINE, QASwitch $state, $!question.name()";
 
   1
 }
