@@ -29,21 +29,21 @@ has Hash $.button-map is rw;
 has QA::Types $!qa-types;
 
 #-------------------------------------------------------------------------------
-submethod BUILD ( Str:D :$!sheet-name ) {
+submethod BUILD ( Str:D :$!sheet-name, Hash :$sheet ) {
 
   # initialize types
   $!qa-types .= instance;
-  self!load;
+  self!load(:$sheet);
 }
 
 #-------------------------------------------------------------------------------
-method !load ( ) {
+method !load ( Hash :$sheet is copy ) {
 
   # initialize sheets
   $!pages = %();
   $!page-data = [];
 
-  my Hash $sheet = $!qa-types.qa-load( $!sheet-name, :sheet);
+  $sheet //= $!qa-types.qa-load( $!sheet-name, :sheet);
   if ?$sheet {
     $!width = $sheet<width> // 0;
     $!height = $sheet<height> // 0;
