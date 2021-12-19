@@ -2,7 +2,6 @@
 #tp:1:SheetStackDialog.raku
 
 use v6.d;
-#use trace;
 
 use Gnome::Gtk3::Dialog;
 use Gnome::Gtk3::Main;

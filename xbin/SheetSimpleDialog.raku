@@ -48,10 +48,10 @@ given my QA::Types $qa-types {
   .data-file-type(QAJSON);
   .cfgloc-userdata('xbin/Data');
   .cfgloc-sheet('xbin/Data/Sheets');
-  note 'dirs ', .list-dirs;
-  note 'sheets: ', .qa-list(:sheet);
-  note 'sets: ', .qa-list(:set);
-  note 'data: ', .qa-list(:userdata);
+#  note 'dirs ', .list-dirs;
+#  note 'sheets: ', .qa-list(:sheet);
+#  note 'sets: ', .qa-list(:set);
+#  note 'data: ', .qa-list(:userdata);
 }
 
 my Gnome::Gtk3::Label $description .= new(:text(''));
