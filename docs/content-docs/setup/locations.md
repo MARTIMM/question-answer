@@ -75,7 +75,7 @@ make-sheets ( ) {
   # create a questions sheet holding the sets
   my QAManager::Sheet $sheet .= new(:sheet-name<login>);
   $sheet.display = QADialog;
-  $sheet.button-map = %( "finish": "login");
+  $sheet.button-map = %( "save-quit": "login");
 
   $sheet.new-page(:name<Login>);
   $sheet.add-set( :category<accounting>, :set<credentials>);

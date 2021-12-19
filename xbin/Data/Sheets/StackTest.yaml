@@ -3,7 +3,7 @@
 "height": 500
 "button-map":
   "cancel": "stop"
-  "finish": "donnit"
+  "save-quit": "donnit"
 
 "pages":
   - "page-name": "page1"

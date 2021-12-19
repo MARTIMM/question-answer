@@ -113,7 +113,7 @@ submethod BUILD (
 }}
   # add some buttons specific for this stack
   self.add-button( 'cancel', GTK_RESPONSE_CANCEL, :default);
-  self.add-button( 'finish', GTK_RESPONSE_OK);
+  self.add-button( 'save-quit', GTK_RESPONSE_OK);
 #note 'buttons added';
 
 #`{{

@@ -56,7 +56,7 @@ submethod BUILD (
   self.set-grid($!widget);
   self.set-grid-content($!widget);
 
-  # add some buttons specific for this notebook
+  # add some buttons specific for this
   with my Gnome::Gtk3::Grid $button-grid .= new {
     with my Gnome::Gtk3::Box $strut .= new {
       .set-hexpand(True);
@@ -68,17 +68,23 @@ submethod BUILD (
     }
     .attach( $strut, 0, 0, 1, 1);
 
-    .attach(
-      self.create-button(
-        'cancel', :method-object(self), :method-name<cancel-response>
-      ), 1, 0, 1, 1
+    my $button = self.create-button(
+      'cancel', :method-object(self), :method-name<cancel-response>
     );
 
-    .attach(
-      self.create-button(
-        'finish', :method-object(self), :method-name<ok-response>
-      ), 2, 0, 1, 1
+    .attach( $button, 1, 0, 1, 1) if ?$button;
+
+
+    $button = self.create-button(
+    'save-quit', :method-object(self), :method-name<ok-response>
     );
+    .attach( $button, 2, 0, 1, 1) if ?$button;
+
+
+    $button = self.create-button(
+    'save-continue', :method-object(self), :method-name<apply-response>
+    );
+    .attach( $button, 3, 0, 1, 1) if ?$button;
   }
   $!grid.attach( $button-grid, 0, 2, 1, 1);
 
@@ -96,19 +102,13 @@ method cancel-response ( ) {
 
 #-------------------------------------------------------------------------------
 method ok-response ( ) {
-  note 'ok-response';
 
   my QA::Status $status .= instance;
 
   if $status.faulty-state {
-    my QA::Gui::OkMsgDialog $ok .= new(
-      :message(
-        "There are still missing or wrong answers, cannot save data"
-      )
+    self.show-message(
+      "There are still missing or wrong answers, cannot save data"
     );
-
-    $ok.dialog-run;
-    $ok.destroy;
   }
 
   else {
@@ -116,20 +116,46 @@ method ok-response ( ) {
 
     if ?$!result-handler-object and
         $!result-handler-object.^can($!result-handler-method) {
-      $!result-handler-object."$!result-handler-method"(
-        $!result-user-data
-      );
+      $!result-handler-object."$!result-handler-method"($!result-user-data);
     }
 
-    # must hide instead of destroy, otherwise the return status
-    # is set to GTK_RESPONSE_NONE
     $!widget.destroy;
+  }
+}
+
+#-------------------------------------------------------------------------------
+method apply-response ( ) {
+
+  my QA::Status $status .= instance;
+
+  if $status.faulty-state {
+    self.show-message(
+      "There are still missing or wrong answers, cannot save data"
+    );
+  }
+
+  else {
+    self.save-data;
+
+    if ?$!result-handler-object and
+        $!result-handler-object.^can($!result-handler-method) {
+      $!result-handler-object."$!result-handler-method"($!result-user-data);
+    }
   }
 }
 
 #-------------------------------------------------------------------------------
 method show-sheet ( ) {
   $!widget.show-all;
+}
+
+#-------------------------------------------------------------------------------
+method show-message ( Str:D $message --> Int ) {
+  my QA::Gui::OkMsgDialog $ok .= new(:$message);
+  my $r = $ok.dialog-run;
+  $ok.destroy;
+
+  $r
 }
 
 #-------------------------------------------------------------------------------

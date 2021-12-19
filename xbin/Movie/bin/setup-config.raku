@@ -28,7 +28,7 @@ given my QA::Sheet $sheet .= new(:sheet-name<movie>) {
   .remove;
   .width = 400;
   .height = 500;
-  .button-map = %( :cancel('I want to quit'), :finish('Ready when you are!'));
+  .button-map = %( :cancel('I want to quit'), :save-quit('Ready when you are!'));
   .add-page(
     'Movie Info', :title('Movie info'),
     :description('Films and their actors')

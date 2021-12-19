@@ -139,14 +139,22 @@ method create-button (
   my Hash $button-map = $!sheet.button-map // %();
   my Str $button-text = $button-map{$widget-name} // $widget-name;
 
-  with my Gnome::Gtk3::Button $button .= new {
-    # change some other parameters
-    .set-name($widget-name);
-    .set-label($button-text.tc);
+  # uppercase first letter of every word.
+  $button-text = $button-text.split(/<[-_\s]>+/)>>.tc.join(' ');
 
-    # and register a signal if user object and method name are provided
-    .register-signal( $method-object, $method-name, 'clicked')
-      if ?$method-object and ?$method-name;
+note "CB: $button-map.raku, $button-text";
+
+  my Gnome::Gtk3::Button $button;
+  if ?$button-text {
+    with $button .= new {
+      # change some other parameters
+      .set-name($widget-name);
+      .set-label($button-text);
+
+      # and register a signal if user object and method name are provided
+      .register-signal( $method-object, $method-name, 'clicked')
+        if ?$method-object and ?$method-name;
+    }
   }
 
   $button

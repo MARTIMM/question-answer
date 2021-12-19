@@ -21,7 +21,7 @@ A set displays a number of questions together with proper input fields. At the t
 
 All values can be checked for its type and definedness by several methods.
 
-A QA sheet is presented and can be filled in. After pressing Finish, the QA sheet is checked against wrong input. When the input checks alright the dialog is removed from display and the result returned. If the input is in some way wrong (visual hints are already shown), a message dialog is displayed with the found problems.
+A QA sheet is presented and can be filled in. After pressing `Save Quit`, the QA sheet is checked against wrong input. When the input checks alright the dialog is removed from display and the result returned. If the input is in some way wrong (visual hints are already shown), a message dialog is displayed with the found problems.
 
 # API
 
@@ -148,7 +148,7 @@ Main display
 
 All but the Assistant sheet type are displayed in a Dialog widget. In this widget there can be one of several possibilities to give a it a specific layout.
 
-There is a possibility to name the buttons differently. This is done using a button map. Each key in this map has by default the same button label as its key but the first letter in uppercase and the rest lowercase. E.g. `:cancel<Cancel>` and `:finish<Finish>`. You might want to set `:cancel<Quit>` or `:finish<Login>`.
+There is a possibility to name the buttons differently. This is done using a button map. Each key in this map has by default the same button label as its key but the first letter of each word uppercase and the rest lowercase. E.g. `:cancel<Cancel>` and `:save-quit<Save Quit>`. You might want to set `:cancel<Quit>` or `:save-quit<Login>`.
 
 ## Display grid of a question
 
@@ -184,7 +184,7 @@ dp --> check: change\nfocus
 check: string value check
 check -> dp: modify field display\nand set statusbar
 dp --> ip: some button\npress
-ip -> u: quit or\nfinish
+ip -> u: quit or\nsave-quit
 ip -> dp: continue\ninput
 u --> [*]
 
@@ -193,7 +193,7 @@ u --> [*]
 
 ## QADialog sheet type
 
- This is the simplest of cases. There will be no extra pages and if given a sheet with more than one page, it will only handle the first page and ignore the rest. The dialog shows two buttons; `Cancel` or `Finish`.
+ This is the simplest of cases. There will be no extra pages and if given a sheet with more than one page, it will only handle the first page and ignore the rest. The dialog shows two buttons; `Cancel` or `save-quit`.
 
 ```plantuml
 @startuml
@@ -223,11 +223,11 @@ state "are you sure" as c: show quit message dialog
 
 [*] --> dp
 dp --> c: cancel\npressed
-dp --> fc: finish\npressed
+dp --> fc: save-quit\npressed
 fc --> w: wrong\nshow\nmessage
 w --> dp: want to\ncontinue
 w --> [*]: want to\nquit
-fc --> finished: ok\nfinish
+fc --> finished: ok\nsave-quit
 
 c --> dp: want to\ncontinue
 c --> [*]: want to\nquit
@@ -239,7 +239,7 @@ finished: save data if requested
 
 ## QANotebook sheet type
 
-A QANotebook has more pages selectable by tabs. There might be an introductory page with a description of the questionaire and no questions. There is only a `Cancel` button on an intro-page. Other buttons are disabled or invisible. The pages with questions have a `Cancel` and a `Finish` button.
+A QANotebook has more pages selectable by tabs. There might be an introductory page with a description of the questionaire and no questions. There is only a `Cancel` button on an intro-page. Other buttons are disabled or invisible. The pages with questions have a `Cancel` and a `save-quit` button.
 
 ```plantuml
 @startuml
@@ -262,7 +262,7 @@ dpi --> dpc: tab\nselected
 dpc --> dpi: tab\nselected
 dpc --> dpc: tab selected\nswitch page
 
-dpc --> fc: finish\npressed
+dpc --> fc: save-quit\npressed
 fc --> w: wrong\nshow\nmessage
 w --> dpc: want to\ncontinue
 w --> [*]: want to\nquit
@@ -283,7 +283,7 @@ finished: save data if requested
 
 
 'dpc --> canceled: cancel\npressed
-'dpc --> finished: finish\npressed
+'dpc --> finished: save-quit\npressed
 
 'canceled --> [*]
 'finished --> [*]

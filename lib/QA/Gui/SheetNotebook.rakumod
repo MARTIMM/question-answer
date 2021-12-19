@@ -82,7 +82,7 @@ submethod BUILD (
   );
 
   self.create-button(
-    'finish', 'finish-dialog', GTK_RESPONSE_OK, :dialog(self)
+    'save-quit', 'finish-dialog', GTK_RESPONSE_OK, :dialog(self)
   );
 
   # when buttons are pressed, this will prevent return to the caller until

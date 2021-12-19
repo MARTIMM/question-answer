@@ -207,7 +207,13 @@ The sheet is used to present questions to the user. In a sheet there are pages w
 
 * **width**; The minimum width of the dialog.
 * **height**; The minimum height of the dialog.
-* **button-map**; A map of button names. For instance on a login one would not like to have a 'Finish' label on a button but 'Login'. So an entry could be `"finish": "login"`. First letter uppercase is done automatically.
+* **button-map**; A map of button names. For instance on a login one would not like to have a 'Finish' label on a button but 'Login'. So an entry could be `"finish": "login"`. First letter uppercase of every word is done automatically and dashes are replaced with spaces. Buttons are hidden when mapped to an empty string. The supported buttons are;
+  * `save-quit`: Save and close.
+  * `save-continue`: Save but do not close. This is like an 'Apply'.
+  * `finish`: Deprecated. Same as `save-quit`.
+  * `cancel`: Close without saving.
+  * `help-info`: Show help dialog. Text is from `help-message`,
+* **help-info**; When help button is shown, this text can be displayed. When absent, the help button is NOT shown.
 * **pages**; An array of hashes.
 
 ```

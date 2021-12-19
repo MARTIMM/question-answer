@@ -33,7 +33,8 @@ mindmapDiagram {
 *** Box
 **** ButtonBox
 ***** Button (cancel)
-***** Button (finish)
+***** Button (save-quit)
+***** Button (save-continue)
 @endmindmap
 ```
 
@@ -74,7 +75,8 @@ mindmapDiagram {
 *** Box
 **** ButtonBox
 ***** Button (cancel)
-***** Button (finish)
+***** Button (save-quit)
+***** Button (save-continue)
 @endmindmap
 ```
 

@@ -60,22 +60,26 @@ submethod BUILD (
 
   # add some buttons specific for this notebook
   self.add-button( 'cancel', GTK_RESPONSE_CANCEL, :default);
-  self.add-button( 'finish', GTK_RESPONSE_OK);
+  self.add-button( 'save-continue', GTK_RESPONSE_APPLY);
+  self.add-button( 'save-quit', GTK_RESPONSE_OK);
+#  self.add-button( 'help-info', GTK_RESPONSE_HELP) if ?$!sheet<help-info>;
 }
 
 #-------------------------------------------------------------------------------
 method add-button (
   Str $widget-name, GtkResponseType $response-type, Bool :$default = False
 ) {
+note "add button $widget-name";
 
-  my Gnome::Gtk3::Button $button = self.create-button($widget-name);
+  # it is possible that button is undefined
+  with my Gnome::Gtk3::Button $button = self.create-button($widget-name) {
+    if $default {
+      .set-can-default(True);
+      self.set-default-response($response-type);
+    }
 
-  if $default {
-    $button.set-can-default(True);
-    self.set-default-response($response-type);
+    self.add-action-widget( $button, $response-type);
   }
-
-  self.add-action-widget( $button, $response-type);
 }
 
 #-------------------------------------------------------------------------------
@@ -85,7 +89,7 @@ method show-sheet ( ) {
   $status.clear-status;
 
   loop {
-    given GtkResponseType(self.show-dialog) {
+    given my Int $response-type = GtkResponseType(self.show-dialog) {
       when GTK_RESPONSE_DELETE_EVENT {
         self.hide;
         sleep(0.3);
@@ -95,14 +99,9 @@ method show-sheet ( ) {
 
       when GTK_RESPONSE_OK {
         if $status.faulty-state {
-          my QA::Gui::OkMsgDialog $ok .= new(
-            :message(
-              "There are still missing or wrong answers, cannot save data"
-            )
+          self.show-message(
+            "There are still missing or wrong answers, cannot save data"
           );
-
-          $ok.dialog-run;
-          $ok.destroy;
         }
 
         else {
@@ -116,6 +115,24 @@ method show-sheet ( ) {
 
           self.destroy;
           last;
+        }
+      }
+
+      when GTK_RESPONSE_APPLY {
+        if $status.faulty-state {
+          self.show-message(
+            "There are still missing or wrong answers, cannot save data"
+          );
+        }
+
+        else {
+          self.save-data;
+          if ?$!result-handler-object and
+              $!result-handler-object.^can($!result-handler-method) {
+            $!result-handler-object."$!result-handler-method"(
+              $!result-user-data
+            );
+          }
         }
       }
 
@@ -134,7 +151,17 @@ method show-sheet ( ) {
 }
 
 #-------------------------------------------------------------------------------
+method show-message ( Str:D $message --> Int ) {
+  my QA::Gui::OkMsgDialog $ok .= new(:$message);
+  my $r = $ok.dialog-run;
+  $ok.destroy;
+
+  $r
+}
+
+#-------------------------------------------------------------------------------
 method show-cancel ( --> Bool ) {
+
   my Bool $done = True;
   if $!show-cancel-warning {
     my QA::Gui::YNMsgDialog $yn .= new(

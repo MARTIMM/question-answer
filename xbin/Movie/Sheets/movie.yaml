@@ -1,40 +1,40 @@
 ---
-pages: 
-  - 
+pages:
+  -
     page-name: "Movie Info"
     description: "Films and their actors"
-    sets: 
-      - 
+    sets:
+      -
         hide: false
         title: ~
         set-name: movie
-        questions: 
-          - 
+        questions:
+          -
             description: "Select a movie"
             required: true
             title: Movie-select
             name: movie-select
             fieldtype: QAFileChooser
         description: "Movie information"
-      - 
+      -
         title: ~
         description: "Actor information"
-        questions: 
-          - 
+        questions:
+          -
             name: actorname
             title: Actorname
             fieldtype: QAEntry
             required: true
             description: "Name of actor"
-          - 
-            fieldlist: 
+          -
+            fieldlist:
               - male
               - female
             description: "Gender of actor"
             title: Gender
             name: gender
             fieldtype: QARadioButton
-          - 
+          -
             name: photo
             fieldtype: QAImage
             description: "A photo of actor"
@@ -43,8 +43,8 @@ pages:
         hide: false
     title: "Movie info"
     hide: false
-button-map: 
-  finish: "Ready when you are!"
+button-map:
+  save-quit: "Ready when you are!"
   cancel: "I want to quit"
 height: 500
 width: 400

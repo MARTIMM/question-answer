@@ -63,7 +63,7 @@ subtest 'Save and load', {
 
   $sheet.width = 400;
   $sheet.height = 700;
-  $sheet.button-map = %( :cancel("stopt u maar"), :finish<klaar!>);
+  $sheet.button-map = %( :cancel("stopt u maar"), :save-quit<klaar!>);
 
   $sheet.save;
   ok "@dirs[SHEET]/login.yaml".IO ~~ :e, '.save() login';

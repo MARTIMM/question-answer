@@ -2,8 +2,11 @@
   "width": 350,
   "height": 210,
   "button-map": {
-    "finish": "login"
+    "save-quit": "login",
+    "save-continue": "",
+    "help-info": "help"
   },
+  "help-info": "Provide username and password to log in",
   "pages": [
     {
       "sets": [
