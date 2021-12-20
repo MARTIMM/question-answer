@@ -2,11 +2,19 @@
   "width": 350,
   "height": 210,
   "button-map": {
-    "save-quit": "login",
-    "save-continue": "",
-    "help-info": "help"
+    "save-quit": {
+      "name": "login",
+      "default": true
+    },
+    "save-continue": {
+      "name": "Apply"
+    },
+    "help-info": {
+      "name": "help",
+      "message": "Provide username and password then\npress button 'login' to login.\nOtherwise press 'cancel'."
+    }
   },
-  "help-info": "Provide username and password to log in",
+
   "pages": [
     {
       "sets": [

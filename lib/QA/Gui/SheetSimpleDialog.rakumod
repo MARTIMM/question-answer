@@ -59,21 +59,22 @@ submethod BUILD (
   self.set-grid-content(self);
 
   # add some buttons specific for this notebook
-  self.add-button( 'cancel', GTK_RESPONSE_CANCEL, :default);
+  self.add-button( 'cancel', GTK_RESPONSE_CANCEL);
   self.add-button( 'save-continue', GTK_RESPONSE_APPLY);
   self.add-button( 'save-quit', GTK_RESPONSE_OK);
-#  self.add-button( 'help-info', GTK_RESPONSE_HELP) if ?$!sheet<help-info>;
+  self.add-button( 'help-info', GTK_RESPONSE_HELP);
+  self.add-button( 'help-info', GTK_RESPONSE_HELP);
 }
 
 #-------------------------------------------------------------------------------
-method add-button (
-  Str $widget-name, GtkResponseType $response-type, Bool :$default = False
-) {
+method add-button ( Str $widget-name, GtkResponseType $response-type ) {
 note "add button $widget-name";
 
   # it is possible that button is undefined
-  with my Gnome::Gtk3::Button $button = self.create-button($widget-name) {
-    if $default {
+  my Gnome::Gtk3::Button $button = self.create-button($widget-name);
+  with $button {
+    my Hash $button-map = $!sheet.button-map // %();
+    if ? $button-map{$widget-name}<default> {
       .set-can-default(True);
       self.set-default-response($response-type);
     }
@@ -141,6 +142,11 @@ method show-sheet ( ) {
           self.destroy;
           last;
         }
+      }
+
+      when GTK_RESPONSE_HELP {
+        my Str $text = $!sheet.button-map<help-info><message>;
+        self.show-message($text) if ?$text;
       }
 
       default {

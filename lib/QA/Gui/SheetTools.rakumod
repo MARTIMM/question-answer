@@ -137,12 +137,10 @@ method create-button (
 ) {
   # change text of label on button when defined in the button map structure
   my Hash $button-map = $!sheet.button-map // %();
-  my Str $button-text = $button-map{$widget-name} // $widget-name;
+  my Str $button-text = $button-map{$widget-name}<name> // $widget-name;
 
   # uppercase first letter of every word.
   $button-text = $button-text.split(/<[-_\s]>+/)>>.tc.join(' ');
-
-note "CB: $button-map.raku, $button-text";
 
   my Gnome::Gtk3::Button $button;
   if ?$button-text {
