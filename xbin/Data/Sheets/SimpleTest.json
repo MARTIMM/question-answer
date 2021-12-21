@@ -11,7 +11,7 @@
     },
     "help-info": {
       "name": "help",
-      "message": "Provide username and password then\npress button 'login' to login.\nOtherwise press 'cancel'."
+      "message": "Provide username and password then\npress button <b>login</b> to login.\nOtherwise press <b>cancel</b>."
     }
   },
 
