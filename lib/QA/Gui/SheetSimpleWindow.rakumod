@@ -85,6 +85,12 @@ submethod BUILD (
     'save-continue', :method-object(self), :method-name<apply-response>
     );
     .attach( $button, 3, 0, 1, 1) if ?$button;
+
+
+    $button = self.create-button(
+    'help-info', :method-object(self), :method-name<help-response>
+    );
+    .attach( $button, 4, 0, 1, 1) if ?$button;
   }
   $!grid.attach( $button-grid, 0, 2, 1, 1);
 
@@ -142,6 +148,13 @@ method apply-response ( ) {
       $!result-handler-object."$!result-handler-method"($!result-user-data);
     }
   }
+}
+
+#-------------------------------------------------------------------------------
+method help-response ( ) {
+
+  my Str $text = $!sheet.button-map<help-info><message>;
+  self.show-message($text) if ?$text;
 }
 
 #-------------------------------------------------------------------------------
