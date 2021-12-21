@@ -9,7 +9,7 @@ layout: sidebar
 See [semantic versioning](http://semver.org/). Please note point 4. on that page: **_Major version zero (0.y.z) is for initial development. Anything may change at any time. The public API should not be considered stable._**
 
 * 2021-12-19 0.16.0
-  * Add an apply and help buttons to input forms
+  * Add apply and help buttons to input forms
 
 * 2021-10-10 0.15.0
   * Sheet modules are refactored and a module **QA::Gui::SheetTools** is created.
