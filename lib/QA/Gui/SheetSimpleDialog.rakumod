@@ -63,7 +63,6 @@ submethod BUILD (
   self.add-button( 'save-continue', GTK_RESPONSE_APPLY);
   self.add-button( 'save-quit', GTK_RESPONSE_OK);
   self.add-button( 'help-info', GTK_RESPONSE_HELP);
-  self.add-button( 'help-info', GTK_RESPONSE_HELP);
 }
 
 #-------------------------------------------------------------------------------
