@@ -55,7 +55,7 @@ submethod BUILD ( ) {
 method !listen-status ( ) {
   my QA::Status $status .= instance;
   $status.tap( -> Hash $status-info {
-note "Status info: $status-info.raku()";
+note "'listen-status' Status info: $status-info.raku()";
 
 #CONTROL { when CX::Warn {  note .gist; .resume; } }
 
@@ -64,26 +64,29 @@ note "Status info: $status-info.raku()";
         %!cids{$status-info<id>} //= self.get-context-id($status-info<id>);
 
         my $cid = %!cids{$status-info<id>};
-        my Str ( $kmsg, $vmsg ) = $status-info<message>.kv;
-note "kv $cid: {$kmsg//'-'}, {$vmsg//'-'}";
-#        if ?$kmsg {
+        my Str $message = $status-info<message> // '';
+        my Str $msg-id = $status-info<msg-id> // '';
+#        $msg-id, $message ) = $status-info<message>.kv;
+note "'listen-status' kv $cid: $msg-id, $message, {%!mids{$msg-id} // '-'}";
+#        if ?$msg-id {
 
-          if %!mids{$kmsg} and ?$status-info<drop-msg> {
-            self.remove( $cid, %!mids{$kmsg});
-            %!mids{$kmsg}:delete;
+          if %!mids{$msg-id} and ?$status-info<drop-msg> {
+            self.remove( $cid, %!mids{$msg-id});
+            %!mids{$msg-id}:delete;
           }
 
-          elsif $vmsg and ?$status-info<set-msg> {
-            %!mids{$kmsg} = self.statusbar-push( $cid, $vmsg);
+          elsif $message and ?$status-info<set-msg> {
+            %!mids{$msg-id} = self.statusbar-push( $cid, $message);
+note "set mid of $msg-id to %!mids{$msg-id}";
           }
 
           else {
             note 'sts: ', $status-info;
           }
 #        }
-      }
-    }
-  );
+      }   # if $status-info<statusbar>:exists
+    }     # Hash $status-info
+  );      # tap
 }
 
 #`{{

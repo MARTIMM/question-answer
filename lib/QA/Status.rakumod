@@ -1,7 +1,7 @@
 use v6.d;
 
 #-------------------------------------------------------------------------------
-unit class QA::Status:auth<github:MARTIMM>:ver<0.1.0>;
+unit class QA::Status:auth<github:MARTIMM>;
 
 #-------------------------------------------------------------------------------
 my QA::Status $instance;

@@ -37,7 +37,7 @@ unit role QA::Gui::Value:auth<github:MARTIMM>:ver<0.1.0>;
 #also is QA::Gui::Frame;
 
 #-------------------------------------------------------------------------------
-has Str $!msg-id;
+#has Str $msg-id;
 #has Bool $.faulty-state = False;
 
 #-------------------------------------------------------------------------------
@@ -72,7 +72,7 @@ method check-widget-value (
   Any:D $input-widget, Any:D $input, Int() :$row = -1
 ) {
 #CONTROL { when CX::Warn {  note .gist; .resume; } }
-#note "$?LINE, check-widget-value, $input, $row";
+note "\n$?LINE, check-widget-value, $input, $row";
 
 #  $!faulty-state = False;
 
@@ -84,6 +84,8 @@ method check-widget-value (
 #  my QA::Gui::Statusbar $statusbar .= instance;
 #  my Int $cid = $statusbar.get-context-id('input errors');
   my QA::Status $status .= instance;
+
+  my Str $msg-id = '';
 
 #note "\n", 'status: ', (self.question.name, $status.get-faulty-state(self.question.name), (self.question.callback)//'-', (self.^lookup("check-value").gist())//'-', ?self.question.required, $input  ).join(', ');
 
@@ -98,69 +100,85 @@ method check-widget-value (
       my ( $handler-object, $method-name, $options) =
         |$qa-types.get-check-handler(self.question.callback);
       $message = $handler-object."$method-name"( $input, |%$options) // '';
+      $msg-id = self.question.name if ?$message;
 
       # if routine finds an error, state is faulty and a message returns.
-      if ?$message {
-        $status.set-faulty-state( self.question.name, True);
-        $status.send( %(
-            :statusbar, :set-msg, :id<input-errors>,
-            :message($!msg-id => "$!msg-id: $message")
-          )
-        );
-      }
+#      if ?$message {
+#        $status.set-faulty-state( self.question.name, True);
+#        $status.send( %(
+#            :statusbar, :set-msg, :id<input-errors>,
+#            :message($msg-id => "$message")
+#          )
+#        );
+#      }
     }
 
     # if there is no callback, check a widgets check method
     # cannot use .? pseudo op because the FALLBACK routine from the gnome
     # packages will spoil your ideas.
-    if !$message and self.^lookup("check-value") {
-      if ?($message = self.check-value($input) // '') {
-        $status.set-faulty-state( self.question.name, True);
-      }
+    if ! $msg-id and self.^lookup("check-value") {
+      $message = self.check-value($input);
+      $msg-id = self.question.name if ?$message;
+#      if ?$message {
+#        $status.set-faulty-state( self.question.name, True);
+#        $status.send( %(
+#            :statusbar, :set-msg, :id<input-errors>,
+#            :message($msg-id => "$message")
+#          )
+#        );
+#      }
 #note "check-value(): ", self.question.name, ', ', $message;
     }
 
     # if there is no check mehod, check if it is required
-    if !$message and ?self.question.required and $input ~~ m/^ \s* $/ {
-      $status.set-faulty-state( self.question.name, True);
-      $message = "is required";
+    if ! $msg-id and ?self.question.required and $input ~~ m/^ \s* $/ {
+      $msg-id = self.question.name;
+      $message = "$msg-id is required";
+#      $status.set-faulty-state( self.question.name, True);
+#      $status.send( %(
+#          :statusbar, :set-msg, :id<input-errors>,
+#          :message($msg-id => "is required")
+#        )
+#      );
     }
 
 #`{{
     # no errors, check if there is a message id from previous mesage, remove it.
-    if ?$!msg-id {
-  #    $statusbar.remove( $cid, $!msg-id);
-      $!msg-id = '';
-      $status.send( %( :statusbar, :id<input-errors>, :message(:$!msg-id)));
+    if ?$msg-id {
+  #    $statusbar.remove( $cid, $msg-id);
+      $msg-id = '';
+      $status.send( %( :statusbar, :id<input-errors>, :message(:$msg-id)));
     }
 }}
   }
 
-  if $message {
-#note "check message: ", self.question.name, ', ', $message;
+  if ? $msg-id {
+note "check message: ", self.question.name, ' == ', $msg-id;
     self.set-status-hint( $input-widget, QAStatusFail);
+    $status.set-faulty-state( self.question.name, True);
+
     # don't add a new message if there is already a message placed
     # on the statusbar
 #    $message = self.question.description ~ ": $message";
-    $!msg-id = self.question.name;
-    #$!msg-id = $statusbar.statusbar-push( $cid, $message) unless $!msg-id;
+
+    $msg-id = self.question.name;
+    #$msg-id = $statusbar.statusbar-push( $cid, $message) unless $msg-id;
     $status.send( %(
-        :statusbar, :set-msg, :id<input-errors>,
-        :message($!msg-id => "$!msg-id: $message")
+        :statusbar, :set-msg, :id<input-errors>, :$message, :$msg-id
       )
     );
   }
 
   else {
-#note "no message: ", self.question.name, ', ', $!msg-id//'-';
-    if ?$!msg-id {
-  #    $statusbar.remove( $cid, $!msg-id);
+note "no message: ", self.question.name, ', ', $msg-id//'-';
+#    if ?$msg-id {
+  #    $statusbar.remove( $cid, $msg-id);
       $status.send( %(
-          :statusbar, :drop-msg, :id<input-errors>, :message(:$!msg-id)
+          :statusbar, :drop-msg, :id<input-errors>, :msg-id(self.question.name)
         )
       );
-      $!msg-id = '';
-    }
+      $msg-id = '';
+#    }
 
     self.set-status-hint( $input-widget, QAStatusNormal);
     self!adjust-user-data( $input-widget, $input, $row);
@@ -207,10 +225,10 @@ method check-widget-value (
   }
 
   # no errors, check if there is a message id from previous mesage, remove it.
-  if !$status.get-faulty-state(self.question.name) and ?$!msg-id {
-#    $statusbar.remove( $cid, $!msg-id);
-    $!msg-id = '';
-    $status.send( %( :statusbar, :id<input-errors>, :message(:$!msg-id)));
+  if !$status.get-faulty-state(self.question.name) and ?$msg-id {
+#    $statusbar.remove( $cid, $msg-id);
+    $msg-id = '';
+    $status.send( %( :statusbar, :id<input-errors>, :message(:$msg-id)));
   }
 
 #note "F: $!faulty-state, ", self.question.name;
@@ -219,11 +237,11 @@ method check-widget-value (
     # don't add a new message if there is already a message placed
     # on the statusbar
 #    $message = self.question.description ~ ": $message";
-    $!msg-id = self.question.name;
-    #$!msg-id = $statusbar.statusbar-push( $cid, $message) unless $!msg-id;
+    $msg-id = self.question.name;
+    #$msg-id = $statusbar.statusbar-push( $cid, $message) unless $msg-id;
     $status.send( %(
         :statusbar, :id<input-errors>,
-        :message($!msg-id => "$!msg-id: $message")
+        :message($msg-id => "$msg-id: $message")
       )
     );
   }
