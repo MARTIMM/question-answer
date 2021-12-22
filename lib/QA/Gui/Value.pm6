@@ -34,11 +34,6 @@ Several methods to handle the widgets value.
 =end pod
 
 unit role QA::Gui::Value:auth<github:MARTIMM>:ver<0.1.0>;
-#also is QA::Gui::Frame;
-
-#-------------------------------------------------------------------------------
-#has Str $msg-id;
-#has Bool $.faulty-state = False;
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -58,13 +53,11 @@ method process-widget-input (
   self.check-widget-value( $input-widget, $input, :$row) if $do-check;
 
   my QA::Status $status .= instance;
-#note "$?LINE, process-widget-input, $input, $row, $status.get-faulty-state(self.question.name())";
 
   unless $status.get-faulty-state(self.question.name) {
     self!adjust-user-data( $input-widget, $input, $row);
     self.check-users-action( $input, self.question.action);
   }
-#note "$?LINE, process-widget-input, state: ", self.question.name, ', ', $status.get-faulty-state(self.question.name);
 }
 
 #-------------------------------------------------------------------------------
@@ -72,27 +65,17 @@ method check-widget-value (
   Any:D $input-widget, Any:D $input, Int() :$row = -1
 ) {
 #CONTROL { when CX::Warn {  note .gist; .resume; } }
-note "\n$?LINE, check-widget-value, $input, $row";
 
-#  $!faulty-state = False;
-
-  # if not delivered, get the value ourselves
-  #$input //= self.get-value($input-widget);
   my Str $message = '';
 
-  # get a context id. same string returns same context id.
-#  my QA::Gui::Statusbar $statusbar .= instance;
-#  my Int $cid = $statusbar.get-context-id('input errors');
   my QA::Status $status .= instance;
 
   my Str $msg-id = '';
 
-#note "\n", 'status: ', (self.question.name, $status.get-faulty-state(self.question.name), (self.question.callback)//'-', (self.^lookup("check-value").gist())//'-', ?self.question.required, $input  ).join(', ');
-
   if ! $status.get-faulty-state(self.question.name) {
+
     # check if there is a user routine which can check data. requiredness
     # must be checked too by the routine.
-
     if ?self.question.callback {
       my QA::Types $qa-types .= instance;
       #my Array $cb-spec = $qa-types.get-check-handler(self.question.callback);
@@ -101,16 +84,6 @@ note "\n$?LINE, check-widget-value, $input, $row";
         |$qa-types.get-check-handler(self.question.callback);
       $message = $handler-object."$method-name"( $input, |%$options) // '';
       $msg-id = self.question.name if ?$message;
-
-      # if routine finds an error, state is faulty and a message returns.
-#      if ?$message {
-#        $status.set-faulty-state( self.question.name, True);
-#        $status.send( %(
-#            :statusbar, :set-msg, :id<input-errors>,
-#            :message($msg-id => "$message")
-#          )
-#        );
-#      }
     }
 
     # if there is no callback, check a widgets check method
@@ -119,50 +92,21 @@ note "\n$?LINE, check-widget-value, $input, $row";
     if ! $msg-id and self.^lookup("check-value") {
       $message = self.check-value($input);
       $msg-id = self.question.name if ?$message;
-#      if ?$message {
-#        $status.set-faulty-state( self.question.name, True);
-#        $status.send( %(
-#            :statusbar, :set-msg, :id<input-errors>,
-#            :message($msg-id => "$message")
-#          )
-#        );
-#      }
-#note "check-value(): ", self.question.name, ', ', $message;
     }
 
     # if there is no check mehod, check if it is required
     if ! $msg-id and ?self.question.required and $input ~~ m/^ \s* $/ {
       $msg-id = self.question.name;
       $message = "$msg-id is required";
-#      $status.set-faulty-state( self.question.name, True);
-#      $status.send( %(
-#          :statusbar, :set-msg, :id<input-errors>,
-#          :message($msg-id => "is required")
-#        )
-#      );
     }
-
-#`{{
-    # no errors, check if there is a message id from previous mesage, remove it.
-    if ?$msg-id {
-  #    $statusbar.remove( $cid, $msg-id);
-      $msg-id = '';
-      $status.send( %( :statusbar, :id<input-errors>, :message(:$msg-id)));
-    }
-}}
   }
 
   if ? $msg-id {
-note "check message: ", self.question.name, ' == ', $msg-id;
+#note "check message: ", self.question.name, ' == ', $msg-id;
     self.set-status-hint( $input-widget, QAStatusFail);
     $status.set-faulty-state( self.question.name, True);
 
-    # don't add a new message if there is already a message placed
-    # on the statusbar
-#    $message = self.question.description ~ ": $message";
-
     $msg-id = self.question.name;
-    #$msg-id = $statusbar.statusbar-push( $cid, $message) unless $msg-id;
     $status.send( %(
         :statusbar, :set-msg, :id<input-errors>, :$message, :$msg-id
       )
@@ -170,102 +114,22 @@ note "check message: ", self.question.name, ' == ', $msg-id;
   }
 
   else {
-note "no message: ", self.question.name, ', ', $msg-id//'-';
-#    if ?$msg-id {
-  #    $statusbar.remove( $cid, $msg-id);
-      $status.send( %(
-          :statusbar, :drop-msg, :id<input-errors>, :msg-id(self.question.name)
-        )
-      );
-      $msg-id = '';
-#    }
-
-    self.set-status-hint( $input-widget, QAStatusNormal);
-    self!adjust-user-data( $input-widget, $input, $row);
-    $status.set-faulty-state( self.question.name, False);
-  }
-
-
-
-
-
-
-#`{{
-
-  # check if there is a user routine which can check data. requiredness
-  # must be checked too by the routine.
-  if self.question.callback {
-    my QA::Types $qa-types .= instance;
-    #my Array $cb-spec = $qa-types.get-check-handler(self.question.callback);
-    #my ( $handler-object, $method-name, $options) = @$cb-spec;
-    my ( $handler-object, $method-name, $options) =
-      |$qa-types.get-check-handler(self.question.callback);
-    $message = $handler-object."$method-name"( $input, |%$options) // '';
-
-    # if routine finds an error, state is faulty and a message returns.
-    $status.set-faulty-state( self.question.name, True) if ?$message;
-  }
-
-  # if there is no callback, check a widgets check method
-  # cannot use .? pseudo op because the FALLBACK routine from the gnome
-  # packages will spoil your ideas.
-  if !$status.get-faulty-state(self.question.name)
-     and self.^lookup("check-value") {
-
-    $message = self.check-value($input);
-    $status.set-faulty-state( self.question.name, True) if ?$message;
-  }
-
-  # if there is no check mehod, check if it is required
-  if !$status.get-faulty-state(self.question.name)
-      and ?self.question.required and !$input {
-
-    $status.set-faulty-state( self.question.name, True);
-    $message = "is required";
-  }
-
-  # no errors, check if there is a message id from previous mesage, remove it.
-  if !$status.get-faulty-state(self.question.name) and ?$msg-id {
-#    $statusbar.remove( $cid, $msg-id);
-    $msg-id = '';
-    $status.send( %( :statusbar, :id<input-errors>, :message(:$msg-id)));
-  }
-
-#note "F: $!faulty-state, ", self.question.name;
-  if $status.get-faulty-state(self.question.name) {
-    self.set-status-hint( $input-widget, QAStatusFail);
-    # don't add a new message if there is already a message placed
-    # on the statusbar
-#    $message = self.question.description ~ ": $message";
-    $msg-id = self.question.name;
-    #$msg-id = $statusbar.statusbar-push( $cid, $message) unless $msg-id;
     $status.send( %(
-        :statusbar, :id<input-errors>,
-        :message($msg-id => "$msg-id: $message")
+        :statusbar, :drop-msg, :id<input-errors>, :msg-id(self.question.name)
       )
     );
-  }
-#`{{
-  elsif ? self.question.required or self.question.callback.defined {
-    self.set-status-hint( $input-widget, QAStatusOk);
-#    self!adjust-user-data( $input-widget, $input, $row);
-  }
-}}
-  else {
+
     self.set-status-hint( $input-widget, QAStatusNormal);
     self!adjust-user-data( $input-widget, $input, $row);
     $status.set-faulty-state( self.question.name, False);
   }
-}}
 }
 
 #-------------------------------------------------------------------------------
 method !adjust-user-data ( $input-widget, Any $input, Int() $row ) {
 
 #CONTROL { when CX::Warn {  note .gist; .resume; } }
-#note "\n$?LINE, adjust-user-data, $input, $row";
 
-#note "$?LINE, adjust-user-data, {self.question.name}, $input, $row";
   my Str $name = self.question.name;
   if ? self.question.repeatable {
     if ? self.question.selectlist {
@@ -273,9 +137,8 @@ method !adjust-user-data ( $input-widget, Any $input, Int() $row ) {
       my Gnome::Gtk3::ComboBoxText $cbt = $grid.get-child-at-rk(
         QACatColumn, $row, :child-type<Gnome::Gtk3::ComboBoxText>
       );
-#note "$?LINE, $cbt.is-valid(), $row";
+
       my Str $select = self.question.selectlist[$cbt.get-active];
-#note $?LINE;
       self.user-data-set-part{$name}[$row] = $select => $input;
     }
 
@@ -349,7 +212,6 @@ method run-users-action ( $input, Str:D $action-key = '' --> Array ) {
 #-------------------------------------------------------------------------------
 method set-status-hint ( $input-widget, InputStatusHint $status ) {
   # remove classes first
-  #$context.remove-class('dontcare');
   self.remove-class( $input-widget, 'QAStatusNormal');
   self.remove-class( $input-widget, 'QAStatusOk');
   self.remove-class( $input-widget, 'QAStatusFail');
@@ -390,16 +252,6 @@ method remove-class ( $input-widget, Str $class-name ) {
 # no typing of arguments because widget can be any input widget and value
 # can be any of text-, number- or boolean
 method set-value ( Any:D $input-widget, Any:D $value ) { ... }
-
-#`{{
-#-------------------------------------------------------------------------------
-# no typing for return value because it can be a single value, an Array of
-# single values or and Array of Pairs.
-method get-value ( $input-widget --> Any ) { ... }
-}}
-
-#-------------------------------------------------------------------------------
-#method clear-value ( |c ) { ... }
 
 #-------------------------------------------------------------------------------
 method create-widget ( |c ) { ... } #( Str $widget-name --> Any ) { ... }
