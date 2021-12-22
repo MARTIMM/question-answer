@@ -33,6 +33,8 @@ use QA::Types;
 use QA::Question;
 use QA::Gui::Value;
 
+use URI::Encode;
+
 #-------------------------------------------------------------------------------
 unit class QA::Gui::QAImage;
 also does QA::Gui::Value;
@@ -281,7 +283,7 @@ method received (
       my Str $uri = $source-data[0];
       if $uri.IO.extension ~~ any(<jpg png jpeg svg gif>) {
         $uri ~~ s/^ 'file://' //;
-        $uri ~~ s:g/'%20'/ /;
+        $uri = uri_decode($uri);
 
         $fcb.set-filename($uri);
         self!set-image( $grid, $uri);
@@ -293,7 +295,7 @@ method received (
       for @$source-data -> $uri is copy {
         if $uri.IO.extension ~~ any(<jpg png jpeg svg gif>) {
           $uri ~~ s/^ 'file://' //;
-          $uri ~~ s:g/'%20'/ /;
+          $uri = uri_decode($uri);
 
           my ( $added-widget, $added-row) = $!input-widget.append-grid-row;
 

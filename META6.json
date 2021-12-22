@@ -1,7 +1,7 @@
 {
   "description": "Question Answer",
   "name": "QA",
-  "version": "0.16.1",
+  "version": "0.16.2",
   "authors": [ "Marcel Timmerman"],
   "tags": [
     "questionnaire", "configuration", "gtk", "question", "answer", "Raku"
@@ -51,7 +51,7 @@
 
   "source-url": "git://github.com/MARTIMM/qa-manager.git",
 
-  "depends": [ "JSON::Fast", "Config::TOML", "YAMLish", "Gnome::Gtk3"],
+  "depends": [ "JSON::Fast", "Config::TOML", "YAMLish", "URI::Encode", "Gnome::Gtk3"],
 
   "test-depends": [ ],
   "build-depends": [ ],

@@ -14,7 +14,7 @@ use QA::Status;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::Statusbar;
-also is Gnome::Gtk3::Statusbar:auth<github:MARTIMM>:ver<0.1.0>;
+also is Gnome::Gtk3::Statusbar:auth<github:MARTIMM>;
 
 #-------------------------------------------------------------------------------
 #my QA::Gui::Statusbar $instance;
