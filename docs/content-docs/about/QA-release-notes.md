@@ -8,8 +8,11 @@ layout: sidebar
 
 See [semantic versioning](http://semver.org/). Please note point 4. on that page: **_Major version zero (0.y.z) is for initial development. Anything may change at any time. The public API should not be considered stable._**
 
+* 2022-02-24 0.16.3
+  * Changed `qa-load()` to handle option `:qa-path` better.
+
 * 2021-12-21 0.16.2
-  * Better URI decoding when DND is used.
+  * Better URI decoding in QAImage when DND is used.
 
 * 2021-12-21 0.16.1
   * Change format of button map in the sheet config file
