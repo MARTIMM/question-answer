@@ -255,16 +255,21 @@ Only one of the options C<:sheet>, C<:set> or C<:userdata> must be used to load 
 
 #tm:1:qa-load
 method qa-load( Str:D $qa-filename, *%options --> Hash ) {
-  my Str $basename = '';
+  my Str $basename;
   my Hash $qa-data;
-  my Str $qa-path = %options<qa-path> // Str;
+  my Str $qa-path;
 
-  if !$qa-path {
+  if ?%options<qa-path> {
+    $basename = %options<qa-path>;
+  }
+
+  else {
     if %options<sheet>:exists       { $basename = $cfgloc-sheet; }
     elsif %options<set>:exists      { $basename = $cfgloc-set; }
     elsif %options<userdata>:exists { $basename = $cfgloc-userdata; }
     else                            { die 'No type option found'; }
   }
+
 
   given $data-file-type {
     when QAJSON {
@@ -282,10 +287,6 @@ method qa-load( Str:D $qa-filename, *%options --> Hash ) {
       $qa-data = load-yaml($qa-path.IO.slurp) if $qa-path.IO.r;
     }
   }
-
-  # sheet or set config files must be found, userdata may be absent
-  die "Can not read file '$qa-path'"
-    unless %options<userdata>:exists or $qa-path.IO.r;
 
   $qa-data // %();
 }
