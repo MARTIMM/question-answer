@@ -4,8 +4,8 @@ use v6.d;
 
 use Gnome::N::N-GObject;
 
-use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::ComboBoxText;
+use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::StyleContext;
 use Gnome::Gtk3::Enums;
 
