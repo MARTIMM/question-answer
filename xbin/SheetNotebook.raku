@@ -13,7 +13,7 @@ use Gnome::Gtk3::Label;
 
 use QA::Gui::SheetNotebook;
 #use QA::Gui::Frame;
-#use QA::Gui::Value;
+use QA::Gui::Value;
 use QA::Types;
 #use QA::Question;
 
@@ -36,7 +36,7 @@ class MyWidget does QA::Gui::Value {
     # widget is not repeatable
     $!question.repeatable = False;
 
-    self.initialize;
+#    self.initialize;
   }
 
   #---------
@@ -62,7 +62,9 @@ class MyWidget does QA::Gui::Value {
   }
 
   #---------
-  method input-change-handler ( :_widget($button), Int() :$row ) {
+  method input-change-handler (
+    Gnome::Gtk3::Button() :_native-object($button), Int() :$row
+  ) {
     my Str $label = (($button.get-label // '0').Int + 1).Str;
     $button.set-label($label);
     self.process-widget-input( $button, $label, $row, :!do-check);
@@ -230,9 +232,8 @@ $qa-types.qa-save( 'QAManagerSetDialog', $user-data, :userdata);
 
 # get types instance and modify some path for tests to come and also some
 # user methods to handle checks and actions
-
 given my QA::Types $qa-types {
-  .data-file-type(QAJSON);
+  .data-file-type(QAYAML);
   .cfgloc-userdata('xbin/Data');
   .cfgloc-sheet('xbin/Data/Sheets');
 }
