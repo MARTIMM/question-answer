@@ -21,7 +21,7 @@ has QA::Question $.question;
 has Hash $.user-data-set-part;
 
 # take a Num for word count because ∞ and -∞ is a Num
-has Num ( $!maximum, $!minimum);
+has Num() ( $!maximum, $!minimum);
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
@@ -86,11 +86,11 @@ method check-value ( Str $input --> Str ) {
   my Str $message;
   my Int $nw = $input.comb(/\w+/).elems;
   if $nw < $!minimum {
-    $message = "Minimum number of words = $!minimum()";
+    $message = "Minimum number of words = $!minimum";
   }
 
   elsif $nw > $!maximum {
-    $message = "Maximum number of words = $!maximum()";
+    $message = "Maximum number of words = $!maximum";
   }
 
   $message
@@ -98,7 +98,8 @@ method check-value ( Str $input --> Str ) {
 
 #-------------------------------------------------------------------------------
 method input-change-handler (
-  N-GdkEventFocus $, :_widget($textview), Int() :$row --> Int
+  N-GdkEventFocus() $, Gnome::Gtk3::TextView() :_native-object($textview),
+  Int() :$row --> Int
 ) {
   self.process-widget-input(
    $textview, self!get-value($textview), $row, :do-check

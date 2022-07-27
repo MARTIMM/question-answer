@@ -307,7 +307,7 @@ An example widget could be something like the one shown below. This widget shows
         $button.set-label($label);
       }
 
-      method change-label ( :_widget($button) ) {
+      method change-label ( Gnome::Gtk3::Button() :_native-object($button) ) {
         $button.set-label(($button.get-label // '0').Int + 1);
 
         my ( $n, $row ) = $button.get-name.split(':');

@@ -326,7 +326,8 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
 # it must adjust the selection value. no check is needed because
 # input field is not changed.
 method combobox-change (
-  :_widget($combobox), :$input-widget, Int :$row-grid --> Int
+  Gnome::Gtk3::ComboBoxText() :_native-object($combobox),
+  :$input-widget, Int :$row-grid --> Int
 ) {
 #note "combobox-change, $!inhibit-combobox-events, $input-widget, $row-grid";
 
@@ -344,14 +345,15 @@ method combobox-change (
 
 #-------------------------------------------------------------------------------
 method add-row (
-#  Gnome::Gtk3::ToolButton :_widget($tb), Int :$_handler-id, Int :$row-index
+#  Gnome::Gtk3::ToolButton() :_native-object($tb),
+#   Int :$_handler-id, Int :$row-index
 ) {
   self.append-grid-row
 }
 
 #-------------------------------------------------------------------------------
 method del-row (
-  Gnome::Gtk3::ToolButton :_widget($tb), Int :$_handler-id, Int :$row-index
+  Gnome::Gtk3::ToolButton() :_native-object($tb), Int :$_handler-id, Int :$row-index
 ) {
   my Int $row-grid = $!grid-access-index[$row-index];
 #note "delete row: $row-index, $row-grid, $!grid-access-index.elems(), $!grid-row-data.elems()";

@@ -131,7 +131,7 @@ method clear-value ( Any:D $grid ) {
 
 #-------------------------------------------------------------------------------
 method input-change-handler (
-  Gnome::Gtk3::FileChooserButton :_widget($fcb), Int() :$row
+  Gnome::Gtk3::FileChooserButton() :_native-object($fcb), Int() :$row
 ) {
 
   # must get the grid because the unit is a grid
@@ -147,7 +147,7 @@ method input-change-handler (
 #-------------------------------------------------------------------------------
 # Make widget invisible when dnd is turned on. Wait until widgets are shown
 # to be able to turn it off.
-method must-hide ( Gnome::Gtk3::FileChooserButton :_widget($fcb) ) {
+method must-hide ( Gnome::Gtk3::FileChooserButton() :_native-object($fcb) ) {
   $fcb.hide if ?$!dnd-targets;
 }
 
@@ -199,13 +199,13 @@ method setup-as-drag-destination (
 
 #-------------------------------------------------------------------------------
 method motion (
-  N-GObject $context-no, Int $x, Int $y, UInt $time,
-  :_widget($destination-widget), Gnome::Gtk3::DragDest :$destination
+  Gnome::Gdk3::DragContext() $context, Int $x, Int $y, UInt $time,
+  Gnome::Gtk3::FileChooserButton() :_native-object($destination-widget),
+  Gnome::Gtk3::DragDest :$destination
   --> Bool
 ) {
   my Bool $status;
 
-  my Gnome::Gdk3::DragContext() $context = $context-no;
   my Gnome::Gdk3::Atom() $target-atom = $destination.find-target(
     $destination-widget, $context,
     $destination.get-target-list($destination-widget)
@@ -228,18 +228,19 @@ method motion (
 #-------------------------------------------------------------------------------
 method leave (
   N-GObject $context-no, UInt $time,
-  :_widget($destination-widget), Gnome::Gtk3::DragDest :$destination
+  Gnome::Gtk3::FileChooserButton() :_native-object($destination-widget),
+  Gnome::Gtk3::DragDest :$destination
 ) {
   $!drag.unhighlight($destination-widget);
 }
 
 #-------------------------------------------------------------------------------
 method drop (
-  N-GObject $context-no, Int $x, Int $y, UInt $time,
-  :_widget($destination-widget), Gnome::Gtk3::DragDest :$destination
+  Gnome::Gdk3::DragContext() $context, Int $x, Int $y, UInt $time,
+  Gnome::Gtk3::FileChooserButton() :_native-object($destination-widget),
+  Gnome::Gtk3::DragDest :$destination
   --> Bool
 ) {
-  my Gnome::Gdk3::DragContext() $context = $context-no;
   my Gnome::Gdk3::Atom() $target-atom = $destination.find-target(
     $destination-widget, $context,
     $destination.get-target-list($destination-widget)
@@ -248,7 +249,7 @@ method drop (
   # ask for data. triggers drag-data-get on source. when data is received or
   # error, drag-data-received on destination is triggered
   $!drag.get-data(
-    $destination-widget, $context-no, $target-atom, $time
+    $destination-widget, $context, $target-atom, $time
   ) if ?$target-atom;
 
   True
@@ -256,18 +257,15 @@ method drop (
 
 #-------------------------------------------------------------------------------
 method received (
-  N-GObject $context-no, Int $x, Int $y,
-  N-GObject $selection-data-no, UInt $info, UInt $time,
-  :_widget($destination-widget), Gnome::Gtk3::DragDest :$destination,
-  Gnome::Gtk3::FileChooserButton :$fcb is copy, Gnome::Gtk3::Grid :$widget-grid,
+  Gnome::Gdk3::DragContext() $context, Int $x, Int $y,
+  Gnome::Gtk3::SelectionData() $selection-data, UInt $info, UInt $time,
+  Gnome::Gtk3::FileChooserButton() :_native-object($destination-widget),
+  Gnome::Gtk3::DragDest :$destination,
+  Gnome::Gtk3::FileChooserButton :$fcb, Gnome::Gtk3::Grid :$widget-grid,
   Int() :$row
 ) {
-  my Gnome::Gtk3::SelectionData $selection-data .= new(
-    :native-object($selection-data-no)
-  );
 
   my $source-data;
-  my Gnome::Gdk3::DragContext() $context = $context-no;
   my Gnome::Gdk3::Atom() $target-atom = $destination.find-target(
     $destination-widget, $context,
     $destination.get-target-list($destination-widget)
@@ -301,8 +299,9 @@ method received (
 
           my ( $added-widget, $added-row) = $!input-widget.append-grid-row;
 
-          $fcb = $added-widget.get-child-at-rk( 0, FCHOOSER-ROW);
-          $fcb.set-filename($uri);
+          my Gnome::Gtk3::FileChooserButton() $new-fcb =
+            $added-widget.get-child-at( 0, FCHOOSER-ROW);
+          $new-fcb.set-filename($uri);
           self!set-image( $added-widget, $uri);
           self.process-widget-input(
             $added-widget, $uri, $added-row, :!do-check

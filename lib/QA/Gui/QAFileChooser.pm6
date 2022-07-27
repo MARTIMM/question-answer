@@ -75,7 +75,10 @@ method clear-value ( Any:D $filechooserbutton ) {
 }}
 
 #-------------------------------------------------------------------------------
-method input-change-handler ( :_widget($filechooserbutton), Int() :$row ) {
+method input-change-handler (
+  Gnome::Gtk3::FileChooserButton() :_native-object($filechooserbutton),
+  Int() :$row
+) {
   self.process-widget-input(
     $filechooserbutton, self.get-value($filechooserbutton),
     $row, :do-check($!question.required)

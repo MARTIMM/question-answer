@@ -83,7 +83,7 @@ method set-value ( Any:D $button-grid, $label ) {
   return unless ?$label;
 
   loop ( my Int $row = 0; $row < $!question.fieldlist.elems; $row++ ) {
-    my Gnome::Gtk3::RadioButton $rb = $button-grid.get-child-at-rk( 0, $row);
+    my Gnome::Gtk3::RadioButton() $rb = $button-grid.get-child-at( 0, $row);
     if $rb.get-label eq $label {
       # set-active() will also trigger signal
       $rb.set-active(True);
@@ -97,10 +97,12 @@ method clear-value ( Any:D $button-grid ) {
 }
 
 #-------------------------------------------------------------------------------
-method input-change-handler ( :_widget($radiobutton), Int() :$row ) {
+method input-change-handler (
+  Gnome::Gtk3::RadioButton() :_native-object($radiobutton), Int() :$row
+) {
 
   # must get the grid because the unit is a grid
-  my Gnome::Gtk3::Grid $grid = $radiobutton.get-parent-rk;
+  my Gnome::Gtk3::Grid() $grid = $radiobutton.get-parent;
 
   # store in user data without checks
   self.process-widget-input( $grid, $radiobutton.get-label, $row, :!do-check);

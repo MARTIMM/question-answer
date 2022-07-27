@@ -67,7 +67,9 @@ method clear-value ( Any:D $combobox ) {
 #-------------------------------------------------------------------------------
 # called when a selection changes in the input widget combobox.
 # it must adjust the user data. no checks are needed.
-method input-change-handler ( :_widget($combobox), Int() :$row ) {
+method input-change-handler (
+  Gnome::Gtk3::ComboBoxText() :_native-object($combobox), Int() :$row
+) {
   self.process-widget-input(
     $combobox, $combobox.get-active-text // $!question.fieldlist[0],
     $row, :!do-check

@@ -65,7 +65,7 @@ method get-value ( $switch --> Any ) {
 
 #-------------------------------------------------------------------------------
 method set-value ( Any:D $switch-grid, $state ) {
-  my Gnome::Gtk3::Switch $switch = $switch-grid.get-child-at-rk( 0, 0);
+  my Gnome::Gtk3::Switch() $switch = $switch-grid.get-child-at( 0, 0);
   $switch.set-active($state.Bool);
 }
 
@@ -76,8 +76,10 @@ method clear-value ( Any:D $switch ) {
 }}
 
 #-------------------------------------------------------------------------------
-method input-change-handler ( Int $state, :_widget($switch), :$row --> Int ) {
-  my Gnome::Gtk3::Grid $switch-grid = $switch.get-parent-rk;
+method input-change-handler (
+  Int $state, Gnome::Gtk3::Switch() :_native-object($switch), :$row --> Int
+) {
+  my Gnome::Gtk3::Grid() $switch-grid = $switch.get-parent;
 #  my Gnome::Gtk3::Switch $switch = $switch-grid.get-child-at-rk( 0, 0);
 
   self.process-widget-input(

@@ -158,7 +158,7 @@ method show-sheet ( ) {
 #-------------------------------------------------------------------------------
 method show-message ( Str:D $message --> Int ) {
   my QA::Gui::OkMsgDialog $ok .= new(:$message);
-  my $r = $ok.dialog-run;
+  my $r = $ok.run;
   $ok.destroy;
 
   $r
@@ -173,7 +173,7 @@ method show-cancel ( --> Bool ) {
       :message("Are you sure to cancel?\nAll changes will be lost!")
     );
 
-    my $r = GtkResponseType($yn.dialog-run);
+    my $r = GtkResponseType($yn.run);
     $yn.destroy;
     $done = ( $r ~~ GTK_RESPONSE_YES );
   }

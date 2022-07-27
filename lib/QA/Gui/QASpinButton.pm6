@@ -69,7 +69,9 @@ method clear-value ( Any:D $spin-button ) {
 }
 
 #-------------------------------------------------------------------------------
-method input-change-handler ( :_widget($spin-button), Int() :$row ) {
+method input-change-handler (
+  Gnome::Gtk3::SpinButton() :_native-object($spin-button), Int() :$row
+) {
   self.process-widget-input(
     $spin-button, $spin-button.get-value, $row, :!do-check
   );

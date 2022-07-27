@@ -36,11 +36,12 @@ method create-widget ( Int() :$row --> Any ) {
 
   my Int $button-grid-row = 0;
   for @($!question.fieldlist) -> $label {
-    my Gnome::Gtk3::CheckButton $rb .= new(:$label);
-    $rb.set-hexpand(True);
-    $rb.register-signal( self, 'input-change-handler', 'clicked', :$row);
-    self.add-class( $rb, 'QACheckButton');
-    $button-grid.attach( $rb, 0, $button-grid-row++, 1, 1);
+    with my Gnome::Gtk3::CheckButton $cb .= new(:$label) {
+      .set-hexpand(True);
+      .register-signal( self, 'input-change-handler', 'clicked', :$row);
+    }
+    self.add-class( $cb, 'QACheckButton');
+    $button-grid.attach( $cb, 0, $button-grid-row++, 1, 1);
   }
 
   $button-grid
@@ -81,7 +82,9 @@ method clear-value ( Any:D $button-grid ) {
 }}
 
 #-------------------------------------------------------------------------------
-method input-change-handler ( :_widget($cb), Int() :$row ) {
+method input-change-handler (
+  Gnome::Gtk3::CheckButton() :_native-object($cb), Int() :$row
+) {
 
   # must get the grid because the unit is a grid
   my Gnome::Gtk3::Grid $grid .= new(:native-object($cb.get-parent));

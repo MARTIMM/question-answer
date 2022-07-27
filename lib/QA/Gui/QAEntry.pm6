@@ -83,7 +83,8 @@ method check-value ( Str $input --> Str ) {
 
 #-------------------------------------------------------------------------------
 method input-change-handler (
-  N-GdkEventFocus $no, :_widget($entry), Int() :$row --> Int
+  N-GdkEventFocus() $no, Gnome::Gtk3::Entry() :_native-object($entry),
+  Int() :$row --> Int
 ) {
 
   self.process-widget-input( $entry, $entry.get-text, $row, :do-check);

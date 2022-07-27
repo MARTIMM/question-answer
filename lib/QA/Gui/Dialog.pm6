@@ -80,7 +80,7 @@ method add-dialog-button (
 method show-dialog ( --> Int ) {
 
   self.show-all;
-  my Int $response-type = self.gtk-dialog-run;
+  my Int $response-type = self.run;
 
 #  self.gtk-widget-destroy;
 
@@ -98,5 +98,5 @@ method !cleanup-content ( $content ) {
     }
   }
 
-  $content.container-foreach( Wipe.new, 'wipe-widget');
+  $content.foreach( Wipe.new, 'wipe-widget');
 }

@@ -196,7 +196,9 @@ method show-sheet ( --> Int ) {
 #-------------------------------------------------------------------------------
 #--[ Signal Handlers ]----------------------------------------------------------
 #-------------------------------------------------------------------------------
-method dialog-response ( gint $response, QA::Gui::Dialog :_widget($dialog) ) {
+method dialog-response (
+  gint $response, QA::Gui::Dialog() :_native-object($dialog)
+) {
 
   if GtkResponseType($response) ~~ GTK_RESPONSE_DELETE_EVENT {
     $!faulty-state = False;
@@ -215,7 +217,7 @@ method dialog-response ( gint $response, QA::Gui::Dialog :_widget($dialog) ) {
         :message("There are still missing or wrong answers, cannot save data")
       );
 
-      $yn.dialog-run;
+      $yn.run;
       $yn.destroy;
     }
 
@@ -247,7 +249,7 @@ method show-cancel ( --> Bool ) {
       :message("Are you sure to cancel?\n<i><u>All changes will be lost!</u></i>")
     );
 
-    my $r = GtkResponseType($yn.dialog-run);
+    my $r = GtkResponseType($yn.run);
     $yn.widget-destroy;
     $done = ( $r ~~ GTK_RESPONSE_YES );
   }

@@ -267,7 +267,7 @@ CATCH { .note; }
             )
           );
 
-          $ok.dialog-run;
+          $ok.run;
           $ok.destroy;
         }
 
@@ -322,7 +322,7 @@ method dialog-response ( gint $response, QA::Gui::Dialog :_widget($dialog) ) {
         :message("There are still missing or wrong answers, cannot save data")
       );
 
-      $yn.dialog-run;
+      $yn.run;
       $yn.destroy;
     }
 
@@ -355,7 +355,7 @@ method show-cancel ( --> Bool ) {
       :message("Are you sure to cancel?\nAll changes will be lost!")
     );
 
-    my $r = GtkResponseType($yn.dialog-run);
+    my $r = GtkResponseType($yn.run);
     $yn.widget-destroy;
     $done = ( $r ~~ GTK_RESPONSE_YES );
   }
