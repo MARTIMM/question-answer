@@ -38,7 +38,7 @@ submethod BUILD ( Str:D :$!name, Hash :$qa-data ) {
     $!fieldtype = $qa-data<fieldtype>;
   }
 
-  # it is a string when deserialized from json
+  # it is a string when deserialized from json or yaml
   elsif $qa-data<fieldtype> ~~ Str {
     if QAFieldType.enums{$qa-data<fieldtype>}.defined {
       $!fieldtype = QAFieldType(QAFieldType.enums{$qa-data<fieldtype>});
