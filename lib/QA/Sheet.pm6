@@ -50,7 +50,7 @@ method !load ( Hash :$sheet is copy ) {
     $!button-map = $sheet<button-map> // %();
 
     # the rest are pages
-    for @($sheet<pages>) -> $h-page is copy {
+    for @($sheet<pages>) -> $h-page {
       next unless ?$h-page;
 
       # get and save page properties
