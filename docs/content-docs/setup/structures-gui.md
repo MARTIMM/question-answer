@@ -67,10 +67,7 @@ mindmapDiagram {
 ***** ScrolledWindow
 ****** page layout <<rose>>
 ***** Label (tab)
-***** ScrolledWindow
-****** page layout <<rose>>
-***** Label (tab)
-***** …
+***** … repeated  …
 **** Statusbar
 *** Box
 **** ButtonBox
@@ -135,7 +132,7 @@ mindmapDiagram {
 }
 </style>
 
-** Frame ($!question.name)
+** Frame
 ** Grid
 *** Label (set description text)
 *** Separator
