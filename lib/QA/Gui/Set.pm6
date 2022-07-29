@@ -55,42 +55,43 @@ submethod BUILD (
   QA::Set :$!set, Hash:D :$!user-data-set-part
 ) {
 
-  # create a frame with title
-  my QA::Gui::Frame $set-frame .= new(:label($!set.title));
-  $grid.attach( $set-frame, 0, $grid-row, 1, 1);
-
-  # the grid is for displaying the input fields and are
-  # strechable horizontally
-  my Gnome::Gtk3::Grid $question-grid .= new;
-  $question-grid.set-border-width(5);
-  #$question-grid.set-row-spacing(5);
-  $question-grid.set-hexpand(True);
-  $set-frame.add($question-grid);
-
   # place set description at the top of the grid
-  my Gnome::Gtk3::Label $description .= new(:text($!set.description));
-  $description.set-line-wrap(True);
-  #$description.set-max-width-chars(60);
-  $description.set-justify(GTK_JUSTIFY_FILL);
-  $description.widget-set-halign(GTK_ALIGN_START);
-  $description.widget-set-margin-bottom(3);
-  my Gnome::Gtk3::StyleContext $context .= new(
-    :native-object($description.get-style-context)
-  );
-  $context.add-class('descriptionText');
-
-  my Int $question-grid-row = 0;
-  $question-grid.attach( $description, 0, $question-grid-row++, 3, 1);
+  with my Gnome::Gtk3::Label $description .= new(:text($!set.description)) {
+    .set-line-wrap(True);
+    #.set-max-width-chars(60);
+    .set-justify(GTK_JUSTIFY_FILL);
+    .widget-set-halign(GTK_ALIGN_START);
+    .widget-set-margin-bottom(3);
+    my Gnome::Gtk3::StyleContext() $context = .get-style-context;
+    $context.add-class('descriptionText');
+  }
 
   # a separator made a bit shorter on the sides
-  my Gnome::Gtk3::Separator $sep .= new(
-    :orientation(GTK_ORIENTATION_HORIZONTAL)
-  );
-  $sep.widget-set-margin-bottom(3);
-  $sep.set-sensitive(False);
-  $sep.set-margin-start(10);
-  $sep.set-margin-end(10);
-  $question-grid.attach( $sep, 0, $question-grid-row++, 3, 1);
+  with my Gnome::Gtk3::Separator $sep .= new(
+      :orientation(GTK_ORIENTATION_HORIZONTAL)
+    ) {
+    .widget-set-margin-bottom(3);
+    .set-sensitive(False);
+    .set-margin-start(10);
+    .set-margin-end(10);
+  }
+
+  # the grid is for displaying the input fields and are strechable horizontally.
+  # Add the description and separator to the grid
+  my Int $question-grid-row = 0;
+  with my Gnome::Gtk3::Grid $question-grid .= new {
+    .set-border-width(5);
+    #.set-row-spacing(5);
+    .set-hexpand(True);
+    .attach( $description, 0, $question-grid-row++, 3, 1);
+    .attach( $sep, 0, $question-grid-row++, 3, 1);
+  }
+
+  # create a frame with title and add grid to it
+  with my QA::Gui::Frame $set-frame .= new(:label($!set.title)) {
+    .add($question-grid);
+    $grid.attach( $set-frame, 0, $grid-row, 1, 1);
+  }
 
   # show set with user data if any on subsequent rows counting from 2
   my $c := $!set.clone;
