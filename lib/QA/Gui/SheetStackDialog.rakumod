@@ -31,11 +31,11 @@ use QA::Gui::SheetTools;
 
 #-------------------------------------------------------------------------------
 =begin pod
-=head1 QA::Gui::SheetStack
+=head1 QA::Gui::SheetStackDialog
 
 =end pod
 
-unit class QA::Gui::SheetStack:auth<github:MARTIMM>;
+unit class QA::Gui::SheetStackDialog:auth<github:MARTIMM>;
 also is QA::Gui::Dialog;
 also does QA::Gui::SheetTools;
 

@@ -15,7 +15,7 @@ use QA::Types;
 
 #-------------------------------------------------------------------------------
 class EH {
-  has QA::Gui::SheetStack $!sheet-dialog;
+  has QA::Gui::SheetStackDialog $!sheet-dialog;
 
   #---------
   method show-stack ( ) {
@@ -36,7 +36,7 @@ class EH {
 
   #---------
   method exit-app ( ) {
-    Gnome::Gtk3::Main.new.gtk-main-quit;
+    Gnome::Gtk3::Main.new.quit;
   }
 
   #---------
@@ -61,15 +61,15 @@ class EH {
 }
 
 #-------------------------------------------------------------------------------
-# data structure
-my EH $eh .= new;
-
-# modify some path for tests to come Use given because $qa-types is not defined
+# modify paths for tests to come.
 given my QA::Types $qa-types {
   .data-file-type(QAYAML);
   .cfgloc-userdata('xbin/Data');
   .cfgloc-sheet('xbin/Data/Sheets');
 }
+
+# data structure
+my EH $eh .= new;
 
 # set keys for check methods. keys are used in QA description
 with $qa-types .= instance {
@@ -103,4 +103,4 @@ with my Gnome::Gtk3::Window $top-window .= new {
   .show-all;
 }
 
-Gnome::Gtk3::Main.new.gtk-main;
+Gnome::Gtk3::Main.new.main;

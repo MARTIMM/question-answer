@@ -36,7 +36,7 @@
     "QA::Gui::SheetNotebook": "lib/QA/Gui/SheetNotebook.rakumod",
     "QA::Gui::SheetSimpleDialog": "lib/QA/Gui/SheetSimpleDialog.rakumod",
     "QA::Gui::SheetSimpleWindow": "lib/QA/Gui/SheetSimpleWindow.rakumod",
-    "QA::Gui::SheetStack": "lib/QA/Gui/SheetStackDialog.rakumod",
+    "QA::Gui::SheetStackDialog": "lib/QA/Gui/SheetStackDialog.rakumod",
     "QA::Gui::SheetTools": "lib/QA/Gui/SheetTools.rakumod",
     "QA::Gui::Statusbar": "lib/QA/Gui/Statusbar.pm6",
     "QA::Gui::Value": "lib/QA/Gui/Value.pm6",

@@ -316,7 +316,7 @@ QA::Gui::Page *-> "*" QA::Gui::Set
 QA::Gui::Set *-right-> "*" QA::Gui::Question
 QA::Gui::Question *-right-> "*" QA::Gui::InputWidget
 ```
-The **QA::Gui::SheetSimple** module can be replaced with **QA::Gui::SheetStack**, **QA::Gui::SheetNotebook** or **QA::Gui::SheetAssistant** depending on the purpose of the questionaire.
+The **QA::Gui::SheetSimpleDialog** module can be replaced with **QA::Gui::SheetSimpleWindow** **QA::Gui::SheetStackDialog**, **QA::Gui::SheetNotebook** or **QA::Gui::SheetAssistant** depending on the purpose of the questionaire.
 
 ## Input widget details
 ```plantuml
