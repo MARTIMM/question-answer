@@ -180,7 +180,7 @@ pages:
             name: example
             options:
               example: No exclamation marks allowed!
-            callback: check-exclam
+            check: check-exclam
 
           - fieldtype: QAEntry
             description: Extra info shown when hoovering above input field
@@ -197,7 +197,7 @@ pages:
             title: Callback
             fieldtype: QAEntry
             required: false
-            name: callback
+            name: check
 
           - name: invisible
             required: false
