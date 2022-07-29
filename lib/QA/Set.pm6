@@ -14,7 +14,7 @@ has Str $.title is rw;
 has Str $.description is rw;
 has Bool $.hide is rw;
 
-# this QA::KV's keys and values. $!keys is to check the names and index
+# Keys and values. $!keys is to check the names and index
 # into $!questions and $!questions is to keep order as it is input.
 has Hash $.keys;
 has Array $.questions;
@@ -32,11 +32,11 @@ multi submethod BUILD ( Str:D :$!set-name!, Str :$title, Str :$description ) {
 }
 
 #-------------------------------------------------------------------------------
-multi submethod BUILD ( QA::Set:D :$set! ) {
+multi submethod BUILD ( QA::Set:D :$set!, Str :$title, Str :$description ) {
 
   $!set-name = $set.set-name;
-  $!title = $set.title;
-  $!description = $set.description;
+  $!title = $title // $set.title;
+  $!description = $description // $set.description;
   $!hide = $set.hide;
   $!keys = $set.keys;
   $!questions = $set.questions;
