@@ -9,7 +9,9 @@ layout: sidebar
 
 Structures are shown to have an idea how the files are defined. Categories and Sheets are stored on disk. The other structures are in categories, sets or sheets.
 
-
+All name fields in a configuration file must be unique so that it can also be used as a hook to operate on. Current and future usages are;
+* Search and modify sheets, sets and questions.
+* A name is used as an id for error messages.
 
 ## Set
 
@@ -19,7 +21,7 @@ A set is not stored on disk on its own. A set is used to group a series of quest
 * **title**; Used as a label in a frame widget.
 * **description**; Shown in above mentioned frame to describe the questions in this set.
 * **hide**; Hide this set. A use for it to hide or view a set in an action handler.
-* **questions**; An array of hashes.
+* **questions**; An array of hashes. While the name of a question mus be unique, we cannot have a Hash instead of an Array. This because the order of entries in a hash is unpredictable.
 
 ```
 "set-name": used as a key to get and save values,
@@ -37,11 +39,11 @@ A set is not stored on disk on its own. A set is used to group a series of quest
 
 ## Questions
 
-Questions are what it is all about. In short a piece of text to pose the question and a field where the answer can be given. However, more data is needed to fully display a question like what kind of input do we need, are there limits, is there a choice from a set of possibilities etc.
+Questions are what it is all about. In short, a piece of text to pose the question and a field where the answer can be given. However, more data is needed to fully display a question like what kind of input do we need, are there limits, is there a choice from a set of possibilities etc.
 
 * **action**; A name of a method which can be called on a previously provided object. The method is called when the answer on the question in accepted and saved in the users data.
 * **buttons**; Show buttons when repeatable is turned on. This is on by default. You might turn it off if you want to use keys and/or drag and drop.
-* **callback**; A name of a method which can be called on a previously provided object. The handler must check for correctness of the input value for that question and return an error message if test fails.
+* **check-cb**; A name of a method which can be called on a previously provided object. The handler must check for correctness of the input value for that question and return an error message if test fails.
 * **default**; A default value when no input is provided.
 * **description**; A question. When empty, title is taken.
 * **fieldlist**; The fieldlist is used to fill e.g. a combobox or a list input field.
@@ -184,7 +186,7 @@ The formats used are shown below for each input type with the variables which co
 |-------------|--|--|--|--|--|--|--|--|--|--|--|--|--|--|
 |action       |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
 |buttons      |o |- |- |o |- |- |- |- |  |- |o |o |  |  | <!-- optional? -->
-|callback     |o |- |- |  |  |- |  |  |o |  |  |  |  |  | <!-- optional? -->
+|check-cb     |o |- |- |  |  |- |  |  |o |  |  |  |  |  |
 |default      |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
 |description  |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
 |fieldlist    |- |! |! |- |! |! |  |  |  |  |  |  |  |o | <!-- optional? -->

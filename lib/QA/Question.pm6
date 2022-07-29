@@ -7,7 +7,7 @@ use QA::Types;
 
 has Str $.action is rw;         # optional key (=methodname) to perform action
 has Bool $.buttons is rw;       # optional hide buttons when repeat is True
-has Str $.callback is rw;       # optional key (=methodname) to check value
+has Str $.check-cb is rw;       # optional key (=methodname) to check value
 has Str $.cmpwith is rw;        # optional to check value against other field
 has Any $.default is rw;        # optional default value
 has Str $.description is rw;    # optional
@@ -58,7 +58,7 @@ submethod BUILD ( Str:D :$!name, Hash :$qa-data ) {
 
   $!action = $qa-data<action> if $qa-data<action>.defined;
   $!buttons = $qa-data<buttons> if $qa-data<buttons>.defined;
-  $!callback = $qa-data<callback> if $qa-data<callback>.defined;
+  $!check-cb = $qa-data<check-cb> if $qa-data<check-cb>.defined;
   $!cmpwith = $qa-data<cmpwith> if $qa-data<cmpwith>.defined;
   $!default = $qa-data<default> if $qa-data<default>.defined;
   $!description = $qa-data<description> if $qa-data<description>.defined;
@@ -87,7 +87,7 @@ method qa-data ( --> Hash ) {
 
   $qa-data<action> = $!action if $!action.defined;
   $qa-data<buttons> = $!buttons if $!buttons.defined;
-  $qa-data<callback> = $!callback if $!callback.defined;
+  $qa-data<check-cb> = $!check-cb if $!check-cb.defined;
   $qa-data<default> = $!default if $!default.defined;
   $qa-data<description> = $!description if $!description.defined;
   $qa-data<dnd> = $!dnd if $!dnd.defined;

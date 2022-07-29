@@ -73,17 +73,19 @@ method check-widget-value (
   my Str $msg-id = '';
 
   if ! $status.get-faulty-state(self.question.name) {
+note "status ok, now we check …";
 
     # check if there is a user routine which can check data. requiredness
     # must be checked too by the routine.
-    if ?self.question.callback {
+    if ?self.question.check-cb {
       my QA::Types $qa-types .= instance;
-      #my Array $cb-spec = $qa-types.get-check-handler(self.question.callback);
+      #my Array $cb-spec = $qa-types.get-check-handler(self.question.check);
       #my ( $handler-object, $method-name, $options) = @$cb-spec;
       my ( $handler-object, $method-name, $options) =
-        |$qa-types.get-check-handler(self.question.callback);
+        |$qa-types.get-check-handler(self.question.check-cb);
       $message = $handler-object."$method-name"( $input, |%$options) // '';
       $msg-id = self.question.name if ?$message;
+note "status ok, now we check …";
     }
 
     # if there is no callback, check a widgets check method
@@ -102,7 +104,7 @@ method check-widget-value (
   }
 
   if ? $msg-id {
-#note "check message: ", self.question.name, ' == ', $msg-id;
+note "check message: ", self.question.name, ' == ', $msg-id;
     self.set-status-hint( $input-widget, QAStatusFail);
     $status.set-faulty-state( self.question.name, True);
 
@@ -114,6 +116,7 @@ method check-widget-value (
   }
 
   else {
+note "drop message: ", self.question.name, ' == ', $msg-id;
     $status.send( %(
         :statusbar, :drop-msg, :id<input-errors>, :msg-id(self.question.name)
       )
