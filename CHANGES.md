@@ -1,6 +1,7 @@
 * 2022-07-27 0.16.5
   * Changes caused by multiple changes/deprecation in the Gnome::* distributions
   * Also found new bugs.
+  * Change class name to reflect module name of SheetStackDialog
 
 * 2022-06-29 0.16.4
   * Changes in QAImage for drag and drop changes in gtk3.
