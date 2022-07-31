@@ -50,13 +50,16 @@ class EH {
   method fieldtype-action1 ( Str $input --> Array ) {
     note "Selected 1: $input";
 
-    [%( :type(QAOtherUserAction), :action-key<show-select2>),]
+    # return an array of follow up actions. show-select2 is mapped to
+    # method fieldtype-action2
+    [%( :type(QAOtherUserAction), :action-key<show-select2>), :opt1<opt1>]
   }
 
   method fieldtype-action2 ( Str $input, :$opt1 --> Array ) {
     note "Selected 2: $input, option: $opt1";
 
-    [%(),]
+    # no further actions
+    Array
   }
 }
 
@@ -75,7 +78,7 @@ my EH $eh .= new;
 with $qa-types .= instance {
   .set-check-handler( 'check-exclam', $eh, 'check-char', :char<!>);
   .set-action-handler( 'show-select1', $eh, 'fieldtype-action1');
-  .set-action-handler( 'show-select2', $eh, 'fieldtype-action2', :opt1<opt1>);
+  .set-action-handler( 'show-select2', $eh, 'fieldtype-action2');
 }
 
 my Gnome::Gtk3::Label $description .= new(:text(''));
