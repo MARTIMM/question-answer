@@ -9,9 +9,10 @@ layout: sidebar
 
 Structures are shown to have an idea how the files are defined. Categories and Sheets are stored on disk. The other structures are in categories, sets or sheets.
 
-All name fields in a configuration file must be unique so that it can also be used as a hook to operate on. Current and future usages are;
-* Search and modify sheets, sets and questions.
-* A name is used as an id for error messages.
+All name fields in a configuration file must be unique, so that it can also be used as a hook to operate on. Current and future usages are;
+* [x] The name is used as an id for error messages.
+* [x] The name is used to store its value in a Hash tree. Using the same name twice, will overwrite a value of the other.
+* [ ] Search and modify sheets, sets and questions.
 
 ## Set
 
