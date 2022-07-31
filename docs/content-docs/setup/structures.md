@@ -42,7 +42,7 @@ A set is not stored on disk on its own. A set is used to group a series of quest
 
 Questions are what it is all about. In short, a piece of text to pose the question and a field where the answer can be given. However, more data is needed to fully display a question like what kind of input do we need, are there limits, is there a choice from a set of possibilities etc.
 
-* **action**; A name of a method which can be called on a previously provided object. The method is called when the answer on the question in accepted and saved in the users data.
+* **action-cb**; A name of a method which can be called on a previously provided object. The method is called when the answer on the question is accepted and saved in the users data.
 * **buttons**; Show buttons when repeatable is turned on. This is on by default. You might turn it off if you want to use keys and/or drag and drop.
 * **check-cb**; A name of a method which can be called on a previously provided object. The handler must check for correctness of the input value for that question and return an error message if test fails.
 * **default**; A default value when no input is provided.
@@ -72,7 +72,7 @@ Questions are what it is all about. In short, a piece of text to pose the questi
   * **maximum**; Maximum number of characters.
   * **minimum**; Minimum number of characters.
 * **QAFileChooser**
-  * **action**; The way the chooser selects a file or directory. This can be one of
+  * **action-cb**; The way the chooser selects a file or directory. This can be one of
     `open`; Indicates open mode. The file chooser will only let the user pick an existing file.
     `save`; Indicates save mode. The file chooser will let the user pick an existing file, or type in a new filename.
     `select`; Indicates an Open mode for selecting folders. The file chooser will let the user pick an existing folder.
@@ -101,7 +101,7 @@ Questions are what it is all about. In short, a piece of text to pose the questi
 * Other values are '' or 0 by default when absent. Minimum and maximum are -Inf and Inf when absent.
 * Select lists in question descriptions are always arrays.
 * Defaults are always single valued.
-* Callback and action names are keys referring to method names in a user class. To provide this information there are several routines defined for this in **QA::QATypes**.
+* Check-cb and action-cb names are keys referring to method names in a user class. To provide this information there are several routines defined for this in **QA::QATypes**.
 
 
 ### Answer value format to questions
@@ -185,7 +185,7 @@ The formats used are shown below for each input type with the variables which co
 
 |             |En|Cb|Co|Im|Li|Rb|Sc|Sw|Tv|Tb|Cc|Fc|Sp|Uw|
 |-------------|--|--|--|--|--|--|--|--|--|--|--|--|--|--|
-|action       |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
+|action-cb    |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
 |buttons      |o |- |- |o |- |- |- |- |  |- |o |o |  |  | <!-- optional? -->
 |check-cb     |o |- |- |  |  |- |  |  |o |  |  |  |  |  |
 |default      |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
@@ -228,7 +228,7 @@ The sheet is used to present questions to the user. In a sheet there are pages w
 
   * `user`; A user definable button.
     * `name`; Different text on the button.
-    * `action`; A name of a method which can be called on a previously provided object. The method is called when the answer on the question in accepted and saved in the users data. This is like the action from the question explained above.
+    * `action`; A name of a method which can be called on a previously provided object. The method is called when the answer on the question is accepted and saved in the users data. This is like the action from the question explained above.
 
 * **pages**; An array of hashes.
 
