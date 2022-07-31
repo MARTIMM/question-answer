@@ -38,7 +38,9 @@ unit class QA::Gui::Set:auth<github:MARTIMM>;
 
 #-------------------------------------------------------------------------------
 has Hash $!user-data-set-part;
-has QA::Set $!set;
+has Hash $!pages;
+has Hash $!sets;
+#has QA::Set $!set;
 has Hash $!questions = %();
 
 #-------------------------------------------------------------------------------
@@ -52,11 +54,11 @@ has Hash $!questions = %();
 # Display a set on a given grid at given row
 submethod BUILD (
   Gnome::Gtk3::Grid :$grid, Int:D :$grid-row,
-  QA::Set :$!set, Hash:D :$!user-data-set-part
+  QA::Set :$set, Hash:D :$!user-data-set-part, Hash :$!pages, Hash :$!sets
 ) {
 
   # place set description at the top of the grid
-  with my Gnome::Gtk3::Label $description .= new(:text($!set.description)) {
+  with my Gnome::Gtk3::Label $description .= new(:text($set.description)) {
     .set-line-wrap(True);
     #.set-max-width-chars(60);
     .set-justify(GTK_JUSTIFY_FILL);
@@ -88,18 +90,18 @@ submethod BUILD (
   }
 
   # create a frame with title and add grid to it
-  with my QA::Gui::Frame $set-frame .= new(:label($!set.title)) {
+  with my QA::Gui::Frame $set-frame .= new(:label($set.title)) {
     .add($question-grid);
     $grid.attach( $set-frame, 0, $grid-row, 1, 1);
   }
 
   # show set with user data if any on subsequent rows counting from 2
-  my $c := $!set.clone;
+  my $c := $set.clone;
   for $c -> QA::Question $question {
 note 'Question: ', $question.name;
     my QA::Gui::Question $gui-q .= new(
       :$question, :$question-grid, :row($question-grid-row),
-      :$!user-data-set-part
+      :$!user-data-set-part, :$!pages, :$!sets, :$!questions
     );
     $!questions{$question.name} = $gui-q;
     $question-grid-row++;

@@ -16,6 +16,7 @@ unit class QA::Gui::Page:auth<github:MARTIMM>;
 #-------------------------------------------------------------------------------
 has Hash $!sets = %();
 has Hash $!page;
+has Hash $!pages;
 has Gnome::Gtk3::Grid $!page-grid;
 has Int $!page-row;
 has Bool $!description;
@@ -24,7 +25,7 @@ has Hash $!user-data;
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
-  Hash :$!page, Bool :$!description = True, Hash :$!user-data
+  Hash :$!page, Bool :$!description = True, Hash :$!user-data, Hash :$!pages
 ) { }
 
 #-------------------------------------------------------------------------------
@@ -50,7 +51,8 @@ method create-content( --> Gnome::Gtk3::ScrolledWindow ) {
 note 'Set: ', $set-name;
     my QA::Gui::Set $gui-set .= new(
       :grid($!page-grid), :grid-row($!page-row), :$set,
-      :user-data-set-part($!user-data{$!page<page-name>}{$set-name})
+      :user-data-set-part($!user-data{$!page<page-name>}{$set-name}),
+      :$!pages, :$!sets
     );
     $!sets{$set-name} = $gui-set;
     $!page-row++;

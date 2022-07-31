@@ -202,7 +202,9 @@ method save-data ( ) {
 # scrollable window
 method !create-page( Hash $page, Bool :$description = True --> QA::Gui::Page ) {
 note "\nPage: ", $page.<page-name>;
-  my QA::Gui::Page $gui-page .= new( :$page, :$description, :$!user-data);
+  my QA::Gui::Page $gui-page .= new(
+    :$page, :$description, :$!user-data, :$!pages
+  );
   $!pages{$page.<page-name>} = $gui-page;
 
   $gui-page
