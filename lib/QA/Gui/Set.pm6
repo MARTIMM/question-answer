@@ -39,7 +39,7 @@ unit class QA::Gui::Set:auth<github:MARTIMM>;
 #-------------------------------------------------------------------------------
 has Hash $!user-data-set-part;
 has QA::Set $!set;
-has Array[QA::Gui::Question] $!questions;
+has Hash $!questions = %();
 
 #-------------------------------------------------------------------------------
 # must repeat this new call because it won't call the one of
@@ -96,11 +96,12 @@ submethod BUILD (
   # show set with user data if any on subsequent rows counting from 2
   my $c := $!set.clone;
   for $c -> QA::Question $question {
+note 'Question: ', $question.name;
     my QA::Gui::Question $gui-q .= new(
       :$question, :$question-grid, :row($question-grid-row),
       :$!user-data-set-part
     );
-    $!questions.push: $gui-q;
+    $!questions{$question.name} = $gui-q;
     $question-grid-row++;
   }
 }
@@ -109,7 +110,7 @@ submethod BUILD (
 method query-state ( --> Bool ) {
 
   my Bool $faulty-state = False;
-  for @$!questions -> $question {
+  for $!questions.kv -> $k, $question {
 
     # this question is not ok when True
     if $question.query-state {

@@ -23,7 +23,7 @@ use QA::Gui::Page;
 unit role QA::Gui::SheetTools:auth<github:MARTIMM>;
 
 has Gnome::Gtk3::Grid $!grid;
-has Array $!pages = [];
+has Hash $!pages = %();
 has QA::Sheet $!sheet;
 has Str $!sheet-name;
 
@@ -37,7 +37,9 @@ has Gnome::Gtk3::Stack $!stack;
 method set-grid ( $container ) {
 note 'set-grid: ', $container.^name;
 
+  # Set the contents of the grid depending of the type of container
   given $container.^name {
+
     when / SheetSimple || SheetNotebook / {
       $!grid = $container.dialog-content;
     }
@@ -199,9 +201,9 @@ method save-data ( ) {
 # create page with all widgets on it. it always will return a
 # scrollable window
 method !create-page( Hash $page, Bool :$description = True --> QA::Gui::Page ) {
-#  note "\npage: ", $page.raku;
+note "\nPage: ", $page.<page-name>;
   my QA::Gui::Page $gui-page .= new( :$page, :$description, :$!user-data);
-  $!pages.push: $gui-page;
+  $!pages{$page.<page-name>} = $gui-page;
 
   $gui-page
 }

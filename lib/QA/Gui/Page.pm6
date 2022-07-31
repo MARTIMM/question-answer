@@ -14,7 +14,7 @@ use QA::Set;
 unit class QA::Gui::Page:auth<github:MARTIMM>;
 
 #-------------------------------------------------------------------------------
-has Array $!sets = [];
+has Hash $!sets = %();
 has Hash $!page;
 has Gnome::Gtk3::Grid $!page-grid;
 has Int $!page-row;
@@ -32,10 +32,8 @@ submethod BUILD (
 # scrollable window
 method create-content( --> Gnome::Gtk3::ScrolledWindow ) {
 
-  my Gnome::Gtk3::ScrolledWindow $page-window .= new;
   $!page-grid .= new;
   $!page-row = 0;
-  $page-window.add($!page-grid);
 
   self!description if $!description;
 
@@ -49,17 +47,22 @@ method create-content( --> Gnome::Gtk3::ScrolledWindow ) {
       unless $!user-data{$!page<page-name>}{$set-name} ~~ Hash;
 
     # display a set
+note 'Set: ', $set-name;
     my QA::Gui::Set $gui-set .= new(
       :grid($!page-grid), :grid-row($!page-row), :$set,
       :user-data-set-part($!user-data{$!page<page-name>}{$set-name})
     );
-    $!sets.push: $gui-set;
+    $!sets{$set-name} = $gui-set;
     $!page-row++;
   }
 
   # return the page
-  $page-window.widget-set-hexpand(True);
-  $page-window.widget-set-vexpand(True);
+  with my Gnome::Gtk3::ScrolledWindow $page-window .= new {
+    .add($!page-grid);
+    .widget-set-hexpand(True);
+    .widget-set-vexpand(True);
+  }
+
   $page-window
 }
 
@@ -67,7 +70,7 @@ method create-content( --> Gnome::Gtk3::ScrolledWindow ) {
 method query-page-state ( --> Bool ) {
 
   $!faulty-page-state = False;
-  for @$!sets -> $set {
+  for $!sets.kv -> $k, $set {
 
     # this page is not ok when True
     if $set.query-state {
