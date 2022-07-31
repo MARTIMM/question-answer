@@ -56,7 +56,7 @@ method process-widget-input (
 
   unless $status.get-faulty-state(self.question.name) {
     self!adjust-user-data( $input-widget, $input, $row);
-    self.check-users-action( $input, self.question.action);
+    self.check-users-action( $input, self.question.action-cb);
   }
 }
 
@@ -161,39 +161,82 @@ method check-users-action ( $input, Str $action-key = '' ) {
   # check if there is a user routine to run any actions
   if ? $action-key {
     my Array $followup-actions = self.run-users-action( $input, $action-key);
+    if ?$followup-actions {
+      for @$followup-actions -> Hash $action {
+        given $action<type>:delete {
+          when QAOpenDialog {
+          }
 
-    for @$followup-actions -> Hash $action {
-      given $action<type> {
-        when QAOpenDialog {
-        }
 
-        when QAHidePage {
-        }
+          when QAHidePage {
+          }
 
-        when QAShowPage {
-        }
+          when QAHideSet {
+          }
 
-        when QAHideSet {
-        }
+          when QAHideQuestion {
+          }
 
-        when QAShowSet {
-        }
 
-        when QAEnableButton {
-        }
+          when QAShowPage {
+          }
 
-        when QADisableButton {
-        }
+          when QAShowSet {
+          }
 
-        when QAEnableInputWidget {
-        }
+          when QAShowQuestion {
+          }
 
-        when QADisableInputWidget {
-        }
 
-        when QAOtherUserAction {
-          my Str $other-action-key = $action<action-key>;
-          self.check-users-action( $input, $other-action-key);
+          when QAEnableInputWidget {
+          }
+
+          when QADisableInputWidget {
+          }
+
+
+          when QAEnableInputWidget {
+          }
+
+          when QADisableInputWidget {
+          }
+
+
+          when QAEnableButton {
+          }
+
+          when QADisableButton {
+          }
+
+
+          when QAOtherUserAction {
+            my Str $other-action-key = $action<action-key>:delete;
+            self.check-users-action( $input, $other-action-key, |%$action);
+          }
+
+
+          when QAAddQuestion {
+          }
+
+          when QARemoveQuestion {
+          }
+
+          when QAModifyQuestion {
+          }
+
+
+          when QAAddSet {
+          }
+
+          when QARemoveSet {
+          }
+
+
+          when QAAddSheet {
+          }
+
+          when QARemoveSet {
+          }
         }
       }
     }

@@ -5,7 +5,7 @@ unit class QA::Question:auth<github:MARTIMM>;
 
 use QA::Types;
 
-has Str $.action is rw;         # optional key (=methodname) to perform action
+has Str $.action-cb is rw;      # optional key (=methodname) to perform action
 has Bool $.buttons is rw;       # optional hide buttons when repeat is True
 has Str $.check-cb is rw;       # optional key (=methodname) to check value
 has Str $.cmpwith is rw;        # optional to check value against other field
@@ -56,7 +56,7 @@ submethod BUILD ( Str:D :$!name, Hash :$qa-data ) {
   }
 
 
-  $!action = $qa-data<action> if $qa-data<action>.defined;
+  $!action-cb = $qa-data<action-cb> if $qa-data<action-cb>.defined;
   $!buttons = $qa-data<buttons> if $qa-data<buttons>.defined;
   $!check-cb = $qa-data<check-cb> if $qa-data<check-cb>.defined;
   $!cmpwith = $qa-data<cmpwith> if $qa-data<cmpwith>.defined;
@@ -85,7 +85,7 @@ submethod BUILD ( Str:D :$!name, Hash :$qa-data ) {
 method qa-data ( --> Hash ) {
   my Hash $qa-data = %( :$!name, :$!fieldtype);
 
-  $qa-data<action> = $!action if $!action.defined;
+  $qa-data<action-cb> = $!action-cb if $!action-cb.defined;
   $qa-data<buttons> = $!buttons if $!buttons.defined;
   $qa-data<check-cb> = $!check-cb if $!check-cb.defined;
   $qa-data<default> = $!default if $!default.defined;
