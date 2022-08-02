@@ -159,7 +159,7 @@ pages:
             default: QAEntry
             title: Field
             description: Type of input field
-            action: show-select1
+            action-cb: show-select1
 
           - name: dnd-image
             fieldtype: QAImage
