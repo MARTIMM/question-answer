@@ -54,9 +54,11 @@ method process-widget-input (
 
   my QA::Status $status .= instance;
 
+  # Only when answer is ok, store and call optionally a user action
   unless $status.get-faulty-state(self.question.name) {
     self!adjust-user-data( $input-widget, $input, $row);
-    self.check-users-action( $input, self.question.action-cb);
+    self.check-users-action( $input, self.question.action-cb)
+      if ?self.question.action-cb;
   }
 }
 
@@ -156,12 +158,24 @@ method !adjust-user-data ( $input-widget, Any $input, Int() $row ) {
 }
 
 #-------------------------------------------------------------------------------
-method check-users-action ( $input, Str $action-key = '' ) {
+method check-users-action ( Any:D $input, Str $action-key is copy, *%options ) {
+CONTROL { when CX::Warn {  note .gist; .resume; } }
+  %options //= %();
+  $action-key //= '';
+
+note "check-users-action: '$input', '$action-key', ", %options.gist;
 
   # check if there is a user routine to run any actions
   if ? $action-key {
-    my Array $followup-actions = self.run-users-action( $input, $action-key);
+    my Array $followup-actions =
+      self.run-users-action( $input, $action-key, |%options);
+
     if ?$followup-actions {
+      # When a comma in the array is forgotten, transform contents to Hash
+      $followup-actions = [Hash.new(|$followup-actions)]
+        if $followup-actions.elems == 1 and $followup-actions[0] ~~ Pair;
+
+      # Check for type of action
       for @$followup-actions -> Hash $action {
         given $action<type>:delete {
           when QAOpenDialog {
@@ -211,6 +225,7 @@ method check-users-action ( $input, Str $action-key = '' ) {
 
           when QAOtherUserAction {
             my Str $other-action-key = $action<action-key>:delete;
+note 'Ac: ', $action.gist;
             self.check-users-action( $input, $other-action-key, |%$action);
           }
 
@@ -244,7 +259,9 @@ method check-users-action ( $input, Str $action-key = '' ) {
 }
 
 #-------------------------------------------------------------------------------
-method run-users-action ( $input, Str:D $action-key = '' --> Array ) {
+method run-users-action (
+  $input, Str:D $action-key = '', *%cb-options --> Array
+) {
 
   return [] unless ?$action-key;
 
@@ -252,7 +269,7 @@ method run-users-action ( $input, Str:D $action-key = '' --> Array ) {
   my Array $action-spec = $qa-types.get-action-handler($action-key);
   my ( $handler-object, $method-name, $options) = @$action-spec;
 
-  $handler-object."$method-name"( $input, |%$options) // []
+  $handler-object."$method-name"( $input, |$options, |%cb-options) // []
 }
 
 #-------------------------------------------------------------------------------
