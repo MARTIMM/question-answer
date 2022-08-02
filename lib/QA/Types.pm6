@@ -93,6 +93,33 @@ enum QAPageType is export <
 enum InputStatusHint is export <QAStatusNormal QAStatusOk QAStatusFail>;
 
 #-------------------------------------------------------------------------------
+=begin pod
+=head2 ActionReturnType
+
+Action types used in an Array of Hashes returned from an action callback.
+
+=item QAOpenDialog;
+=item QAHidePage;
+=item QAHideSet;
+=item QAHideQuestion;
+=item QAShowPage;
+=item QAShowSet;
+=item QAShowQuestion;
+=item QAEnableInputWidget;
+=item QADisableInputWidget;
+=item QAEnableButton;
+=item QADisableButton;
+=item QAOtherUserAction;
+=item QAAddQuestion;
+=item QARemoveQuestion;
+=item QAModifyQuestion;
+=item QAAddSet;
+=item QARemoveSet;
+=item QAAddSheet;
+=item QARemoveSheet;
+
+=end pod
+
 #tt:1:ActionReturnType:
 enum ActionReturnType is export <
   QAOpenDialog
@@ -104,7 +131,7 @@ enum ActionReturnType is export <
 
   QAAddQuestion QARemoveQuestion QAModifyQuestion
   QAAddSet QARemoveSet
-  QAAddSheet QARemoveSet
+  QAAddSheet QARemoveSheet
 >;
 
 #-------------------------------------------------------------------------------
