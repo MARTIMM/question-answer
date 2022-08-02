@@ -52,7 +52,7 @@ class EH {
 
     # return an array of follow up actions. show-select2 is mapped to
     # method fieldtype-action2
-    [%( :type(QAOtherUserAction), :action-key<show-select2>), :opt1<opt1>]
+    [%( :type(QAOtherUserAction), :action-key<show-select2>, :opt1<opt1>),]
   }
 
   method fieldtype-action2 ( Str $input, :$opt1 --> Array ) {
