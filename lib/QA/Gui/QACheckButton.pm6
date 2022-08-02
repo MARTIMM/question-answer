@@ -87,7 +87,7 @@ method input-change-handler (
 ) {
 
   # must get the grid because the unit is a grid
-  my Gnome::Gtk3::Grid $grid .= new(:native-object($cb.get-parent));
+  my Gnome::Gtk3::Grid() $grid = $cb.get-parent;
 
   # store in user data without checks
   self.process-widget-input( $grid, self!get-value($grid), $row, :!do-check);
