@@ -258,7 +258,8 @@ note "Ac: $other-action-key, ", $action.gist;
             self.check-users-action( $input, $other-action-key, |%$action);
           }
 
-          when QAAddTofieldlist {
+          when QAModifyfieldlist {
+
           }
 
           when QAModifyValue {
