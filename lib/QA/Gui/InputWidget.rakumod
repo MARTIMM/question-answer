@@ -10,6 +10,7 @@ use QA::Types;
 use QA::Question;
 
 use QA::Gui::Frame;
+#use QA::Gui::Question;
 use QA::Gui::QAImage;
 use QA::Gui::QAComboBox;
 use QA::Gui::QAEntry;
@@ -21,11 +22,11 @@ use QA::Gui::QASwitch;
 use QA::Gui::QATextView;
 
 #-------------------------------------------------------------------------------
-unit class QA::Gui::InputWidget:auth<github:MARTIMM>:ver<0.1.0>;
+unit class QA::Gui::InputWidget:auth<github:MARTIMM>;
 also is QA::Gui::Frame;
 
 #-------------------------------------------------------------------------------
-# Array of question parameters
+# Question parameters
 has QA::Question $!question;
 
 # Location in larger Hash, a location for the answer on this question
@@ -49,7 +50,10 @@ has Bool $.faulty-state = False;
 has Bool $!inhibit-combobox-events = False;
 
 #-------------------------------------------------------------------------------
-submethod BUILD ( QA::Question:D :$!question, Hash:D :$!user-data-set-part ) {
+submethod BUILD (
+  QA::Question:D :$!question, Hash:D :$!user-data-set-part,
+  :$gui-question where .^name eq 'QA::Gui::Question'
+) {
 
   $!grid-row-data = [];
   $!grid-access-index = [];
@@ -69,12 +73,12 @@ submethod BUILD ( QA::Question:D :$!question, Hash:D :$!user-data-set-part ) {
 
   if $!question.fieldtype eq QAUserWidget {
     # If this is a user widget, the widget object is already created.
-    self!create-user-widget-object;
+    self!create-user-widget-object(:$gui-question);
   }
 
   else {
     # Otherwise create the widget object
-    self!create-widget-object;
+    self!create-widget-object(:$gui-question);
   }
 
   if ? $!widget-object {
@@ -92,13 +96,17 @@ submethod BUILD ( QA::Question:D :$!question, Hash:D :$!user-data-set-part ) {
 }
 
 #-------------------------------------------------------------------------------
-method !create-widget-object ( ) {
+method !create-widget-object (
+  :$gui-question # where .^name eq 'QA::Gui::Question' # checked at BUILD
+) {
   my Str $module-name = 'QA::Gui::' ~ $!question.fieldtype.Str;
 #  (try require ::($module-name); CATCH {die "fail to use  $module-name"});
   if (my $m = ::($module-name)).^lookup('set-value') ~~ Method {
-    $!widget-object = ::($module-name).new(
-      :$!question, :$!user-data-set-part, :input-widget(self)
-    );
+    $!widget-object = ::($module-name).new;
+    $!widget-object.question = $!question;
+    $!widget-object.user-data-set-part = $!user-data-set-part;
+    $!widget-object.gui-input-widget = self;
+    $!widget-object.gui-question = $gui-question;
   }
 
   else {
@@ -109,14 +117,20 @@ method !create-widget-object ( ) {
 }
 
 #-------------------------------------------------------------------------------
-method !create-user-widget-object ( ) {
+method !create-user-widget-object (
+  :$gui-question # where .^name eq 'QA::Gui::Question' # checked at BUILD
+) {
 
   # Get the object from the questions userwidget field and get the object,
   # then call .init-widget() if the method is defined.
   my QA::Types $qa-types .= instance;
   $!widget-object = $qa-types.get-widget-object($!question.userwidget);
   if ?$!widget-object and $!widget-object.^lookup('init-widget') ~~ Method {
-    $!widget-object.init-widget( :$!question, :$!user-data-set-part);
+    $!widget-object.init-widget;
+    $!widget-object.question = $!question;
+    $!widget-object.user-data-set-part = $!user-data-set-part;
+    $!widget-object.gui-input-widget = self;
+    $!widget-object.gui-question = $gui-question;
   }
 
   else {

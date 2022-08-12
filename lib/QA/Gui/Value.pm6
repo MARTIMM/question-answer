@@ -12,9 +12,10 @@ use Gnome::Gtk3::Enums;
 #use QA::Gui::Frame;
 #use QA::Gui::Statusbar;
 use QA::Status;
-
 use QA::Question;
 use QA::Types;
+
+#use QA::Gui::InputWidget;
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -33,7 +34,14 @@ Several methods to handle the widgets value.
 
 =end pod
 
-unit role QA::Gui::Value:auth<github:MARTIMM>:ver<0.1.0>;
+unit role QA::Gui::Value:auth<github:MARTIMM>;
+
+#-------------------------------------------------------------------------------
+# when an input widget is created by QA::Gui::InputWidget, these values are set
+has QA::Question $.question is rw;
+has Hash $.user-data-set-part is rw;
+has $.gui-input-widget is rw;
+has $.gui-question is rw;
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -98,7 +106,7 @@ note "status ok, now we check …";
       $msg-id = self.question.name if ?$message;
     }
 
-    # if there is no check mehod, check if it is required
+    # if there is no check method, check if it is required
     if ! $msg-id and ?self.question.required and $input ~~ m/^ \s* $/ {
       $msg-id = self.question.name;
       $message = "$msg-id is required";
@@ -118,7 +126,7 @@ note "check message: ", self.question.name, ' == ', $msg-id;
   }
 
   else {
-note "drop message: ", self.question.name, ' == ', $msg-id;
+note "drop message: ", self.question.name;
     $status.send( %(
         :statusbar, :drop-msg, :id<input-errors>, :msg-id(self.question.name)
       )
@@ -165,10 +173,12 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
 
 note "check-users-action: '$input', '$action-key', ", %options.gist;
 
+self.show-data;
+
   # check if there is a user routine to run any actions
   if ? $action-key {
     my Array $followup-actions =
-      self.run-users-action( $input, $action-key, |%options);
+      self.run-users-action( $input, $action-key, |%options) // [];
 
     if ?$followup-actions {
       # When a comma in the array is forgotten, transform contents to Hash
@@ -177,10 +187,9 @@ note "check-users-action: '$input', '$action-key', ", %options.gist;
 
       # Check for type of action
       for @$followup-actions -> Hash $action {
-        given $action<type>:delete {
-          when QAOpenDialog {
-          }
+        my ActionReturnType $type = $action<type>:delete;
 
+        given $type {
 
           when QAHidePage {
           }
@@ -216,20 +225,6 @@ note "check-users-action: '$input', '$action-key', ", %options.gist;
           }
 
 
-          when QAEnableButton {
-          }
-
-          when QADisableButton {
-          }
-
-
-          when QAOtherUserAction {
-            my Str $other-action-key = $action<action-key>:delete;
-note 'Ac: ', $action.gist;
-            self.check-users-action( $input, $other-action-key, |%$action);
-          }
-
-
           when QAAddQuestion {
           }
 
@@ -252,6 +247,29 @@ note 'Ac: ', $action.gist;
 
           when QARemoveSet {
           }
+
+
+          when QAOpenDialog {
+          }
+
+          when QAOtherUserAction {
+            my Str $other-action-key = $action<action-key>:delete;
+note "Ac: $other-action-key, ", $action.gist;
+            self.check-users-action( $input, $other-action-key, |%$action);
+          }
+
+          when QAAddTofieldlist {
+          }
+
+          when QAModifyValue {
+          }
+
+
+          when QAEnableButton {
+          }
+
+          when QADisableButton {
+          }
         }
       }
     }
@@ -270,6 +288,19 @@ method run-users-action (
   my ( $handler-object, $method-name, $options) = @$action-spec;
 
   $handler-object."$method-name"( $input, |$options, |%cb-options) // []
+}
+
+#-------------------------------------------------------------------------------
+method show-data ( ) {
+  for $!gui-question.pages.keys -> $kp {
+    note "page: $kp";
+    for $!gui-question.pages{$kp}.sets.keys -> $ks {
+      note "  set: $ks";
+      for $!gui-question.pages{$kp}.sets{$ks}.questions.keys -> $kq {
+        note "    question: $kq";
+      }
+    }
+  }
 }
 
 #-------------------------------------------------------------------------------

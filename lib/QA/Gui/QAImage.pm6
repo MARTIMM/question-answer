@@ -43,23 +43,15 @@ also does QA::Gui::Value;
 #-------------------------------------------------------------------------------
 enum IMAGEGRID <FCHOOSER-ROW IMAGE-ROW>;
 
-has QA::Question $.question;
-has Hash $.user-data-set-part;
-has $!input-widget;
 has Str $!dnd-targets;
 has Gnome::Gtk3::Drag $!drag;
 
 #-------------------------------------------------------------------------------
-submethod BUILD (
-  QA::Question:D :$!question, Hash:D :$!user-data-set-part,
-  :$!input-widget where *.^name eq 'QA::Gui::InputWidget'
-) {
+method create-widget ( Int() :$row --> Any ) {
+
+  # init
   $!drag .= new;
   $!dnd-targets = $!question.options<dnd> // '';
-}
-
-#-------------------------------------------------------------------------------
-method create-widget ( Int() :$row --> Any ) {
 
   # We need a grid with 2 rows. one for the file chooser button
   # and one for the image. If DND, 1st row is made invisible.
@@ -297,7 +289,7 @@ method received (
           $uri ~~ s/^ 'file://' //;
           $uri = uri_decode($uri);
 
-          my ( $added-widget, $added-row) = $!input-widget.append-grid-row;
+          my ( $added-widget, $added-row) = $!gui-input-widget.append-grid-row;
 
           my Gnome::Gtk3::FileChooserButton() $new-fcb =
             $added-widget.get-child-at( 0, FCHOOSER-ROW);

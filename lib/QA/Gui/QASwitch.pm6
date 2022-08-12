@@ -17,23 +17,11 @@ unit class QA::Gui::QASwitch;
 also does QA::Gui::Value;
 
 #-------------------------------------------------------------------------------
-# Make attributes readable so that the roles can access them using self.question
-has QA::Question $.question;
-has Hash $.user-data-set-part;
+method create-widget ( Int() :$row --> Any ) {
 
-#-------------------------------------------------------------------------------
-# this widget is not repeatable and cannot have a combobox to category
-# the choice of the input
-
-submethod BUILD (
-  QA::Question:D :$!question, Hash:D :$!user-data-set-part
-) {
+  # reset constraints when used wrong
   $!question.repeatable = False;
   $!question.selectlist = [];
-}
-
-#-------------------------------------------------------------------------------
-method create-widget ( Int() :$row --> Any ) {
 
   # create a grid with checkbuttons
   my Gnome::Gtk3::Grid $switch-grid .= new;

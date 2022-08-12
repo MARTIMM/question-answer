@@ -12,20 +12,11 @@ unit class QA::Gui::QARadioButton;
 also does QA::Gui::Value;
 
 #-------------------------------------------------------------------------------
-# Make attributes readable so that the roles can access them using self.question
-has QA::Question $.question;
-has Hash $.user-data-set-part;
+method create-widget ( Int() :$row --> Any ) {
 
-#-------------------------------------------------------------------------------
-submethod BUILD (
-  QA::Question:D :$!question, Hash:D :$!user-data-set-part
-) {
+  # reset constraints when used wrong
   $!question.repeatable = False;
   $!question.selectlist = [];
-}
-
-#-------------------------------------------------------------------------------
-method create-widget ( Int() :$row --> Any ) {
 
   # create a grid with radiobuttons
   my Gnome::Gtk3::Grid $button-grid .= new;

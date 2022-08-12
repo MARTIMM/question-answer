@@ -14,9 +14,9 @@ use QA::Set;
 unit class QA::Gui::Page:auth<github:MARTIMM>;
 
 #-------------------------------------------------------------------------------
-has Hash $!sets = %();
+has Hash $.sets = %();
 has Hash $!page;
-has Hash $!pages;
+has Hash $!pages; # must be provided to QA::Gui::Question
 has Gnome::Gtk3::Grid $!page-grid;
 has Int $!page-row;
 has Bool $!description;
@@ -48,11 +48,11 @@ method create-content( --> Gnome::Gtk3::ScrolledWindow ) {
       unless $!user-data{$!page<page-name>}{$set-name} ~~ Hash;
 
     # display a set
-note 'Set: ', $set-name;
+#note 'Set: ', $set-name;
     my QA::Gui::Set $gui-set .= new(
       :grid($!page-grid), :grid-row($!page-row), :$set,
       :user-data-set-part($!user-data{$!page<page-name>}{$set-name}),
-      :$!pages, :$!sets
+      :$!pages
     );
     $!sets{$set-name} = $gui-set;
     $!page-row++;

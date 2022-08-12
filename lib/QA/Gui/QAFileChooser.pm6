@@ -12,13 +12,6 @@ unit class QA::Gui::QAFileChooser;
 also does QA::Gui::Value;
 
 #-------------------------------------------------------------------------------
-has QA::Question $.question;
-has Hash $.user-data-set-part;
-
-#-------------------------------------------------------------------------------
-submethod BUILD ( QA::Question:D :$!question, Hash:D :$!user-data-set-part ) { }
-
-#-------------------------------------------------------------------------------
 method create-widget ( Int() :$row --> Any ) {
 
   # create a text input widget

@@ -98,40 +98,53 @@ enum InputStatusHint is export <QAStatusNormal QAStatusOk QAStatusFail>;
 
 Action types used in an Array of Hashes returned from an action callback.
 
-=item QAOpenDialog;
-=item QAHidePage;
-=item QAHideSet;
-=item QAHideQuestion;
-=item QAShowPage;
-=item QAShowSet;
-=item QAShowQuestion;
-=item QAEnableInputWidget;
-=item QADisableInputWidget;
-=item QAEnableButton;
-=item QADisableButton;
-=item QAOtherUserAction;
-=item QAAddQuestion;
-=item QARemoveQuestion;
-=item QAModifyQuestion;
-=item QAAddSet;
-=item QARemoveSet;
-=item QAAddSheet;
-=item QARemoveSheet;
+=item QAHidePage; Hide a pages of sets
+=item QAHideSet; Hide a set
+=item QAHideQuestion; Hide a question
 
+=item QAShowPage; Show a pages of sets
+=item QAShowSet; Show a set
+=item QAShowQuestion; Show a question
+
+=item QAEnableInputWidget; Enable an input widget
+=item QADisableInputWidget; Disable an input widget
+
+=item QAAddQuestion; Add a new question
+=item QARemoveQuestion; Remove a question
+=item QAModifyQuestion; Modify a question
+
+=item QAAddSet; Add a set of questions
+=item QARemoveSet; Remove a set
+
+=item QAAddPage; Add a page of sets
+=item QARemovePage; Remove a page
+
+=item QAOpenDialog; Open a message dialog
+=item QAOtherUserAction; Call another user action registered with C<set-action-handler()>
+=item QAModifyfieldlist; Modify the list shown in a combobox used with a question
+=item QAModifyValue; Modify a value of another question. The value is checked and inserted when valid.
+
+=item QAEnableButton; Enable a button on the page
+=item QADisableButton; Disable a button on the page
 =end pod
 
 #tt:1:ActionReturnType:
 enum ActionReturnType is export <
-  QAOpenDialog
   QAHidePage QAHideSet QAHideQuestion
+
   QAShowPage QAShowSet QAShowQuestion
+
   QAEnableInputWidget QADisableInputWidget
-  QAEnableButton QADisableButton
-  QAOtherUserAction
 
   QAAddQuestion QARemoveQuestion QAModifyQuestion
+
   QAAddSet QARemoveSet
   QAAddSheet QARemoveSheet
+
+  QAOpenDialog QAOtherUserAction
+  QAModifyfieldlist QAModifyValue
+
+  QAEnableButton QADisableButton
 >;
 
 #-------------------------------------------------------------------------------
@@ -477,22 +490,22 @@ method qa-list ( *%options --> List ) {
 set-action-handler is used to set a user defined callback handler. When in a question the action field spec has a value of C<$action-key>, the value of it is used to find the callback. The purpose is to perform some action.
 
   method set-action-handler (
-    Str:D $action-key, Mu:D $handler-object, Str:D $method-name,
+    Str:D $action-key, Mu:D $handler-object, Str $method-name?,
     *%options
   )
 
-=item $action-key; the key under which the handler is stored. Also this name is used in the field specification C<action> to refer to the handler to call.
+=item $action-key; the key under which the handler is stored. Also this name is used in the field specification C<action> to refer to the handler to call. The purpose to have a key is to call the same method using different keys and other user options.
 =item $handler-object; the object where the handler method resides.
-=item $method-name; the name of the handler
+=item $method-name; the name of the handler. This field is optional. When absent the $action-key is used as the method name.
 =item %options; any user defined named arguments. These are handed to the method.
 =end pod
 
 #tm:1:set-action-handler
 method set-action-handler (
-  Str:D $action-key, Mu:D $handler-object, Str:D $method-name, *%options
+  Str:D $action-key, Mu:D $handler-object, Str $method-name?, *%options
 ) {
   $!user-objects<actions>{$action-key} = [
-    $handler-object, $method-name, %options
+    $handler-object, $method-name // $action-key, %options
   ];
 }
 

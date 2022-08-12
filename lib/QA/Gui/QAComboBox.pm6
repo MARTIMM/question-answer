@@ -11,24 +11,11 @@ unit class QA::Gui::QAComboBox;
 also does QA::Gui::Value;
 
 #-------------------------------------------------------------------------------
-# Make attributes readable so that the roles can access them using
-# self.question and
-has QA::Question $.question;
-has Hash $.user-data-set-part;
+method create-widget ( Int() :$row --> Any ) {
 
-#-------------------------------------------------------------------------------
-# this widget is not repeatable and cannot have a combobox to category
-# the choice of the input
-
-submethod BUILD (
-  QA::Question:D :$!question, Hash:D :$!user-data-set-part
-) {
+  # reset constraints when used wrong
   $!question.repeatable = False;
   $!question.selectlist = [];
-}
-
-#-------------------------------------------------------------------------------
-method create-widget ( Int() :$row --> Any ) {
 
   # create a text input widget
   my Gnome::Gtk3::ComboBoxText $combobox .= new;
@@ -70,6 +57,8 @@ method clear-value ( Any:D $combobox ) {
 method input-change-handler (
   Gnome::Gtk3::ComboBoxText() :_native-object($combobox), Int() :$row
 ) {
+
+note 'ich: ', $combobox.gist;
   self.process-widget-input(
     $combobox, $combobox.get-active-text // $!question.fieldlist[0],
     $row, :!do-check

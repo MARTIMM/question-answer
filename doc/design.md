@@ -314,7 +314,7 @@ Gnome::Gtk3::Dialog <|-- QA::Gui::Dialog
 QA::Gui::SheetSimple *-> "*" QA::Gui::Page
 QA::Gui::Page *-> "*" QA::Gui::Set
 QA::Gui::Set *-right-> "*" QA::Gui::Question
-QA::Gui::Question *-right-> "*" QA::Gui::InputWidget
+QA::Gui::Question *-right-> QA::Gui::InputWidget
 ```
 The **QA::Gui::SheetSimpleDialog** module can be replaced with **QA::Gui::SheetSimpleWindow** **QA::Gui::SheetStackDialog**, **QA::Gui::SheetNotebook** or **QA::Gui::SheetAssistant** depending on the purpose of the questionaire.
 
@@ -367,22 +367,49 @@ class QA::Gui::InputWidget {
 }
 
 
+class QA::Gui::AnInputWidget <input widget> {
+
+}
+
+
+class QA::Gui::Question {
+  +Hash $.pages;
+  +Hash $.sets;
+  +Hash $.questions;
+}
+
 'Connections
 
-QA::Gui::InputWidget -up--> QA::Gui::QACheckButton
-QA::Gui::InputWidget -up--> QA::Gui::QAComboBox
-QA::Gui::InputWidget -up--> QA::Gui::QAEntry
-QA::Gui::InputWidget -up--> QA::Gui::QAFileChooser
-QA::Gui::InputWidget -up--> QA::Gui::QAImage
+QA::Gui::Value <|... QA::Gui::AnInputWidget
+QA::Gui::Value --> QA::Gui::InputWidget
+QA::Gui::Value ---> QA::Gui::Question
+QA::Gui::Value -> "user-data"
+QA::Gui::InputWidget *-up--> QA::Gui::AnInputWidget
+QA::Gui::Question *-> QA::Gui::InputWidget
+'QA::Gui::InputWidget *-> QA::Question: $!question
+QA::Gui::Value --> QA::Question: $!question
+
+QA::Gui::Question -UP-> "*" QA::Gui::Page: $.pages
+QA::Gui::Page --> "*" QA::Gui::Set: $.sets
+QA::Gui::Set -> "*" QA::Gui::Question: $.questions
+'QA::Gui::Set "*" <-* QA::Gui::Question: $.sets
+'QA::Gui::Question "*" <-* QA::Gui::Question
+
+'QA::Gui::InputWidget -up--> QA::Gui::QACheckButton
+'QA::Gui::InputWidget -up--> QA::Gui::QAComboBox
+'QA::Gui::InputWidget -up--> QA::Gui::QAEntry
+'QA::Gui::InputWidget -up--> QA::Gui::QAFileChooser
+'QA::Gui::InputWidget -up--> QA::Gui::QAImage
 'QA::Gui::InputWidget -up--> QA::Gui::QARadioButton
 'QA::Gui::InputWidget -up--> QA::Gui::QASpinButton
 'QA::Gui::InputWidget -up--> QA::Gui::QASwitch
 'QA::Gui::InputWidget -up--> QA::Gui::QATextView
-QA::Gui::Value <|... QA::Gui::QACheckButton
-QA::Gui::Value <|... QA::Gui::QAComboBox
-QA::Gui::Value <|... QA::Gui::QAEntry
-QA::Gui::Value <|... QA::Gui::QAFileChooser
-QA::Gui::Value <|... QA::Gui::QAImage
+
+'QA::Gui::Value <|... QA::Gui::QACheckButton
+'QA::Gui::Value <|... QA::Gui::QAComboBox
+'QA::Gui::Value <|... QA::Gui::QAEntry
+'QA::Gui::Value <|... QA::Gui::QAFileChooser
+'QA::Gui::Value <|... QA::Gui::QAImage
 'QA::Gui::Value <|... QA::Gui::QARadioButton
 'QA::Gui::Value <|... QA::Gui::QASpinButton
 'QA::Gui::Value <|... QA::Gui::QASwitch

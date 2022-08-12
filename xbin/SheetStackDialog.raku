@@ -13,6 +13,9 @@ use Gnome::Gtk3::Label;
 use QA::Gui::SheetStackDialog;
 use QA::Types;
 
+#use Gnome::N::X;
+#Gnome::N::debug(:on);
+
 #-------------------------------------------------------------------------------
 class EH {
   has QA::Gui::SheetStackDialog $!sheet-dialog;
@@ -24,9 +27,9 @@ class EH {
       :show-cancel-warning, :save-data,
       :result-handler-object(self), :result-handler-method<display-result>
     );
-#note 'build done';
 
     $!sheet-dialog.show-sheet;
+    $!sheet-dialog.clear-object;
   }
 
   #---------
@@ -52,7 +55,8 @@ class EH {
 
     # return an array of follow up actions. show-select2 is mapped to
     # method fieldtype-action2
-    [%( :type(QAOtherUserAction), :action-key<show-select2>, :opt1<opt1>),]
+#    [%( :type(QAOtherUserAction), :action-key<show-select2>, :opt1<opt1>),]
+    [%( :type(QAOtherUserAction), :action-key<fieldtype-action2>, :opt1<opt1>),]
   }
 
   method fieldtype-action2 ( Str $input, :$opt1 --> Array ) {
@@ -77,8 +81,10 @@ my EH $eh .= new;
 # set keys for check methods. keys are used in QA description
 with $qa-types .= instance {
   .set-check-handler( 'check-exclam', $eh, 'check-char', :char<!>);
-  .set-action-handler( 'show-select1', $eh, 'fieldtype-action1');
-  .set-action-handler( 'show-select2', $eh, 'fieldtype-action2');
+#  .set-action-handler( 'show-select1', $eh, 'fieldtype-action1');
+#  .set-action-handler( 'show-select2', $eh, 'fieldtype-action2');
+  .set-action-handler( 'fieldtype-action1', $eh);
+  .set-action-handler( 'fieldtype-action2', $eh);
 }
 
 my Gnome::Gtk3::Label $description .= new(:text(''));

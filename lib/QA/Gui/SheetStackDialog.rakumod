@@ -254,8 +254,6 @@ CATCH { .note; }
     given GtkResponseType(self.show-dialog) {
       when GTK_RESPONSE_DELETE_EVENT {
         self.hide;
-        sleep(0.3);
-        self.destroy;
         last;
       }
 
@@ -268,10 +266,12 @@ CATCH { .note; }
           );
 
           $ok.run;
-          $ok.destroy;
+          $ok.hide;
+          $ok.clear-object;
         }
 
         else {
+          self.hide;
           self.save-data;
           if ?$!result-handler-object and
               $!result-handler-object.^can($!result-handler-method) {
@@ -280,14 +280,13 @@ CATCH { .note; }
             );
           }
 
-          self.destroy;
           last;
         }
       }
 
       when GTK_RESPONSE_CANCEL {
         if self.show-cancel {
-          self.destroy;
+          self.hide;
           last;
         }
       }

@@ -105,7 +105,7 @@ pages:
     description: Something new.
     title: 2nd Specification
     sets:
-      - set-name: entry-spec
+      - set-name: other-spec
         description: Specify the fields that makup this question
         title: Entry Specification
         questions:
@@ -130,12 +130,23 @@ pages:
             description: Encode input value before returning
             required: false
 
+      - set-name: secnd-other-spec
+        description: Specify the fields that makup this question
+        title: Entry Specification
+        questions:
+
+          - name: junk-entry
+            required: true
+            description: junk text
+            title: Junk
+            fieldtype: QAEntry
+            default: aba ca da bra
 
   - page-name: page3
     description: Something else.
     title: 3rd Specification
     sets:
-      - set-name: somespec
+      - set-name: some-spec
         description: Specify the fields that makup this question
         title: Entry Specification
         questions:
@@ -159,14 +170,15 @@ pages:
             default: QAEntry
             title: Field
             description: Type of input field
-            action-cb: show-select1
+#            action-cb: show-select1
+            action-cb: fieldtype-action1
 
           - name: dnd-image
             fieldtype: QAImage
             description: Pictures
             title: drop Images
-            height: 400
-            width: 400
+            height: 500
+            width: 500
             repeatable: true
             options:
               dnd: image/*, text/uri-list, text/plain

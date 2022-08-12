@@ -35,15 +35,13 @@ has Hash $!user-data-set-part;
 has QA::Question $!question;
 has QA::Gui::InputWidget $!widget-object;
 
-has Hash $!pages;
-has Hash $!sets;
-has Hash $!questions;
+has Hash $.pages;
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part,
   Gnome::Gtk3::Grid:D :$!question-grid, Int:D :row($!grid-row),
-  Hash :$!pages, Hash :$!sets, Hash :$!questions
+  Hash :$!pages
 ) {
   die 'Missing name field in question data' unless ? $!question.name;
 
@@ -77,7 +75,9 @@ method !display-question ( ) {
   $!question-grid.attach( $r-label, QARequired, $!grid-row, 1, 1);
 
   # input widget object
-  $!widget-object .= new( :$!question, :$!user-data-set-part);
+  $!widget-object .= new(
+    :$!question, :$!user-data-set-part, :gui-question(self)
+  );
   $!question-grid.attach(
     $!widget-object, QAAnswer, $!grid-row, 1, 1
   ) if $!widget-object.defined;

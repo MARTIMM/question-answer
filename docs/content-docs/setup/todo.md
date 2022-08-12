@@ -7,20 +7,66 @@ layout: sidebar
 
 # Todo notes:
 
-* Change questionaire some kind of input widget change
-  * [ ] Add questions. Adding questions can be done by inserting templates of a question, a set of questions or a sheet of sets. It would be necessary to modify the name field to keep the question, set or sheet unique. The insertion of the new objects must be done before of after an existing object by using the name field of the existing object.
+## Change questionaire
+
+This is an action like a change of an input widget value, set or page change. Possible actions can be;
+  * Add questions. Adding questions can be done by inserting templates of
+    * [ ] a question
+    * [ ] a set of questions
+    * [ ] a page of sets
+    It would be necessary to modify the name field to keep the question, set or sheet unique. The insertion of the new objects must be done before or after an existing object by using the name field of the existing object.
   * [ ] Remove questions. Removing questions, sets or pages using the name field.
-  * [ ] Enable/disable questions
-  * [ ] Hide/show sheets, sets or questions
+  * [ ] Enable and disable questions
+  * [ ] Hide and show sheets, sets or questions
   * Modify data in input of a different question.
-    * [x] Data must come from a user supplied routine which is called after checking the data.
-    * A widget must be pointed at to set the data. This info can come from a user routine or as an option field in a question structure.
-      * [ ] Append data
-      * [ ] Replace data
   * [ ] Modify accompanying combobox lists of questions
-  * [ ] Optionally(?) save modified questionaire configuration
+  * [ ] Optionally(?) save modified questionaire configuration using added versions
 
+### Implementation
+* [x] Data needed to do the necessary changes, must come from a user supplied method. This method is called after checking the data. The method is found in the `action-cb` question field. It holds a key to the name of the method stored using `QA::Gui::Types.set-action-handler()`. The field is read by `QA::Gui::Value.check-users-action()` and run if valid.
 
+  This user method can optionally return an Array of actions to perform. The format is;
+  ```
+  [ %( ActionReturnType :$type, *%action-data ), … ]
+  ```
+
+* The `$type` is an enumeration describing the type of action and can be one of;
+  * [ ] QAHidePage
+  * [ ] QAHideSet
+  * [ ] QAHideQuestion
+
+  * [ ] QAShowPage
+  * [ ] QAShowSet
+  * [ ] QAShowQuestion
+
+  * [ ] QAEnableInputWidget
+  * [ ] QADisableInputWidget
+
+  * [ ] QAAddQuestion;
+  * [ ] QARemoveQuestion;
+  * [ ] QAModifyQuestion;
+
+  * [ ] QAAddSet;
+  * [ ] QARemoveSet;
+
+  * [ ] QAAddSheet;
+  * [ ] QARemoveSheet;
+
+  * [ ] QAOpenDialog;
+  * [x] QAOtherUserAction; `%action-data = %( :action-key, *%user-options)`
+  * [ ] QAAddTofieldlist
+  * [ ] QAModifyValue
+
+  * [ ] QAEnableButton
+  * [ ] QADisableButton
+
+* [ ] A widget must be pointed at to set the data. This info can come from a user routine or as an option field in a question structure.
+  * [ ] Append data
+  * [ ] Replace data
+
+<!--
+-->
+<!--
 # Implementation
 
 When interface is created where are the hooks to work with?
@@ -35,7 +81,7 @@ The user data filled in into the questions comes from a file or created empty wh
 * Provide the sheet, set and question Hashes to the created questions.
 * The searched item must have a code to select a sheet, set or question and the name of it. For example 'Qst:radio-station' or 'Sht:page1'. Lets call it a hook-spec. The format can then be `<hook-spec>.<operation>;…`
 * Now we can use the `action-cb` field to specify the method name. This callback can then get the data and return an array to ask for further actions.
-
+-->
 
 <!--
 * .....
