@@ -1,3 +1,6 @@
+* 2022-08-12 0.16.6
+  * Preparations to modify questionaire
+
 * 2022-07-27 0.16.5
   * Changes caused by multiple changes/deprecation in the Gnome::* distributions
   * Also found new bugs.
