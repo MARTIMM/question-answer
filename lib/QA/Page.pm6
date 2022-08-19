@@ -3,7 +3,7 @@ use v6.d;
 use QA::Types;
 
 #-------------------------------------------------------------------------------
-unit class QA::Sheet:auth<github:MARTIMM>;
+unit class QA::Page:auth<github:MARTIMM>;
 also does Iterable;
 #also does Iterator;
 
@@ -11,7 +11,7 @@ also does Iterable;
 # sheets are filenames holding pages of sets
 has Str $!sheet-name is required;
 
-# this QA::Sheet's pages
+# this QA::Page's pages
 has Hash $!pages;
 has Array $!page-data;
 

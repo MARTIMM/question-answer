@@ -1,4 +1,4 @@
-#tl:1:QA::Gui::SheetWindow
+#tl:1:QA::Gui::PageWindow
 use v6.d;
 
 #use Gnome::N::X;
@@ -16,17 +16,17 @@ use QA::Status;
 
 use QA::Gui::YNMsgDialog;
 use QA::Gui::OkMsgDialog;
-use QA::Gui::SheetTools;
+use QA::Gui::PageTools;
 #use QA::Gui::QALabel;
 
 #-------------------------------------------------------------------------------
 =begin pod
-=head1 QA::Gui::SheetSimpleWindow
+=head1 QA::Gui::PageSimpleWindow
 
 =end pod
 
-unit class QA::Gui::SheetSimpleWindow:auth<github:MARTIMM>;
-also does QA::Gui::SheetTools;
+unit class QA::Gui::PageSimpleWindow:auth<github:MARTIMM>;
+also does QA::Gui::PageTools;
 
 #-------------------------------------------------------------------------------
 has Bool $!show-cancel-warning;
@@ -44,7 +44,7 @@ submethod BUILD (
 ) {
   $!sheet .= new(:$!sheet-name);
   self.load-user-data($user-data);
-  self.set-style('QASheetSimple');
+  self.set-style('QAPageSimple');
 
   # todo width and height spec must go to sets
   with $!sheet {

@@ -10,12 +10,12 @@ use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Button;
 use Gnome::Gtk3::Label;
 
-use QA::Gui::SheetSimpleDialog;
+use QA::Gui::PageSimpleDialog;
 use QA::Types;
 
 #-------------------------------------------------------------------------------
 class EH {
-  has QA::Gui::SheetSimpleDialog $!sheet-dialog;
+  has QA::Gui::PageSimpleDialog $!sheet-dialog;
 
   #---------
   method show-dialog ( ) {

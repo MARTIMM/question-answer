@@ -1,4 +1,4 @@
-#tl:1:QA::Gui::SheetSimpleDialog
+#tl:1:QA::Gui::PageSimpleDialog
 use v6.d;
 
 #use Gnome::N::X;
@@ -9,24 +9,23 @@ use Gnome::Gtk3::Dialog;
 use Gnome::Gtk3::Button;
 
 use QA::Set;
-use QA::Sheet;
 use QA::Types;
 use QA::Status;
 
 use QA::Gui::Dialog;
 use QA::Gui::YNMsgDialog;
 use QA::Gui::OkMsgDialog;
-use QA::Gui::SheetTools;
+use QA::Gui::PageTools;
 
 #-------------------------------------------------------------------------------
 =begin pod
-=head1 QA::Gui::SheetSimpleDialog
+=head1 QA::Gui::PageSimpleDialog
 
 =end pod
 
-unit class QA::Gui::SheetSimpleDialog:auth<github:MARTIMM>;
+unit class QA::Gui::PageSimpleDialog:auth<github:MARTIMM>;
 also is QA::Gui::Dialog;
-also does QA::Gui::SheetTools;
+also does QA::Gui::PageTools;
 
 #-------------------------------------------------------------------------------
 has Bool $!show-cancel-warning;
@@ -48,7 +47,7 @@ submethod BUILD (
   $!sheet .= new(:$!sheet-name);
 
   self.load-user-data($user-data);
-  self.set-style('QASheetSimple');
+  self.set-style('QAPageSimple');
 
   with $!sheet {
     self.set-dialog-size( .width, .height) if ? .width and ? .height;

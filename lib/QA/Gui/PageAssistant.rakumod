@@ -1,7 +1,7 @@
-use v6.d;
+use v6.d;Page
 
 use QA::Set;
-use QA::Sheet;
+use QA::Page;
 use QA::Types;
 
 #use QA::Gui::Dialog;
@@ -32,15 +32,15 @@ use Gnome::Gtk3::StyleProvider;
 
 #-------------------------------------------------------------------------------
 =begin pod
-=head1 QA::Gui::SheetAssistant
+=head1 QA::Gui::PageAssistant
 
 =end pod
 
-unit class QA::Gui::SheetAssistant:auth<github:MARTIMM>:ver<0.1.0>;
+unit class QA::Gui::PageAssistant:auth<github:MARTIMM>:ver<0.1.0>;
 also is Gnome::Gtk3::Assistant;
 
 #-------------------------------------------------------------------------------
-has QA::Sheet $!sheet;
+has QA::Page $!sheet;
 has Str $!sheet-name;
 has Hash $!user-data;
 has Hash $.result-user-data;
@@ -116,7 +116,7 @@ method !set-style ( ) {
     Gnome::Gdk3::Screen.new, $css-provider, GTK_STYLE_PROVIDER_PRIORITY_USER
   );
 
-  $context.add-class('QASheetAssistant');
+  $context.add-class('QAPageAssistant');
 }
 
 #-------------------------------------------------------------------------------

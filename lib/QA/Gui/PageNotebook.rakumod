@@ -1,8 +1,8 @@
-#tl:1:QA::Gui::SheetDialog
+#tl:1:QA::Gui::PageDialog
 use v6.d;
 
 use QA::Set;
-use QA::Sheet;
+use QA::Page;
 use QA::Types;
 
 use QA::Gui::Dialog;
@@ -28,15 +28,15 @@ use Gnome::Gtk3::StyleProvider;
 
 #-------------------------------------------------------------------------------
 =begin pod
-=head1 QA::Gui::SheetNotebook
+=head1 QA::Gui::PageNotebook
 
 =end pod
 
-unit class QA::Gui::SheetNotebook:auth<github:MARTIMM>:ver<0.2.0>;
+unit class QA::Gui::PageNotebook:auth<github:MARTIMM>:ver<0.2.0>;
 also is QA::Gui::Dialog;
 
 #-------------------------------------------------------------------------------
-has QA::Sheet $!sheet;
+has QA::Page $!sheet;
 has Str $!sheet-name;
 has Hash $!user-data;
 has Hash $.result-user-data;
@@ -130,7 +130,7 @@ method !set-style ( ) {
     Gnome::Gdk3::Screen.new, $css-provider, GTK_STYLE_PROVIDER_PRIORITY_USER
   );
 
-  $context.add-class('QASheetNotebook');
+  $context.add-class('QAPageNotebook');
 }
 
 #-------------------------------------------------------------------------------

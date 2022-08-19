@@ -1,7 +1,7 @@
 use v6.d;
 use Test;
 
-use QA::Sheet;
+use QA::Page;
 use QA::Set;
 use QA::Question;
 use QA::Types;
@@ -24,12 +24,12 @@ given my QA::Types $qa-types {
 # create some sets
 make-sets();
 
-my QA::Sheet $sheet .= new(:sheet-name<login>);
+my QA::Page $sheet .= new(:sheet-name<login>);
 
 #-------------------------------------------------------------------------------
 subtest 'ISO-Test', {
 
-  isa-ok $sheet, QA::Sheet, '.new(:sheet-name)';
+  isa-ok $sheet, QA::Page, '.new(:sheet-name)';
 }
 #-------------------------------------------------------------------------------
 subtest 'Add pages and sets', {
@@ -87,7 +87,7 @@ subtest 'replace sets and pages', {
   # change credential set
   change-sets();
 
-  my QA::Sheet $sheet2 .= new(:sheet-name<login2>);
+  my QA::Page $sheet2 .= new(:sheet-name<login2>);
   nok $sheet2.add-set( 'tstsheet3', 'credentials'), 'set already there';
   ok $sheet2.add-set( 'tstsheet3', 'credentials', :replace), 'replaced set';
   $sheet2.width = 300;
@@ -240,7 +240,7 @@ multi sub show-set( Hash:D $set ) {
 }
 
 #-------------------------------------------------------------------------------
-sub show-pages( QA::Sheet $sheet ) {
+sub show-pages( QA::Page $sheet ) {
 
   note "\nSheet $sheet:";
   my $c := $sheet.clone;

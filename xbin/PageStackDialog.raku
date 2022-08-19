@@ -13,7 +13,7 @@ use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Button;
 use Gnome::Gtk3::Label;
 
-use QA::Gui::SheetStackDialog;
+use QA::Gui::PageStackDialog;
 use QA::Types;
 
 #use Gnome::N::X;
@@ -21,7 +21,7 @@ use QA::Types;
 
 #-------------------------------------------------------------------------------
 class EH {
-  has QA::Gui::SheetStackDialog $!sheet-dialog;
+  has QA::Gui::PageStackDialog $!sheet-dialog;
 
   #---------
   method show-stack ( Str:D :$sheet-name ) {

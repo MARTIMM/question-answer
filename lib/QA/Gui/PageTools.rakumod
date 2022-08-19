@@ -1,4 +1,4 @@
-#TL:1:QA::Gui::SheetTools:
+#TL:1:QA::Gui::PageTools:
 
 use v6;
 
@@ -13,18 +13,18 @@ use Gnome::Gtk3::Button;
 use Gnome::Gtk3::Stack;
 use Gnome::Gtk3::StackSwitcher;
 
-use QA::Sheet;
+use QA::Page;
 use QA::Types;
 
 use QA::Gui::Statusbar;
 use QA::Gui::Page;
 
 #-------------------------------------------------------------------------------
-unit role QA::Gui::SheetTools:auth<github:MARTIMM>;
+unit role QA::Gui::PageTools:auth<github:MARTIMM>;
 
 has Gnome::Gtk3::Grid $!grid;
 has Hash $!pages = %();
-has QA::Sheet $!sheet;
+has QA::Page $!sheet;
 has Str $!sheet-name;
 
 has Hash $.result-user-data;
