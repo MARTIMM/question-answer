@@ -121,7 +121,8 @@ Action types used in an Array of Hashes returned from an action callback.
 
 =item QAOpenDialog; Open a message dialog
 =item QAOtherUserAction; Call another user action registered with C<set-action-handler()>
-=item QAModifyfieldlist; Modify the list shown in a combobox used with a question
+=comment item QAModifySelectlist; Modify the list shown in a combobox used with a question
+=comment item QAModifyFieldlist; Modify the list shown in a combobox used as an input field
 =item QAModifyValue; Modify a value of another question. The value is checked and inserted when valid.
 
 =item QAEnableButton; Enable a button on the page
@@ -141,11 +142,14 @@ enum ActionReturnType is export <
   QAAddSet QARemoveSet
   QAAddSheet QARemoveSheet
 
-  QAOpenDialog QAOtherUserAction
-  QAModifyfieldlist QAModifyValue
-
   QAEnableButton QADisableButton
+
+  QAModifyValue
+
+  QAOpenDialog QAOtherUserAction
 >;
+
+#  QAModifyFieldlist QAModifySelectlist
 
 #-------------------------------------------------------------------------------
 =begin pod

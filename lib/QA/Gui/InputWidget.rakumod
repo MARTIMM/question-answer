@@ -1,6 +1,9 @@
 use v6;
 
+use Gnome::Gdk3::Events;
+
 use Gnome::Gtk3::Enums;
+use Gnome::Gtk3::Entry;
 use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::ComboBoxText;
 use Gnome::Gtk3::ToolButton;
@@ -24,6 +27,8 @@ use QA::Gui::QATextView;
 #-------------------------------------------------------------------------------
 unit class QA::Gui::InputWidget:auth<github:MARTIMM>;
 also is QA::Gui::Frame;
+
+constant \ComboBoxText = Gnome::Gtk3::ComboBoxText;
 
 #-------------------------------------------------------------------------------
 # Question parameters
@@ -167,11 +172,12 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
     my Array $select-list = $!question.selectlist // [];
 #note "$?LINE, $current-grid-index";
     if $select-list.elems {
-      my Gnome::Gtk3::ComboBoxText $cbt = self!create-combobox(
-        $select-list, $input-widget, $current-grid-row, $current-grid-index
+      my ComboBoxText $combobox = self!create-combobox(
+        $select-list, $input-widget,
+        $!grid, $current-grid-row, $current-grid-index
       );
-      $!grid.attach( $cbt, QACatColumn, $current-grid-index, 1, 1);
-      $!grid-row-data[$current-grid-row][QACatColumn] = $cbt;
+#      $!grid.attach( $combobox, QACatColumn, $current-grid-index, 1, 1);
+      $!grid-row-data[$current-grid-row][QACatColumn] = $combobox;
     }
 
     my Gnome::Gtk3::ToolButton $tb;
@@ -236,11 +242,20 @@ method !create-toolbutton (
 #-------------------------------------------------------------------------------
 # A selection made from $!question.select-list and repeatable is turned on
 method !create-combobox (
-  Array $select-list, $input-widget, Int $row-grid, Int $row-index
-  --> Gnome::Gtk3::ComboBoxText
+  Array $select-list, $input-widget, $grid, Int $row-grid, Int $row-index
+  --> ComboBoxText
 ) {
-  with my Gnome::Gtk3::ComboBoxText $cbt .= new {
-    $!widget-object.add-class( $cbt, 'QAComboBoxText');
+
+#TODO create and test for an input type combobox. flag field?
+
+  with my ComboBoxText $combobox .= new(:entry) {
+    my Gnome::Gtk3::Entry() $entry = .get-child;
+    $entry.register-signal(
+      self, 'combobox-entry-handler', 'focus-out-event', :$combobox,
+      :$input-widget, :$row-grid
+    );
+
+    $!widget-object.add-class( $combobox, 'QAComboBoxText');
 
     for @$select-list -> $select-item {
       .append-text($select-item);
@@ -252,7 +267,13 @@ method !create-combobox (
     );
   }
 
-  $cbt
+  # Create an extra grid so that the combobox get normal height instead of
+  # stretched into the height of the neighboring widget
+  my Gnome::Gtk3::Grid $combo-grid .= new;
+  $combo-grid.attach( $combobox, 0, 0, 1, 1);
+  $grid.attach( $combo-grid, QACatColumn, $row-index, 1, 1);
+
+  $combobox
 }
 
 #-------------------------------------------------------------------------------
@@ -274,7 +295,7 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
     # Loop through the values to set the input widgets
     my Int $i = 0;
     while $i < $values.elems {
-#note "\napply: $i, $values[$i].raku(), {($!question.selectlist // []).raku()}";
+note "\napply-values: $i, $values[$i].raku(), {($!question.selectlist // []).raku()}";
 
       my $input-widget;
       my $value;
@@ -282,21 +303,30 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
         my ( $select-item, $select-input) = $values[$i].kv;
 
         # Skip empty/undefined values
-#note "v: $i, $select-item => ", $select-input ?? $select-input !! '---';
+note "apply-values: $i, $select-item => ", $select-input ?? $select-input !! '---';
         unless ?$select-input {
           $values.splice( $i, 1);
           next;
         }
+
         # First row is always created. When more than 1 value, create more rows
         self.append-grid-row if $i > 0;
         $input-widget = $!grid-row-data[$i][QAInputColumn];
         $value = $select-input;
 
-        my Int $value-index =
-          $!question.selectlist.first( $select-item, :k) // 0;
+        my ComboBoxText $combobox = $!grid-row-data[$i][QACatColumn];
 
-        my Gnome::Gtk3::ComboBoxText $cbt = $!grid-row-data[$i][QACatColumn];
-        $cbt.set-active($value-index);
+        my Int $value-index = $!question.selectlist.first( $select-item, :k);
+note "apply-values: $i, $select-item, ", $value-index // 'Undefined index';
+        if $value-index {
+          $combobox.set-active($value-index);
+        }
+
+        else {
+          $combobox.append-text($select-item);
+          $combobox.set-active($!question.selectlist.elems);
+          $!question.selectlist.push: $select-item;
+        }
       }
 
       else {
@@ -340,17 +370,40 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
 # it must adjust the selection value. no check is needed because
 # input field is not changed.
 method combobox-change (
-  Gnome::Gtk3::ComboBoxText() :_native-object($combobox),
+  ComboBoxText() :_native-object($combobox),
   :$input-widget, Int :$row-grid --> Int
 ) {
-#note "combobox-change, $!inhibit-combobox-events, $input-widget, $row-grid";
+note "combobox-change, $!inhibit-combobox-events, $input-widget, $row-grid";
 
   unless $!inhibit-combobox-events {
+    my Int $cb-select = $combobox.get-active;
+    my Str $cb-text = $combobox.get-active-text;
+
     $!widget-object.process-widget-input(
       $input-widget, $!widget-object.get-value($input-widget),
       $row-grid, :!do-check
     );
   }
+
+  # must propogate further to prevent messages when notebook page is switched
+  # otherwise it would do ok to return 1.
+  0
+}
+
+#-------------------------------------------------------------------------------
+method combobox-entry-handler (
+  N-GdkEventFocus() $no, Gnome::Gtk3::Entry() :_native-object($entry),
+  :$combobox, :$input-widget, :$row-grid
+  --> Int
+) {
+note "combobox-entry-handler, $!inhibit-combobox-events, $input-widget, $row-grid, $combobox, $entry";
+
+  my Int $cb-select  = $combobox.get-active;
+  if $cb-select == -1 {
+    my Str $cb-text = $combobox.get-active-text;
+    $combobox.append-text($cb-text);
+  }
+
 
   # must propogate further to prevent messages when notebook page is switched
   # otherwise it would do ok to return 1.

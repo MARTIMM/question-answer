@@ -54,9 +54,11 @@ has $.gui-question is rw;
 method process-widget-input (
   $input-widget, Any $input is copy, Int() $row, Bool :$do-check = False
 ) {
-#CONTROL { when CX::Warn {  note .gist; .resume; } }
+CONTROL { when CX::Warn {  note .gist; .resume; } }
 
   $input //= '';
+
+note "process-widget-input, $input-widget, $input, $row, $do-check";
 
   self.check-widget-value( $input-widget, $input, :$row) if $do-check;
 
@@ -144,15 +146,40 @@ method !adjust-user-data ( $input-widget, Any $input, Int() $row ) {
 #CONTROL { when CX::Warn {  note .gist; .resume; } }
 
   my Str $name = self.question.name;
+
+#note "adjust-user-data: $input-widget, $input, $row, $name";
+
   if ? self.question.repeatable {
     if ? self.question.selectlist {
-      my Gnome::Gtk3::Grid $grid = $input-widget.get-parent-rk;
-      my Gnome::Gtk3::ComboBoxText $cbt = $grid.get-child-at-rk(
+      my Gnome::Gtk3::Grid() $grid = $input-widget.get-parent;
+      my Gnome::Gtk3::ComboBoxText() $combobox = $grid.get-child-at(
         QACatColumn, $row, :child-type<Gnome::Gtk3::ComboBoxText>
       );
 
-      my Str $select = self.question.selectlist[$cbt.get-active];
-      self.user-data-set-part{$name}[$row] = $select => $input;
+#      my Int $cb-select  = $combobox.get-active;
+      my Str $cb-text = $combobox.get-active-text;
+#note "adjust-user-data: $cb-select, $cb-text";
+#TODO there is new text when $cb-select = -1. comes in character by character
+#`{{
+      if $cb-select == -1 {
+        if $combobox.get-has-entry {
+          # triggered by change of entry in combobox
+        }
+
+        else {
+          # should not happen
+        }
+      }
+
+      else {
+}}
+        # selection made from combobox
+#TODO must extend selectlist if missing entry
+#        my Str $select = self.question.selectlist[$cb-select];
+
+        self.user-data-set-part{$name}[$row] = $cb-text => $input;
+#note "adjust-user-data: ", self.user-data-set-part{$name}[$row];
+#      }
     }
 
     else {
@@ -171,7 +198,7 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
   %options //= %();
   $action-key //= '';
 
-note "check-users-action: '$input', '$action-key', ", %options.gist;
+#note "check-users-action: '$input', '$action-key', ", %options.gist;
 
 self.show-data;
 
@@ -254,13 +281,19 @@ self.show-data;
 
           when QAOtherUserAction {
             my Str $other-action-key = $action<action-key>:delete;
-note "Ac: $other-action-key, ", $action.gist;
+#note "Ac: $other-action-key, ", $action.gist;
             self.check-users-action( $input, $other-action-key, |%$action);
           }
 
-          when QAModifyfieldlist {
+#`{{
+          when QAModifyFieldlist {
 
           }
+
+          when QAModifySelectlist {
+
+          }
+}}
 
           when QAModifyValue {
           }
