@@ -132,24 +132,24 @@ Action types used in an Array of Hashes returned from an action callback.
 #tt:1:ActionReturnType:
 enum ActionReturnType is export <
   QAHidePage QAHideSet QAHideQuestion
-
   QAShowPage QAShowSet QAShowQuestion
+
+  QAAddQuestion QAAddSet QAAddPage
+  QARemoveQuestion QARemoveSet QARemovePage
+  QAModifyQuestion
 
   QAEnableInputWidget QADisableInputWidget
 
-  QAAddQuestion QARemoveQuestion QAModifyQuestion
+  QAOpenDialog QAOtherUserAction
 
-  QAAddSet QARemoveSet
-  QAAddSheet QARemoveSheet
-
-  QAEnableButton QADisableButton
+  QAModifyFieldlist QAModifySelectlist
 
   QAModifyValue
 
-  QAOpenDialog QAOtherUserAction
+  QAEnableButton QADisableButton
+
 >;
 
-#  QAModifyFieldlist QAModifySelectlist
 
 #-------------------------------------------------------------------------------
 =begin pod
