@@ -1,4 +1,6 @@
 ---
+#linked from docs/content-docs/about/QA-release-notes.md
+
 title: About MongoDB Driver
 nav_menu: default-nav
 sidebar_menu: about-sidebar
@@ -7,6 +9,23 @@ layout: sidebar
 # Release notes
 
 See [semantic versioning](http://semver.org/). Please note point 4. on that page: **_Major version zero (0.y.z) is for initial development. Anything may change at any time. The public API should not be considered stable._**
+
+* 2022-08-19 0.16.8
+  * Renamed files to view the word 'Sheet' as a 'Page'.
+
+* 2022-08-19 0.16.7
+  * Made selectlist field modifyable. Not yet saved back into sheet config
+
+* 2022-08-12 0.16.6
+  * Preparations to modify questionaire
+
+* 2022-07-27 0.16.5
+  * Changes caused by multiple changes/deprecation in the Gnome::* distributions
+  * Also found new bugs.
+  * Change class name to reflect module name of SheetStackDialog
+
+* 2022-06-29 0.16.4
+  * Changes in QAImage for drag and drop changes in gtk3.
 
 * 2022-02-24 0.16.3
   * Changed `qa-load()` to handle option `:qa-path` better.

@@ -74,7 +74,7 @@ This is an action like a change of an input widget value, set or page change. Po
 
 When interface is created where are the hooks to work with?
 * User app creates **QA::Gui::Sheet**s using `QA::Gui::Sheet*.new()`;
-* Each Sheet object creates **QA::Gui::Page**s `QA::Gui::SheetTools!create-page()` in **QA::Gui::SheetTools** `$!pages`.
+* Each Sheet object creates **QA::Gui::Page**s `QA::Gui::PageTools!create-page()` in **QA::Gui::PageTools** `$!pages`.
 * The pages are filled with sets using `QA::Gui::Set.new()`
 * The sets are stored in **QA::Gui::Page** `$!sets`.
 * Questions are created in `QA::Gui::Sets.new()` and stored in **QA::Gui::Sets** `$!questions`.

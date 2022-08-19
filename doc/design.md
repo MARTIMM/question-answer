@@ -304,22 +304,22 @@ set namespaceSeparator ::
 hide empty members
 
 'Class and interface decorations
-Interface QA::Gui::SheetTools <Interface>
-class QA::Gui::SheetTools <<(R,#80ffff)>>
+Interface QA::Gui::PageTools <Interface>
+class QA::Gui::PageTools <<(R,#80ffff)>>
 
 'Connections
 
-UserApp *-up-> QA::Gui::SheetSimpleDialog
-QA::Gui::Dialog <|-- QA::Gui::SheetSimpleDialog
-QA::Gui::SheetTools <|.. QA::Gui::SheetSimpleDialog
+UserApp *-up-> QA::Gui::PageSimpleDialog
+QA::Gui::Dialog <|-- QA::Gui::PageSimpleDialog
+QA::Gui::PageTools <|.. QA::Gui::PageSimpleDialog
 Gnome::Gtk3::Dialog <|-- QA::Gui::Dialog
 
-QA::Gui::SheetSimpleDialog *-> "*" QA::Gui::Page
+QA::Gui::PageSimpleDialog *-> "*" QA::Gui::Page
 QA::Gui::Page *-> "*" QA::Gui::Set
 QA::Gui::Set *-right-> "*" QA::Gui::Question
 QA::Gui::Question *-right-> QA::Gui::InputWidget
 ```
-The **QA::Gui::SheetSimpleDialog** module can be replaced with **QA::Gui::SheetSimpleWindow** **QA::Gui::SheetStackDialog**, **QA::Gui::SheetNotebook** or **QA::Gui::SheetAssistant** depending on the purpose of the questionaire.
+The **QA::Gui::PageSimpleDialog** module can be replaced with **QA::Gui::SheetSimpleWindow** **QA::Gui::PageStackDialog**, **QA::Gui::SheetNotebook** or **QA::Gui::SheetAssistant** depending on the purpose of the questionaire.
 
 
 
