@@ -1,4 +1,4 @@
-#tl:1:QA::Gui::SheetDialog
+#tl:1:QA::Gui::PageDialog
 use v6.d;
 
 #use Gnome::N::X;
@@ -61,7 +61,7 @@ submethod BUILD (
   $!sheet .= new(:$!sheet-name);
 
   self.load-user-data($user-data);
-  self.set-style('QASheetStack');
+  self.set-style('QAPageStack');
 
   with $!sheet {
     self.set-dialog-size( .width, .height) if ? .width and ? .height;

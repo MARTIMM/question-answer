@@ -269,10 +269,10 @@ self.show-data;
           }
 
 
-          when QAAddSheet {
+          when QAAddPage {
           }
 
-          when QARemoveSet {
+          when QARemovePage {
           }
 
 

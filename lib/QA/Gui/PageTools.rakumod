@@ -40,11 +40,11 @@ note 'set-grid: ', $container.^name;
   # Set the contents of the grid depending of the type of container
   given $container.^name {
 
-    when / SheetSimple || SheetNotebook / {
+    when / PageSimple || PageNotebook / {
       $!grid = $container.dialog-content;
     }
 
-    when / SheetStack / {
+    when / PageStack / {
       $!grid = $container.dialog-content;
 
       # create the stack and add pages to it
@@ -56,7 +56,7 @@ note 'set-grid: ', $container.^name;
       $!grid.attach( $stack-switcher, 0, 1, 1, 1);
     }
 
-    when / SheetAssistant / {
+    when / PageAssistant / {
     }
 
     when / Window / {
@@ -76,7 +76,7 @@ method set-grid-content ( $pager-type ) {
 note 'Pager: ', $pager-type.^name;
 
   given $pager-type.^name {
-    when / SheetSimple / {
+    when / PageSimple / {
       # find first content page. This simple sheet display takes the first page
       # marked as content only.
       my $pages := $!sheet.clone;
@@ -93,7 +93,7 @@ note 'Pager: ', $pager-type.^name;
       $!grid.attach( $statusbar, 0, 1, 1, 1);
     }
 
-    when / SheetStack / {
+    when / PageStack / {
       # select content pages only
       my $pages := $!sheet.clone;
       for $pages -> Hash $page-data {
@@ -106,10 +106,10 @@ note 'Pager: ', $pager-type.^name;
       }
     }
 
-    when / SheetNotebook / {
+    when / PageNotebook / {
     }
 
-    when / SheetAssistant / {
+    when / PageAssistant / {
     }
 
     # when default, it is a user container with a grid

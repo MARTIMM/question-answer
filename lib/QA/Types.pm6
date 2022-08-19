@@ -285,7 +285,7 @@ method instance ( --> QA::Types ) {
 =begin pod
 =head2 qa-load
 
-Load a config or data file into a Hash. There is no use for it directly. To load data, use the modules B<QManager::Set> or B<QManager::Sheet>. The type of the file is taken from the $data-file-type.
+Load a config or data file into a Hash. There is no use for it directly. To load data, use the modules B<QA::Set> or B<QA::Sheet>. The type of the file is taken from the $data-file-type.
 
 C<:userdata> is used to load data which will be displayed in the forms.
 

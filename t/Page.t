@@ -42,7 +42,7 @@ subtest 'Add pages and sets', {
 
   ok $sheet.add-page(
     'tstsheet1',
-    :title("Test Sheet 1"),
+    :title("Test Page 1"),
     :description("Description jzh glfksd slfdjg sdfgl jsfdg lsdfg jhsdlfgj sdfg lsdkj sdgljshdfg ls dfj sdf glsjfdg sdflg ksdlfgj sdfg sdflkhsdf gsdfkggh"
     )
   ), '.add-page() tstsheet1';
@@ -242,7 +242,7 @@ multi sub show-set( Hash:D $set ) {
 #-------------------------------------------------------------------------------
 sub show-pages( QA::Page $sheet ) {
 
-  note "\nSheet $sheet:";
+  note "\nPage $sheet:";
   my $c := $sheet.clone;
   for $c -> Hash $page {
     note "\nPage '$page<page-name>':";
