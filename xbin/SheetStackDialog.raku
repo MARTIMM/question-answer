@@ -1,7 +1,10 @@
 #!/usr/bin/env raku
+
 #tp:1:SheetStackDialog.raku
 
 use v6.d;
+
+note @*ARGS.join(', ');
 
 use Gnome::Gtk3::Dialog;
 use Gnome::Gtk3::Main;
@@ -21,10 +24,9 @@ class EH {
   has QA::Gui::SheetStackDialog $!sheet-dialog;
 
   #---------
-  method show-stack ( ) {
+  method show-stack ( Str:D :$sheet-name ) {
     $!sheet-dialog .= new(
-      :sheet-name<StackTest>,
-      :show-cancel-warning, :save-data,
+      :$sheet-name, :show-cancel-warning, :save-data,
       :result-handler-object(self), :result-handler-method<display-result>
     );
 
@@ -65,51 +67,67 @@ class EH {
     # no further actions
     Array
   }
+
+#`{{
+  method extend-selectlist ( Str $input --> Array ) {
+    note "Extend select list: $input";
+
+    # no further actions
+    Array
+  }
+}}
 }
 
 #-------------------------------------------------------------------------------
-# modify paths for tests to come.
-given my QA::Types $qa-types {
-  .data-file-type(QAYAML);
-  .cfgloc-userdata('xbin/Data');
-  .cfgloc-sheet('xbin/Data/Sheets');
+sub MAIN (
+  Str $sheet-name = 'StackTest',
+  Str $desktop-file = '',
+  Str :$data = 'xbin/Data', Str :$sheets = 'xbin/Data/Sheets',
+) {
+
+  # modify paths for tests to come.
+  given my QA::Types $qa-types {
+    .data-file-type(QAYAML);
+    .cfgloc-userdata($data);
+    .cfgloc-sheet($sheets);
+  }
+
+  # data structure
+  my EH $eh .= new;
+
+  # set keys for check methods. keys are used in QA description
+  with $qa-types .= instance {
+    .set-check-handler( 'check-exclam', $eh, 'check-char', :char<!>);
+  #  .set-action-handler( 'show-select1', $eh, 'fieldtype-action1');
+  #  .set-action-handler( 'show-select2', $eh, 'fieldtype-action2');
+    .set-action-handler( 'fieldtype-action1', $eh);
+    .set-action-handler( 'fieldtype-action2', $eh);
+  }
+
+  my Gnome::Gtk3::Label $description .= new(:text(''));
+  $description.set-markup(Q:to/EOLABEL/);
+
+    Show a <b>QAStack</b> view with a few pages
+    and some special questions of which one
+    is a <u>user defined</u> field on the 2nd page.
+
+    EOLABEL
+
+  my Gnome::Gtk3::Button $dialog-button .= new(:label<QAStack>);
+  $dialog-button.register-signal( $eh, 'show-stack', 'clicked', :$sheet-name);
+
+  with my Gnome::Gtk3::Grid $grid .= new {
+    .attach( $description, 0, 0, 1, 1);
+    .attach( $dialog-button, 0, 1, 1, 1);
+  }
+
+  with my Gnome::Gtk3::Window $top-window .= new {
+    .set-title('Stack Sheet Test');
+    .register-signal( $eh, 'exit-app', 'destroy');
+    .set-border-width(20);
+    .add($grid);
+    .show-all;
+  }
+
+  Gnome::Gtk3::Main.new.main;
 }
-
-# data structure
-my EH $eh .= new;
-
-# set keys for check methods. keys are used in QA description
-with $qa-types .= instance {
-  .set-check-handler( 'check-exclam', $eh, 'check-char', :char<!>);
-#  .set-action-handler( 'show-select1', $eh, 'fieldtype-action1');
-#  .set-action-handler( 'show-select2', $eh, 'fieldtype-action2');
-  .set-action-handler( 'fieldtype-action1', $eh);
-  .set-action-handler( 'fieldtype-action2', $eh);
-}
-
-my Gnome::Gtk3::Label $description .= new(:text(''));
-$description.set-markup(Q:to/EOLABEL/);
-
-  Show a <b>QAStack</b> view with a few pages
-  and some special questions of which one
-  is a <u>user defined</u> field on the 2nd page.
-
-  EOLABEL
-
-my Gnome::Gtk3::Button $dialog-button .= new(:label<QAStack>);
-$dialog-button.register-signal( $eh, 'show-stack', 'clicked');
-
-with my Gnome::Gtk3::Grid $grid .= new {
-  .attach( $description, 0, 0, 1, 1);
-  .attach( $dialog-button, 0, 1, 1, 1);
-}
-
-with my Gnome::Gtk3::Window $top-window .= new {
-  .set-title('Stack Sheet Test');
-  .register-signal( $eh, 'exit-app', 'destroy');
-  .set-border-width(20);
-  .add($grid);
-  .show-all;
-}
-
-Gnome::Gtk3::Main.new.main;
