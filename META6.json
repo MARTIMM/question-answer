@@ -1,7 +1,7 @@
 {
   "description": "Question Answer",
   "name": "QA",
-  "version": "0.16.7",
+  "version": "0.16.8",
   "authors": [ "Marcel Timmerman"],
   "tags": [
     "questionnaire", "configuration", "gtk", "question", "answer", "Raku"
@@ -20,6 +20,12 @@
     "QA::Gui::InputWidget": "lib/QA/Gui/InputWidget.rakumod",
     "QA::Gui::OkMsgDialog": "lib/QA/Gui/OkMsgDialog.pm6",
     "QA::Gui::Page": "lib/QA/Gui/Page.pm6",
+    "QA::Gui::PageAssistant": "lib/QA/Gui/PageAssistant.rakumod",
+    "QA::Gui::PageNotebook": "lib/QA/Gui/PageNotebook.rakumod",
+    "QA::Gui::PageSimpleDialog": "lib/QA/Gui/PageSimpleDialog.rakumod",
+    "QA::Gui::PageSimpleWindow": "lib/QA/Gui/PageSimpleWindow.rakumod",
+    "QA::Gui::PageStackDialog": "lib/QA/Gui/PageStackDialog.rakumod",
+    "QA::Gui::PageTools": "lib/QA/Gui/PageTools.rakumod",
     "QA::Gui::QACheckButton": "lib/QA/Gui/QACheckButton.pm6",
     "QA::Gui::QAComboBox": "lib/QA/Gui/QAComboBox.pm6",
     "QA::Gui::QAEntry": "lib/QA/Gui/QAEntry.pm6",
@@ -32,19 +38,13 @@
     "QA::Gui::QATextView": "lib/QA/Gui/QATextView.pm6",
     "QA::Gui::Question": "lib/QA/Gui/Question.pm6",
     "QA::Gui::Set": "lib/QA/Gui/Set.pm6",
-    "QA::Gui::SheetAssistant": "lib/QA/Gui/SheetAssistant.rakumod",
-    "QA::Gui::SheetNotebook": "lib/QA/Gui/SheetNotebook.rakumod",
-    "QA::Gui::SheetSimpleDialog": "lib/QA/Gui/SheetSimpleDialog.rakumod",
-    "QA::Gui::SheetSimpleWindow": "lib/QA/Gui/SheetSimpleWindow.rakumod",
-    "QA::Gui::SheetStackDialog": "lib/QA/Gui/SheetStackDialog.rakumod",
-    "QA::Gui::SheetTools": "lib/QA/Gui/SheetTools.rakumod",
     "QA::Gui::Statusbar": "lib/QA/Gui/Statusbar.pm6",
     "QA::Gui::Value": "lib/QA/Gui/Value.pm6",
     "QA::Gui::YNMsgDialog": "lib/QA/Gui/YNMsgDialog.pm6",
 
+    "QA::Page": "lib/QA/Page.pm6",
     "QA::Question": "lib/QA/Question.pm6",
     "QA::Set": "lib/QA/Set.pm6",
-    "QA::Sheet": "lib/QA/Sheet.pm6",
     "QA::Status": "lib/QA/Status.rakumod",
     "QA::Types": "lib/QA/Types.pm6"
   },

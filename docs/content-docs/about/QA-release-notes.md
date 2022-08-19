@@ -21,7 +21,7 @@ See [semantic versioning](http://semver.org/). Please note point 4. on that page
   * Add apply and help buttons to input forms.
 
 * 2021-10-10 0.15.0
-  * Sheet modules are refactored and a module **QA::Gui::SheetTools** is created.
+  * Sheet modules are refactored and a module **QA::Gui::PageTools** is created.
   * New set of modules to be able to show sheets in a widget instead of a dialog window to be free in choice of container. Necessary for the assistant type.
 
 * 2021-10-10 0.14.6
