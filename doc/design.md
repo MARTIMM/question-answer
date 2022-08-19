@@ -304,19 +304,25 @@ set namespaceSeparator ::
 hide empty members
 
 'Class and interface decorations
+Interface QA::Gui::SheetTools <Interface>
+class QA::Gui::SheetTools <<(R,#80ffff)>>
 
 'Connections
 
-UserApp *-up-> QA::Gui::SheetSimple
-QA::Gui::Dialog <|-- QA::Gui::SheetSimple
+UserApp *-up-> QA::Gui::SheetSimpleDialog
+QA::Gui::Dialog <|-- QA::Gui::SheetSimpleDialog
+QA::Gui::SheetTools <|.. QA::Gui::SheetSimpleDialog
 Gnome::Gtk3::Dialog <|-- QA::Gui::Dialog
 
-QA::Gui::SheetSimple *-> "*" QA::Gui::Page
+QA::Gui::SheetSimpleDialog *-> "*" QA::Gui::Page
 QA::Gui::Page *-> "*" QA::Gui::Set
 QA::Gui::Set *-right-> "*" QA::Gui::Question
 QA::Gui::Question *-right-> QA::Gui::InputWidget
 ```
 The **QA::Gui::SheetSimpleDialog** module can be replaced with **QA::Gui::SheetSimpleWindow** **QA::Gui::SheetStackDialog**, **QA::Gui::SheetNotebook** or **QA::Gui::SheetAssistant** depending on the purpose of the questionaire.
+
+
+
 
 ## Input widget details
 ```plantuml

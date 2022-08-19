@@ -39,22 +39,25 @@ This is an action like a change of an input widget value, set or page change. Po
   * [ ] QAShowSet
   * [ ] QAShowQuestion
 
+  * [ ] QAAddQuestion;
+  * [ ] QAAddSet;
+  * [ ] QAAddPage;
+
+  * [ ] QARemoveQuestion;
+  * [ ] QARemoveSet;
+  * [ ] QARemovePage;
+
+  * [ ] QAModifyQuestion;
+
   * [ ] QAEnableInputWidget
   * [ ] QADisableInputWidget
 
-  * [ ] QAAddQuestion;
-  * [ ] QARemoveQuestion;
-  * [ ] QAModifyQuestion;
-
-  * [ ] QAAddSet;
-  * [ ] QARemoveSet;
-
-  * [ ] QAAddSheet;
-  * [ ] QARemoveSheet;
-
   * [ ] QAOpenDialog;
   * [x] QAOtherUserAction; `%action-data = %( :action-key, *%user-options)`
-  * [ ] QAAddTofieldlist
+
+  * [ ] QAModifyFieldlist
+  * [ ] QAModifySelectlist
+
   * [ ] QAModifyValue
 
   * [ ] QAEnableButton
