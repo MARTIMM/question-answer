@@ -1,3 +1,6 @@
+* 2022-08-19 0.16.7
+  * Made selectlist field modifyable. Not yet saved back into sheet config
+
 * 2022-08-12 0.16.6
   * Preparations to modify questionaire
 

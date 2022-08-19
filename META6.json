@@ -1,7 +1,7 @@
 {
   "description": "Question Answer",
   "name": "QA",
-  "version": "0.16.6",
+  "version": "0.16.7",
   "authors": [ "Marcel Timmerman"],
   "tags": [
     "questionnaire", "configuration", "gtk", "question", "answer", "Raku"
