@@ -152,13 +152,14 @@ method !adjust-user-data ( $input-widget, Any $input, Int() $row ) {
   if ? self.question.repeatable {
     if ? self.question.selectlist {
       my Gnome::Gtk3::Grid() $grid = $input-widget.get-parent;
-      my Gnome::Gtk3::ComboBoxText() $combobox = $grid.get-child-at(
+      my Gnome::Gtk3::Grid() $combobox-grid = $grid.get-child-at(
         QACatColumn, $row, :child-type<Gnome::Gtk3::ComboBoxText>
       );
+      my Gnome::Gtk3::ComboBoxText() $combobox = $grid.get-child-at( 0, 0);
 
-#      my Int $cb-select  = $combobox.get-active;
+      my Int $cb-select  = $combobox.get-active;
       my Str $cb-text = $combobox.get-active-text;
-#note "adjust-user-data: $cb-select, $cb-text";
+note "adjust-user-data: $cb-select, $cb-text";
 #TODO there is new text when $cb-select = -1. comes in character by character
 #`{{
       if $cb-select == -1 {
