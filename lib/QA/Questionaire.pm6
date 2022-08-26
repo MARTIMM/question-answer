@@ -23,7 +23,7 @@ has Hash $!sets;
 has Array $!set-data;
 has Iterator $!iterator;
 
-has Hash $!page;
+#has Hash $!page;
 
 # sheet dialog properties
 has Int $.width is rw;
@@ -44,7 +44,7 @@ Load the questionaire from a file or copy it from the user provided data. Some d
 =item $sheet; A user provided questionaire. If defined and not empty, the file described by $!qst-name is not loaded and the user data is used instead.
 
 =end pod
-submethod BUILD ( Str:D :$!qst-name, Hash :$sheet = %() ) {
+submethod BUILD ( Str:D :$!qst-name, Hash :$sheet ) {
 
   # initialize types
   $!qa-types .= instance;
@@ -65,21 +65,21 @@ method !load ( Hash :$sheet is copy ) {
     $!button-map = $sheet<button-map> // %();
 
     # the rest are pages
-    for @($sheet<pages>) -> $h-page {
-      next unless ?$h-page;
+    for @($sheet<pages>) -> $page {
+      next unless ?$page;
 
       # get and save page properties
-      if $h-page<page-name>:exists and ?$h-page<page-name> {
+      if $page<page-name>:exists and ?$page<page-name> {
 
-        $h-page<title> //= $h-page<page-name>.tclc;
-        $h-page<description> //= $h-page<title>;
-        $h-page<hide> //= False;
-        $h-page<page-type> = ?$h-page<page-type>
-          ?? QAPageType(QAPageType.enums{$h-page<page-type>} // QAContent)
+        $page<title> //= $page<page-name>.tclc;
+        $page<description> //= $page<title>;
+        $page<hide> //= False;
+        $page<page-type> = ?$page<page-type>
+          ?? QAPageType(QAPageType.enums{$page<page-type>} // QAContent)
           !! QAContent;
 
-        $!pages{$h-page<page-name>} = $!page-data.elems;
-        $!page-data.push: $h-page;
+        $!pages{$page<page-name>} = $!page-data.elems;
+        $!page-data.push: $page;
       }
 
       else {
@@ -102,10 +102,10 @@ method add-page (
   $description //=$title;
 
   $!set-data = [];
-  $!page = %( :$page-name, :$title, :$description, :$hide);
+  my Hash $page = %( :$page-name, :$title, :$description, :$hide);
 
   $!pages{$page-name} = $!page-data.elems;
-  $!page-data.push: $!page;
+  $!page-data.push: $page;
 
   True
 }
@@ -213,7 +213,7 @@ method remove-set ( Str:D $page-name, Str:D $set-name --> Bool ) {
 #-------------------------------------------------------------------------------
 method get-set ( Str:D $page-name, Str:D $set-name --> Hash ) {
 
-  return False unless $!pages{$page-name}:exists;
+  return %() unless $!pages{$page-name}:exists;
 
   my Int $pidx = $!pages{$page-name};
   my Hash $set = %();
