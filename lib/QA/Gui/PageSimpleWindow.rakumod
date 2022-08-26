@@ -37,17 +37,17 @@ has Str $!result-handler-method;
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
-  Str :$!sheet-name, Hash :$user-data? is copy,
+  Str :$!qst-name, Hash :$user-data? is copy,
   Bool :$!show-cancel-warning = True, Bool :$!save-data = True,
   Gnome::Gtk3::Widget :$!widget,
   Any :$!result-handler-object?, Str :$!result-handler-method?
 ) {
-  $!sheet .= new(:$!sheet-name);
+  $!qst .= new(:$!qst-name);
   self.load-user-data($user-data);
   self.set-style('QAPageSimple');
 
   # todo width and height spec must go to sets
-  with $!sheet {
+  with $!qst {
     $!widget.set-border-width(2);
     $!widget.set-size-request( .width, .height) if ? .width and ? .height;
   }
@@ -153,7 +153,7 @@ method apply-response ( ) {
 #-------------------------------------------------------------------------------
 method help-response ( ) {
 
-  my Str $text = $!sheet.button-map<help-info><message>;
+  my Str $text = $!qst.button-map<help-info><message>;
   self.show-message($text) if ?$text;
 }
 

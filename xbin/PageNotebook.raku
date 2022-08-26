@@ -11,7 +11,7 @@ use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Button;
 use Gnome::Gtk3::Label;
 
-use QA::Gui::SheetNotebook;
+use QA::Gui::PageNotebook;
 #use QA::Gui::Frame;
 use QA::Gui::Value;
 use QA::Types;
@@ -25,8 +25,8 @@ use QA::Types;
 class MyWidget does QA::Gui::Value {
 
   #---------
-  has QA::Question $.question;
-  has Hash $.user-data-set-part;
+#  has QA::Question $.question;
+#  has Hash $.user-data-set-part;
 
   #---------
   method init-widget (
@@ -77,13 +77,13 @@ class EH {
 
 #`{{
   method show-dialog ( ) {
-    my QA::Gui::SheetSimple $sheet-dialog .= new(
-      :sheet-name<DialogTest>,
+    my QA::Gui::SheetSimple $qst-dialog .= new(
+      :qst-name<DialogTest>,
       :!show-cancel-warning, :!save-data
     );
 
-    my Int $response = $sheet-dialog.show-sheet;
-    self.display-result( $response, $sheet-dialog);
+    my Int $response = $qst-dialog.show-qst;
+    self.display-result( $response, $qst-dialog);
   }
 }}
 
@@ -94,33 +94,33 @@ class EH {
     my QA::Types $qa-types .= instance;
     $qa-types.set-widget-object( 'use-my-widget', MyWidget.new);
 
-    my QA::Gui::SheetNotebook $sheet-dialog .= new(
-      :sheet-name<NotebookTest>, :show-cancel-warning, :save-data
+    my QA::Gui::PageNotebook $qst-dialog .= new(
+      :qst-name<NotebookTest>, :show-cancel-warning, :save-data
     );
 
-    my Int $response = $sheet-dialog.show-sheet;
-    self.display-result( $response, $sheet-dialog);
+    my Int $response = $qst-dialog.show-qst;
+    self.display-result( $response, $qst-dialog);
   }
 
 #`{{
   method show-stack ( ) {
-    my QA::Gui::SheetDialog $sheet-dialog .= new(
-      :sheet-name<StackTest>,
+    my QA::Gui::SheetDialog $qst-dialog .= new(
+      :qst-name<StackTest>,
       :show-cancel-warning, :save-data
     );
 
-    my Int $response = $sheet-dialog.show-dialog;
-    self.display-result( $response, $sheet-dialog);
+    my Int $response = $qst-dialog.show-dialog;
+    self.display-result( $response, $qst-dialog);
   }
 
   method show-assistant ( ) {
-    my QA::Gui::SheetDialog $sheet-dialog .= new(
-      :sheet-name<AssistantTest>,
+    my QA::Gui::SheetDialog $qst-dialog .= new(
+      :qst-name<AssistantTest>,
       :show-cancel-warning, :save-data
     );
 
-#    my Int $response = $sheet-dialog.show-dialog;
-#    self.display-result( $response, $sheet-dialog);
+#    my Int $response = $qst-dialog.show-dialog;
+#    self.display-result( $response, $qst-dialog);
   }
 }}
 
@@ -225,7 +225,7 @@ $qa-types.qa-save( 'QAManagerSetDialog', $user-data, :userdata);
 #note $qa-types.qa-load( 'QAManagerSetDialog', :userdata);
 
 #$qa-types.cfgloc-category;
-#$qa-types.cfgloc-sheet;
+#$qa-types.cfgloc-qst;
 #$qa-types.callback-objects;
 #exit(0);
 }}

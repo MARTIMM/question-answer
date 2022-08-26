@@ -15,22 +15,22 @@ use QA::Types;
 
 #-------------------------------------------------------------------------------
 class EH {
-  has QA::Gui::PageSimpleDialog $!sheet-dialog;
+  has QA::Gui::PageSimpleDialog $!qst-dialog;
 
   #---------
   method show-dialog ( ) {
-    $!sheet-dialog .= new(
+    $!qst-dialog .= new(
       :sheet-name<SimpleTest>,
       :!show-cancel-warning, :!save-data,
       :result-handler-object(self), :result-handler-method<display-result>
     );
 
-    $!sheet-dialog.show-sheet;
+    $!qst-dialog.show-sheet;
   }
 
   #---------
   method display-result ( Hash $result-user-data ) {
-    $!sheet-dialog.show-hash($result-user-data);
+    $!qst-dialog.show-hash($result-user-data);
   }
 
   #---------

@@ -3,18 +3,22 @@ use v6.d;
 use QA::Types;
 
 #-------------------------------------------------------------------------------
-unit class QA::Page:auth<github:MARTIMM>;
+unit class QA::Questionaire:auth<github:MARTIMM>;
 also does Iterable;
 #also does Iterator;
 
 #-------------------------------------------------------------------------------
 # sheets are filenames holding pages of sets
-has Str $!sheet-name is required;
+has Str $!qst-name is required;
 
-# this QA::Page's pages
+# complete questionaire
+has Hash $!questionaire;
+
+# questionaire's pages
 has Hash $!pages;
 has Array $!page-data;
 
+# sets on the pages
 has Hash $!sets;
 has Array $!set-data;
 has Iterator $!iterator;
@@ -29,7 +33,18 @@ has Hash $.button-map is rw;
 has QA::Types $!qa-types;
 
 #-------------------------------------------------------------------------------
-submethod BUILD ( Str:D :$!sheet-name, Hash :$sheet ) {
+#TM:1:new
+=begin pod
+
+Load the questionaire from a file or copy it from the user provided data. Some defaults are set such as the width and height of the window wherein the questionaire is shown.
+
+  new ( Str:D :$!qst-name, Hash :$sheet = %() )
+
+=item $!qst-name; The name of the file of the questionaire
+=item $sheet; A user provided questionaire. If defined and not empty, the file described by $!qst-name is not loaded and the user data is used instead.
+
+=end pod
+submethod BUILD ( Str:D :$!qst-name, Hash :$sheet = %() ) {
 
   # initialize types
   $!qa-types .= instance;
@@ -43,7 +58,7 @@ method !load ( Hash :$sheet is copy ) {
   $!pages = %();
   $!page-data = [];
 
-  $sheet //= $!qa-types.qa-load( $!sheet-name, :sheet);
+  $sheet //= $!qa-types.qa-load( $!qst-name, :sheet);
   if ?$sheet {
     $!width = $sheet<width> // 0;
     $!height = $sheet<height> // 0;
@@ -219,7 +234,7 @@ method get-set ( Str:D $page-name, Str:D $set-name --> Hash ) {
 method save ( ) {
 
   $!qa-types.qa-save(
-    $!sheet-name, %(:$!width, :$!height, :$!button-map, :pages($!page-data)),
+    $!qst-name, %(:$!width, :$!height, :$!button-map, :pages($!page-data)),
     :sheet
   );
 }
@@ -231,7 +246,7 @@ method save-as ( Str:D $new-sheet ) {
     $new-sheet, %(:$!width, :$!height, :$!button-map, :pages($!page-data)),
     :sheet
   );
-  $!sheet-name = $new-sheet;
+  $!qst-name = $new-sheet;
 }
 
 #-------------------------------------------------------------------------------
@@ -240,7 +255,7 @@ method remove ( --> Bool ) {
   if ?$!pages {
     $!pages = Nil;
     $!page-data = [];
-    $!qa-types.qa-remove( $!sheet-name, :sheet);
+    $!qa-types.qa-remove( $!qst-name, :sheet);
     True
   }
 

@@ -13,7 +13,7 @@ use QA::Types;
 
 #-------------------------------------------------------------------------------
 class EH {
-  has QA::Gui::SheetSimpleWindow $!sheet-window;
+  has QA::Gui::SheetSimpleWindow $!qst-window;
 
   #---------
   method show-window ( :$app-window ) {
@@ -22,19 +22,19 @@ class EH {
       .set-transient-for($app-window);
     }
 
-    $!sheet-window .= new(
+    $!qst-window .= new(
       :sheet-name<SimpleTest>,
       :!show-cancel-warning, :!save-data
       :widget($window),
       :result-handler-object(self), :result-handler-method<display-result>
     );
 
-    $!sheet-window.show-sheet;
+    $!qst-window.show-sheet;
   }
 
   #---------
   method display-result ( Hash $result-user-data ) {
-    $!sheet-window.show-hash($result-user-data);
+    $!qst-window.show-hash($result-user-data);
   }
 
   #---------

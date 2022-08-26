@@ -1,7 +1,7 @@
 use v6.d;
 use Test;
 
-use QA::Page;
+use QA::Questionaire;
 use QA::Set;
 use QA::Question;
 use QA::Types;
@@ -24,12 +24,12 @@ given my QA::Types $qa-types {
 # create some sets
 make-sets();
 
-my QA::Page $sheet .= new(:sheet-name<login>);
+my QA::Questionaire $sheet .= new(:qst-name<login>);
 
 #-------------------------------------------------------------------------------
 subtest 'ISO-Test', {
 
-  isa-ok $sheet, QA::Page, '.new(:sheet-name)';
+  isa-ok $sheet, QA::Questionaire, '.new(:sheet-name)';
 }
 #-------------------------------------------------------------------------------
 subtest 'Add pages and sets', {
@@ -71,7 +71,7 @@ subtest 'Save and load', {
   $sheet.save-as('login2');
   ok "@dirs[SHEET]/login2.yaml".IO ~~ :e, '.save-as() login2';
 
-  $sheet .= new(:sheet-name<login>);
+  $sheet .= new(:qst-name<login>);
   is $sheet.width, 400, 'reload sheet';
   my QA::Set $set .= new(
     :set-data($sheet.get-set( 'tstsheet1', 'credentials'))
@@ -87,13 +87,13 @@ subtest 'replace sets and pages', {
   # change credential set
   change-sets();
 
-  my QA::Page $sheet2 .= new(:sheet-name<login2>);
+  my QA::Questionaire $sheet2 .= new(:qst-name<login2>);
   nok $sheet2.add-set( 'tstsheet3', 'credentials'), 'set already there';
   ok $sheet2.add-set( 'tstsheet3', 'credentials', :replace), 'replaced set';
   $sheet2.width = 300;
   $sheet2.save;
 
-  $sheet2 .= new(:sheet-name<login2>);
+  $sheet2 .= new(:qst-name<login2>);
   is $sheet2.width, 300, 'reload changed sheet';
   my QA::Set $set .= new(
     :set-data($sheet2.get-set( 'tstsheet3', 'credentials'))
@@ -120,11 +120,11 @@ subtest 'remove sets and pages', {
 #-------------------------------------------------------------------------------
 subtest 'remove sheet', {
 
-  $sheet .= new(:sheet-name<login2>);
+  $sheet .= new(:qst-name<login2>);
   ok $sheet.remove, 'login2 deleted';
 
   # cannot remove unloaded sheets
-  $sheet .= new(:sheet-name<login>);
+  $sheet .= new(:qst-name<login>);
   ok $sheet.remove, 'login removed';
   nok $sheet.remove, 'login already removed';
   ok "@dirs[SET]/login.yaml".IO ~~ :!e, 'file removed';
@@ -240,7 +240,7 @@ multi sub show-set( Hash:D $set ) {
 }
 
 #-------------------------------------------------------------------------------
-sub show-pages( QA::Page $sheet ) {
+sub show-pages( QA::Questionaire $sheet ) {
 
   note "\nPage $sheet:";
   my $c := $sheet.clone;

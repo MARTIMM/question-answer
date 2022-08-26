@@ -2,7 +2,7 @@
 use v6.d;
 
 use QA::Set;
-use QA::Page;
+use QA::Questionaire;
 use QA::Types;
 
 use QA::Gui::Dialog;
@@ -36,8 +36,8 @@ unit class QA::Gui::PageNotebook:auth<github:MARTIMM>:ver<0.2.0>;
 also is QA::Gui::Dialog;
 
 #-------------------------------------------------------------------------------
-has QA::Page $!sheet;
-has Str $!sheet-name;
+has QA::Questionaire $!qst;
+has Str $!qst-name;
 has Hash $!user-data;
 has Hash $.result-user-data;
 has Array $!sets = [];
@@ -57,22 +57,22 @@ submethod new ( |c ) {
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
-  Str :$!sheet-name, Hash :$user-data? is copy,
+  Str :$!qst-name, Hash :$user-data? is copy,
   Bool :$!show-cancel-warning = True, Bool :$!save-data = True
 ) {
 
   my QA::Types $qa-types .= instance;
   $!user-data = $user-data //
-                $qa-types.qa-load( $!sheet-name, :userdata) //
+                $qa-types.qa-load( $!qst-name, :userdata) //
                 %();
 
-  $!sheet .= new(:$!sheet-name);
+  $!qst .= new(:$!qst-name);
 
   self!set-style;
 
   # todo width and height spec must go to sets
-  self.set-dialog-size( $!sheet.width, $!sheet.height)
-    if ?$!sheet.width and ?$!sheet.height;
+  self.set-dialog-size( $!qst.width, $!qst.height)
+    if ?$!qst.width and ?$!qst.height;
 
   $!grid = self.dialog-content;
 
@@ -99,7 +99,7 @@ submethod BUILD (
   $!grid.attach( $!notebook, 0, 0, 1, 1);
 
   # select content pages only
-  my $pages := $!sheet.clone;
+  my $pages := $!qst.clone;
   for $pages -> Hash $page-data {
     if $page-data<page-type> ~~ QAContent {
       my QA::Gui::Page $page = self!create-page( $page-data, :!description);
@@ -140,7 +140,7 @@ method create-button (
 ) {
 
   # change text of label on button when defined in the button map structure
-  my Hash $button-map = $!sheet.button-map // %();
+  my Hash $button-map = $!qst.button-map // %();
   my Gnome::Gtk3::Button $button .= new;
   my Str $button-text = $widget-name;
   $button-text = $button-map{$widget-name} if ?$button-map{$widget-name};
@@ -261,6 +261,6 @@ method show-cancel ( --> Bool ) {
 method save-data ( ) {
   $!result-user-data = $!user-data;
   my QA::Types $qa-types .= instance;
-  $qa-types.qa-save( $!sheet-name, $!result-user-data, :userdata)
+  $qa-types.qa-save( $!qst-name, $!result-user-data, :userdata)
     if $!save-data;
 }

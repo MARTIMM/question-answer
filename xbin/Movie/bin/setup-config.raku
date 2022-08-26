@@ -1,6 +1,6 @@
 use v6.d;
 
-use QA::Page;
+use QA::Questionaire;
 use QA::Set;
 use QA::Question;
 use QA::Types;
@@ -24,7 +24,7 @@ given my QA::Types $qa-types {
 make-sets();
 
 
-with my QA::Page $sheet .= new(:sheet-name<movie>) {
+with my QA::Questionaire $sheet .= new(:sheet-name<movie>) {
   .remove;
   .width = 400;
   .height = 500;

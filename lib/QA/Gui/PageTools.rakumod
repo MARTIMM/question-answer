@@ -13,7 +13,7 @@ use Gnome::Gtk3::Button;
 use Gnome::Gtk3::Stack;
 use Gnome::Gtk3::StackSwitcher;
 
-use QA::Page;
+use QA::Questionaire;
 use QA::Types;
 
 use QA::Gui::Statusbar;
@@ -24,8 +24,8 @@ unit role QA::Gui::PageTools:auth<github:MARTIMM>;
 
 has Gnome::Gtk3::Grid $!grid;
 has Hash $!pages = %();
-has QA::Page $!sheet;
-has Str $!sheet-name;
+has QA::Questionaire $!qst;
+has Str $!qst-name;
 
 has Hash $.result-user-data;
 has Hash $!user-data;
@@ -79,7 +79,7 @@ note 'Pager: ', $pager-type.^name;
     when / PageSimple / {
       # find first content page. This simple sheet display takes the first page
       # marked as content only.
-      my $pages := $!sheet.clone;
+      my $pages := $!qst.clone;
       for $pages -> Hash $page-data {
         if $page-data<page-type> ~~ QAContent {
           my QA::Gui::Page $page = self!create-page( $page-data, :!description);
@@ -95,7 +95,7 @@ note 'Pager: ', $pager-type.^name;
 
     when / PageStack / {
       # select content pages only
-      my $pages := $!sheet.clone;
+      my $pages := $!qst.clone;
       for $pages -> Hash $page-data {
         if $page-data<page-type> ~~ QAContent {
           my QA::Gui::Page $page = self!create-page( $page-data, :!description);
@@ -116,7 +116,7 @@ note 'Pager: ', $pager-type.^name;
     default {
       # find first content page. This simple sheet display takes the first page
       # marked as content only.
-      my $pages := $!sheet.clone;
+      my $pages := $!qst.clone;
       for $pages -> Hash $page-data {
         if $page-data<page-type> ~~ QAContent {
           my QA::Gui::Page $page = self!create-page( $page-data, :!description);
@@ -138,7 +138,7 @@ method create-button (
   --> Gnome::Gtk3::Button
 ) {
   # change text of label on button when defined in the button map structure
-  my Hash $button-map = $!sheet.button-map // %();
+  my Hash $button-map = $!qst.button-map // %();
   my Str $button-text = $button-map{$widget-name}<name> // $widget-name;
 
   # uppercase first letter of every word.
@@ -186,14 +186,14 @@ method set-style ( Str:D $class-name ) {
 #-------------------------------------------------------------------------------
 method load-user-data ( Hash $user-data ) {
   my QA::Types $qa-types .= instance;
-  $!user-data = $user-data // $qa-types.qa-load( $!sheet-name, :userdata);
+  $!user-data = $user-data // $qa-types.qa-load( $!qst-name, :userdata);
 }
 
 #-------------------------------------------------------------------------------
 method save-data ( ) {
   $!result-user-data = $!user-data;
   my QA::Types $qa-types .= instance;
-  $qa-types.qa-save( $!sheet-name, $!result-user-data, :userdata)
+  $qa-types.qa-save( $!qst-name, $!result-user-data, :userdata)
     if $!save-data;
 }
 

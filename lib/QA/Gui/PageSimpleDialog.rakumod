@@ -40,16 +40,16 @@ submethod new ( |c ) {
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
-  Str :$!sheet-name, Hash :$user-data? is copy,
+  Str :$!qst-name, Hash :$user-data? is copy,
   Bool :$!show-cancel-warning = True, Bool :$!save-data = True,
   Any :$!result-handler-object?, Str :$!result-handler-method?
 ) {
-  $!sheet .= new(:$!sheet-name);
+  $!qst .= new(:$!qst-name);
 
   self.load-user-data($user-data);
   self.set-style('QAPageSimple');
 
-  with $!sheet {
+  with $!qst {
     self.set-dialog-size( .width, .height) if ? .width and ? .height;
   }
 
@@ -71,7 +71,7 @@ note "add button $widget-name";
   # it is possible that button is undefined
   my Gnome::Gtk3::Button $button = self.create-button($widget-name);
   with $button {
-    my Hash $button-map = $!sheet.button-map // %();
+    my Hash $button-map = $!qst.button-map // %();
     if ? $button-map{$widget-name}<default> {
       .set-can-default(True);
       self.set-default-response($response-type);
@@ -143,7 +143,7 @@ method show-sheet ( ) {
       }
 
       when GTK_RESPONSE_HELP {
-        my Str $text = $!sheet.button-map<help-info><message>;
+        my Str $text = $!qst.button-map<help-info><message>;
         self.show-message($text) if ?$text;
       }
 

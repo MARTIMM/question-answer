@@ -21,22 +21,22 @@ use QA::Types;
 
 #-------------------------------------------------------------------------------
 class EH {
-  has QA::Gui::PageStackDialog $!sheet-dialog;
+  has QA::Gui::PageStackDialog $!qst-dialog;
 
   #---------
-  method show-stack ( Str:D :$sheet-name ) {
-    $!sheet-dialog .= new(
-      :$sheet-name, :show-cancel-warning, :save-data,
+  method show-stack ( Str:D :$qst-name ) {
+    $!qst-dialog .= new(
+      :$qst-name, :show-cancel-warning, :save-data,
       :result-handler-object(self), :result-handler-method<display-result>
     );
 
-    $!sheet-dialog.show-sheet;
-    $!sheet-dialog.clear-object;
+    $!qst-dialog.show-sheet;
+    $!qst-dialog.clear-object;
   }
 
   #---------
   method display-result ( Hash $result-user-data ) {
-    $!sheet-dialog.show-hash($result-user-data);
+    $!qst-dialog.show-hash($result-user-data);
   }
 
   #---------
@@ -80,16 +80,16 @@ class EH {
 
 #-------------------------------------------------------------------------------
 sub MAIN (
-  Str $sheet-name = 'StackTest',
+  Str $qst-name = 'StackTest',
   Str $desktop-file = '',
-  Str :$data = 'xbin/Data', Str :$sheets = 'xbin/Data/Sheets',
+  Str :$data = 'xbin/Data', Str :$qst = 'xbin/Data/Sheets',
 ) {
 
   # modify paths for tests to come.
   given my QA::Types $qa-types {
     .data-file-type(QAYAML);
     .cfgloc-userdata($data);
-    .cfgloc-sheet($sheets);
+    .cfgloc-sheet($qst);
   }
 
   # data structure
@@ -114,7 +114,7 @@ sub MAIN (
     EOLABEL
 
   my Gnome::Gtk3::Button $dialog-button .= new(:label<QAStack>);
-  $dialog-button.register-signal( $eh, 'show-stack', 'clicked', :$sheet-name);
+  $dialog-button.register-signal( $eh, 'show-stack', 'clicked', :$qst-name);
 
   with my Gnome::Gtk3::Grid $grid .= new {
     .attach( $description, 0, 0, 1, 1);

@@ -1,7 +1,7 @@
 use v6.d;Page
 
 use QA::Set;
-use QA::Page;
+use QA::Questionaire;
 use QA::Types;
 
 #use QA::Gui::Dialog;
@@ -40,8 +40,8 @@ unit class QA::Gui::PageAssistant:auth<github:MARTIMM>:ver<0.1.0>;
 also is Gnome::Gtk3::Assistant;
 
 #-------------------------------------------------------------------------------
-has QA::Page $!sheet;
-has Str $!sheet-name;
+has QA::Questionaire $!qst;
+has Str $!qst-name;
 has Hash $!user-data;
 has Hash $.result-user-data;
 has Array $!sets = [];
@@ -61,24 +61,24 @@ submethod new ( |c ) {
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
-  Str :$!sheet-name, Hash :$user-data? is copy,
+  Str :$!qst-name, Hash :$user-data? is copy,
   Bool :$!show-cancel-warning = True, Bool :$!save-data = True
 ) {
 
 
   my QA::Types $qa-types .= instance;
-note "ass: $!sheet-name, $qa-types.list-dirs()";
+note "ass: $!qst-name, $qa-types.list-dirs()";
 
   $!user-data = $user-data //
-                $qa-types.qa-load( $!sheet-name, :userdata) //
+                $qa-types.qa-load( $!qst-name, :userdata) //
                 %();
 
-  $!sheet .= new(:$!sheet-name);
+  $!qst .= new(:$!qst-name);
 
   self!set-style;
 
   # select content pages only
-  my $pages := $!sheet.clone;
+  my $pages := $!qst.clone;
   for $pages -> Hash $page-data {
 note "\npd: $page-data";
     if $page-data<page-type> ~~ QAContent {

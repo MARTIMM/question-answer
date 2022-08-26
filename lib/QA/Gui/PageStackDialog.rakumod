@@ -53,18 +53,18 @@ submethod new ( |c ) {
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
-  Str :$!sheet-name, Hash :$user-data? is copy,
+  Str :$!qst-name, Hash :$user-data? is copy,
   Bool :$!show-cancel-warning = True, Bool :$!save-data = True,
   Any :$!result-handler-object?, Str :$!result-handler-method?
 ) {
 
-  $!sheet .= new(:$!sheet-name);
+  $!qst .= new(:$!qst-name);
 
   self.load-user-data($user-data);
   self.set-style('QAPageStack');
 
-  with $!sheet {
-    self.set-dialog-size( .width, .height) if ? .width and ? .height;
+  with $!qst {
+    self.set-dialog-size( .width, .height); # if ? .width and ? .height;
   }
 
   # set the grid and fill it
