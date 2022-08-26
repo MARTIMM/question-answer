@@ -11,8 +11,11 @@ also does Iterable;
 # sheets are filenames holding pages of sets
 has Str $!qst-name is required;
 
-# complete questionaire
+# complete questionaire and control
 has Hash $!questionaire;
+has Bool $!is-modified = False;
+has Bool $!versioned = False;
+has Int $!version = 0;
 
 # questionaire's pages
 has Hash $!pages;
@@ -38,13 +41,23 @@ has QA::Types $!qa-types;
 
 Load the questionaire from a file or copy it from the user provided data. Some defaults are set such as the width and height of the window wherein the questionaire is shown.
 
-  new ( Str:D :$!qst-name, Hash :$sheet = %() )
+The filename of the questionaire is simple at first. Just a name with an extension depending on its format C<yaml>, C<toml> or C<json>. When versions are used, the name is extended with a version like so C<original-name:version.ext>. Further more the name C<original-name:'latest'.ext> is linked to the latest version.
+
+  new (
+    Str:D :$!qst-name, Hash :$sheet,
+    Bool :$!versioned = False, Int :$!version = 0
+  )
 
 =item $!qst-name; The name of the file of the questionaire
 =item $sheet; A user provided questionaire. If defined and not empty, the file described by $!qst-name is not loaded and the user data is used instead.
+=item $versioned; If versioned is True, saving the data with C<.save()> will have a version number added to the filename starting from C<001> with a max of C<999> which should be sufficient. If False, it will take the original and replace the original. To prevent that, use C<.save-as()>.
+=item $version; If a version is given, pick that version of the questionaire. If undefined or 0 and $versioned is True, pick the latest version available.
 
 =end pod
-submethod BUILD ( Str:D :$!qst-name, Hash :$sheet ) {
+submethod BUILD (
+  Str:D :$!qst-name, Hash :$sheet,
+  Bool :$!versioned = False, Int :$!version = 0
+) {
 
   # initialize types
   $!qa-types .= instance;
@@ -58,14 +71,17 @@ method !load ( Hash :$sheet is copy ) {
   $!pages = %();
   $!page-data = [];
 
-  $sheet //= $!qa-types.qa-load( $!qst-name, :sheet);
-  if ?$sheet {
-    $!width = $sheet<width> // 0;
-    $!height = $sheet<height> // 0;
-    $!button-map = $sheet<button-map> // %();
+  $!questionaire //= $!qa-types.qa-load(
+    $!qst-name, :sheet, :$!versioned, :$!version
+  ) // %();
+
+  if ?$!questionaire {
+    $!width = $!questionaire<width> // 0;
+    $!height = $!questionaire<height> // 0;
+    $!button-map = $!questionaire<button-map> // %();
 
     # the rest are pages
-    for @($sheet<pages>) -> $page {
+    for @($!questionaire<pages>) -> $page {
       next unless ?$page;
 
       # get and save page properties
@@ -106,6 +122,7 @@ method add-page (
 
   $!pages{$page-name} = $!page-data.elems;
   $!page-data.push: $page;
+  $!is-modified = True;
 
   True
 }
@@ -120,6 +137,7 @@ method remove-page ( Str:D $page-name --> Bool ) {
   for $!pages.keys -> $k {
     $!pages{$k}-- if $!pages{$k} > $idx;
   }
+  $!is-modified = True;
 
   True
 }
@@ -181,6 +199,8 @@ method add-set (
     $ok = True;
   }
 
+  $!is-modified = True;
+
   $ok
 }
 
@@ -233,10 +253,14 @@ method get-set ( Str:D $page-name, Str:D $set-name --> Hash ) {
 #-------------------------------------------------------------------------------
 method save ( ) {
 
-  $!qa-types.qa-save(
-    $!qst-name, %(:$!width, :$!height, :$!button-map, :pages($!page-data)),
-    :sheet
-  );
+  if $!is-modified {
+    $!qa-types.qa-save(
+      $!qst-name, %(:$!width, :$!height, :$!button-map, :pages($!page-data)),
+      :sheet
+    );
+
+    $!is-modified = False;
+  }
 }
 
 #-------------------------------------------------------------------------------
@@ -246,7 +270,9 @@ method save-as ( Str:D $new-sheet ) {
     $new-sheet, %(:$!width, :$!height, :$!button-map, :pages($!page-data)),
     :sheet
   );
+
   $!qst-name = $new-sheet;
+  $!is-modified = False;
 }
 
 #-------------------------------------------------------------------------------
@@ -256,19 +282,23 @@ method remove ( --> Bool ) {
     $!pages = Nil;
     $!page-data = [];
     $!qa-types.qa-remove( $!qst-name, :sheet);
+    $!is-modified = False;
     True
   }
 
   else {
+    $!is-modified = False;
     False
   }
+
+  # saving is unnecesary when questionaire is completely wiped, also from disk
 }
 
 #-------------------------------------------------------------------------------
 # Iterator to be used in for {} statements returning pages from this sheet
 =begin pod
 
-  my $c := $sheet.clone;
+  my $c := $!questionaire.clone;
   for $c -> Hash $page {
     note $page.keys;
     ...;

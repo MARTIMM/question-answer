@@ -58,13 +58,13 @@ submethod BUILD (
   Any :$!result-handler-object?, Str :$!result-handler-method?
 ) {
 
-  $!qst .= new(:$!qst-name);
+  $!qst .= new( :$!qst-name, :versioned);
 
   self.load-user-data($user-data);
   self.set-style('QAPageStack');
 
   with $!qst {
-    self.set-dialog-size( .width, .height); # if ? .width and ? .height;
+    self.set-dialog-size( .width, .height);
   }
 
   # set the grid and fill it
