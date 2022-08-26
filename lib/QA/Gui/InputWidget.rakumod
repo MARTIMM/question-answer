@@ -5,7 +5,7 @@ use Gnome::Gdk3::Events;
 use Gnome::Gtk3::Enums;
 use Gnome::Gtk3::Entry;
 use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::ComboBoxText;
+#use Gnome::Gtk3::ComboBoxText;
 use Gnome::Gtk3::ToolButton;
 use Gnome::Gtk3::Image;
 
@@ -15,7 +15,7 @@ use QA::Question;
 use QA::Gui::Frame;
 #use QA::Gui::Question;
 use QA::Gui::QAImage;
-use QA::Gui::QAComboBox;
+#use QA::Gui::QAComboBox;
 use QA::Gui::QAEntry;
 use QA::Gui::QAFileChooser;
 use QA::Gui::QACheckButton;
@@ -23,12 +23,13 @@ use QA::Gui::QARadioButton;
 use QA::Gui::QASpinButton;
 use QA::Gui::QASwitch;
 use QA::Gui::QATextView;
+use QA::Gui::QASelectComboBox;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::InputWidget:auth<github:MARTIMM>;
 also is QA::Gui::Frame;
 
-constant \ComboBoxText = Gnome::Gtk3::ComboBoxText;
+constant \QASelectComboBox = QA::Gui::QASelectComboBox;
 
 #-------------------------------------------------------------------------------
 # Question parameters
@@ -52,7 +53,9 @@ has Bool $.faulty-state = False;
 
 # When filling in values from user data, the combobox events will fire when
 # selection is changed. Use this flag to stop responding when it is not needed.
-has Bool $!inhibit-combobox-events = False;
+#has Bool $!inhibit-combobox-events = False;
+
+has QASelectComboBox $!combobox;
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
@@ -87,14 +90,11 @@ submethod BUILD (
   }
 
   if ? $!widget-object {
-    $!inhibit-combobox-events = True;
-
     # Add at least one row if widget object is valid
     self.append-grid-row;
 
     # And set values from user data.
     self!apply-values;
-    $!inhibit-combobox-events = False;
   }
 
   $!faulty-state = False;
@@ -105,7 +105,6 @@ method !create-widget-object (
   :$gui-question # where .^name eq 'QA::Gui::Question' # checked at BUILD
 ) {
   my Str $module-name = 'QA::Gui::' ~ $!question.fieldtype.Str;
-#  (try require ::($module-name); CATCH {die "fail to use  $module-name"});
   if (my $m = ::($module-name)).^lookup('set-value') ~~ Method {
     $!widget-object = ::($module-name).new;
     $!widget-object.question = $!question;
@@ -125,7 +124,6 @@ method !create-widget-object (
 method !create-user-widget-object (
   :$gui-question # where .^name eq 'QA::Gui::Question' # checked at BUILD
 ) {
-
   # Get the object from the questions userwidget field and get the object,
   # then call .init-widget() if the method is defined.
   my QA::Types $qa-types .= instance;
@@ -166,18 +164,17 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
 
   $!grid.attach( $input-widget, QAInputColumn, $current-grid-index, 1, 1);
 
-#note "$?LINE, $!question.name(), repeat: {?$!question.repeatable}";
   if ?$!question.repeatable {
     # create comboboxes on the left when selectlist is a non-empty Array
     my Array $select-list = $!question.selectlist // [];
-#note "$?LINE, $current-grid-index";
     if $select-list.elems {
-      my ComboBoxText $combobox = self!create-combobox(
-        $select-list, $input-widget,
-        $!grid, $current-grid-row, $current-grid-index
+      $!combobox .= new(
+        :$select-list, :$input-widget, :$!widget-object,
+        :$!grid, :$current-grid-row, :$current-grid-index,
+        :use-entry
       );
-#      $!grid.attach( $combobox, QACatColumn, $current-grid-index, 1, 1);
-      $!grid-row-data[$current-grid-row][QACatColumn] = $combobox;
+
+      $!grid-row-data[$current-grid-row][QACatColumn] = $!combobox;
     }
 
     my Gnome::Gtk3::ToolButton $tb;
@@ -195,11 +192,6 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
   $!grid.show-all;
 
   self.hide-tb-add if ?$!question.repeatable;
-
-#  for ^$!grid-row-data.elems -> $row {
-#    last if $row == $!grid-row-data.elems - 1;
-#    $!grid-row-data[$row][QAToolButtonAddColumn].hide;
-#  }
 
   ( $input-widget, $current-grid-row, $current-grid-index)
 }
@@ -239,42 +231,6 @@ method !create-toolbutton (
   $tb
 }
 
-#-------------------------------------------------------------------------------
-# A selection made from $!question.select-list and repeatable is turned on
-method !create-combobox (
-  Array $select-list, $input-widget, $grid, Int $row-grid, Int $row-index
-  --> ComboBoxText
-) {
-
-#TODO create and test for an input type combobox. flag field?
-
-  with my ComboBoxText $combobox .= new(:entry) {
-    my Gnome::Gtk3::Entry() $entry = .get-child;
-    $entry.register-signal(
-      self, 'combobox-entry-handler', 'focus-out-event', :$combobox,
-      :$input-widget, :$row-grid
-    );
-
-    $!widget-object.add-class( $combobox, 'QAComboBoxText');
-
-    for @$select-list -> $select-item {
-      .append-text($select-item);
-    }
-
-    .set-active(0);
-    .register-signal(
-      self, 'combobox-change', 'changed', :$input-widget, :$row-grid
-    );
-  }
-
-  # Create an extra grid so that the combobox get normal height instead of
-  # stretched into the height of the neighboring widget
-  my Gnome::Gtk3::Grid $combo-grid .= new;
-  $combo-grid.attach( $combobox, 0, 0, 1, 1);
-  $grid.attach( $combo-grid, QACatColumn, $row-index, 1, 1);
-
-  $combobox
-}
 
 #-------------------------------------------------------------------------------
 method !apply-values ( ) {
@@ -290,7 +246,6 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
       $!user-data-set-part{$!question.name} = [];
       return;
     }
-
 
     # Loop through the values to set the input widgets
     my Int $i = 0;
@@ -314,17 +269,15 @@ note "apply-values: $i, $select-item => ", $select-input ?? $select-input !! '--
         $input-widget = $!grid-row-data[$i][QAInputColumn];
         $value = $select-input;
 
-        my ComboBoxText $combobox = $!grid-row-data[$i][QACatColumn];
-
         my Int $value-index = $!question.selectlist.first( $select-item, :k);
 note "apply-values: $i, $select-item, ", $value-index // 'Undefined index';
         if $value-index {
-          $combobox.set-active($value-index);
+          $!combobox.set-active($value-index);
         }
 
         else {
-          $combobox.append-text($select-item);
-          $combobox.set-active($!question.selectlist.elems);
+          $!combobox.append-text($select-item);
+          $!combobox.set-active($!question.selectlist.elems);
           $!question.selectlist.push: $select-item;
         }
       }
@@ -366,51 +319,6 @@ note "apply-values: $i, $select-item, ", $value-index // 'Undefined index';
 #-------------------------------------------------------------------------------
 #--[ Signal Handlers ]----------------------------------------------------------
 #-------------------------------------------------------------------------------
-# called when a selection changes in the $!question.selectlist combobox.
-# it must adjust the selection value. no check is needed because
-# input field is not changed.
-method combobox-change (
-  ComboBoxText() :_native-object($combobox),
-  :$input-widget, Int :$row-grid --> Int
-) {
-note "combobox-change, $!inhibit-combobox-events, $input-widget, $row-grid";
-
-  unless $!inhibit-combobox-events {
-    my Int $cb-select = $combobox.get-active;
-    my Str $cb-text = $combobox.get-active-text;
-
-    $!widget-object.process-widget-input(
-      $input-widget, $!widget-object.get-value($input-widget),
-      $row-grid, :!do-check
-    );
-  }
-
-  # must propogate further to prevent messages when notebook page is switched
-  # otherwise it would do ok to return 1.
-  0
-}
-
-#-------------------------------------------------------------------------------
-method combobox-entry-handler (
-  N-GdkEventFocus() $no, Gnome::Gtk3::Entry() :_native-object($entry),
-  :$combobox, :$input-widget, :$row-grid
-  --> Int
-) {
-note "combobox-entry-handler, $!inhibit-combobox-events, $input-widget, $row-grid, $combobox, $entry";
-
-  my Int $cb-select  = $combobox.get-active;
-  if $cb-select == -1 {
-    my Str $cb-text = $combobox.get-active-text;
-    $combobox.append-text($cb-text);
-  }
-
-
-  # must propogate further to prevent messages when notebook page is switched
-  # otherwise it would do ok to return 1.
-  0
-}
-
-#-------------------------------------------------------------------------------
 method add-row (
 #  Gnome::Gtk3::ToolButton() :_native-object($tb),
 #   Int :$_handler-id, Int :$row-index
@@ -442,8 +350,6 @@ method del-row (
     $!widget-object.clear-value($!grid-row-data[$row-grid][QAInputColumn])
       if $!widget-object.^can('clear-value') and
          ? $!grid-row-data[$row-grid][QAInputColumn];
-
-    #$!grid-row-data[$row-grid][QAInputColumn].clear-value;
   }
 
   # cut out the data of this row
