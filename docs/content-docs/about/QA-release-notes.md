@@ -10,8 +10,12 @@ layout: sidebar
 
 See [semantic versioning](http://semver.org/). Please note point 4. on that page: **_Major version zero (0.y.z) is for initial development. Anything may change at any time. The public API should not be considered stable._**
 
+* 2022-08-26 0.16.9
+  * **QA::Page** is better named as **QA::Questionaire**
+
 * 2022-08-19 0.16.8
   * Renamed files to view the word 'Sheet' as a 'Page'.
+  * Add new module to cope with the select combobox. It is removed from InputWidget to prevent overcrowding that module now there is a need to add more functionality.
 
 * 2022-08-19 0.16.7
   * Made selectlist field modifyable. Not yet saved back into sheet config

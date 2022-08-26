@@ -10,26 +10,25 @@ layout: sidebar
 ## Change questionaire
 
 This is an action like a change of an input widget value, set or page change. Possible actions can be;
-  * Add questions. Adding questions can be done by inserting templates of
-    * [ ] a question
-    * [ ] a set of questions
-    * [ ] a page of sets
-    It would be necessary to modify the name field to keep the question, set or sheet unique. The insertion of the new objects must be done before or after an existing object by using the name field of the existing object.
-  * [ ] Remove questions. Removing questions, sets or pages using the name field.
-  * [ ] Enable and disable questions
-  * [ ] Hide and show sheets, sets or questions
-  * Modify data in input of a different question.
-  * [ ] Modify accompanying combobox lists of questions
-  * [ ] Optionally(?) save modified questionaire configuration using added versions
+* Add questions. Adding questions can be done by inserting templates of
+  * [ ] a question
+  * [ ] a set of questions
+  * [ ] a page of sets
+* Other actions can be
+* [ ] Enable and disable input widgets of questions
+* [ ] Hide and show sheets, sets or questions
+* [ ] Modify data of input widgets of a different question.
+* [x] Modify accompanying combobox lists of questions
 
-### Implementation
+* [ ] When new items are added, it would be necessary to modify the name fields in the used template to keep the question, set or page unique. The insertion of the new objects must be done before or after an existing object by using the name field of that existing object.
+* [ ] When there are changes to questions, sets or pages, it must be stored aside the original questionaire. This could be done using some sort of version tag added to the filename. It should also be simple without many versions so `<original-name>:latest.yaml` would be enough. Above, in the list of possible questionaire changes, the remove options of questions, sets or pages is removed. It would do just fine to hide those. New items are added, hidden or not. Reverting to the original by using a commandline option like `--orig` would also overwrite the latest when changes are made to the questionaire
+
 * [x] Data needed to do the necessary changes, must come from a user supplied method. This method is called after checking the data. The method is found in the `action-cb` question field. It holds a key to the name of the method stored using `QA::Gui::Types.set-action-handler()`. The field is read by `QA::Gui::Value.check-users-action()` and run if valid.
 
   This user method can optionally return an Array of actions to perform. The format is;
   ```
   [ %( ActionReturnType :$type, *%action-data ), … ]
   ```
-
 * The `$type` is an enumeration describing the type of action and can be one of;
   * [ ] QAHidePage
   * [ ] QAHideSet
