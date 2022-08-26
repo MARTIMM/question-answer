@@ -151,10 +151,11 @@ method !adjust-user-data ( $input-widget, Any $input, Int() $row ) {
 
   if ? self.question.repeatable {
     if ? self.question.selectlist {
+
       my Gnome::Gtk3::Grid() $grid = $input-widget.get-parent;
-      my Gnome::Gtk3::Grid() $combobox-grid = $grid.get-child-at(
-        QACatColumn, $row, :child-type<Gnome::Gtk3::ComboBoxText>
-      );
+
+      # another grid is a level deeper
+      $grid = $grid.get-child-at( QACatColumn, $row);
       my Gnome::Gtk3::ComboBoxText() $combobox = $grid.get-child-at( 0, 0);
 
       my Int $cb-select  = $combobox.get-active;
