@@ -1,7 +1,7 @@
 {
   "description": "Question Answer",
   "name": "QA",
-  "version": "0.16.8",
+  "version": "0.16.9",
   "authors": [ "Marcel Timmerman"],
   "tags": [
     "questionnaire", "configuration", "gtk", "question", "answer", "Raku"
@@ -35,6 +35,7 @@
     "QA::Gui::QARadioButton": "lib/QA/Gui/QARadioButton.pm6",
     "QA::Gui::QASpinButton": "lib/QA/Gui/QASpinButton.pm6",
     "QA::Gui::QASwitch": "lib/QA/Gui/QASwitch.pm6",
+    "QA::Gui::QASelectComboBox": "lib/QA/Gui/QASelectComboBox.rakumod",
     "QA::Gui::QATextView": "lib/QA/Gui/QATextView.pm6",
     "QA::Gui::Question": "lib/QA/Gui/Question.pm6",
     "QA::Gui::Set": "lib/QA/Gui/Set.pm6",
@@ -42,8 +43,8 @@
     "QA::Gui::Value": "lib/QA/Gui/Value.pm6",
     "QA::Gui::YNMsgDialog": "lib/QA/Gui/YNMsgDialog.pm6",
 
-    "QA::Page": "lib/QA/Page.pm6",
     "QA::Question": "lib/QA/Question.pm6",
+    "QA::Questionaire": "lib/QA/Questionaire.pm6",
     "QA::Set": "lib/QA/Set.pm6",
     "QA::Status": "lib/QA/Status.rakumod",
     "QA::Types": "lib/QA/Types.pm6"
