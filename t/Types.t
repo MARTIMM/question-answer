@@ -101,6 +101,38 @@ subtest 'Save and load', {
       is $d<a>, $ftype, ".load\(:@opts[$di].key()) $ftype";
     }
   }
+}
+
+#-------------------------------------------------------------------------------
+subtest 'Save and load versions', {
+  my @opts = ( :set, :sheet, :userdata);
+  my Hash $data;
+
+  for <yaml json toml> -> $ftype {
+    my Str $fname = "f-$ftype";
+
+    if $ftype eq 'yaml' {
+      $qa-types.data-file-type(QAYAML);
+    }
+
+    elsif $ftype eq 'toml' {
+      $qa-types.data-file-type(QATOML);
+    }
+
+    elsif $ftype eq 'json' {
+      $qa-types.data-file-type(QAJSON);
+    }
+
+    for ( SET, SHEET, UDATA) -> $di {
+      $data = %( :a($ftype), @opts[$di]);
+      $qa-types.qa-save( $fname, $data, |@opts[$di], :versioned);
+      ok (@dirs[$di] ~ "/$fname.$ftype").IO.e,
+        ".save\(:@opts[$di].key()) @dirs[$di]/$fname.$ftype";
+
+      my Hash $d = $qa-types.qa-load( $fname, |@opts[$di], :versioned);
+      is $d<a>, $ftype, ".load\(:@opts[$di].key()) $ftype";
+    }
+  }
 
 #`{{
   $data = %( :a<yaml>);
@@ -126,7 +158,7 @@ subtest 'Save and load', {
 
 #-------------------------------------------------------------------------------
 subtest 'Miscellenous', {
-  is-deeply $qa-types.qa-list(:set).sort, <f-json f-toml f-yaml>, '.qa-list()';
+#  is-deeply $qa-types.qa-list(:set).sort, <f-json f-toml f-yaml>, '.qa-list()';
 
   my @opts = ( :set, :sheet, :userdata);
   for <yaml json toml> -> $ftype {
@@ -148,6 +180,16 @@ subtest 'Miscellenous', {
       $qa-types.qa-remove( "f-$ftype", |@opts[$di]);
       ok "@dirs[SET]/f-$ftype.$ftype".IO ~~ :!e,
         ".qa-remove\(:@opts[$di].key()) $ftype";
+
+      # remove rest if any
+      if $qa-types.qa-remove( "f-$ftype" ~ ':latest', |@opts[$di]) {
+        my Int $version = 1;
+        while $qa-types.qa-remove(
+                "f-$ftype:" ~ $version.fmt('%03d'), |@opts[$di])
+        {
+          $version++;
+        }
+      }
     }
   }
 }

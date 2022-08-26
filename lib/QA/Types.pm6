@@ -291,8 +291,11 @@ C<:userdata> is used to load data which will be displayed in the forms.
 
 Only one of the options C<:sheet>, C<:set> or C<:userdata> must be used to load a file. The method throws an exception if none found.
 
+The filenames of any the data files is simple at first. Just a name with an extension depending on its format C<yaml>, C<toml> or C<json>. When versions are used, the name is extended with a version like so C<original-name:version.ext>. Furthermore the name C<original-name:'latest'.ext> is linked to the latest version.
+
   method qa-load (
-    Str:D $qa-filename, :$sheet?, :$set?, :$userdata?, Str :$qa-path?
+    Str:D $qa-filename, :$sheet?, :$set?, :$userdata?, Str :$qa-path?,
+    Bool :$!versioned = False, Int :$!version = 0
     --> Hash
   )
 
@@ -301,19 +304,23 @@ Only one of the options C<:sheet>, C<:set> or C<:userdata> must be used to load 
 =item $set; load a set if option exists.
 =item $userdata; load userdata if option exists.
 =item Str $qa-path; optional path to locate the file. The values of $qa-filename and other options are then ignored.
+=item $versioned; If versioned is True, saving the data with C<.save()> will have a version number added to the filename starting from C<001> with a max of C<999> which should be sufficient. If False, it will take the original and replace the original. To prevent that, use C<.save-as()>.
+=item $version; If a version is given, pick that version of the questionaire. If undefined or 0 and $versioned is True, pick the latest version available.
+
 =end pod
 
 
 #tm:1:qa-load
 method qa-load( Str:D $qa-filename, *%options --> Hash ) {
   my Str $basename;
-  my Hash $qa-data;
   my Str $qa-path;
 
+  # If there is a path, use it
   if ?%options<qa-path> {
     $basename = %options<qa-path>;
   }
 
+  # Otherwise use one of the defined locations
   else {
     if %options<sheet>:exists       { $basename = $cfgloc-sheet; }
     elsif %options<set>:exists      { $basename = $cfgloc-set; }
@@ -321,25 +328,62 @@ method qa-load( Str:D $qa-filename, *%options --> Hash ) {
     else                            { die 'No type option found'; }
   }
 
+  # Define/modify the path
+  $qa-path //= "$basename/$qa-filename";
 
-  given $data-file-type {
-    when QAJSON {
-      $qa-path //= "$basename/$qa-filename.json";
-      $qa-data = from-json($qa-path.IO.slurp) if $qa-path.IO.r;
+  # Check if versions are needed.
+  if ?%options<versioned> {
+    my Int $version = ?%options<version> ?? %options<version> !! 0;
+    if $version > 0 {
+      $qa-path ~= $version.fmt(':%03d');
     }
 
-    when QATOML {
-      $qa-path //= "$basename/$qa-filename.toml";
-      $qa-data = from-toml($qa-path.IO.slurp) if $qa-path.IO.r;
-    }
-
-    when QAYAML {
-      $qa-path //= "$basename/$qa-filename.yaml";
-      $qa-data = load-yaml($qa-path.IO.slurp) if $qa-path.IO.r;
+    # if version is 0 (not defined)
+    else {
+      $qa-path ~= ':latest';
     }
   }
 
-  $qa-data // %();
+  sub load-hash ( Str $path is copy, Sub $loader --> Hash ) {
+
+    my Hash $data;
+    if $path.IO.r {
+      $data = $loader($path.IO.slurp);
+    }
+
+    else {
+      # Take original if :latest isn't found
+      if $path ~~ m/ ':latest' / {
+        $path ~~ s/ ':latest' //;
+        $data = $loader($path.IO.slurp);
+      }
+
+      elsif $path ~~ m/ ':' \d ** 3 '.' / {
+        $path ~~ s/ ':' \d ** 3 '.' //;
+        $data = $loader($path.IO.slurp);
+      }
+
+      else {
+        note "File '$qa-path' not found, an empty Hash is returned";
+      }
+    }
+
+    $data // %();
+  }
+
+  given $data-file-type {
+    when QAJSON {
+      load-hash( $qa-path ~ '.json', &from-json);
+    }
+
+    when QATOML {
+      load-hash( $qa-path ~ '.toml', &from-toml);
+    }
+
+    when QAYAML {
+      load-hash( $qa-path ~ '.yaml', &load-yaml);
+    }
+  }
 }
 
 #-------------------------------------------------------------------------------
@@ -352,9 +396,12 @@ C<:userdata> is used to save data read from the forms.
 
 Only one of the options C<:sheet>, C<:set> or C<:userdata> can be used. The method throws an exception if none found.
 
+The filenames of any the data files is simple at first. Just a name with an extension depending on its format C<yaml>, C<toml> or C<json>. When versions are used, the name is extended with a version like so C<original-name:version.ext>. Furthermore the name C<original-name:'latest'.ext> is linked to the latest version.
+
   method qa-save (
     Str:D $qa-filename, Hash:D $qa-data, :$sheet?, :$set?, :$userdata?,
     Str :$qa-path?
+    Bool :$!versioned = False
   )
 
 =item Str $qa-filename; the filename without the extention. It functions also as the name of the sheet or set.
@@ -363,34 +410,76 @@ Only one of the options C<:sheet>, C<:set> or C<:userdata> can be used. The meth
 =item $set; load a set if option exists.
 =item $userdata; load userdata if option exists.
 =item Str $qa-path; optional path to locate the file. The values of $qa-filename and other options are then ignored.
+=item $versioned; If versioned is True, saving the data with C<.save()> will have a version number added to the filename starting from C<001> with a max of C<999> which should be sufficient. If False, it will take the original and replace the original. To prevent that, use C<.save-as()>.
 =end pod
 
 #tm:1:qa-save
 method qa-save( Str:D $qa-filename, Hash $qa-data, *%options ) {
   my Str $basename = '';
-  my Str $qa-path = %options<qa-path> // Str;
+  my Str $qa-path;
 
-  if !$qa-path {
+  # If there is a path, use it
+  if ?%options<qa-path> {
+    $basename = %options<qa-path>;
+  }
+
+  else {
     if %options<sheet>:exists       { $basename = $cfgloc-sheet; }
     elsif %options<set>:exists      { $basename = $cfgloc-set; }
     elsif %options<userdata>:exists { $basename = $cfgloc-userdata; }
     else                            { die 'No type option found'; }
   }
 
+  # Define/modify the path
+  $qa-path //= "$basename/$qa-filename";
+
+  # Check if versions are needed.
+  $qa-path ~= ':latest' if ?%options<versioned>;
+
+  sub save-hash ( Str $path is copy, Sub $dumper, Hash $data ) {
+
+    # Check if versions are needed. Get the latest version and find out
+    # which version it has. Then remove the link, save the data in a higher
+    # version and relink to latest version.
+    if $path ~~ m/ ':latest' / {
+      my Str $fn;
+
+      # First time only original name exists
+      if $path.IO.r {
+        $fn = $path.IO.resolve.Str;
+        $fn ~~ m/ ':' $<version> = \d+ '.' /;
+        my Int $version = $<version>.Str + 1;
+
+        $fn = $path;
+        $fn.IO.unlink;
+        $path ~~ s/ ':latest.' /:$version.fmt('%03d')./;
+      }
+
+      else {
+        $fn = $path;
+        $path ~~ s/ ':latest.' /:001./;
+      }
+
+      $path.IO.spurt($dumper($data));
+      $path.IO.symlink($fn);
+    }
+
+    else {
+      $path.IO.spurt($dumper($data));
+    }
+  }
+
   given $data-file-type {
     when QAJSON {
-      $qa-path //= "$basename/$qa-filename.json";
-      $qa-path.IO.spurt(to-json($qa-data));
+      save-hash( $qa-path ~ '.json', &to-json, $qa-data);
     }
 
     when QATOML {
-      $qa-path //= "$basename/$qa-filename.toml";
-      $qa-path.IO.spurt(to-toml($qa-data));
+      save-hash( $qa-path ~ '.toml', &to-toml, $qa-data);
     }
 
     when QAYAML {
-      $qa-path //= "$basename/$qa-filename.yaml";
-      $qa-path.IO.spurt(save-yaml($qa-data));
+      save-hash( $qa-path ~ '.yaml', &save-yaml, $qa-data);
     }
   }
 }
@@ -405,8 +494,11 @@ C<:userdata> is used to save data read from the forms.
 
 Only one of the options C<:sheet>, C<:set> or C<:userdata> can be used. The method throws an exception if none found.
 
+True or False is returned depending on success
+
   method qa-remove (
     Str:D $qa-filename, :$sheet?, :$set?, :$userdata?, Str :$qa-path
+    --> Bool
   )
 
 =item Str $qa-filename; the filename without the extention. It functions also as the name of the sheet or set.
@@ -417,7 +509,7 @@ Only one of the options C<:sheet>, C<:set> or C<:userdata> can be used. The meth
 =end pod
 
 #tm:1:qa-remove
-method qa-remove ( Str:D $qa-filename, *%options ) {
+method qa-remove ( Str:D $qa-filename, *%options --> Bool ) {
   my Str $basename = '';
   my Str $qa-path = %options<qa-path> // Str;
 
@@ -442,7 +534,9 @@ method qa-remove ( Str:D $qa-filename, *%options ) {
     }
   }
 
-  unlink $qa-path;
+  my Bool $path-exists = $qa-path.IO.e;
+  unlink $qa-path if $path-exists;
+  $path-exists
 }
 
 #-------------------------------------------------------------------------------
