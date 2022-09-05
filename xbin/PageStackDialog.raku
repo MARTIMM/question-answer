@@ -45,6 +45,8 @@ class EH {
   }
 
   #---------
+  # TODO: a class with these methods should be loaded at runtime when
+  # necessary
   # check methods
   method check-char ( Str $input, :$char --> Any ) {
     "No $char allowed in string" if ?($input ~~ m/$char/)
