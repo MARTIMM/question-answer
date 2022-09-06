@@ -61,6 +61,7 @@ Questions are what it is all about. In short, a piece of text to pose the questi
 * **userwidget**; Key to the previously stored user widget as input widget.
 * **width**; sometimes a width is needed for a widget.
 
+<!--
 ### List of options for input widgets
 
 * **QACheckButton**
@@ -94,6 +95,7 @@ Questions are what it is all about. In short, a piece of text to pose the questi
   * **page-size**; Sets the page size. Default is 1e1.
   * **step-incr**; Sets the step increment. Default is 1e0.
 * **QAUserWidget**
+-->
 
 ### Notes
 * Default fieldtype is QAEntry
