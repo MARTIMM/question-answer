@@ -588,22 +588,54 @@ method qa-list ( *%options --> List ) {
 set-action-handler is used to set a user defined callback handler. When in a question the action field spec has a value of C<$action-key>, the value of it is used to find the callback. The purpose is to perform some action.
 
   method set-action-handler (
-    Str:D $action-key, Mu:D $handler-object, Str $method-name?,
+    Str:D $action-key, Mu:D $handler-object,
+    Str $method-name = $action-key,
+    Str :$module-name?, Str :$class-name?
     *%options
   )
 
 =item $action-key; the key under which the handler is stored. Also this name is used in the field specification C<action> to refer to the handler to call. The purpose to have a key is to call the same method using different keys and other user options.
 =item $handler-object; the object where the handler method resides.
 =item $method-name; the name of the handler. This field is optional. When absent the $action-key is used as the method name.
+=item $module-name; Optional module name. When method is needed, the module is C<required> and initialized. When initialized the $handler-object is set with the object. This argument is ignored if $handler-object is set to a valid object.
+=item $class-name; if classname is given, use that class from the object to initialize
 =item %options; any user defined named arguments. These are handed to the method.
 =end pod
 
 #tm:1:set-action-handler
 method set-action-handler (
-  Str:D $action-key, Mu:D $handler-object, Str $method-name?, *%options
+  Str:D $action-key, Mu $handler-object is copy = '', Str $method-name? is copy,
+  Str :$module-name = '', Str :$class-name = '', *%options
 ) {
+  $method-name = ?$method-name ?? $method-name !! $action-key;
+
+#note "set-action-handler: $action-key, $handler-object, $method-name, $module-name";
+
+  unless $handler-object {
+    if ?$module-name {
+      try require ::($module-name);
+      if ::($module-name) ~~ Failure {
+        die "Failed to load $module-name!";
+      }
+
+      if ?$class-name {
+        $handler-object = ::($class-name).new;
+      }
+
+      else {
+        $handler-object = ::($module-name).new;
+      }
+    }
+
+    else {
+      die 'No handler object nor module name provided';
+    }
+  }
+
+  die "Method $method-name not found in provided handler or module {$handler-object.^name}" unless $handler-object.^can($method-name);
+
   $!user-objects<actions>{$action-key} = [
-    $handler-object, $method-name // $action-key, %options
+    $handler-object, $method-name, %options
   ];
 }
 
