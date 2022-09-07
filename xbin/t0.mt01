@@ -1,24 +1,11 @@
 #mt01
 
-# This file is in a YAML format and read by a program.
-
-# above code is a magic code which is not checked anywhere and the linux
-# 'file(1)' command does not use it, so there, we only see 'ASCII text'.
-
-
 options:
-  # --store-type; Type of storage, one of yaml, toml or json
   store-type: yaml
+  qst-type: Simple
 
-  # Type of dialog to use; Simple, Stack, Notebook or Assistant
-  qst-type: Stack
-
-  # --data; The location where data from questionaire is stored
-  data:   /home/marcel/Languages/Raku/Projects/question-answer/xbin/Data
-
-  # --qst; The location where questionaires are found
-  qst:    /home/marcel/Languages/Raku/Projects/question-answer/xbin/Data/Qst
+  data: /home/marcel/Languages/Raku/Projects/question-answer/xbin/Data
+  qsts: /home/marcel/Languages/Raku/Projects/question-answer/xbin/Data/Qst
 
 arguments:
-  # name of the questionaire
   - StackTest
