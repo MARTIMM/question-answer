@@ -20,4 +20,4 @@ _site
 
 xbin/Data/*
 !xbin/Data/Sets
-!xbin/Data/Qst
+!xbin/Data/Qsts
