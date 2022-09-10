@@ -32,21 +32,17 @@ also does QA::Gui::PageTools;
 has Bool $!show-cancel-warning;
 has Int $!response;
 has Gnome::Gtk3::Widget $!widget;
-has Any $!result-handler-object;
-has Str $!result-handler-method;
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
   Str :$!qst-name, Hash :$user-data? is copy,
   Bool :$!show-cancel-warning = True, Bool :$!save-data = True,
   Gnome::Gtk3::Widget :$!widget,
-  Any :$!result-handler-object?, Str :$!result-handler-method?
 ) {
-  $!qst .= new(:$!qst-name);
+  $!qst .= new( :$!qst-name, :versioned);
   self.load-user-data($user-data);
   self.set-style('QAPageSimple');
 
-  # todo width and height spec must go to sets
   with $!qst {
     $!widget.set-border-width(2);
     $!widget.set-size-request( .width, .height) if ? .width and ? .height;
@@ -119,12 +115,6 @@ method ok-response ( ) {
 
   else {
     self.save-data;
-
-    if ?$!result-handler-object and
-        $!result-handler-object.^can($!result-handler-method) {
-      $!result-handler-object."$!result-handler-method"($!result-user-data);
-    }
-
     $!widget.destroy;
   }
 }
@@ -142,11 +132,6 @@ method apply-response ( ) {
 
   else {
     self.save-data;
-
-    if ?$!result-handler-object and
-        $!result-handler-object.^can($!result-handler-method) {
-      $!result-handler-object."$!result-handler-method"($!result-user-data);
-    }
   }
 }
 
