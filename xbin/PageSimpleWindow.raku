@@ -18,7 +18,7 @@ class EH {
   #---------
   method show-window ( :$app-window ) {
     with my Gnome::Gtk3::Window $window .= new {
-      .set-title('sheet in window');
+      .set-title('questionaire in window');
       .set-transient-for($app-window);
     }
 
@@ -78,7 +78,7 @@ with my Gnome::Gtk3::Grid $grid .= new {
 with $top-window {
   .set-title('Simple Sheet Test');
   .register-signal( $eh, 'exit-app', 'destroy');
-  .set-border-width(20);
+#  .set-border-width(20);
   .add($grid);
   .show-all;
 }
