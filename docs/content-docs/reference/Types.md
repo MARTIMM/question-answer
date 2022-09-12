@@ -79,7 +79,7 @@ instance
 
 The users application can modify the variables before opening any query sheets. The following variables are used in this program;
 
-  * QADataFileType `$data-file-type`; You can choose from QAJSON or QATOML. By default it loads and saves the answers to questions in json formatted files.
+  * QAFileType `$data-file-type`; You can choose from QAJSON or QATOML. By default it loads and saves the answers to questions in json formatted files.
 
   * Str `$cfgloc-set`; Location where sets are stored. Default is `$!HOME/.config/QAManager/Sets.d` on *nix systems. Use `cfgloc-set()` to change it.
 
