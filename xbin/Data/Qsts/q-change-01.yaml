@@ -1,0 +1,39 @@
+
+width: 800
+height: 500
+button-map:
+  cancel: stop
+  save-quit: donnit
+
+pages:
+  - page-name: q-change
+    description: Test setup to extend the selectlist of a question.
+    title: Selectlist Extension
+
+    sets:
+      - set-name: extend
+        description: Set holding an Entry and an Image with selectlist
+        title: Selectlist Extension
+
+        questions:
+          - name: extend-text
+            fieldtype: QAEntry
+            description: input field to extend selectlist of image
+            actions:
+              -
+                - QAModifySelectlist
+                - test-images
+                - add
+
+          - name: test-images
+            fieldtype: QAImage
+            description: A Picture
+            title: Select an Image
+            width: 300
+            height: 300
+            repeatable: true
+            selectlist:
+              - Icon1
+              - Icon2
+              - P2
+              - Etc
