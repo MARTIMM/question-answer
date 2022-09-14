@@ -29,8 +29,8 @@ also does QA::Gui::PageTools;
 
 #-------------------------------------------------------------------------------
 has Bool $!show-cancel-warning;
-has Any $!result-handler-object;
-has Str $!result-handler-method;
+#has Any $!result-handler-object;
+#has Str $!result-handler-method;
 
 #-------------------------------------------------------------------------------
 # initialize the Gtk Dialog
@@ -42,7 +42,7 @@ submethod new ( |c ) {
 submethod BUILD (
   Str :$!qst-name, Hash :$user-data? is copy,
   Bool :$!show-cancel-warning = True, Bool :$!save-data = True,
-  Any :$!result-handler-object?, Str :$!result-handler-method?
+#  Any :$!result-handler-object?, Str :$!result-handler-method?
 ) {
   $!qst .= new(:$!qst-name);
 
@@ -105,12 +105,14 @@ method show-sheet ( ) {
 
         else {
           self.save-data;
+#`{{
           if ?$!result-handler-object and
               $!result-handler-object.^can($!result-handler-method) {
             $!result-handler-object."$!result-handler-method"(
               $!result-user-data
             );
           }
+}}
 
           self.destroy;
           last;
@@ -126,12 +128,14 @@ method show-sheet ( ) {
 
         else {
           self.save-data;
+#`{{
           if ?$!result-handler-object and
               $!result-handler-object.^can($!result-handler-method) {
             $!result-handler-object."$!result-handler-method"(
               $!result-user-data
             );
           }
+}}
         }
       }
 
