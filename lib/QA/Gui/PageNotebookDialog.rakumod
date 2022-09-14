@@ -10,6 +10,7 @@ use QA::Gui::Page;
 use QA::Gui::YNMsgDialog;
 use QA::Gui::OkMsgDialog;
 use QA::Gui::Statusbar;
+use QA::Gui::PageTools;
 
 #use Gnome::N::X;
 use Gnome::N::GlibToRakuTypes;
@@ -28,12 +29,13 @@ use Gnome::Gtk3::StyleProvider;
 
 #-------------------------------------------------------------------------------
 =begin pod
-=head1 QA::Gui::PageNotebook
+=head1 QA::Gui::PageNotebookDialog
 
 =end pod
 
-unit class QA::Gui::PageNotebook:auth<github:MARTIMM>:ver<0.2.0>;
+unit class QA::Gui::PageNotebookDialog:auth<github:MARTIMM>:ver<0.2.0>;
 also is QA::Gui::Dialog;
+also does QA::Gui::PageTools;
 
 #-------------------------------------------------------------------------------
 has QA::Questionaire $!qst;
@@ -43,11 +45,12 @@ has Hash $.result-user-data;
 has Array $!sets = [];
 has Array $!pages = [];
 has Bool $.faulty-state;
-has Bool $!show-cancel-warning;
 has Bool $!save-data;
 has Int $!response;
 has Gnome::Gtk3::Notebook $!notebook;
 has Gnome::Gtk3::Grid $!grid;
+
+has Bool $!show-cancel-warning;
 
 #-------------------------------------------------------------------------------
 # initialize the Gtk Dialog

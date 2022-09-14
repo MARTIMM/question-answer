@@ -11,7 +11,7 @@ use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Button;
 use Gnome::Gtk3::Label;
 
-use QA::Gui::PageNotebook;
+use QA::Gui::PageNotebookDialog;
 #use QA::Gui::Frame;
 use QA::Gui::Value;
 use QA::Types;
@@ -21,26 +21,17 @@ use QA::Types;
 #Gnome::N::debug(:on);
 
 #-------------------------------------------------------------------------------
+constant \PageNotebookDialog = QA::Gui::PageNotebookDialog;
+
+#-------------------------------------------------------------------------------
 # A user definable widget
 class MyWidget does QA::Gui::Value {
 
   #---------
-#  has QA::Question $.question;
-#  has Hash $.user-data-set-part;
-
-  #---------
-  method init-widget (
-    QA::Question:D :$!question, Hash:D :$!user-data-set-part
-  ) {
+  method create-widget ( Int() :$row --> Any ) {
 
     # widget is not repeatable
     $!question.repeatable = False;
-
-#    self.initialize;
-  }
-
-  #---------
-  method create-widget ( Int() :$row --> Any ) {
 
     # create a text input widget
     my Gnome::Gtk3::Button $button .= new;
@@ -71,21 +62,8 @@ class MyWidget does QA::Gui::Value {
   }
 }
 
-
 #-------------------------------------------------------------------------------
 class EH {
-
-#`{{
-  method show-dialog ( ) {
-    my QA::Gui::SheetSimple $qst-dialog .= new(
-      :qst-name<DialogTest>,
-      :!show-cancel-warning, :!save-data
-    );
-
-    my Int $response = $qst-dialog.show-qst;
-    self.display-result( $response, $qst-dialog);
-  }
-}}
 
   method show-notebook ( ) {
     # important to initialize here because destroy of dialogs native object
@@ -94,77 +72,21 @@ class EH {
     my QA::Types $qa-types .= instance;
     $qa-types.set-widget-object( 'use-my-widget', MyWidget.new);
 
-    my QA::Gui::PageNotebook $qst-dialog .= new(
+    my PageNotebookDialog $qst-dialog .= new(
       :qst-name<NotebookTest>, :show-cancel-warning, :save-data
     );
 
-    my Int $response = $qst-dialog.show-qst;
+    my Int $response = $qst-dialog.show-sheet;
     self.display-result( $response, $qst-dialog);
   }
-
-#`{{
-  method show-stack ( ) {
-    my QA::Gui::SheetDialog $qst-dialog .= new(
-      :qst-name<StackTest>,
-      :show-cancel-warning, :save-data
-    );
-
-    my Int $response = $qst-dialog.show-dialog;
-    self.display-result( $response, $qst-dialog);
-  }
-
-  method show-assistant ( ) {
-    my QA::Gui::SheetDialog $qst-dialog .= new(
-      :qst-name<AssistantTest>,
-      :show-cancel-warning, :save-data
-    );
-
-#    my Int $response = $qst-dialog.show-dialog;
-#    self.display-result( $response, $qst-dialog);
-  }
-}}
 
   #---------
-  method display-result ( Int $response, QA::Gui::Dialog $dialog ) {
+  method display-result ( Int $response, PageNotebookDialog $qst-dialog ) {
 
     note "Dialog return status: ", GtkResponseType($response);
-    self.show-hash($dialog.result-user-data) if $response ~~ GTK_RESPONSE_OK;
-    $dialog.widget-destroy unless $response ~~ GTK_RESPONSE_NONE;
+    $qst-dialog.show-hash if $response ~~ GTK_RESPONSE_OK;
+    $qst-dialog.widget-destroy unless $response ~~ GTK_RESPONSE_NONE;
   }
-
-  #---------
-  method show-hash ( Hash $h, Int :$i is copy ) {
-
-#note "\n$h.gist()";
-note ' ';
-    if $i.defined {
-      $i++;
-    }
-
-    else {
-      note '';
-      $i = 0;
-    }
-
-    for $h.keys.sort -> $k {
-      if $h{$k} ~~ Hash {
-        note '  ' x $i, "$k => \{";
-        self.show-hash( $h{$k}, :$i);
-        note '  ' x $i, '}';
-      }
-
-      elsif $h{$k} ~~ Array {
-        note '  ' x $i, "$k => $h{$k}.perl()";
-      }
-
-      else {
-        note '  ' x $i, "$k => $h{$k}";
-      }
-    }
-
-    $i--;
-  }
-
 
   #---------
   method exit-app ( ) {
@@ -196,46 +118,13 @@ note ' ';
 # data structure
 my EH $eh .= new;
 
-#`{{
-my Hash $user-data = %(
-  page1 => %(
-    QAManagerDialogs => %(
-      set-spec => %(
-        :name('my key'),
-        :title('whatsemegaddy'),
-        :description('longer text')
-      ),
-    ),
-  ),
-  page2 => %(
-    QAManagerDialogs => %(
-      entry-spec => %(
-      ),
-    ),
-  ),
-);
-
-my QA::Types $qa-types .= instance;
-$qa-types.data-file-type = QAJSON;
-$qa-types.cfgloc-userdata = 'xt/Data';
-$qa-types.qa-save( 'QAManagerSetDialog', $user-data, :userdata);
-#$qa-types.data-file-type = QATOML;
-#$qa-types.qa-save( 'QAManagerSetDialog', $user-data, :userdata);
-
-#note $qa-types.qa-load( 'QAManagerSetDialog', :userdata);
-
-#$qa-types.cfgloc-category;
-#$qa-types.cfgloc-qst;
-#$qa-types.callback-objects;
-#exit(0);
-}}
-
 # get types instance and modify some path for tests to come and also some
 # user methods to handle checks and actions
 given my QA::Types $qa-types {
   .data-file-type(QAYAML);
   .cfgloc-userdata('xbin/Data');
-  .cfgloc-sheet('xbin/Data/Sheets');
+  .cfgloc-sheet('xbin/Data/Qsts');
+  .cfgloc-set('xbin/Data/Sets'); # not used - prevents creating sets.d
 }
 
 # Now we can set some more in the current instance after
@@ -259,11 +148,6 @@ $description.set-markup(Q:to/EOLABEL/);
   EOLABEL
 
 
-#`{{
-my Gnome::Gtk3::Button $dialog-button .= new(:label<QADialog>);
-$grid.attach( $dialog-button, 0, 1, 1, 1);
-$dialog-button.register-signal( $eh, 'show-dialog', 'clicked');
-}}
 my Gnome::Gtk3::Button $dialog-button .= new(:label<QANotebook>);
 $dialog-button.register-signal( $eh, 'show-notebook', 'clicked');
 
@@ -272,15 +156,6 @@ my Gnome::Gtk3::Grid $grid .= new;
 $grid.attach( $description, 0, 0, 1, 1);
 $grid.attach( $dialog-button, 0, 1, 1, 1);
 
-#`{{
-my Gnome::Gtk3::Button $dialog-button .= new(:label<QAStack>);
-$grid.attach( $dialog-button, 0, 1, 1, 1);
-$dialog-button.register-signal( $eh, 'show-stack', 'clicked');
-
-my Gnome::Gtk3::Button $dialog-button .= new(:label<QAAssistant>);
-$grid.attach( $dialog-button, 0, 1, 1, 1);
-$dialog-button.register-signal( $eh, 'show-assistant', 'clicked');
-}}
 
 given my Gnome::Gtk3::Window $top-window .= new {
   .set-title('Notebook Sheet Test');
