@@ -1,10 +1,11 @@
 #mt01
 
-show-cancel-warning: yes;
+show-cancel-warning: true
+show-data-on-exit: true
 store-type: yaml
 qst-type: stack
 
-data: /home/marcel/Languages/Raku/Projects/question-answer/xbin/Data
+data: /home/marcel/Languages/Raku/Projects/question-answer/xbin/Data/User
 qsts: /home/marcel/Languages/Raku/Projects/question-answer/xbin/Data/Qsts
 
 questionaire: StackTest
