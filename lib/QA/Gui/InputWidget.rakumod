@@ -128,8 +128,8 @@ method !create-user-widget-object (
   # then call .init-widget() if the method is defined.
   my QA::Types $qa-types .= instance;
   $!widget-object = $qa-types.get-widget-object($!question.userwidget);
-  if ?$!widget-object and $!widget-object.^lookup('init-widget') ~~ Method {
-    $!widget-object.init-widget;
+  if ?$!widget-object and $!widget-object.^lookup('create-widget') ~~ Method {
+  #  $!widget-object.init-widget;
     $!widget-object.question = $!question;
     $!widget-object.user-data-set-part = $!user-data-set-part;
     $!widget-object.gui-input-widget = self;
@@ -137,7 +137,7 @@ method !create-user-widget-object (
   }
 
   else {
-    die "failed to use QAUserWidget, $!question.userwidget().init-widget\()";
+    die "failed to use QAUserWidget, $!question.userwidget().create-widget\()";
   }
 }
 
