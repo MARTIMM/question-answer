@@ -8,12 +8,12 @@ use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Button;
 use Gnome::Gtk3::Label;
 
-use QA::Gui::SheetSimpleWindow;
+use QA::Gui::PageSimpleWindow;
 use QA::Types;
 
 #-------------------------------------------------------------------------------
 class EH {
-  has QA::Gui::SheetSimpleWindow $!qst-window;
+  has QA::Gui::PageSimpleWindow $!qst-window;
 
   #---------
   method show-window ( :$app-window ) {
@@ -23,7 +23,7 @@ class EH {
     }
 
     $!qst-window .= new(
-      :sheet-name<SimpleTest>,
+      :qst-name<SimpleTest>,
       :!show-cancel-warning, :!save-data
       :widget($window),
       :result-handler-object(self), :result-handler-method<display-result>
@@ -51,7 +51,8 @@ my EH $eh .= new;
 given my QA::Types $qa-types {
   .data-file-type(QAJSON);
   .cfgloc-userdata('xbin/Data');
-  .cfgloc-sheet('xbin/Data/Sheets');
+  .cfgloc-sheet('xbin/Data/Qsts');
+  .cfgloc-set('xbin/Data/Sets'); # not used - prevents creating sets.d
 }
 
 my Gnome::Gtk3::Label $description .= new(:text(''));
@@ -78,9 +79,12 @@ with my Gnome::Gtk3::Grid $grid .= new {
 with $top-window {
   .set-title('Simple Sheet Test');
   .register-signal( $eh, 'exit-app', 'destroy');
-#  .set-border-width(20);
+  .set-border-width(20);
   .add($grid);
   .show-all;
 }
 
 Gnome::Gtk3::Main.new.gtk-main;
+
+# show data
+$eh.qst-window.show-hash;

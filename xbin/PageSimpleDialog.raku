@@ -12,15 +12,16 @@ use Gnome::Gtk3::Label;
 
 use QA::Gui::PageSimpleDialog;
 use QA::Types;
+use QA::Status;
 
 #-------------------------------------------------------------------------------
 class EH {
-  has QA::Gui::PageSimpleDialog $!qst-dialog;
+  has QA::Gui::PageSimpleDialog $.qst-dialog;
 
   #---------
   method show-dialog ( ) {
     $!qst-dialog .= new(
-      :sheet-name<SimpleTest>,
+      :qst-name<SimpleTest>,
       :!show-cancel-warning, :!save-data,
       :result-handler-object(self), :result-handler-method<display-result>
     );
@@ -46,8 +47,9 @@ my EH $eh .= new;
 # modify some path for tests to come. Use given because $qa-types is not defined
 given my QA::Types $qa-types {
   .data-file-type(QAJSON);
-  .cfgloc-userdata('xbin/Data');
-  .cfgloc-sheet('xbin/Data/Sheets');
+  .cfgloc-userdata('xbin/Data/User');
+  .cfgloc-sheet('xbin/Data/Qsts');
+  .cfgloc-set('xbin/Data/Sets'); # not used - prevents creating sets.d
 #  note 'dirs ', .list-dirs;
 #  note 'sheets: ', .qa-list(:sheet);
 #  note 'sets: ', .qa-list(:set);
@@ -80,3 +82,18 @@ with my Gnome::Gtk3::Window $top-window .= new {
 }
 
 Gnome::Gtk3::Main.new.gtk-main;
+
+# show data
+$eh.qst-dialog.show-hash;
+
+my QA::Status $status .= instance;
+if $status.faulty-state {
+  note 'State of questionaire: incomplete and/or wrong';
+  for $status.faulty-states.kv -> $name, $state {
+    note "  faulty item: $name";
+  }
+}
+
+else {
+  note 'State of questionaire: ok';
+}

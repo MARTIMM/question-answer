@@ -21,23 +21,25 @@ use QA::Types;
 
 #-------------------------------------------------------------------------------
 class EH {
-  has QA::Gui::PageStackDialog $!qst-dialog;
+  has QA::Gui::PageStackDialog $.qst-dialog;
 
   #---------
   method show-stack ( Str:D :$qst-name ) {
     $!qst-dialog .= new(
       :$qst-name, :show-cancel-warning, :save-data,
-      :result-handler-object(self), :result-handler-method<display-result>
+#      :result-handler-object(self), :result-handler-method<display-result>
     );
 
     $!qst-dialog.show-sheet;
     $!qst-dialog.clear-object;
   }
 
+#`{{
   #---------
   method display-result ( Hash $result-user-data ) {
     $!qst-dialog.show-hash($result-user-data);
   }
+}}
 
   #---------
   method exit-app ( ) {
@@ -84,7 +86,7 @@ class EH {
 sub MAIN (
   Str $qst-name = 'StackTest',
   Str $desktop-file = '',
-  Str :$data = 'xbin/Data', Str :$qst = 'xbin/Data/Sheets',
+  Str :$data = 'xbin/Data/User', Str :$qst = 'xbin/Data/Qsts',
 ) {
 
   # modify paths for tests to come.
@@ -92,6 +94,7 @@ sub MAIN (
     .data-file-type(QAYAML);
     .cfgloc-userdata($data);
     .cfgloc-sheet($qst);
+    .cfgloc-set('xbin/Data/Sets'); # not used - prevents creating sets.d
   }
 
   # data structure
@@ -132,4 +135,7 @@ sub MAIN (
   }
 
   Gnome::Gtk3::Main.new.main;
+
+  # show data
+  $eh.qst-dialog.show-hash;
 }
