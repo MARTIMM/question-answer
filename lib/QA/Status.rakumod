@@ -7,7 +7,7 @@ unit class QA::Status:auth<github:MARTIMM>;
 my QA::Status $instance;
 has Supplier $!supplier;
 
-has Hash $!faulty-states;
+has Hash $.faulty-states;
 
 #-------------------------------------------------------------------------------
 method new ( ) { !!! }
