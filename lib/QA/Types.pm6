@@ -20,10 +20,17 @@ unit class QA::Types:auth<github:MARTIMM>:ver<0.2.0>;
 
 #-------------------------------------------------------------------------------
 #=begin pod
-#=head2 QADataFileType
+#=head2 QAFileType
 #=end pod
-#tt:1:QADataFileType:
-enum QADataFileType is export < QAJSON QATOML QAYAML >;
+#tt:1:QAFileType:
+enum QAFileType is export < QAJSON QATOML QAYAML >;
+
+#-------------------------------------------------------------------------------
+#=begin pod
+#=head2 QAFileExtension
+#=end pod
+#tt:1:QAFileExtension:
+#enum QAFileExtension is export < qsts sets data >;
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -197,8 +204,8 @@ my QA::Types $instance;
 has Hash $!user-objects;
 
 #-------------------------------------------------------------------------------
-my QADataFileType $data-file-type;
-method data-file-type ( QADataFileType $ftype? ) {
+my QAFileType $data-file-type;
+method data-file-type ( QAFileType $ftype? ) {
   $data-file-type = $ftype // QAJSON;
 }
 
@@ -262,10 +269,10 @@ submethod BUILD ( ) {
 
 The users application can modify the variables before opening any query sheets. The following variables are used in this program;
 
-=item QADataFileType C<$data-file-type>; You can choose from QAJSON, QAYAML or QATOML. By default it loads and saves the answers to questions in json formatted files.
+=item QAFileType C<$data-file-type>; You can choose from QAJSON, QAYAML or QATOML. By default it loads and saves the answers to questions in json formatted files.
 
 =item Str C<$cfgloc-set>; Location where sets are stored. Default is C<$!HOME/.config/$cfg-root/Sets.d> on *nix systems. Use C<cfgloc-set()> to change it.
-=item Str C<$cfgloc-sheet>; Location where sheets are stored. Default is C<$!HOME/.config/$cfg-root/Sheets.d> on *nix systems. Use C<cfgloc-sheet()> to change it.
+=item Str C<$cfgloc-sheet>; Location where sheets are stored. Default is C<$!HOME/.config/$cfg-root/Qsts.d> on *nix systems. Use C<cfgloc-sheet()> to change it.
 =item Str C<$cfgloc-userdata>; Location where userdata is stored. Default is C<$!HOME/.config/$cfg-root/Data.d> on *nix systems. Use C<cfgloc-userdata()> to change it.
 
 By default, $cfg-root is set to the basename of your program. This can be changed by calling C<cfg-root()>.
@@ -285,7 +292,7 @@ method instance ( --> QA::Types ) {
 =begin pod
 =head2 qa-load
 
-Load a config or data file into a Hash. There is no use for it directly. To load data, use the modules B<QA::Set> or B<QA::Sheet>. The type of the file is taken from the $data-file-type.
+Load a config or data file into a Hash. There is no use for it directly. To load data, use the modules B<QA::Set> or B<QA::Questionaire>. The type of the file is taken from the $data-file-type.
 
 C<:userdata> is used to load data which will be displayed in the forms.
 
@@ -299,7 +306,7 @@ The filenames of any the data files is simple at first. Just a name with an exte
     --> Hash
   )
 
-=item Str $qa-filename; the filename without the extention. It functions also as the name of the sheet or set.
+=item Str $qa-filename; the filename without the extention. It functions also as the name of the questionaire or set.
 =item $sheet; load a sheet if option exists.
 =item $set; load a set if option exists.
 =item $userdata; load userdata if option exists.
@@ -314,22 +321,39 @@ The filenames of any the data files is simple at first. Just a name with an exte
 method qa-load( Str:D $qa-filename, *%options --> Hash ) {
   my Str $basename;
   my Str $qa-path;
+  my Str $extension;
+  my Bool $user-path = False;
 
   # If there is a path, use it
   if ?%options<qa-path> {
-    $basename = %options<qa-path>;
+    $qa-path = %options<qa-path>;
+    $user-path = True;
   }
 
   # Otherwise use one of the defined locations
   else {
-    if %options<sheet>:exists       { $basename = $cfgloc-sheet; }
-    elsif %options<set>:exists      { $basename = $cfgloc-set; }
-    elsif %options<userdata>:exists { $basename = $cfgloc-userdata; }
-    else                            { die 'No type option found'; }
-  }
+    if %options<sheet>:exists {
+      $basename = $cfgloc-sheet;
+      $extension = 'qst';
+    }
 
-  # Define/modify the path
-  $qa-path //= "$basename/$qa-filename";
+    elsif %options<set>:exists {
+      $basename = $cfgloc-set;
+      $extension = 'set';
+    }
+
+    elsif %options<userdata>:exists {
+      $basename = $cfgloc-userdata;
+      $extension = 'data';
+    }
+
+    else {
+      die 'No type option found';
+    }
+
+    # Define/modify the path
+    $qa-path = "$basename/$qa-filename";
+  }
 
   # Check if versions are needed.
   if ?%options<versioned> {
@@ -344,8 +368,8 @@ method qa-load( Str:D $qa-filename, *%options --> Hash ) {
     }
   }
 
+  # Define sub to load a hash from file
   sub load-hash ( Str $path is copy, Sub $loader --> Hash ) {
-
     my Hash $data;
     if $path.IO.r {
       $data = $loader($path.IO.slurp);
@@ -371,26 +395,34 @@ method qa-load( Str:D $qa-filename, *%options --> Hash ) {
     $data // %();
   }
 
+
   given $data-file-type {
     when QAJSON {
-      load-hash( $qa-path ~ '.json', &from-json);
+      load-hash(
+        $user-path ?? $qa-path !! $qa-path ~ ".json-qa$extension", &from-json
+      );
     }
 
     when QATOML {
-      load-hash( $qa-path ~ '.toml', &from-toml);
+      load-hash(
+        $user-path ?? $qa-path !!  $qa-path ~ ".toml-qa$extension", &from-toml
+      );
     }
 
     when QAYAML {
-      load-hash( $qa-path ~ '.yaml', &load-yaml);
+      load-hash(
+        $user-path ?? $qa-path !!  $qa-path ~ ".yaml-qa$extension", &load-yaml
+      );
     }
   }
+
 }
 
 #-------------------------------------------------------------------------------
 =begin pod
 =head2 qa-save
 
-Save a Hash of QA type data into a file. There is no use for it directly. To save data, use the modules B<QManager::Set> or B<QManager::Sheet>.
+Save a Hash of QA type data into a file. There is no use for it directly. To save data, use the modules B<QA::Set> or B<QAr::Questionaire>.
 
 C<:userdata> is used to save data read from the forms.
 
@@ -417,21 +449,36 @@ The filenames of any the data files is simple at first. Just a name with an exte
 method qa-save( Str:D $qa-filename, Hash $qa-data, *%options ) {
   my Str $basename = '';
   my Str $qa-path;
+  my Str $extension;
+  my Bool $user-path = False;
 
   # If there is a path, use it
   if ?%options<qa-path> {
-    $basename = %options<qa-path>;
+    $qa-path = %options<qa-path>;
+    $user-path = True;
   }
 
   else {
-    if %options<sheet>:exists       { $basename = $cfgloc-sheet; }
-    elsif %options<set>:exists      { $basename = $cfgloc-set; }
-    elsif %options<userdata>:exists { $basename = $cfgloc-userdata; }
-    else                            { die 'No type option found'; }
-  }
+    if %options<sheet>:exists {
+      $basename = $cfgloc-sheet;
+      $extension = 'qst';
+    }
 
-  # Define/modify the path
-  $qa-path //= "$basename/$qa-filename";
+    elsif %options<set>:exists {
+      $basename = $cfgloc-set;
+      $extension = 'set';
+    }
+
+    elsif %options<userdata>:exists {
+      $basename = $cfgloc-userdata;
+      $extension = 'data';
+    }
+
+    else { die 'No type option found'; }
+
+    # Define/modify the path
+    $qa-path = "$basename/$qa-filename";
+  }
 
   # Check if versions are needed.
   $qa-path ~= ':latest' if ?%options<versioned>;
@@ -471,15 +518,24 @@ method qa-save( Str:D $qa-filename, Hash $qa-data, *%options ) {
 
   given $data-file-type {
     when QAJSON {
-      save-hash( $qa-path ~ '.json', &to-json, $qa-data);
+      save-hash(
+        $user-path ?? $qa-path !!  $qa-path ~ ".json-qa$extension",
+        &to-json, $qa-data
+      );
     }
 
     when QATOML {
-      save-hash( $qa-path ~ '.toml', &to-toml, $qa-data);
+      save-hash(
+        $user-path ?? $qa-path !!  $qa-path ~ ".toml-qa$extension",
+        &to-toml, $qa-data
+      );
     }
 
     when QAYAML {
-      save-hash( $qa-path ~ '.yaml', &save-yaml, $qa-data);
+      save-hash(
+        $user-path ?? $qa-path !!  $qa-path ~ ".yaml-qa$extension",
+        &save-yaml, $qa-data
+      );
     }
   }
 }
@@ -488,7 +544,7 @@ method qa-save( Str:D $qa-filename, Hash $qa-data, *%options ) {
 =begin pod
 =head2 qa-remove
 
-Remove a Hash of QA type data file. There is no use for it directly. To remove data, use the modules B<QManager::Set> or B<QManager::Sheet>.
+Remove a Hash of QA type data file. There is no use for it directly. To remove data, use the modules B<QA::Set> or B<QA::Questionaire>.
 
 C<:userdata> is used to save data read from the forms.
 
@@ -511,26 +567,51 @@ True or False is returned depending on success
 #tm:1:qa-remove
 method qa-remove ( Str:D $qa-filename, *%options --> Bool ) {
   my Str $basename = '';
-  my Str $qa-path = %options<qa-path> // Str;
+  my Str $qa-path;
+  my Str $extension;
+  my Bool $user-path = False;
 
-  if !$qa-path {
-    if %options<sheet>:exists       { $basename = $cfgloc-sheet; }
-    elsif %options<set>:exists      { $basename = $cfgloc-set; }
-    elsif %options<userdata>:exists { $basename = $cfgloc-userdata; }
-    else                            { die 'No type option found'; }
+  if ?%options<qa-path> {
+    $qa-path = %options<qa-path>;
+    $user-path = True;
   }
+
+  else {
+    if %options<sheet>:exists {
+      $basename = $cfgloc-sheet;
+      $extension = 'qst';
+    }
+
+    elsif %options<set>:exists {
+      $basename = $cfgloc-set;
+      $extension = 'set';
+    }
+
+    elsif %options<userdata>:exists {
+      $basename = $cfgloc-userdata;
+      $extension = 'data';
+    }
+
+    else { die 'No type option found'; }
+
+    # Define/modify the path
+    $qa-path = "$basename/$qa-filename";
+  }
+
+  # Check if versions are needed.
+  $qa-path ~= ':latest' if ?%options<versioned>;
 
   given $data-file-type {
     when QAJSON {
-      $qa-path //= "$basename/$qa-filename.json";
+      $qa-path = $user-path ?? $qa-path !!  $qa-path ~ ".json-qa$extension";
     }
 
     when QATOML {
-      $qa-path //= "$basename/$qa-filename.toml";
+      $qa-path = $user-path ?? $qa-path !!  $qa-path ~ ".toml-qa$extension";
     }
 
     when QAYAML {
-      $qa-path //= "$basename/$qa-filename.yaml";
+      $qa-path = $user-path ?? $qa-path !!  $qa-path ~ ".yaml-qa$extension";
     }
   }
 
@@ -829,13 +910,13 @@ method list-dirs ( --> List ) {
 method setup-path ( Bool :$reset = False ) {
   if $reset {
     if $*DISTRO.is-win {
-      $cfgloc-sheet = "$*HOME/dataDir/$cfg-root/Sheets";
+      $cfgloc-sheet = "$*HOME/dataDir/$cfg-root/Qsts";
       $cfgloc-set = "$*HOME/dataDir/$cfg-root/Sets";
       $cfgloc-userdata = "$*HOME/dataDir/$cfg-root/Data";
     }
 
     else {
-      $cfgloc-sheet = "$*HOME/.config/$cfg-root/Sheets.d";
+      $cfgloc-sheet = "$*HOME/.config/$cfg-root/Qsts.d";
       $cfgloc-set = "$*HOME/.config/$cfg-root/Sets.d";
       $cfgloc-userdata = "$*HOME/.config/$cfg-root/Data.d";
     }
@@ -843,13 +924,13 @@ method setup-path ( Bool :$reset = False ) {
 
   else {
     if $*DISTRO.is-win {
-      $cfgloc-sheet //= "$*HOME/dataDir/$cfg-root/Sheets";
+      $cfgloc-sheet //= "$*HOME/dataDir/$cfg-root/Qsts";
       $cfgloc-set //= "$*HOME/dataDir/$cfg-root/Sets";
       $cfgloc-userdata //= "$*HOME/dataDir/$cfg-root/Data";
     }
 
     else {
-      $cfgloc-sheet //= "$*HOME/.config/$cfg-root/Sheets.d";
+      $cfgloc-sheet //= "$*HOME/.config/$cfg-root/Qsts.d";
       $cfgloc-set //= "$*HOME/.config/$cfg-root/Sets.d";
       $cfgloc-userdata //= "$*HOME/.config/$cfg-root/Data.d";
     }
