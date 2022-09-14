@@ -212,7 +212,9 @@ note "\nPage: ", $page.<page-name>;
 
 #-------------------------------------------------------------------------------
 # hash displayer tool
-method show-hash ( Hash $h, Int :$i is copy ) {
+method show-hash ( Hash $h is copy = Hash, Int :$i is copy ) {
+  $h //= $!result-user-data;
+
   if $i.defined {
     $i++;
   }
@@ -230,7 +232,10 @@ method show-hash ( Hash $h, Int :$i is copy ) {
     }
 
     elsif $h{$k} ~~ Array {
-      note '  ' x $i, "$k => $h{$k}.perl()";
+      note '  ' x $i, "$k => ";
+      for @($h{$k}) -> $item {
+        note '  ' x $i, $item.gist;
+      }
     }
 
     else {
