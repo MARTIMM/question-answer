@@ -143,7 +143,7 @@ method help-response ( ) {
 }
 
 #-------------------------------------------------------------------------------
-method show-sheet ( ) {
+method show-qst ( ) {
   $!widget.show-all;
 }
 

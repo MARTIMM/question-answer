@@ -23,7 +23,7 @@ class EH {
       :show-cancel-warning, :save-data
     );
 
-#    my Int $response = $sheet-dialog.show-sheet;
+#    my Int $response = $sheet-dialog.show-qst;
 #    self.display-result( $response, $sheet-dialog);
   }
 

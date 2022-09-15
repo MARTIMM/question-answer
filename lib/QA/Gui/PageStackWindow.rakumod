@@ -156,7 +156,7 @@ method help-response ( ) {
 }
 
 #-------------------------------------------------------------------------------
-method show-sheet ( ) {
+method show-qst ( ) {
   $!widget.show-all;
 }
 
@@ -202,7 +202,7 @@ method add-button (
 }
 
 #-------------------------------------------------------------------------------
-method show-sheet ( ) {
+method show-qst ( ) {
 
 CATCH { .note; }
 #note 'show sheet';

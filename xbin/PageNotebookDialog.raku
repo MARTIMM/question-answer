@@ -75,7 +75,7 @@ class EH {
       :qst-name<NotebookTest>, :show-cancel-warning, :save-data
     );
 
-    $!qst-dialog.show-sheet;
+    $!qst-dialog.show-qst;
     $!qst-dialog.clear-object;
   }
 

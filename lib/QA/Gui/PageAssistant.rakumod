@@ -136,7 +136,7 @@ method exit-assistant ( ) {
 
 #`{{
 #-------------------------------------------------------------------------------
-method show-sheet ( --> Int ) {
+method show-qst ( --> Int ) {
 
   self.show-all;
 

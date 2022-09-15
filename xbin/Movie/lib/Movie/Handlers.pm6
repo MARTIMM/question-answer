@@ -22,7 +22,7 @@ method show-movie-form ( ) {
     :sheet-name<movie>, :show-cancel-warning, :save-data
   );
 
-  my Int $response = $dialog.show-sheet;
+  my Int $response = $dialog.show-qst;
   self!display-result( $response, $dialog);
 }
 
