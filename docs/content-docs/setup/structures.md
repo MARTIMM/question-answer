@@ -212,25 +212,20 @@ The sheet is used to present questions to the user. In a sheet there are pages w
 
 * **width**; The minimum width of the dialog.
 * **height**; The minimum height of the dialog.
-* **button-map**; A map of button names to a structure. There are two default buttons `save-quit` and `cancel` which do not need extra info and will be displayed by default. For changes and additions one need a structure. For instance on a login one would not like to have a 'save-quit' label on a button but rename it to `Login`. The first letter of every word is uppercased and dashes are replaced with spaces. If a button is not desired, i.e. the default visible ones, a button is hidden when a name is set to an empty string. Otherwise, without a structure, the button is not shown.
+* **button-map**; A map of button names to a structure. There are two default buttons `save-quit` and `cancel` which do not need extra info and will be displayed by default. For changes and additions one need a structure. For instance on a login one would not like to have a 'save-quit' label on a button but renamed to `Login`. The first letter of every word is uppercased and dashes are replaced with spaces. If a button is not desired, i.e. the default visible ones, a button is hidden when a name is set to an empty string. Otherwise, without a structure, the button is not shown.
 
   The supported buttons are;
-  * `save-quit`; Save and close. Checks are done to see if it is safe to save. Its options may be;
-    * `name`; Different text on the button or empty string to hide the button.
-
+  * `save-quit`; Save and close. Checks are done to see if it is safe to save.
   * `save-continue`: Save but do not close. Checks are done. This works like an 'Apply'.
-    * `name`; Different text on the button.
-
   * `cancel`; Close without saving.
-    * `name`; Different text on the button or empty string to hide the button.
-
   * `help-info`; Show help dialog. Text is from `help-message`,
-    * `name`; Different text on the button.
     * `message`; When help button is shown, this text is displayed. When absent, the help button is NOT shown.
-
   * `user`; A user definable button.
-    * `name`; Different text on the button.
     * `action`; A name of a method which can be called on a previously provided object. The method is called when the answer on the question is accepted and saved in the users data. This is like the action from the question explained above.
+
+  * General options for the above buttons;
+    * `name`; Different text on the button or empty string to hide the button.
+    * `default`: `true`; the button is automatically pressed when `enter` is pressed on the keyboard. Only one one button can be set as default.
 
 * **pages**; An array of hashes.
 
