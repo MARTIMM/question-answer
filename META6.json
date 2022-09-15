@@ -21,7 +21,7 @@
     "QA::Gui::OkMsgDialog": "lib/QA/Gui/OkMsgDialog.pm6",
     "QA::Gui::Page": "lib/QA/Gui/Page.pm6",
     "QA::Gui::PageAssistant": "lib/QA/Gui/PageAssistant.rakumod",
-    "QA::Gui::PageNotebook": "lib/QA/Gui/PageNotebook.rakumod",
+    "QA::Gui::PageNotebookDialog": "lib/QA/Gui/PageNotebookDialog.rakumod",
     "QA::Gui::PageSimpleDialog": "lib/QA/Gui/PageSimpleDialog.rakumod",
     "QA::Gui::PageSimpleWindow": "lib/QA/Gui/PageSimpleWindow.rakumod",
     "QA::Gui::PageStackDialog": "lib/QA/Gui/PageStackDialog.rakumod",
