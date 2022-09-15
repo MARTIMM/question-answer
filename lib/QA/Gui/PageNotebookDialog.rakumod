@@ -1,31 +1,17 @@
 #tl:1:QA::Gui::PageDialog
 use v6.d;
 
-use QA::Set;
-use QA::Questionaire;
-use QA::Types;
-
 use QA::Gui::Dialog;
-use QA::Gui::Page;
 use QA::Gui::YNMsgDialog;
 use QA::Gui::OkMsgDialog;
-use QA::Gui::Statusbar;
 use QA::Gui::PageTools;
 
 #use Gnome::N::X;
-use Gnome::N::GlibToRakuTypes;
-
-use Gnome::Gio::Resource;
 
 use Gnome::Gtk3::Enums;
 use Gnome::Gtk3::Dialog;
-use Gnome::Gtk3::Notebook;
-use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Label;
 use Gnome::Gtk3::Button;
-use Gnome::Gtk3::CssProvider;
-use Gnome::Gtk3::StyleContext;
-use Gnome::Gtk3::StyleProvider;
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -33,23 +19,11 @@ use Gnome::Gtk3::StyleProvider;
 
 =end pod
 
-unit class QA::Gui::PageNotebookDialog:auth<github:MARTIMM>:ver<0.2.0>;
+unit class QA::Gui::PageNotebookDialog:auth<github:MARTIMM>;
 also is QA::Gui::Dialog;
 also does QA::Gui::PageTools;
 
 #-------------------------------------------------------------------------------
-has QA::Questionaire $!qst;
-has Str $!qst-name;
-has Hash $!user-data;
-has Hash $.result-user-data;
-has Array $!sets = [];
-has Array $!pages = [];
-has Bool $.faulty-state;
-has Bool $!save-data;
-has Int $!response;
-has Gnome::Gtk3::Notebook $!notebook;
-has Gnome::Gtk3::Grid $!grid;
-
 has Bool $!show-cancel-warning;
 
 #-------------------------------------------------------------------------------
@@ -63,184 +37,93 @@ submethod BUILD (
   Str :$!qst-name, Hash :$user-data? is copy,
   Bool :$!show-cancel-warning = True, Bool :$!save-data = True
 ) {
+  $!qst .= new( :$!qst-name, :versioned);
 
-  my QA::Types $qa-types .= instance;
-  $!user-data = $user-data //
-                $qa-types.qa-load( $!qst-name, :userdata) //
-                %();
+  self.load-user-data($user-data);
+  self.set-style('QAPageStack');
 
-  $!qst .= new(:$!qst-name);
+  with $!qst {
+    self.set-dialog-size( .width, .height);
+  }
 
-  self!set-style;
+  # set the grid and fill it
+  self.set-grid(self);
+  self.set-grid-content(self);
 
-  # todo width and height spec must go to sets
-  self.set-dialog-size( $!qst.width, $!qst.height)
-    if ?$!qst.width and ?$!qst.height;
+  # add some buttons specific for this stack
+  self.add-button( 'cancel', GTK_RESPONSE_CANCEL);
+  self.add-button( 'save-continue', GTK_RESPONSE_APPLY);
+  self.add-button( 'save-quit', GTK_RESPONSE_OK);
+  self.add-button( 'help-info', GTK_RESPONSE_HELP);
+}
 
-  $!grid = self.dialog-content;
+#-------------------------------------------------------------------------------
+method show-sheet ( ) {
 
-  # add some buttons specific for this notebook
-  self.create-button(
-    'cancel', 'cancel-dialog', GTK_RESPONSE_CANCEL, :default, :dialog(self)
-  );
+  my QA::Status $status .= instance;
+  $status.clear-status;
 
-  self.create-button(
-    'save-quit', 'finish-dialog', GTK_RESPONSE_OK, :dialog(self)
-  );
+  loop {
+    given my Int $response-type = GtkResponseType(self.show-dialog) {
+      when GTK_RESPONSE_DELETE_EVENT {
+        self.hide;
+        sleep(0.3);
+        self.destroy;
+        last;
+      }
 
-  # when buttons are pressed, this will prevent return to the caller until
-  # the state of the sheet is ok. assume a faulty sheet for now.
-  $!faulty-state = True;
+      when GTK_RESPONSE_OK {
+        if $status.faulty-state {
+          self.show-message(
+            "There are still missing or wrong answers, cannot save data"
+          );
+        }
 
-  # catch button presses
-  self.register-signal( self, 'dialog-response', 'response');
-  my QA::Gui::Statusbar $statusbar .= new;
-  $!grid.attach( $statusbar, 0, 1, 1, 1);
+        else {
+          self.save-data;
+          self.destroy;
+          last;
+        }
+      }
 
-  # create the notebook and add pages to it
-  $!notebook .= new;
-  $!grid.attach( $!notebook, 0, 0, 1, 1);
+      when GTK_RESPONSE_APPLY {
+        if $status.faulty-state {
+          self.show-message(
+            "There are still missing or wrong answers, cannot save data"
+          );
+        }
 
-  # select content pages only
-  my $pages := $!qst.clone;
-  for $pages -> Hash $page-data {
-    if $page-data<page-type> ~~ QAContent {
-      my QA::Gui::Page $page = self!create-page( $page-data, :!description);
-      $!notebook.append-page(
-        $page.create-content, Gnome::Gtk3::Label.new(:text($page-data<title>))
-      )
+        else {
+          self.save-data;
+        }
+      }
+
+      when GTK_RESPONSE_CANCEL {
+        if self.show-cancel {
+          self.destroy;
+          last;
+        }
+      }
+
+      when GTK_RESPONSE_HELP {
+        my Str $text = $!qst.button-map<help-info><message>;
+        self.show-message($text) if ?$text;
+      }
+
+      default {
+        die "Response type '$_' not supported";
+      }
     }
   }
 }
 
 #-------------------------------------------------------------------------------
-method !set-style ( ) {
-  # load the gtk resource file and register resource to make data global to app
-  my Gnome::Gio::Resource $r .= new(
-    :load(%?RESOURCES<g-resources/QAManager.gresource>.Str)
-  );
-  $r.register;
+method show-message ( Str:D $message --> Int ) {
+  my QA::Gui::OkMsgDialog $ok .= new(:$message);
+  my $r = $ok.run;
+  $ok.destroy;
 
-  my Str $application-id = '/io/github/martimm/qa';
-
-  # read the style definitions into the css provider and style context
-  my Gnome::Gtk3::CssProvider $css-provider .= new;
-  $css-provider.load-from-resource(
-    $application-id ~ '/resources/g-resources/QAManager-style.css'
-  );
-  my Gnome::Gtk3::StyleContext $context .= new;
-  $context.add-provider-for-screen(
-    Gnome::Gdk3::Screen.new, $css-provider, GTK_STYLE_PROVIDER_PRIORITY_USER
-  );
-
-  $context.add-class('QAPageNotebook');
-}
-
-#-------------------------------------------------------------------------------
-method create-button (
-  Str $widget-name, Str $method-name, GtkResponseType $response-type,
-  Bool :$default = False, QA::Gui::Dialog :$dialog
-) {
-
-  # change text of label on button when defined in the button map structure
-  my Hash $button-map = $!qst.button-map // %();
-  my Gnome::Gtk3::Button $button .= new;
-  my Str $button-text = $widget-name;
-  $button-text = $button-map{$widget-name} if ?$button-map{$widget-name};
-
-  # change some other parameters and register a signal
-  $button.set-name($widget-name);
-  $button.set-label($button-text.tc);
-  if $default {
-    $button.set-can-default(True);
-    $dialog.set-default-response($response-type);
-  }
-
-  $dialog.add-action-widget( $button, $response-type);
-}
-
-#-------------------------------------------------------------------------------
-# create page with all widgets on it. it always will return a
-# scrollable window
-method !create-page( Hash $page, Bool :$description = True --> QA::Gui::Page ) {
-  my QA::Gui::Page $gui-page .= new( :$page, :$description, :$!user-data);
-  $!pages.push: $gui-page;
-
-  $gui-page
-}
-
-
-#-------------------------------------------------------------------------------
-method query-state ( ) {
-
-  my Bool $faulty-state = False;
-  for @$!pages -> $page {
-
-    # this question is not ok when True
-    if $page.query-page-state {
-      $faulty-state = True;
-      last;
-    }
-  }
-
-  $!faulty-state = $faulty-state;
-}
-
-#-------------------------------------------------------------------------------
-method show-sheet ( --> Int ) {
-
-  while $!faulty-state {
-    $!response = self.show-dialog;
-  }
-
-  $!response
-}
-
-#-------------------------------------------------------------------------------
-#--[ Signal Handlers ]----------------------------------------------------------
-#-------------------------------------------------------------------------------
-method dialog-response (
-  gint $response, QA::Gui::Dialog() :_native-object($dialog)
-) {
-
-  if GtkResponseType($response) ~~ GTK_RESPONSE_DELETE_EVENT {
-    $!faulty-state = False;
-    $!response = $response;
-
-    $dialog.hide;
-    sleep(0.3);
-    $dialog.destroy;
-  }
-
-  elsif GtkResponseType($response) ~~ GTK_RESPONSE_OK {
-
-    self.query-state;
-    if $!faulty-state {
-      my QA::Gui::OkMsgDialog $yn .= new(
-        :message("There are still missing or wrong answers, cannot save data")
-      );
-
-      $yn.run;
-      $yn.destroy;
-    }
-
-    else {
-      self.save-data;
-      $!response = $response;
-
-      # must hide instead of destroy, otherwise the return status
-      # is set to GTK_RESPONSE_NONE
-      $dialog.hide;
-    }
-  }
-
-  elsif GtkResponseType($response) ~~ GTK_RESPONSE_CANCEL {
-    if self.show-cancel {
-      $!response = $response;
-      $!faulty-state = False;
-      self.hide;
-    }
-  }
+  $r
 }
 
 #-------------------------------------------------------------------------------
@@ -249,21 +132,13 @@ method show-cancel ( --> Bool ) {
   my Bool $done = True;
   if $!show-cancel-warning {
     my QA::Gui::YNMsgDialog $yn .= new(
-      :message("Are you sure to cancel?\n<i><u>All changes will be lost!</u></i>")
+      :message("Are you sure to cancel?\nAll changes will be lost!")
     );
 
     my $r = GtkResponseType($yn.run);
-    $yn.widget-destroy;
+    $yn.destroy;
     $done = ( $r ~~ GTK_RESPONSE_YES );
   }
 
   $done
-}
-
-#-------------------------------------------------------------------------------
-method save-data ( ) {
-  $!result-user-data = $!user-data;
-  my QA::Types $qa-types .= instance;
-  $qa-types.qa-save( $!qst-name, $!result-user-data, :userdata)
-    if $!save-data;
 }

@@ -5,17 +5,15 @@ use v6;
 
 use Gnome::Gtk3::Dialog;
 use Gnome::Gtk3::Main;
-#use Gnome::Gtk3::Enums;
 use Gnome::Gtk3::Window;
 use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Button;
 use Gnome::Gtk3::Label;
 
 use QA::Gui::PageNotebookDialog;
-#use QA::Gui::Frame;
 use QA::Gui::Value;
 use QA::Types;
-#use QA::Question;
+use QA::Status;
 
 #use Gnome::N::X;
 #Gnome::N::debug(:on);
@@ -64,6 +62,7 @@ class MyWidget does QA::Gui::Value {
 
 #-------------------------------------------------------------------------------
 class EH {
+  has PageNotebookDialog $.qst-dialog;
 
   method show-notebook ( ) {
     # important to initialize here because destroy of dialogs native object
@@ -72,20 +71,12 @@ class EH {
     my QA::Types $qa-types .= instance;
     $qa-types.set-widget-object( 'use-my-widget', MyWidget.new);
 
-    my PageNotebookDialog $qst-dialog .= new(
+    $!qst-dialog .= new(
       :qst-name<NotebookTest>, :show-cancel-warning, :save-data
     );
 
-    my Int $response = $qst-dialog.show-sheet;
-    self.display-result( $response, $qst-dialog);
-  }
-
-  #---------
-  method display-result ( Int $response, PageNotebookDialog $qst-dialog ) {
-
-    note "Dialog return status: ", GtkResponseType($response);
-    $qst-dialog.show-hash if $response ~~ GTK_RESPONSE_OK;
-    $qst-dialog.widget-destroy unless $response ~~ GTK_RESPONSE_NONE;
+    $!qst-dialog.show-sheet;
+    $!qst-dialog.clear-object;
   }
 
   #---------
@@ -169,3 +160,18 @@ given my Gnome::Gtk3::Window $top-window .= new {
 
 
 Gnome::Gtk3::Main.new.gtk-main;
+
+# show data
+$eh.qst-dialog.show-hash;
+
+my QA::Status $status .= instance;
+if $status.faulty-state {
+  note 'State of questionaire: incomplete and/or wrong';
+  for $status.faulty-states.kv -> $name, $state {
+    note "  faulty item: $name";
+  }
+}
+
+else {
+  note 'State of questionaire: ok';
+}
