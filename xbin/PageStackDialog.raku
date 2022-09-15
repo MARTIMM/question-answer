@@ -15,6 +15,7 @@ use Gnome::Gtk3::Label;
 
 use QA::Gui::PageStackDialog;
 use QA::Types;
+use QA::Status;
 
 #use Gnome::N::X;
 #Gnome::N::debug(:on);
@@ -27,19 +28,11 @@ class EH {
   method show-stack ( Str:D :$qst-name ) {
     $!qst-dialog .= new(
       :$qst-name, :show-cancel-warning, :save-data,
-#      :result-handler-object(self), :result-handler-method<display-result>
     );
 
-    $!qst-dialog.show-sheet;
+    $!qst-dialog.show-qst;
     $!qst-dialog.clear-object;
   }
-
-#`{{
-  #---------
-  method display-result ( Hash $result-user-data ) {
-    $!qst-dialog.show-hash($result-user-data);
-  }
-}}
 
   #---------
   method exit-app ( ) {
@@ -61,7 +54,6 @@ class EH {
 
     # return an array of follow up actions. show-select2 is mapped to
     # method fieldtype-action2
-#    [%( :type(QAOtherUserAction), :action-key<show-select2>, :opt1<opt1>),]
     [%( :type(QAOtherUserAction), :action-key<fieldtype-action2>, :opt1<opt1>),]
   }
 
@@ -138,4 +130,16 @@ sub MAIN (
 
   # show data
   $eh.qst-dialog.show-hash;
+
+  my QA::Status $status .= instance;
+  if $status.faulty-state {
+    note 'State of questionaire: incomplete and/or wrong';
+    for $status.faulty-states.kv -> $name, $state {
+      note "  faulty item: $name";
+    }
+  }
+
+  else {
+    note 'State of questionaire: ok';
+  }
 }

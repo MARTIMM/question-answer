@@ -7,17 +7,21 @@ use Gnome::Gio::Resource;
 use Gnome::Gtk3::CssProvider;
 use Gnome::Gtk3::StyleContext;
 use Gnome::Gtk3::StyleProvider;
+use Gnome::Gtk3::Dialog;
 use Gnome::Gtk3::Window;
 use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Button;
 use Gnome::Gtk3::Stack;
 use Gnome::Gtk3::StackSwitcher;
+use Gnome::Gtk3::Notebook;
 
 use QA::Questionaire;
 use QA::Types;
 
 use QA::Gui::Statusbar;
 use QA::Gui::Page;
+use QA::Gui::YNMsgDialog;
+use QA::Gui::OkMsgDialog;
 
 #-------------------------------------------------------------------------------
 unit role QA::Gui::PageTools:auth<github:MARTIMM>;
@@ -107,6 +111,21 @@ note 'Pager: ', $pager-type.^name;
     }
 
     when / PageNotebook / {
+      # create the notebook and add pages to it
+      my Gnome::Gtk3::Notebook $notebook .= new;
+      $!grid.attach( $notebook, 0, 0, 1, 1);
+
+      # select content pages only
+      my $pages := $!qst.clone;
+      for $pages -> Hash $page-data {
+        if $page-data<page-type> ~~ QAContent {
+          my QA::Gui::Page $page = self!create-page( $page-data, :!description);
+          $notebook.append-page(
+            $page.create-content,
+            Gnome::Gtk3::Label.new(:text($page-data<title>))
+          )
+        }
+      }
     }
 
     when / PageAssistant / {
@@ -129,6 +148,40 @@ note 'Pager: ', $pager-type.^name;
       my QA::Gui::Statusbar $statusbar .= new;
       $!grid.attach( $statusbar, 0, 1, 1, 1);
     }
+  }
+}
+
+#-------------------------------------------------------------------------------
+#TM:1:add-button
+=begin pod
+=head2 add-button
+
+For dialog types it is possible to add some buttons to the dialog
+
+  method add-button (
+    Str $widget-name, GtkResponseType $response-type
+  )
+
+=item $widget-name;
+=item $response-type;
+
+=end pod
+method add-button (
+  Str $widget-name, $response-type where .^name eq 'GtkResponseType',
+  Bool :$default = False
+) {
+#note "add button $widget-name";
+
+  # it is possible that button is undefined
+  my Gnome::Gtk3::Button $button = self.create-button($widget-name);
+  with $button {
+    my Hash $button-map = $!qst.button-map // %();
+    if ? $button-map{$widget-name}<default> {
+      .set-can-default(True);
+      self.set-default-response($response-type);
+    }
+
+    self.add-action-widget( $button, $response-type);
   }
 }
 
@@ -244,4 +297,83 @@ method show-hash ( Hash $h is copy = Hash, Int :$i is copy ) {
   }
 
   $i--;
+}
+
+#-------------------------------------------------------------------------------
+#TM:1:show-qst
+=begin pod
+=head2 show-qst
+
+Dialogs need some control to show the dialog and when finished need some loop mechanism to re-show the dialog and to show messages when there is some faulty input.
+
+  method show-qst ( )
+
+=end pod
+
+method show-qst ( ) {
+
+  my QA::Status $status .= instance;
+  $status.clear-status;
+
+  loop {
+    given my Int $response-type = GtkResponseType(self.show-dialog) {
+      when GTK_RESPONSE_DELETE_EVENT {
+        self.hide;
+        sleep(0.3);
+        self.destroy;
+        last;
+      }
+
+      when GTK_RESPONSE_OK {
+        if $status.faulty-state {
+          self.show-message(
+            "There are still missing or wrong answers, cannot save data"
+          );
+        }
+
+        else {
+          self.save-data;
+          self.destroy;
+          last;
+        }
+      }
+
+      when GTK_RESPONSE_APPLY {
+        if $status.faulty-state {
+          self.show-message(
+            "There are still missing or wrong answers, cannot save data"
+          );
+        }
+
+        else {
+          self.save-data;
+        }
+      }
+
+      when GTK_RESPONSE_CANCEL {
+        if self.show-cancel {
+          self.destroy;
+          last;
+        }
+      }
+
+      when GTK_RESPONSE_HELP {
+        my Str $text = $!qst.button-map<help-info><message>;
+        self.show-message($text) if ?$text;
+      }
+
+      default {
+        die "Response type '$_' not supported";
+      }
+    }
+  }
+}
+
+#-------------------------------------------------------------------------------
+method show-message ( Str:D $message --> Int ) {
+  my QA::Gui::OkMsgDialog $ok .= new(:$message);
+  my $r = $ok.run;
+  $ok.destroy;
+
+  $r
 }

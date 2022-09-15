@@ -13,7 +13,7 @@ use QA::Types;
 
 #-------------------------------------------------------------------------------
 class EH {
-  has QA::Gui::PageSimpleWindow $!qst-window;
+  has QA::Gui::PageSimpleWindow $.qst-window;
 
   #---------
   method show-window ( :$app-window ) {
@@ -29,7 +29,7 @@ class EH {
       :result-handler-object(self), :result-handler-method<display-result>
     );
 
-    $!qst-window.show-sheet;
+    $!qst-window.show-qst;
   }
 
   #---------
@@ -88,3 +88,15 @@ Gnome::Gtk3::Main.new.gtk-main;
 
 # show data
 $eh.qst-window.show-hash;
+
+my QA::Status $status .= instance;
+if $status.faulty-state {
+  note 'State of questionaire: incomplete and/or wrong';
+  for $status.faulty-states.kv -> $name, $state {
+    note "  faulty item: $name";
+  }
+}
+
+else {
+  note 'State of questionaire: ok';
+}

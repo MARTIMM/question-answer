@@ -11,6 +11,7 @@ use Gnome::Gtk3::Button;
 use Gnome::Gtk3::Label;
 
 use QA::Gui::PageSimpleDialog;
+
 use QA::Types;
 use QA::Status;
 
@@ -21,12 +22,11 @@ class EH {
   #---------
   method show-dialog ( ) {
     $!qst-dialog .= new(
-      :qst-name<SimpleTest>,
-      :!show-cancel-warning, :!save-data,
-      :result-handler-object(self), :result-handler-method<display-result>
+      :qst-name<SimpleTest>, :!show-cancel-warning, :!save-data,
     );
 
-    $!qst-dialog.show-sheet;
+    $!qst-dialog.show-qst;
+    $!qst-dialog.clear-object;
   }
 
   #---------
@@ -50,10 +50,6 @@ given my QA::Types $qa-types {
   .cfgloc-userdata('xbin/Data/User');
   .cfgloc-sheet('xbin/Data/Qsts');
   .cfgloc-set('xbin/Data/Sets'); # not used - prevents creating sets.d
-#  note 'dirs ', .list-dirs;
-#  note 'sheets: ', .qa-list(:sheet);
-#  note 'sets: ', .qa-list(:set);
-#  note 'data: ', .qa-list(:userdata);
 }
 
 my Gnome::Gtk3::Label $description .= new(:text(''));
