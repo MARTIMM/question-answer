@@ -1,4 +1,4 @@
-use v6.d;Page
+use v6.d;
 
 use QA::Set;
 use QA::Questionaire;
