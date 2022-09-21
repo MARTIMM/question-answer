@@ -10,6 +10,7 @@ use Gnome::Gtk3::Label;
 
 use QA::Gui::PageSimpleWindow;
 use QA::Types;
+use QA::Status;
 
 #-------------------------------------------------------------------------------
 class EH {
@@ -17,24 +18,16 @@ class EH {
 
   #---------
   method show-window ( :$app-window ) {
-    with my Gnome::Gtk3::Window $window .= new {
-      .set-title('questionaire in window');
-      .set-transient-for($app-window);
-    }
+    my Gnome::Gtk3::Window $window .= new;
+    $window.set-title('questionaire in window');
+    $window.set-transient-for($app-window);
 
     $!qst-window .= new(
-      :qst-name<SimpleTest>,
-      :!show-cancel-warning, :!save-data
-      :widget($window),
-      :result-handler-object(self), :result-handler-method<display-result>
+      :qst-name<SimpleTest>, :!show-cancel-warning, :!save-data,
+      :widget($window)
     );
 
-    $!qst-window.show-qst;
-  }
-
-  #---------
-  method display-result ( Hash $result-user-data ) {
-    $!qst-window.show-hash($result-user-data);
+    $window.show-all;
   }
 
   #---------

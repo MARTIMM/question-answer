@@ -23,9 +23,6 @@ also is QA::Gui::Dialog;
 also does QA::Gui::PageTools;
 
 #-------------------------------------------------------------------------------
-has Bool $!show-cancel-warning;
-
-#-------------------------------------------------------------------------------
 # initialize the Gtk Dialog
 submethod new ( |c ) {
   self.bless( :GtkDialog, |c);
@@ -47,7 +44,7 @@ submethod BUILD (
 
   # set the grid and fill it
   self.set-grid(self);
-  self.set-grid-content(self);
+  self.set-grid-content('Simple');
 
   # add some buttons specific for this notebook
   self.add-button( 'cancel', GTK_RESPONSE_CANCEL);
