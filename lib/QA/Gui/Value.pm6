@@ -58,7 +58,7 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
 
   $input //= '';
 
-note "process-widget-input, $input-widget, $input, $row, $do-check";
+#note "process-widget-input, $input-widget, $input, $row, $do-check";
 
   self.check-widget-value( $input-widget, $input, :$row) if $do-check;
 
