@@ -57,50 +57,6 @@ pages:
             maximum: 10
             tooltip: 4 to 10 chars
 
-          - name: onedirname
-            fieldtype: QAFileChooser
-            description: One directory
-            title: Select a directory
-            options:
-              action: select
-
-          - name: an-image
-            fieldtype: QAImage
-            description: A Picture
-            title: Select an Image
-            width: 100
-
-          - name: filename
-            fieldtype: QAFileChooser
-            description: Your files
-            title: Select Files
-            repeatable: true
-            selectlist:
-              - Config
-              - Output
-              - Log
-
-          - name: more-image
-            fieldtype: QAImage
-            description: A Picture
-            title: Select an Image
-            height: 200
-            width: 200
-            repeatable: true
-            selectlist:
-              - Icon
-              - P2
-              - Etc
-
-          - name: description
-            fieldtype: QATextView
-            description: Description of this input field
-            title: Description
-            required: false
-            repeatable: true
-            minimum: 5
-            tooltip: At least 5 words
-
   - page-name: page2
     description: Something new.
     title: 2nd Specification

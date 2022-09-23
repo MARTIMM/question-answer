@@ -1,12 +1,9 @@
 #tl:1:QA::Gui::PageDialog
 use v6.d;
 
-#use Gnome::N::X;
-
 use Gnome::Gtk3::Enums;
 use Gnome::Gtk3::Dialog;
 
-use QA::Types;
 use QA::Status;
 
 use QA::Gui::Dialog;
@@ -21,9 +18,6 @@ use QA::Gui::PageTools;
 unit class QA::Gui::PageStackDialog:auth<github:MARTIMM>;
 also is QA::Gui::Dialog;
 also does QA::Gui::PageTools;
-
-#-------------------------------------------------------------------------------
-has Bool $!show-cancel-warning;
 
 #-------------------------------------------------------------------------------
 # initialize the Gtk Dialog
@@ -47,7 +41,7 @@ submethod BUILD (
 
   # set the grid and fill it
   self.set-grid(self);
-  self.set-grid-content(self);
+  self.set-grid-content('Stack');
 
   # add some buttons specific for this stack
   # :default now in config button map
@@ -55,4 +49,6 @@ submethod BUILD (
   self.add-button( 'save-continue', GTK_RESPONSE_APPLY);
   self.add-button( 'save-quit', GTK_RESPONSE_OK);
   self.add-button( 'help-info', GTK_RESPONSE_HELP);
+
+  QA::Status.instance.clear-status;
 }
