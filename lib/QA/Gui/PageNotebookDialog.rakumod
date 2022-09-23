@@ -18,9 +18,6 @@ also is QA::Gui::Dialog;
 also does QA::Gui::PageTools;
 
 #-------------------------------------------------------------------------------
-has Bool $!show-cancel-warning;
-
-#-------------------------------------------------------------------------------
 # initialize the Gtk Dialog
 submethod new ( |c ) {
   self.bless( :GtkDialog, |c);
@@ -34,7 +31,7 @@ submethod BUILD (
   $!qst .= new( :$!qst-name, :versioned);
 
   self.load-user-data($user-data);
-  self.set-style('QAPageStack');
+  self.set-style('QAPageNotebook');
 
   with $!qst {
     self.set-dialog-size( .width, .height);
@@ -42,7 +39,7 @@ submethod BUILD (
 
   # set the grid and fill it
   self.set-grid(self);
-  self.set-grid-content(self);
+  self.set-grid-content('Notebook');
 
   # add some buttons specific for this stack
   self.add-button( 'cancel', GTK_RESPONSE_CANCEL);
