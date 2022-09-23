@@ -386,10 +386,10 @@ method qa-load( Str:D $qa-filename, *%options --> Hash ) {
         $path ~~ s/ ':' \d ** 3 '.' //;
         $data = $loader($path.IO.slurp);
       }
+    }
 
-      else {
-        note "File '$qa-path' not found, an empty Hash is returned";
-      }
+    if !$data {
+      note "File '$qa-path' not found, an empty Hash is returned";
     }
 
     $data // %();
@@ -405,13 +405,13 @@ method qa-load( Str:D $qa-filename, *%options --> Hash ) {
 
     when QATOML {
       load-hash(
-        $user-path ?? $qa-path !!  $qa-path ~ ".toml-qa$extension", &from-toml
+        $user-path ?? $qa-path !! $qa-path ~ ".toml-qa$extension", &from-toml
       );
     }
 
     when QAYAML {
       load-hash(
-        $user-path ?? $qa-path !!  $qa-path ~ ".yaml-qa$extension", &load-yaml
+        $user-path ?? $qa-path !! $qa-path ~ ".yaml-qa$extension", &load-yaml
       );
     }
   }
