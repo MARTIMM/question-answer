@@ -6,10 +6,9 @@ use Gnome::N::GlibToRakuTypes;
 
 use Gnome::Gtk3::Enums;
 use Gnome::Gtk3::Dialog;
+use Gnome::Gtk3::Widget;
 
-use QA::Types;
 use QA::Status;
-
 use QA::Gui::PageTools;
 
 #-------------------------------------------------------------------------------
