@@ -313,9 +313,9 @@ method set-style ( Str:D $class-name ) {
 }
 
 #-------------------------------------------------------------------------------
-method load-user-data ( Hash $user-data ) {
+method load-user-data ( ) {
   my QA::Types $qa-types .= instance;
-  $!user-data = $user-data // $qa-types.qa-load( $!qst-name, :userdata);
+  $!user-data = $qa-types.qa-load( $!qst-name, :userdata);
 }
 
 #-------------------------------------------------------------------------------

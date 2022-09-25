@@ -26,12 +26,12 @@ has Gnome::Gtk3::Widget $!widget;
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
-  Str :$!qst-name, Hash :$user-data? is copy,
+  Str :$!qst-name,
   Bool :$!show-cancel-warning = True, Bool :$!save-data = True,
   Gnome::Gtk3::Widget :$!widget,
 ) {
   $!qst .= new( :$!qst-name, :versioned);
-  self.load-user-data($user-data);
+  self.load-user-data;
   self.set-style('QAPageSimple');
 
   with $!qst {

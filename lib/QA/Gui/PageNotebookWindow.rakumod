@@ -29,12 +29,11 @@ submethod new ( |c ) {
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
-  Str :$!qst-name, Hash :$user-data? is copy,
-  Bool :$!show-cancel-warning = True, Bool :$!save-data = True,
+  Str :$!qst-name, Bool :$!show-cancel-warning = True, Bool :$!save-data = True,
   Gnome::Gtk3::Widget :$!widget,
 ) {
   $!qst .= new( :$!qst-name, :versioned);
-  self.load-user-data($user-data);
+  self.load-user-data;
   self.set-style('QAPageNotebook');
 
   with $!qst {

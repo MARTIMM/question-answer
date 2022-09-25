@@ -42,7 +42,7 @@ also is Gnome::Gtk3::Assistant;
 #-------------------------------------------------------------------------------
 has QA::Questionaire $!qst;
 has Str $!qst-name;
-has Hash $!user-data;
+#has Hash $!user-data;
 has Hash $.result-user-data;
 has Array $!sets = [];
 has Array $!pages = [];
@@ -61,17 +61,14 @@ submethod new ( |c ) {
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
-  Str :$!qst-name, Hash :$user-data? is copy,
-  Bool :$!show-cancel-warning = True, Bool :$!save-data = True
+  Str :$!qst-name, Bool :$!show-cancel-warning = True, Bool :$!save-data = True
 ) {
 
 
   my QA::Types $qa-types .= instance;
 note "ass: $!qst-name, $qa-types.list-dirs()";
+  self.load-user-data;
 
-  $!user-data = $user-data //
-                $qa-types.qa-load( $!qst-name, :userdata) //
-                %();
 
   $!qst .= new(:$!qst-name);
 
