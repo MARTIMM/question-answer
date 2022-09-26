@@ -8,24 +8,25 @@ use QA::Types;
 
 #-------------------------------------------------------------------------------
 # set a few values before initializing
-enum DE <SET SHEET UDATA>;
-my @dirs = <t/Data/Sets t/Data/Sheets t/Data/Userdata>;
-for @dirs -> $d {
-  mkdir $d, 0o700 unless $d.IO.e;
-}
+#enum DE <SET SHEET UDATA>;
+#my @dirs = <t/Data/Sets t/Data/Qsts t/Data/User>;
+#for @dirs -> $d {
+#  mkdir $d, 0o700 unless $d.IO.e;
+#}
 
 given my QA::Types $qa-types {
   .data-file-type(QAYAML);
-  .cfgloc-userdata(@dirs[UDATA]);
-  .cfgloc-sheet(@dirs[SHEET]);
-  .cfgloc-set(@dirs[SET]);
+  .set-root-path('t/Data');
+  .set-data-part('Sets');
+  .set-qsts-part('Qsts');
+  .set-sets-part('User');
 }
 
-my QA::Set $creds .= new(:set-name<credentials>);
+my QA::Set $creds;
 
 #-------------------------------------------------------------------------------
 subtest 'ISO-Test', {
-
+  $creds .= new(:set-name<credentials>);
   isa-ok $creds, QA::Set, '.new(:set-name)';
 }
 
@@ -54,7 +55,7 @@ subtest 'Create questions', {
 #-------------------------------------------------------------------------------
 subtest 'Save, load and change set', {
   $creds.save;
-  ok "@dirs[SET]/credentials.yaml".IO ~~ :e, '.save()';
+  ok "t/Data/credentials.yaml-qaset".IO ~~ :e, '.save()';
 
   my QA::Set $new-creds .= new(:set-name<credentials>);
   my QA::Question $question = $new-creds.get-question('username');
@@ -86,7 +87,7 @@ subtest 'Remove set', {
   my QA::Set $new-creds .= new(:set-name<credentials>);
   ok $new-creds.remove, '.remove()';
   nok $new-creds.remove, 'already removed';
-  ok "@dirs[SET]/credentials.yaml".IO ~~ :!e, 'file removed';
+  ok "t/Data/credentials.yaml-qaset".IO ~~ :!e, 'file removed';
 }
 
 #-------------------------------------------------------------------------------

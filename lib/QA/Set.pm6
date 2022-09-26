@@ -124,7 +124,6 @@ method replace-question ( QA::Question:D $question ) {
 
 #-------------------------------------------------------------------------------
 method set ( --> Hash ) {
-
   %( :$!set-name, :$!title, :$!description, :$!hide,
      questions => [map {.qa-data}, @$!questions // []]
   )
