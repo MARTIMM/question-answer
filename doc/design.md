@@ -36,6 +36,7 @@ my QAManager::Question $pw .= new(:name<password>, :qa-data(%(...)));
 $un.required = True;
 $un.encode = True;
 ```
+TODO; Now questions hold only text. It should also be capable to display images and colors. This also goes for comboboxes, lists and several other input tools.
 
 ## Defining a set of questions
 
