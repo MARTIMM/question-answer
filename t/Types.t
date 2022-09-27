@@ -4,11 +4,11 @@ use Gnome::Gtk3::Entry;
 use QA::Types;
 
 #-------------------------------------------------------------------------------
-enum DE <SET SHEET UDATA>;
-my @dirs = <t/Data/Sets t/Data/Sheets t/Data/Userdata>;
-for @dirs -> $d {
-  mkdir $d, 0o700 unless $d.IO.e;
-}
+#enum DE <SET SHEET UDATA>;
+#my @dirs = <t/Data/Sets t/Data/Sheets t/Data/Userdata>;
+#for @dirs -> $d {
+#  mkdir $d, 0o700 unless $d.IO.e;
+#}
 
 class EH {
   method m1 ( ) { note 'cfg-k1'; };
@@ -18,33 +18,46 @@ class EH {
 my EH $eh .= new;
 my QA::Types $qa-types;
 
+my @opts = ( :set, :sheet, :userdata);
+my @types = < set qst data >;
+my Hash $data;
+
 #-------------------------------------------------------------------------------
 subtest 'QA locations', {
   # set a few values before initializing
   given $qa-types {
-    my List $l = $*DISTRO.is-win
-      ?? ("$*HOME/dataDir/Types/Data", "$*HOME/dataDir/Types/Sets",
-          "$*HOME/dataDir/Types/Sheets")
-      !! ("$*HOME/.config/Types/Data.d", "$*HOME/.config/Types/Sets.d",
-          "$*HOME/.config/Types/Sheets.d");
-    is-deeply .list-dirs, $l, '.list-dirs: ' ~ .list-dirs;
+#    my List $l = $*DISTRO.is-win
+#      ?? ("$*HOME/dataDir/Types/Data", "$*HOME/dataDir/Types/Sets",
+#          "$*HOME/dataDir/Types/Sheets")
+#      !! ("$*HOME/.config/Types/Data.d", "$*HOME/.config/Types/Sets.d",
+#          "$*HOME/.config/Types/Sheets.d");
+#    is-deeply .list-dirs, $l, '.list-dirs: ' ~ .list-dirs;
 
-    .cfg-root('MyRoot');
-    .setup-path(:reset);
-    $l = $*DISTRO.is-win
-      ?? ("$*HOME/dataDir/MyRoot/Data", "$*HOME/dataDir/MyRoot/Sets",
-          "$*HOME/dataDir/MyRoot/Sheets")
-      !! ("$*HOME/.config/MyRoot/Data.d", "$*HOME/.config/MyRoot/Sets.d",
-          "$*HOME/.config/MyRoot/Sheets.d");
-    is-deeply .list-dirs, $l, '.list-dirs: ' ~ .list-dirs;
+    is $qa-types.get-root-path,
+        $*DISTRO.is-win ?? "$*HOME/dataDir/Types" !! "$*HOME/.config/Types",
+        '.get-root-path()';
+
+    mkdir './t/Data/MyRoot', 0o700;
+    .set-root-path('./t/Data/MyRoot');
+
+
+    is $qa-types.get-root-path, './t/Data/MyRoot', '.get-root-path()';
+
+#    .setup-path(:reset);
+#    $l = $*DISTRO.is-win
+#      ?? ("$*HOME/dataDir/MyRoot/Data", "$*HOME/dataDir/MyRoot/Sets",
+#          "$*HOME/dataDir/MyRoot/Sheets")
+#      !! ("$*HOME/.config/MyRoot/Data.d", "$*HOME/.config/MyRoot/Sets.d",
+#          "$*HOME/.config/MyRoot/Sheets.d");
+#    is-deeply .list-dirs, $l, '.list-dirs: ' ~ .list-dirs;
 
     .data-file-type(QAYAML);
-    .cfgloc-userdata(@dirs[UDATA]);
-    .cfgloc-sheet(@dirs[SHEET]);
-    .cfgloc-set(@dirs[SET]);
+#    .cfgloc-userdata(@dirs[UDATA]);
+#    .cfgloc-sheet(@dirs[SHEET]);
+#    .cfgloc-set(@dirs[SET]);
 
-    $l = <t/Data/Userdata t/Data/Sets t/Data/Sheets>;
-    is-deeply .list-dirs, $l, '.list-dirs: ' ~ .list-dirs;
+#    $l = <t/Data/Userdata t/Data/Sets t/Data/Sheets>;
+#    is-deeply .list-dirs, $l, '.list-dirs: ' ~ .list-dirs;
   }
 }
 
@@ -73,11 +86,8 @@ subtest 'Handler admin', {
 
 #-------------------------------------------------------------------------------
 subtest 'Save and load', {
-  my @opts = ( :set, :sheet, :userdata);
-  my Hash $data;
-
   for <yaml json toml> -> $ftype {
-    my Str $fname = "f-$ftype";
+    my Str $fname = "ftest";
 
     if $ftype eq 'yaml' {
       $qa-types.data-file-type(QAYAML);
@@ -91,25 +101,22 @@ subtest 'Save and load', {
       $qa-types.data-file-type(QAJSON);
     }
 
-    for ( SET, SHEET, UDATA) -> $di {
+    for ^3 -> $di {
       $data = %( :a($ftype), @opts[$di]);
       $qa-types.qa-save( $fname, $data, |@opts[$di]);
-      ok (@dirs[$di] ~ "/$fname.$ftype").IO.e,
-        ".save\(:@opts[$di].key()) @dirs[$di]/$fname.$ftype";
+      ok "./t/Data/MyRoot/$fname.$ftype\-qa@types[$di]".IO.e,
+        ".qa-save\(:@opts[$di].key()) ./t/Data/MyRoot/$fname.$ftype\-qa@types[$di]";
 
       my Hash $d = $qa-types.qa-load( $fname, |@opts[$di]);
-      is $d<a>, $ftype, ".load\(:@opts[$di].key()) $ftype";
+      is $d<a>, $ftype, ".qa-load\(:@opts[$di].key()) $ftype";
     }
   }
 }
 
 #-------------------------------------------------------------------------------
 subtest 'Save and load versions', {
-  my @opts = ( :set, :sheet, :userdata);
-  my Hash $data;
-
   for <yaml json toml> -> $ftype {
-    my Str $fname = "f-$ftype";
+    my Str $fname = "ftest";
 
     if $ftype eq 'yaml' {
       $qa-types.data-file-type(QAYAML);
@@ -123,14 +130,14 @@ subtest 'Save and load versions', {
       $qa-types.data-file-type(QAJSON);
     }
 
-    for ( SET, SHEET, UDATA) -> $di {
+    for ^3 -> $di {
       $data = %( :a($ftype), @opts[$di]);
       $qa-types.qa-save( $fname, $data, |@opts[$di], :versioned);
-      ok (@dirs[$di] ~ "/$fname.$ftype").IO.e,
-        ".save\(:@opts[$di].key()) @dirs[$di]/$fname.$ftype";
+      ok "./t/Data/MyRoot/$fname.$ftype\-qa@types[$di]".IO.e,
+        ".qa-save\(:@opts[$di].key()) ./t/Data/MyRoot/$fname.$ftype\-qa@types[$di]";
 
       my Hash $d = $qa-types.qa-load( $fname, |@opts[$di], :versioned);
-      is $d<a>, $ftype, ".load\(:@opts[$di].key()) $ftype";
+      is $d<a>, $ftype, ".qa-load\(:@opts[$di].key()) $ftype";
     }
   }
 
@@ -160,9 +167,8 @@ subtest 'Save and load versions', {
 subtest 'Miscellenous', {
 #  is-deeply $qa-types.qa-list(:set).sort, <f-json f-toml f-yaml>, '.qa-list()';
 
-  my @opts = ( :set, :sheet, :userdata);
   for <yaml json toml> -> $ftype {
-    my Str $fname = "f-$ftype";
+    my Str $fname = "ftest";
 
     if $ftype eq 'yaml' {
       $qa-types.data-file-type(QAYAML);
@@ -176,17 +182,17 @@ subtest 'Miscellenous', {
       $qa-types.data-file-type(QAJSON);
     }
 
-    for ( SET, SHEET, UDATA) -> $di {
-      $qa-types.qa-remove( "f-$ftype", |@opts[$di]);
-      ok "@dirs[SET]/f-$ftype.$ftype".IO ~~ :!e,
-        ".qa-remove\(:@opts[$di].key()) $ftype";
+    for ^3 -> $di {
+      $qa-types.qa-remove( $fname, |@opts[$di]);
+      nok "./t/Data/MyRoot/$fname.$ftype\-qa@types[$di]".IO.e,
+        ".qa-remove\(:@opts[$di].key()) ./t/Data/MyRoot/$fname.$ftype\-qa@types[$di]";
 
       # remove rest if any
-      if $qa-types.qa-remove( "f-$ftype" ~ ':latest', |@opts[$di]) {
+      if $qa-types.qa-remove( $fname ~ ':latest', |@opts[$di]) {
         my Int $version = 1;
         while $qa-types.qa-remove(
-                "f-$ftype:" ~ $version.fmt('%03d'), |@opts[$di])
-        {
+          "f-$ftype:" ~ $version.fmt('%03d'), |@opts[$di]
+        ) {
           $version++;
         }
       }
@@ -195,4 +201,5 @@ subtest 'Miscellenous', {
 }
 
 #-------------------------------------------------------------------------------
+unlink './t/Data/MyRoot';
 done-testing

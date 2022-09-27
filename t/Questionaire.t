@@ -17,9 +17,6 @@ use QA::Types;
 given my QA::Types $qa-types {
   .data-file-type(QAYAML);
   .set-root-path('t/Data');
-  .set-data-part('Sets');
-  .set-qsts-part('Qsts');
-  .set-sets-part('User');
 }
 
 # create some sets
@@ -68,10 +65,10 @@ subtest 'Save and load', {
   $qst.button-map = %( :cancel("stopt u maar"), :save-quit<klaar!>);
 
   $qst.save;
-  ok "t/Data/login.yaml".IO ~~ :e, '.save() login';
+  ok "t/Data/login.yaml-qaqst".IO ~~ :e, '.save() login';
 
   $qst.save-as('login2');
-  ok "t/Data/login2.yaml".IO ~~ :e, '.save-as() login2';
+  ok "t/Data/login2.yaml-qaqst".IO ~~ :e, '.save-as() login2';
 
   $qst .= new(:qst-name<login>);
   is $qst.width, 400, 'reload sheet';
@@ -129,7 +126,7 @@ subtest 'remove sheet', {
   $qst .= new(:qst-name<login>);
   ok $qst.remove, 'login removed';
   nok $qst.remove, 'login already removed';
-  ok "t/Data/login.yaml".IO ~~ :!e, 'file removed';
+  ok "t/Data/login.yaml-qaqst".IO ~~ :!e, 'file removed';
 }
 
 #-------------------------------------------------------------------------------

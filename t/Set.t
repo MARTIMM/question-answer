@@ -17,9 +17,6 @@ use QA::Types;
 given my QA::Types $qa-types {
   .data-file-type(QAYAML);
   .set-root-path('t/Data');
-  .set-data-part('Sets');
-  .set-qsts-part('Qsts');
-  .set-sets-part('User');
 }
 
 my QA::Set $creds;
