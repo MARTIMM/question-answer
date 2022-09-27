@@ -18,6 +18,4 @@ _site
 .jekyll-metadata
 .bundle/
 
-xbin/Data/*
-!xbin/Data/Sets
-!xbin/Data/Qsts
+xbin/Old/*
