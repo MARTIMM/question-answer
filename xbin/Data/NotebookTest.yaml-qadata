@@ -1,0 +1,26 @@
+---
+"page1": 
+  "set-spec": 
+    "description": "sdfsdfv \n \n cvbcvb\n"
+"page2": 
+  "entry-spec": 
+    "callback": ""
+    "check": "xcvxcv cvb"
+    "default": "xcvxcv xcv"
+    "description": "xcvxc xcvv"
+    "encode": true
+    "example": "xcvxcv cvcvb"
+    "fieldtype": "QASwitch"
+    "invisible": false
+    "maximum": "cvbcvb"
+    "minimum": "xcvxcv"
+    "mywidget": "4"
+    "name": "sdfsdf dfgdfg"
+    "required": true
+    "title": "xcvxcv"
+    "tooltip": 
+      - 
+        "tt3": "kjhkjhkjh"
+      - 
+        "tt2": "mnbvmbnv"
+...

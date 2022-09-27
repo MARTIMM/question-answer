@@ -1,0 +1,20 @@
+---
+"page1": 
+  "entry-spec": 
+    "check": ""
+    "name": "dfgdfg"
+    "radio-station": ""
+    "spinbutton": ""
+    "title": ""
+"page2": 
+  "other-spec": 
+    "encode": ""
+    "required": ""
+    "title": ""
+  "secnd-other-spec": 
+    "junk-entry": "dfgdfg"
+"page3": 
+  "some-spec": 
+    "dnd-image":  []
+    "fieldtype": ""
+...
