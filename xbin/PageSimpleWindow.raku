@@ -43,9 +43,8 @@ my EH $eh .= new;
 # modify some path for tests to come
 given my QA::Types $qa-types {
   .data-file-type(QAJSON);
-  .cfgloc-userdata('xbin/Data');
-  .cfgloc-sheet('xbin/Data/Qsts');
-  .cfgloc-set('xbin/Data/Sets'); # not used - prevents creating sets.d
+  .set-root-path('xbin/Data');
+  mkdir 'xbin/Data', 0o700 unless 'xbin/Data'.IO.e;
 }
 
 my Gnome::Gtk3::Label $description .= new(:text(''));

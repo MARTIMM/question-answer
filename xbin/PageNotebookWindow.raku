@@ -112,9 +112,8 @@ my EH $eh .= new;
 # user methods to handle checks and actions
 given my QA::Types $qa-types {
   .data-file-type(QAYAML);
-  .cfgloc-userdata('xbin/Data');
-  .cfgloc-sheet('xbin/Data/Qsts');
-  .cfgloc-set('xbin/Data/Sets'); # not used - prevents creating sets.d
+  .set-root-path('xbin/Data');
+  mkdir 'xbin/Data', 0o700 unless 'xbin/Data'.IO.e;
 }
 
 # Now we can set some more in the current instance after

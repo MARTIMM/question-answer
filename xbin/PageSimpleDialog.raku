@@ -47,9 +47,8 @@ my EH $eh .= new;
 # modify some path for tests to come. Use given because $qa-types is not defined
 given my QA::Types $qa-types {
   .data-file-type(QAJSON);
-  .cfgloc-userdata('xbin/Data/User');
-  .cfgloc-sheet('xbin/Data/Qsts');
-  .cfgloc-set('xbin/Data/Sets'); # not used - prevents creating sets.d
+  .set-root-path('xbin/Data');
+  mkdir 'xbin/Data', 0o700 unless 'xbin/Data'.IO.e;
 }
 
 my Gnome::Gtk3::Label $description .= new(:text(''));

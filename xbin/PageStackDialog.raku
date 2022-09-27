@@ -84,9 +84,8 @@ sub MAIN (
   # modify paths for tests to come.
   given my QA::Types $qa-types {
     .data-file-type(QAYAML);
-    .cfgloc-userdata($data);
-    .cfgloc-sheet($qst);
-    .cfgloc-set('xbin/Data/Sets'); # not used - prevents creating sets.d
+    .set-root-path('xbin/Data');
+    mkdir 'xbin/Data', 0o700 unless 'xbin/Data'.IO.e;
   }
 
   # data structure
