@@ -10,6 +10,9 @@ layout: sidebar
 
 See [semantic versioning](http://semver.org/). Please note point 4. on that page: **_Major version zero (0.y.z) is for initial development. Anything may change at any time. The public API should not be considered stable._**
 
+* 2022-09-27 0.17.0
+  * Removed routines from **QA::Types** which simplified a lot. E.g., all config type of file are stored at the same root location. That location can be changed with `.set-root-path()`. The files are differentiated by their extension, e.g. `.yaml-qaqst` or `.toml-qaset`.
+
 * 2022-08-26 0.16.9
   * **QA::Page** is better named as **QA::Questionaire**.
   * Add an experiment to play with mimetypes. A file in `xbin/t0.mt01` uses an extension which is defined in `/home/marcel/.local/share/mime/packages/application-x-mt01.xml` after mapping the type to a program, clicking on a file with the`.mt01` extension, will run that program using the file as its input. The name is found on the first item of its commandline arguments. The idea behind it, in this case, is that a configuration file can be modified with some question-answer program just by clicking on the config file in a file browser.
