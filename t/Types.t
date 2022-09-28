@@ -26,12 +26,8 @@ my Hash $data;
 subtest 'QA locations', {
   # set a few values before initializing
   given $qa-types {
-#    my List $l = $*DISTRO.is-win
-#      ?? ("$*HOME/dataDir/Types/Data", "$*HOME/dataDir/Types/Sets",
-#          "$*HOME/dataDir/Types/Sheets")
-#      !! ("$*HOME/.config/Types/Data.d", "$*HOME/.config/Types/Sets.d",
-#          "$*HOME/.config/Types/Sheets.d");
-#    is-deeply .list-dirs, $l, '.list-dirs: ' ~ .list-dirs;
+    .data-file-type(QAYAML);
+    nok .get-extension.defined, '.get-extension()';
 
     is $qa-types.get-root-path,
         $*DISTRO.is-win ?? "$*HOME/dataDir/Types" !! "$*HOME/.config/Types",
@@ -39,30 +35,17 @@ subtest 'QA locations', {
 
     mkdir './t/Data/MyRoot', 0o700;
     .set-root-path('./t/Data/MyRoot');
-
-
     is $qa-types.get-root-path, './t/Data/MyRoot', '.get-root-path()';
 
-#    .setup-path(:reset);
-#    $l = $*DISTRO.is-win
-#      ?? ("$*HOME/dataDir/MyRoot/Data", "$*HOME/dataDir/MyRoot/Sets",
-#          "$*HOME/dataDir/MyRoot/Sheets")
-#      !! ("$*HOME/.config/MyRoot/Data.d", "$*HOME/.config/MyRoot/Sets.d",
-#          "$*HOME/.config/MyRoot/Sheets.d");
-#    is-deeply .list-dirs, $l, '.list-dirs: ' ~ .list-dirs;
-
-    .data-file-type(QAYAML);
-#    .cfgloc-userdata(@dirs[UDATA]);
-#    .cfgloc-sheet(@dirs[SHEET]);
-#    .cfgloc-set(@dirs[SET]);
-
-#    $l = <t/Data/Userdata t/Data/Sets t/Data/Sheets>;
-#    is-deeply .list-dirs, $l, '.list-dirs: ' ~ .list-dirs;
+    .set-extension('my-ext');
+    is .get-file-path( 'config', :set), './t/Data/MyRoot/config.my-extset',
+       '.set-extension() / .get-file-path()';
   }
 }
 
 #-------------------------------------------------------------------------------
 subtest 'ISA test', {
+  $qa-types.set-extension(Str);
   $qa-types .= instance;
   isa-ok $qa-types, QA::Types, '.instance()';
 }

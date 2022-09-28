@@ -241,6 +241,11 @@ method set-extension ( Str $extension? ) {
 }
 
 #-------------------------------------------------------------------------------
+method get-extension ( --> Str ) {
+  $qa-extension
+}
+
+#-------------------------------------------------------------------------------
 #TM:1:set-versioned-files
 =begin pod
 =head2 set-versioned-files
@@ -347,7 +352,7 @@ Only one of the options C<:sheet>, C<:set> or C<:userdata> must be used to load 
 
 #tm:1:qa-load
 method qa-load( Str:D $qa-filename, *%options --> Hash ) {
-  my Str $path = self!get-file-path( $qa-filename, %options);
+  my Str $path = self.get-file-path( $qa-filename, |%options);
 
   given $data-file-type {
     when QAJSON {
@@ -365,7 +370,7 @@ method qa-load( Str:D $qa-filename, *%options --> Hash ) {
 }
 
 #-------------------------------------------------------------------------------
-method !get-file-path ( Str:D $qa-filename, %options --> Str ) {
+method get-file-path ( Str:D $qa-filename, *%options --> Str ) {
   my Str $basename;
   my Str $path;
   my Str $extension;
@@ -411,16 +416,17 @@ method !get-file-path ( Str:D $qa-filename, %options --> Str ) {
   }
 
   given $data-file-type {
+    my Str $e = "$qa-extension$extension" if $qa-extension;
     when QAJSON {
-      $path ~= '.' ~ ($qa-extension // "json-qa$extension");
+      $path ~= '.' ~ ($e // "json-qa$extension");
     }
 
     when QATOML {
-      $path ~= '.' ~ ($qa-extension // "toml-qa$extension");
+      $path ~= '.' ~ ($e // "toml-qa$extension");
     }
 
     when QAYAML {
-      $path ~= '.' ~ ($qa-extension // "yaml-qa$extension");
+      $path ~= '.' ~ ($e // "yaml-qa$extension");
     }
   }
 
@@ -480,7 +486,7 @@ The filenames of any the data files is simple at first. Just a name with an exte
 
 #tm:1:qa-save
 method qa-save( Str:D $qa-filename, Hash $qa-data, *%options ) {
-  my Str $path = self!get-file-path( $qa-filename, %options);
+  my Str $path = self.get-file-path( $qa-filename, |%options);
 
   given $data-file-type {
     when QAJSON {
@@ -557,7 +563,7 @@ True or False is returned depending on success
 
 #tm:1:qa-remove
 method qa-remove ( Str:D $qa-filename, *%options --> Bool ) {
-  my Str $path = self!get-file-path( $qa-filename, %options);
+  my Str $path = self.get-file-path( $qa-filename, |%options);
 
   my Bool $path-exists = $path.IO.e;
   unlink $path if $path-exists;
