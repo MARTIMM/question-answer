@@ -2,11 +2,13 @@
 
 show-cancel-warning: true
 show-data-on-exit: true
-store-type: yaml
-qst-type: stack
 
 path: /home/marcel/Languages/Raku/Projects/question-answer/xbin/Data
-data: User
-qsts: Qsts
+store-type: yaml
+#versioned: true
+#version: 0
+
+qst-type: stack
+
 
 questionaire: StackTest
