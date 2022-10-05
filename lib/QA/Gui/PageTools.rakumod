@@ -322,8 +322,7 @@ method load-user-data ( ) {
 method save-data ( ) {
   $!result-user-data = $!user-data;
   my QA::Types $qa-types .= instance;
-  $qa-types.qa-save( $!qst-name, $!result-user-data, :userdata)
-    if $!save-data;
+  $qa-types.qa-save( $!qst-name, $!result-user-data, :userdata) if $!save-data;
 }
 
 #-------------------------------------------------------------------------------
