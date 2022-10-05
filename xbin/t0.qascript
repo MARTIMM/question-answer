@@ -10,5 +10,17 @@ store-type: yaml
 
 qst-type: stack
 
+checks:
+  QA::StackTest:
+    check-char:
+
+actions:
+  QA::StackTest:
+    fieldtype-action1:
+
+
+user-input-widgets:
+  QA::StackTestUWidget
+
 
 questionaire: StackTest
