@@ -209,6 +209,16 @@ method data-file-type ( QAFileType $ftype? ) {
 }
 
 #-------------------------------------------------------------------------------
+#TM:1:
+=begin pod
+=end pod
+
+my Str $data-file-name;
+method data-file-name ( Str $fname? ) {
+  $data-file-name = $fname // Str;
+}
+
+#-------------------------------------------------------------------------------
 #TM:1:set-path
 =begin pod
 =head2 set-path
@@ -370,7 +380,7 @@ method qa-load( Str:D $qa-filename, *%options --> Hash ) {
 }
 
 #-------------------------------------------------------------------------------
-method get-file-path ( Str:D $qa-filename, *%options --> Str ) {
+method get-file-path ( Str $qa-filename? is copy, *%options --> Str ) {
   my Str $basename;
   my Str $path;
   my Str $extension;
@@ -385,11 +395,13 @@ method get-file-path ( Str:D $qa-filename, *%options --> Str ) {
 
   elsif %options<userdata>:exists {
     $extension = 'data';
+    $qa-filename = $data-file-name if ?$data-file-name;
   }
 
   else {
     die 'No type option :sheet, :set or :userdata found';
   }
+
 
   # Use the global path if it is defined
   if ?$qa-path {
@@ -579,7 +591,7 @@ set-action-handler is used to set a user defined callback handler. When in a que
   method set-action-handler (
     Str:D $action-key, Mu:D $handler-object,
     Str $method-name = $action-key,
-    Str :$module-name?, Str :$class-name?
+    Str :$module-name?, Str :$class-name?,
     *%options
   )
 
@@ -654,7 +666,9 @@ method get-action-handler ( Str:D $action-key --> Array ) {
 set-check-handler is used to set a user defined callback handler. When in a question the callback field spec has a value of C<$check-key>, the value of it is used to find the callback. The purpose is to check an input from the sheet.
 
   method set-check-handler (
-    Str:D $check-key, Mu:D $handler-object, Str:D $method-name,
+    Str:D $check-key, Mu:D $handler-object,
+    Str:D $method-name = $check-key,
+    Str :$module-name?, Str :$class-name?,
     *%options
   )
 
@@ -666,8 +680,35 @@ set-check-handler is used to set a user defined callback handler. When in a ques
 
 #tm:1:set-check-handler
 method set-check-handler (
-  Str:D $check-key, Mu:D $handler-object, Str:D $method-name, *%options
+  Str:D $check-key, Mu $handler-object is copy = '',
+  Str:D $method-name? is copy, Str :$module-name = '',
+  Str :$class-name = '', *%options
 ) {
+  $method-name = ?$method-name ?? $method-name !! $check-key;
+
+  unless $handler-object {
+    if ?$module-name {
+      try require ::($module-name);
+      if ::($module-name) ~~ Failure {
+        die "Failed to load $module-name!";
+      }
+
+      if ?$class-name {
+        $handler-object = ::($class-name).new;
+      }
+
+      else {
+        $handler-object = ::($module-name).new;
+      }
+    }
+
+    else {
+      die 'No handler object nor module name provided';
+    }
+  }
+
+  die "Method $method-name not found in provided handler or module {$handler-object.^name}" unless $handler-object.^can($method-name);
+
   $!user-objects<checks>{$check-key} = [
     $handler-object, $method-name, %options
   ];
@@ -695,7 +736,7 @@ method get-check-handler ( Str:D $check-key --> Array ) {
 
 #-------------------------------------------------------------------------------
 =begin pod
-=head2 set-widget-object
+=head2 set-user-input-widget
 
 Store a user defined input widget using the C<$widget-key>.
 The provided C<$widget-object> must conform to some rules like any other input widget in this system. The rules are;
@@ -711,7 +752,7 @@ Have a signal registered so it can respond to user input or focus changes.
 =end item
 B< >
 
-  method set-widget-object (
+  method set-user-input-widget (
     Str:D $widget-key, Mu:D $widget-object
   )
 
@@ -760,13 +801,13 @@ An example widget could be something like the one shown below. This widget shows
 
   # init ...
   my QA::Types $qa-types .= instance;
-  $qa-types.set-widget-object( 'my-widget', MyWidget.new);
+  $qa-types.set-user-input-widget( 'my-widget', MyWidget.new);
 
 
 =end pod
 
-#tm:1:set-widget-object
-method set-widget-object ( Str:D $widget-key, Mu:D $widget-object ) {
+#tm:1:set-user-input-widget
+method set-user-input-widget ( Str:D $widget-key, Mu:D $widget-object ) {
   $!user-objects<widgets>{$widget-key} = $widget-object;
 }
 

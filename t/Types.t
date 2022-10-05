@@ -62,9 +62,9 @@ subtest 'Handler admin', {
     '.set-action-handler() / .get-action-handler()';
 
   my Gnome::Gtk3::Entry $e .= new;
-  $qa-types.set-widget-object( 'e-key', $e);
+  $qa-types.set-user-input-widget( 'e-key', $e);
   is $qa-types.get-widget-object('e-key'), $e,
-    '.set-widget-object() / .get-widget-object()'
+    '.set-user-input-widget() / .get-widget-object()'
 }
 
 #-------------------------------------------------------------------------------

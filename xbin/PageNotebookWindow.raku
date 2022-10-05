@@ -66,7 +66,7 @@ class EH {
 
   method show-notebook ( Str:D :$qst-name ) {
     my QA::Types $qa-types .= instance;
-    $qa-types.set-widget-object( 'use-my-widget', MyWidget.new);
+    $qa-types.set-user-input-widget( 'use-my-widget', MyWidget.new);
 
     my Gnome::Gtk3::Window $window .= new;
     $window.set-title('questionaire in window');

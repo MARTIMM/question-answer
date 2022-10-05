@@ -69,7 +69,7 @@ class EH {
     # destroys everything on it including this objects native objects.
     # we need to rebuild it everytime the dialog is (re)run.
     my QA::Types $qa-types .= instance;
-    $qa-types.set-widget-object( 'use-my-widget', MyWidget.new);
+    $qa-types.set-user-input-widget( 'use-my-widget', MyWidget.new);
 
     $!qst-dialog .= new(
       :qst-name<NotebookTest>, :show-cancel-warning, :save-data
