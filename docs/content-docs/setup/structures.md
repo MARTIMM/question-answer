@@ -168,7 +168,7 @@ The formats used are shown below for each input type with the variables which co
 
 <br/>
 
-| Field Type              | Used letter in table header| Implemented |
+| Field Type              | In table header below      | Implemented |
 |-------------------------|----------------------------|-------------|
 |**QACheckButton**        | Cb                         | ✓           |
 |**QAColorChooser**       | Cc                         |             |
@@ -188,23 +188,26 @@ The formats used are shown below for each input type with the variables which co
 |             |En|Cb|Co|Im|Li|Rb|Sc|Sw|Tv|Tb|Cc|Fc|Sp|Uw|
 |-------------|--|--|--|--|--|--|--|--|--|--|--|--|--|--|
 |action-cb    |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
-|buttons      |o |- |- |o |- |- |- |- |  |- |o |o |  |  | <!-- optional? -->
 |check-cb     |o |- |- |  |  |- |  |  |o |  |  |  |  |  |
 |default      |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
 |description  |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
-|fieldlist    |- |! |! |- |! |! |  |  |  |  |  |  |  |o | <!-- optional? -->
+|fieldlist    |- |! |! |- |! |! |  |  |  |  |  |  |  |o |
 |fieldtype    |o |! |! |! |! |! |! |! |! |! |! |! |! |! |
-|height       |- |- |- |o |  |- |  |  |o |  |  |  |  |o | <!-- optional? -->
-|hide         |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
+|height       |- |- |- |o |  |- |  |  |o |  |  |  |  |o |
 |name         |! |! |! |! |! |! |! |! |! |! |! |! |! |! |
 |options      |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
-|repeatable   |o |- |- |o |  |- |  |  |  |  |o |o |  |  | <!-- optional? -->
+|repeatable   |o |- |- |o |  |- |  |  |  |  |o |o |  |  |
 |required     |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
-|selectlist   |o |- |- |o |- |- |- |- |- |- |o |o |- |  | <!-- optional? -->
+|selectlist   |o |- |- |o |- |- |- |- |- |- |o |o |- |  |
 |title        |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
 |tooltip      |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
 |userwidget   |- |- |- |- |- |- |- |- |- |- |- |- |- |! |
-|width        |- |- |- |o |  |- |  |  |  |  |  |  |  |  | <!-- optional? -->
+|width        |- |- |- |o |  |- |  |  |  |  |  |  |  |  |
+
+<!--
+|buttons      |o |- |- |o |- |- |- |- |  |- |o |o |  |  |
+|hide         |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
+-->
 
 ## Sheet
 

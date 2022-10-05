@@ -247,7 +247,7 @@ The method returns an array with the following items;
 
     method get-check-handler ( Str:D $check-key --> Array )
 
-set-widget-object
+set-user-input-widget
 -----------------
 
 Store a user defined input widget using the `$widget-key`. The provided `$widget-object` must conform to some rules like any other input widget in this system. The rules are;
@@ -268,7 +268,7 @@ Store a user defined input widget using the `$widget-key`. The provided `$widget
 
 ****
 
-    method set-widget-object (
+    method set-user-input-widget (
       Str:D $widget-key, Mu:D $widget-object
     )
 
@@ -318,7 +318,7 @@ An example widget could be something like the one shown below. This widget shows
 
     # later ...
     my QA::Types $qa-types .= instance;
-    $qa-types.set-widget-object( 'my-widget', MyWidget.new);
+    $qa-types.set-user-input-widget( 'my-widget', MyWidget.new);
 
 get-widget-object
 -----------------

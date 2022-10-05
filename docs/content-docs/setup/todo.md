@@ -66,6 +66,12 @@ This is an action like a change of an input widget value, set or page change. Po
   * [ ] Append data
   * [ ] Replace data
 
+
+## Naming of files and extensions
+* [x] Change extensions into a more descriptive one. Now `.json`, `.toml` and `.yaml`. This only describes its format. It should become `.<format>-qa<type>` where format is any of `json`, `toml` or `yaml`. Type is one of `qst`, `set` or `data`. For example `.yaml-qagst` for a questionaire. `set` is  for parts of a questionaire and `data` id for the result.
+* [x] The locations of the files are in a sheets, sets or data directory. Now the files can be distinquished by their extensions, this separation is not needed anymore. They can now be placed together in one directory.
+* [x] The data file is named after the questionaire. For single configurations, this is a good enough solution. Questionaires can also be used as a test or an interview. Those results are always stored in different files. Therefore there must be a way to set the name of the results file.
+
 <!--
 -->
 <!--
