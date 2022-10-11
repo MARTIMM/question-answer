@@ -65,6 +65,8 @@ class QstDialog {
 }
 
 #-------------------------------------------------------------------------------
+#note "\nstart env: %*ENV<RAKULIB>";
+
 # Get commandline options
 my Str $lib-path;
 my Str $script;
@@ -82,6 +84,7 @@ my Str $qst-name;
     # Change module search paths%*ENV<RAKULIB>
     %*ENV<RAKULIB> =
       %*ENV<RAKULIB>:exists ?? %*ENV<RAKULIB> ~ ",$lib-path" !! $lib-path;
+#note 'modify env: ', %*ENV<RAKULIB>;
 
     # Turn on debugging
     #%*ENV<RAKUDO_MODULE_DEBUG> = 1;
@@ -93,7 +96,7 @@ my Str $qst-name;
         |@*ARGS;
 
     # Restart in background and exit this program
-note 'restart with: ', @cmd.join(' ') ~ ' &';
+#note 'restart with: ', @cmd.join(' ') ~ ' &';
     shell @cmd.join(' ') ~ ' &';
     exit;
   }
@@ -126,7 +129,7 @@ my Int $version = $cfg<version> // 0;
 $qst-name //= $cfg<questionaire> // Str;
 
 # if -D is not set take the name from script for data store
-$data-file-name //= $cfg<data-file-name>;
+$data-file-name //= $cfg<data-file-name> // Str;
 
 my Bool $show-cancel-warning = $cfg<show-cancel-warning> // False;
 my Bool $show-data-on-exit = $cfg<show-data-on-exit> // False;
@@ -162,6 +165,7 @@ if $cfg<check-callbacks>:exists {
   for $cfg<check-callbacks>.keys -> $module-name {
     #my Str $module = $cfg<check-callbacks>{$module-name};
     for @($cfg<check-callbacks>{$module-name}) -> $callback {
+note "set check callback: $module-name, $callback";
       $qa-types.set-check-handler( $callback, :$module-name);
     }
   }
