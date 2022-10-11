@@ -680,17 +680,21 @@ set-check-handler is used to set a user defined callback handler. When in a ques
 
 #tm:1:set-check-handler
 method set-check-handler (
-  Str:D $check-key, Mu $handler-object is copy = '',
-  Str:D $method-name? is copy, Str :$module-name = '',
-  Str :$class-name = '', *%options
+  Str:D $check-key, Mu $handler-object is copy = '', Str $method-name? is copy,
+  Str :$module-name = '', Str :$class-name = '', *%options
 ) {
   $method-name = ?$method-name ?? $method-name !! $check-key;
 
+note "set-check-handler: $check-key, $module-name, $method-name, $class-name, %*ENV<RAKULIB>";
   unless $handler-object {
     if ?$module-name {
-      try require ::($module-name);
+      { try require ::($module-name);
+        CATCH { .note }
+      }
+      
       if ::($module-name) ~~ Failure {
-        die "Failed to load $module-name!";
+        ::($module-name).self.note;
+        die "Failed to load $module-name: ", ::($module-name).exception;
       }
 
       if ?$class-name {

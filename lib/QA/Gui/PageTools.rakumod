@@ -33,13 +33,14 @@ has QA::Questionaire $!qst;
 has Str $!qst-name;
 
 has Hash $.result-user-data;
-has Hash $!user-data;
+has Hash $.user-data;
 has Bool $!save-data;
 has Bool $!show-cancel-warning;
 has $!container;
 
 state Gnome::Gtk3::Grid $button-grid;
 state Int $button-count = 0;
+has Array $buttons = [];
 
 #has Gnome::Gtk3::Stack $!stack;
 
@@ -207,18 +208,25 @@ method add-button (
   Str:D $widget-name, GtkResponseType:D $response-type,
   Bool :$is-dialog = True
 ) {
+  my Hash $button-map = $!qst.button-map // %();
+  return unless $button-map{$widget-name}:exists;
+
 #  state Gnome::Gtk3::Grid $button-grid;
 #  state Int $button-count = 0;
 
 note "add button $widget-name, $response-type, $is-dialog";
 
-  # it is possible that button is undefined
+  # ???? it is possible that button is undefined
   my Gnome::Gtk3::Button $button = self!create-button(
-    $widget-name, :$is-dialog, :$response-type
+    $widget-name, $button-map, :$is-dialog, :$response-type
   );
 
-note "$button.get-name()";
-  my Hash $button-map = $!qst.button-map // %();
+  # Store button. This makes it possible to hook signals from user to it.
+  # Enum value is negative!
+  $!buttons[$response-type.value.abs] = $button;
+
+#note "$button.get-name()";
+#  my Hash $button-map = $!qst.button-map // %();
   $button.set-can-default(True) if ? $button-map{$widget-name}<default>;
 
   if $is-dialog {
@@ -228,7 +236,7 @@ note "$button.get-name()";
 
   else {
     if not $button-grid.defined {
-note 'new button grid';
+#note 'new button grid';
       # create an empty box which wil push all buttons to the right
       with my Gnome::Gtk3::Box $strut .= new {
         .set-hexpand(True);
@@ -251,20 +259,22 @@ note 'new button grid';
 
 #-------------------------------------------------------------------------------
 method !create-button (
-  Str $widget-name, Bool :$is-dialog = True, GtkResponseType:D :$response-type
+  Str $widget-name, Hash $button-map, Bool :$is-dialog = True,
+  GtkResponseType:D :$response-type
   --> Gnome::Gtk3::Button
 ) {
   # change text of label on button when defined in the button map structure
-  my Hash $button-map = $!qst.button-map // %();
+#  my Hash $button-map = $!qst.button-map // %();
   my Str $button-text = $button-map{$widget-name}<name> // $widget-name;
 
   # uppercase first letter of every word.
   $button-text = $button-text.split(/<[-_\s]>+/)>>.tc.join(' ');
-note "button text: $button-text";
+note "button text: $button-text, $response-type";
 
   # create button and change some other parameters
   my Gnome::Gtk3::Button $button .= new(:label($button-text));
   $button.set-name($widget-name);
+note $button.gist;
 
   unless $is-dialog {
     given $response-type {
@@ -287,6 +297,14 @@ note "button text: $button-text";
   }
 
   $button
+}
+
+#-------------------------------------------------------------------------------
+method set-callback (
+  GtkResponseType:D $response-type, Mu:D $handler-object, Str:D $handler-method
+) {
+  my Gnome::Gtk3::Button $button = $!buttons[$response-type.value.abs];
+  $button.register-signal( $handler-object, $handler-method, 'clicked');
 }
 
 #-------------------------------------------------------------------------------
@@ -321,6 +339,8 @@ method load-user-data ( ) {
 #-------------------------------------------------------------------------------
 method save-data ( ) {
   $!result-user-data = $!user-data;
+note 'save-data: ', $!result-user-data.gist;
+
   my QA::Types $qa-types .= instance;
   $qa-types.qa-save( $!qst-name, $!result-user-data, :userdata) if $!save-data;
 }
@@ -472,6 +492,7 @@ method ok-response ( ) {
 }
 
 #-------------------------------------------------------------------------------
+#multi method apply-response ( ) {
 method apply-response ( ) {
 
   my QA::Status $status .= instance;
@@ -485,6 +506,9 @@ method apply-response ( ) {
   else {
     self.save-data;
   }
+
+#note 'call user apply';
+#  nextwith($!result-user-data);
 }
 
 #-------------------------------------------------------------------------------
@@ -525,4 +549,5 @@ method !reset-button-grid ( ) {
 
   $button-count = 0;
   $button-grid = Nil;
+  $!buttons = [];
 }
