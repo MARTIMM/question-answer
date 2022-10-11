@@ -10,11 +10,11 @@ store-type: yaml
 
 qst-type: stack
 
-checks:
+check-callbacks:
   QA::StackTest:
     check-char:
 
-actions:
+action-callbacks:
   QA::StackTest:
     fieldtype-action1:
 
