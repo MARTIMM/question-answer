@@ -68,7 +68,7 @@ method create-widget ( Int() :$row --> Any ) {
   with my Gnome::Gtk3::FileChooserButton $fcb .= new(:$title) {
     .set-hexpand(True);
     .set-vexpand(True);
-    .set_filter($filter);
+    .set-filter($filter);
     .set-border-width(2) if ?$!dnd-targets;
     .register-signal( self, 'input-change-handler', 'file-set', :$row);
     .register-signal( self, 'must-hide', 'show');
