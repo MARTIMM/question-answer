@@ -165,7 +165,6 @@ if $cfg<check-callbacks>:exists {
   for $cfg<check-callbacks>.keys -> $module-name {
     #my Str $module = $cfg<check-callbacks>{$module-name};
     for @($cfg<check-callbacks>{$module-name}) -> $callback {
-note "set check callback: $module-name, $callback";
       $qa-types.set-check-handler( $callback, :$module-name);
     }
   }

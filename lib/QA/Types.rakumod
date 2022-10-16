@@ -656,7 +656,14 @@ The method returns an array with the following items;
 
 #tm:1:get-action-handler
 method get-action-handler ( Str:D $action-key --> Array ) {
-  $!user-objects<actions>{$action-key}
+  if $!user-objects<actions>{$action-key}:exists {
+    $!user-objects<actions>{$action-key}
+  }
+
+  else {
+    note "Action key '$action-key' is not found. Did you register?";
+    []
+  }
 }
 
 #-------------------------------------------------------------------------------
