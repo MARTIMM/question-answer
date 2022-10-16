@@ -12,6 +12,7 @@ See [semantic versioning](http://semver.org/). Please note point 4. on that page
 
 * 2022-09-27 0.17.0
   * Removed routines from **QA::Types** which simplified a lot. E.g., all config type of file are stored at the same root location. That location can be changed with `.set-root-path()`. The files are differentiated by their extension, e.g. `.yaml-qaqst` or `.toml-qaset`.
+  * Sometime soon I will remove the dialog versions so to cleanup some code. When one wants to use a dialog to present questions just provide an empty window and it will look like it is a dialog window.
 
 * 2022-08-26 0.16.9
   * **QA::Page** is better named as **QA::Questionaire**.
