@@ -688,13 +688,26 @@ method set-check-handler (
 note "set-check-handler: $check-key, $module-name, $method-name, $class-name, %*ENV<RAKULIB>";
   unless $handler-object {
     if ?$module-name {
-      { try require ::($module-name);
-        CATCH { .note }
-      }
-      
+      try require ::($module-name);
+
       if ::($module-name) ~~ Failure {
-        ::($module-name).self.note;
-        die "Failed to load $module-name: ", ::($module-name).exception;
+        # Error is not extremely clear, it might be some syntax error which
+        # does not show up
+        note "\n\nFailed to load $module-name: ", ::($module-name).exception;
+        "__$module-name.test-program__.raku".IO.spurt(Q:s:to/EOTEST/);
+          use $module-name;
+          EOTEST
+        my Proc $p = shell "raku -Ilib __$module-name.test-program__.raku", :err, :out;
+        note "\nError messages\n";
+        for $p.err.lines  { .note; }
+        $p.err.close;
+        #for $p.out.lines  {  }
+        $p.out.close;
+
+        unlink "__$module-name.test-program__.raku";
+
+        #::($module-name).self.note;
+        #die "Failed to load $module-name: ", ::($module-name).exception;
       }
 
       if ?$class-name {
