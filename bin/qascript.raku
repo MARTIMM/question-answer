@@ -152,10 +152,10 @@ given my QA::Types $qa-types {
   .set-root-path($path);
   .set-extension($extension) if ?$extension;
 
-  note "\n\nQuestionaire: ", $qa-types.get-file-path( $qst-name, :sheet);
-  note 'Results: ', $qa-types.get-file-path(
-    ?$data-file-name ?? $data-file-name !! $qst-name, :userdata
-  );
+#  note "\n\nQuestionaire: ", $qa-types.get-file-path( $qst-name, :sheet);
+#  note 'Results: ', $qa-types.get-file-path(
+#    ?$data-file-name ?? $data-file-name !! $qst-name, :userdata
+#  );
 }
 
 # Search for any external modules, program may be started using -I option
