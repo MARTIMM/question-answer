@@ -47,6 +47,9 @@ use QA::Types;
 
 use Gnome::Gtk3::Window;
 use Gnome::Gtk3::Main;
+use Gnome::Gtk3::StyleContext;
+use Gnome::Gtk3::StyleProvider;
+use Gnome::Gtk3::CssProvider;
 
 use Getopt::Long;
 
@@ -114,109 +117,29 @@ my Str $qst-name;
 
 note
 
+
+
+my QstDialog $qdialog .= new;
+my Window $window .= new;
+
 $script = @*ARGS[0];
-
-
 my Hash $cfg = load-yaml($script.IO.slurp);
-
-# Find and modify paths
-my Str $path = $cfg<path> // Str;
-my Str $extension = $cfg<extension> // Str;
-my Str $versioned = $cfg<versioned> // Str;
-my Int $version = $cfg<version> // 0;
-
-# if -Q is not set then questionaire comes from script, otherwise undefined
-$qst-name //= $cfg<questionaire> // Str;
-
-# if -D is not set take the name from script for data store
-$data-file-name //= $cfg<data-file-name> // Str;
-
-my Bool $show-cancel-warning = $cfg<show-cancel-warning> // False;
-my Bool $show-data-on-exit = $cfg<show-data-on-exit> // False;
-my Bool $save-data = $cfg<save-data> // False;
-
-# Find data store type
-my QAFileType $dftype;
-given $cfg<store-type> {
-  when 'yaml' { $dftype = QAYAML; }
-  when 'toml' { $dftype = QATOML; }
-  when 'json' { $dftype = QAJSON; }
-  default { $dftype = QAYAML; }
-}
-
-# Initialize QA system with these values
-given my QA::Types $qa-types {
-  .data-file-name($data-file-name) if ?$data-file-name;
-
-  .data-file-type($dftype);
-  .set-root-path($path);
-  .set-extension($extension) if ?$extension;
 
 #  note "\n\nQuestionaire: ", $qa-types.get-file-path( $qst-name, :sheet);
 #  note 'Results: ', $qa-types.get-file-path(
 #    ?$data-file-name ?? $data-file-name !! $qst-name, :userdata
 #  );
-}
 
-# Search for any external modules, program may be started using -I option
-# Check callbacks
-$qa-types .= instance;
-if $cfg<check-callbacks>:exists {
-  for $cfg<check-callbacks>.keys -> $module-name {
-    #my Str $module = $cfg<check-callbacks>{$module-name};
-    for @($cfg<check-callbacks>{$module-name}) -> $callback {
-      $qa-types.set-check-handler( $callback, :$module-name);
-    }
-  }
-}
-
-# Action callbacks
-if $cfg<action-callbacks>:exists {
-  for $cfg<action-callbacks>.keys -> $module-name {
-    #my Str $module = $cfg<action-callbacks>{$module-name};
-    for @($cfg<action-callbacks>{$module-name}) -> $callback {
-      $qa-types.set-action-handler( $callback, :$module-name);
-    }
-  }
-}
-
-my QstDialog $qdialog .= new;
-my Window $window .= new;
+init-qa( $cfg, $data-file-name);
+init-callbacks($cfg);
+init-theme( $cfg, $window);
 $window.register-signal( $qdialog, 'exit-app', 'destroy');
-
-my $qst-window;
-given $cfg<qst-type> {
-  when 'simple' {
-    $qst-window = PageSimpleWindow.new(
-      :$qst-name, :$show-cancel-warning, :$save-data, :widget($window),
-    );
-  }
-
-  when 'stack' {
-    $qst-window = PageStackWindow.new(
-      :$qst-name, :$show-cancel-warning, :$save-data, :widget($window),
-    );
-  }
-
-  when 'notebook' {
-    $qst-window = '';
-  }
-
-  when 'assistant' {
-    $qst-window = '';
-  }
-
-  default {
-    $qst-window = PageSimpleWindow.new(
-      :$qst-name, :$show-cancel-warning, :$save-data, :widget($window),
-    );
-  }
-}
-
+my $qst-window = init-questionaire( $cfg, $window, $qst-name);
 $window.show-all;
-#$qst-window.show-qst;
 
 Main.new.main;
+
+
 
 $qst-window.show-hash;
 
@@ -247,4 +170,126 @@ sub USAGE ( ) {
     -I<path list>       List of paths where user modules can be found.
 
   EOUSAGE
+}
+
+#-------------------------------------------------------------------------------
+sub init-qa ( Hash:D $cfg, Str $data-file-name? is copy ) {
+  # Find and modify paths
+  my Str $path = $cfg<path> // Str;
+  my Str $extension = $cfg<extension> // Str;
+  my Str $versioned = $cfg<versioned> // Str;
+  my Int $version = $cfg<version> // 0;
+
+  # if -Q is not set then questionaire comes from script, otherwise undefined
+  $qst-name //= $cfg<questionaire> // Str;
+
+  # if -D is not set take the name from script for data store
+  $data-file-name //= $cfg<data-file-name> // Str;
+
+  # Find data store type
+  my QAFileType $dftype;
+  given $cfg<store-type> {
+    when 'yaml' { $dftype = QAYAML; }
+    when 'toml' { $dftype = QATOML; }
+    when 'json' { $dftype = QAJSON; }
+    default { $dftype = QAYAML; }
+  }
+
+  # Initialize QA system with these values
+  given my QA::Types $qa-types {
+    .data-file-name($data-file-name) if ?$data-file-name;
+
+    .data-file-type($dftype);
+    .set-root-path($path);
+    .set-extension($extension) if ?$extension;
+  }
+}
+
+#-------------------------------------------------------------------------------
+sub init-callbacks ( Hash:D $cfg ) {
+  # Search for any external modules, program may be started using -I option
+  # Check callbacks
+  my QA::Types $qa-types .= instance;
+  if $cfg<check-callbacks>:exists {
+    for $cfg<check-callbacks>.keys -> $module-name {
+      #my Str $module = $cfg<check-callbacks>{$module-name};
+      for @($cfg<check-callbacks>{$module-name}) -> $callback {
+        $qa-types.set-check-handler( $callback, :$module-name);
+      }
+    }
+  }
+
+  # Action callbacks
+  if $cfg<action-callbacks>:exists {
+    for $cfg<action-callbacks>.keys -> $module-name {
+      #my Str $module = $cfg<action-callbacks>{$module-name};
+      for @($cfg<action-callbacks>{$module-name}) -> $callback {
+        $qa-types.set-action-handler( $callback, :$module-name);
+      }
+    }
+  }
+}
+
+#-------------------------------------------------------------------------------
+sub init-theme ( Hash:D $cfg, $widget ) {
+  return unless $cfg<theme>:exists;
+
+  my Gnome::Gtk3::StyleContext() $context = $widget.get-style-context;
+  $context.add-class('QAWidget');
+
+  my Str $css = '';
+  for $cfg<theme>.keys -> $object {
+    $css ~= [~] "\n", $object, ' {', "\n";
+    for $cfg<theme>{$object}.kv -> $item, $value {
+      $css ~= "  $item: $value;\n";
+    }
+
+    $css ~= '}';
+  }
+
+note "\ncss:\n$css";
+
+  my Gnome::Gtk3::CssProvider $css-provider .= new;
+  $css-provider.load-from-data($css);
+
+  $context.add-provider-for-screen(
+    Gnome::Gdk3::Screen.new, $css-provider, GTK_STYLE_PROVIDER_PRIORITY_USER
+  );
+
+  $context.clear-object;
+}
+
+#-------------------------------------------------------------------------------
+sub init-questionaire ( Hash:D $cfg, $widget, Str $qst-name ) {
+
+  my Bool $show-cancel-warning = $cfg<show-cancel-warning> // False;
+  my Bool $save-data = $cfg<save-data> // False;
+
+  given $cfg<qst-type> {
+    when 'simple' {
+      $qst-window = PageSimpleWindow.new(
+        :$qst-name, :$show-cancel-warning, :$save-data, :$widget,
+      );
+    }
+
+    when 'stack' {
+      $qst-window = PageStackWindow.new(
+        :$qst-name, :$show-cancel-warning, :$save-data, :$widget,
+      );
+    }
+
+    when 'notebook' {
+      $qst-window = '';
+    }
+
+    when 'assistant' {
+      $qst-window = '';
+    }
+
+    default {
+      $qst-window = PageSimpleWindow.new(
+        :$qst-name, :$show-cancel-warning, :$save-data, :$widget,
+      );
+    }
+  }
 }
