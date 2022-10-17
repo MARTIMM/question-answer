@@ -10,6 +10,11 @@ layout: sidebar
 
 See [semantic versioning](http://semver.org/). Please note point 4. on that page: **_Major version zero (0.y.z) is for initial development. Anything may change at any time. The public API should not be considered stable._**
 
+* 2022-10-17 0.17.1
+  * Add -I option to search for include directories
+  * Tested routines from external modules
+  * Added style processing from qascript
+
 * 2022-09-27 0.17.0
   * Removed routines from **QA::Types** which simplified a lot. E.g., all config type of file are stored at the same root location. That location can be changed with `.set-root-path()`. The files are differentiated by their extension, e.g. `.yaml-qaqst` or `.toml-qaset`.
   * Sometime soon I will remove the dialog versions so to cleanup some code. When one wants to use a dialog to present questions just provide an empty window and it will look like it is a dialog window.
