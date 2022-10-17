@@ -36,7 +36,7 @@ The format is roughly;
 unit class QA::Gui::Set:auth<github:MARTIMM>;
 
 #-------------------------------------------------------------------------------
-has Hash $!user-data-set-part;
+#has Hash $!user-data-set-part;
 #has Hash $!pages;
 has Hash $.questions = %();
 
@@ -44,7 +44,7 @@ has Hash $.questions = %();
 # Display a set on a given grid at given row
 submethod BUILD (
   Gnome::Gtk3::Grid :$grid, Int:D :$grid-row,
-  QA::Set :$set, Hash:D :$!user-data-set-part, Hash :$pages
+  QA::Set :$set, Hash:D :$user-data-set-part, Hash :$pages
 ) {
 
   # place set description at the top of the grid
@@ -91,7 +91,7 @@ submethod BUILD (
 #note 'Question: ', $question.name;
     my QA::Gui::Question $gui-q .= new(
       :$question, :$question-grid, :row($question-grid-row),
-      :$!user-data-set-part, :$pages
+      :$user-data-set-part, :$pages
     );
     $!questions{$question.name} = $gui-q;
     $question-grid-row++;
