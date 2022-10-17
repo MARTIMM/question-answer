@@ -57,7 +57,7 @@ Get the grid from the container if the container is a dialog type. This type is 
 =end pod
 
 method set-grid ( $!container where .defined ) {
-note 'set-grid, container name: ', $!container.^name;
+#note 'set-grid, container name: ', $!container.^name;
 
   # Set the contents of the grid depending of the type of container
   given $!container.^name {
@@ -70,6 +70,9 @@ note 'set-grid, container name: ', $!container.^name;
       $!container.add($!grid);
     }
   }
+
+  my Gnome::Gtk3::StyleContext() $context = $!grid.get-style-context;
+  $context.add-class('QATopGrid');
 }
 
 #-------------------------------------------------------------------------------
