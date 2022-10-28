@@ -1,5 +1,3 @@
-```plantuml
-@startuml
 'scale 0.9
 skinparam packageStyle rectangle
 skinparam stereotypeCBackgroundColor #80ffff
@@ -70,5 +68,4 @@ QA::Gui::QALabel <--* QA::Gui::Question
 
 QA::Gui::Question "*" <--* QA::Gui::Set
 
-@enduml
-```
+
