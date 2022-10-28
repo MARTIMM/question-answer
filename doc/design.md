@@ -167,8 +167,6 @@ There is a possibility to name the buttons differently. This is done using a but
 
 The diagram shows a displayed sheet state where some of the input fields can be checked for wrong or absent answers. A button press will move the situation to other states depending on the sheet display type. Some of the buttons will return to the input state.
 
-```plantuml
-@startuml
 hide empty description
 
 state "user app" as u: user prepares pages
@@ -189,15 +187,12 @@ ip -> u: quit or\nsave-quit
 ip -> dp: continue\ninput
 u --> [*]
 
-@enduml
-```
+
 
 ## QADialog sheet type
 
  This is the simplest of cases. There will be no extra pages and if given a sheet with more than one page, it will only handle the first page and ignore the rest. The dialog shows two buttons; `Cancel` or `save-quit`.
 
-```plantuml
-@startuml
 hide empty description
 
 skinparam DefaultFontSize 17
@@ -235,15 +230,12 @@ c --> [*]: want to\nquit
 finished --> [*]
 finished: save data if requested
 
-@enduml
-```
+
 
 ## QANotebook sheet type
 
 A QANotebook has more pages selectable by tabs. There might be an introductory page with a description of the questionaire and no questions. There is only a `Cancel` button on an intro-page. Other buttons are disabled or invisible. The pages with questions have a `Cancel` and a `save-quit` button.
 
-```plantuml
-@startuml
 hide empty description
 
 skinparam DefaultFontSize 17
@@ -291,11 +283,11 @@ finished: save data if requested
 'finished: save data\nif requested
 
 
-@enduml
-```
+
 
 # UML Diagrams
 
+<!--
 ## Overall view
 ```plantuml
 scale 0.9
@@ -321,7 +313,7 @@ QA::Gui::Set *-right-> "*" QA::Gui::Question
 QA::Gui::Question *-right-> QA::Gui::InputWidget
 ```
 The **QA::Gui::PageSimpleDialog** module can be replaced with **QA::Gui::SheetSimpleWindow** **QA::Gui::PageStackDialog**, **QA::Gui::SheetNotebook** or **QA::Gui::SheetAssistant** depending on the purpose of the questionaire.
-
+-->
 
 
 
@@ -385,6 +377,12 @@ class QA::Gui::Question {
   +Hash $.questions;
 }
 
+
+class QA::Gui::PageTools <<(R,#80ffff)>>
+Interface QA::Gui::PageTools <Interface>
+
+
+
 'Connections
 
 QA::Gui::Value <|... QA::Gui::AnInputWidget
@@ -395,6 +393,11 @@ QA::Gui::InputWidget *-up--> QA::Gui::AnInputWidget
 QA::Gui::Question *-> QA::Gui::InputWidget
 'QA::Gui::InputWidget *-> QA::Question: $!question
 QA::Gui::Value --> QA::Question: $!question
+
+QA::Gui::PageTools --> QA::Gui::Page
+QA::Gui::PageSimpleWindow ..|> QA::Gui::PageTools
+QA::Gui::PageStackWindow ..|> QA::Gui::PageTools
+QA::Gui::PageNotebookWindow ..|> QA::Gui::PageTools
 
 QA::Gui::Question -UP-> "*" QA::Gui::Page: $.pages
 QA::Gui::Page --> "*" QA::Gui::Set: $.sets
