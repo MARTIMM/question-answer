@@ -692,7 +692,7 @@ method set-check-handler (
 ) {
   $method-name = ?$method-name ?? $method-name !! $check-key;
 
-note "set-check-handler: $check-key, $module-name, $method-name, $class-name, %*ENV<RAKULIB>";
+note "set-check-handler: $check-key, $module-name, $method-name, $class-name, {%*ENV<RAKULIB>//'-'}, $*CWD";
   unless $handler-object {
     if ?$module-name {
       try require ::($module-name);
@@ -715,6 +715,10 @@ note "set-check-handler: $check-key, $module-name, $method-name, $class-name, %*
 
         #::($module-name).self.note;
         #die "Failed to load $module-name: ", ::($module-name).exception;
+      
+        CATCH {
+          default {
+            
       }
 
       if ?$class-name {

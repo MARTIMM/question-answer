@@ -1,15 +1,17 @@
-use v6;
+u se v6;
+
+use QA::Types;
 
 unit class ModA;
 
-has QA::Gui::PageStackWindow $.qst-window;
+#has QA::Gui::PageStackWindow $.qst-window;
 
 #-------------------------------------------------------------------------------
 # TODO: a class with these methods should be loaded at runtime when
 # necessary
 # check methods
-method check-exclam ( Str $input, :$char --> Any ) {
-  "No $char allowed in string" if ?($input ~~ m/$char/)
+method check-exclam ( Str $input --> Any ) {
+  "No '!' allowed in string" if ?($input ~~ m/'!'/)
 }
 
 #-------------------------------------------------------------------------------
