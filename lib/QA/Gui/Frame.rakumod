@@ -5,7 +5,7 @@ use Gnome::Gtk3::Frame;
 use Gnome::Gtk3::StyleContext;
 
 #-------------------------------------------------------------------------------
-unit class QA::Gui::Frame;
+unit role QA::Gui::Frame;
 also is Gnome::Gtk3::Frame;
 
 #-------------------------------------------------------------------------------
