@@ -19,3 +19,5 @@ _site
 .bundle/
 
 xbin/Old/*
+xbin/Data/*qadata
+__*__.raku
