@@ -87,7 +87,7 @@ my Str $qst-name;
     # Change module search paths%*ENV<RAKULIB>
     %*ENV<RAKULIB> =
       %*ENV<RAKULIB>:exists ?? %*ENV<RAKULIB> ~ ",$lib-path" !! $lib-path;
-#note 'modify env: ', %*ENV<RAKULIB>;
+note 'modify env: ', %*ENV<RAKULIB>;
 
     # Turn on debugging
     #%*ENV<RAKUDO_MODULE_DEBUG> = 1;
@@ -99,13 +99,10 @@ my Str $qst-name;
         |@*ARGS;
 
     # Restart in background and exit this program
-#note 'restart with: ', @cmd.join(' ') ~ ' &';
+note 'restart with: ', @cmd.join(' ') ~ ' &';
     shell @cmd.join(' ') ~ ' &';
     exit;
   }
-
-  #note 'options: ', $lib-path //'-';
-  #note "Args: $*PROGRAM-NAME, ", @*ARGS.join(', ');
 
   CATCH {
     when Getopt::Long::Exception {
