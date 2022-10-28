@@ -1,4 +1,8 @@
-#mt01
+#qascript
+
+show-cancel-warning: true
+show-data-on-exit: true
+save-data: true
 
 store-type: yaml
 qst-type: simple

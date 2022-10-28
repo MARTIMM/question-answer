@@ -1,7 +1,8 @@
-#mt01
+#qascript
 
 show-cancel-warning: true
 show-data-on-exit: true
+save-data: true
 
 path: /home/marcel/Languages/Raku/Projects/question-answer/xbin/Data
 store-type: yaml
@@ -10,17 +11,17 @@ store-type: yaml
 
 qst-type: stack
 
+
 check-callbacks:
-  QA::StackTest:
-    check-char:
+  ModA:
+  - check-char
 
-action-callbacks:
-  QA::StackTest:
-    fieldtype-action1:
+#action-callbacks:
+#  QA::StackTest:
+#  - fieldtype-action1
 
-
-user-input-widgets:
-  QA::StackTestUWidget
+#user-input-widgets:
+#  - QA::StackTestUWidget
 
 
 questionaire: StackTest
