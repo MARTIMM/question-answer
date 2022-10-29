@@ -718,7 +718,9 @@ note "set-check-handler: $check-key, $module-name, $method-name, $class-name, {%
       
         CATCH {
           default {
-            
+            unlink "__$module-name.test-program__.raku";
+          }
+        }
       }
 
       if ?$class-name {
