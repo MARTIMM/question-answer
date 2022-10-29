@@ -112,7 +112,7 @@ note 'restart with: ', @cmd.join(' ') ~ ' &';
   };
 }
 
-note
+#note
 
 
 
