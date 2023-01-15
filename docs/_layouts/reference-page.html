@@ -2,9 +2,6 @@
 # Default layout for docs placed in /content-docs/reference. This is set in
 # _config.yml as well as the below variables
 
-#title: References to the package modules
-#nav_menu: references-nav
-#sidebar_menu: 
 layout: sidebar
 ---
 <!DOCTYPE html>
@@ -21,16 +18,56 @@ layout: sidebar
 
     <!--script type="text/javascript">hljs.initHighlightingOnLoad();</script-->
     <script type="text/javascript">
+      // run when page is loaded and ready
       $(document).ready(function(){
-        $("#category").append(
-          "<strong>Number of defined methods: {{ site.data.testCoverage[page.path]["routines"]["subs-total"] }}</strong><br />"
-        );
-        $("#category").append(
-          "<strong>Number of tested methods: {{ site.data.testCoverage[page.path]["routines"]["subs-tested"] }}</strong><br />"
-        );
-        $("#category").append(
-          "<strong>Test coverage: {{ site.data.testCoverage[page.path]["routines"]["coverage"] }} %</strong><br /><br /><strong>Table of Contents</strong><br /><br />"
-        );
+        // create a table showing coverage of tests etc.
+        var content = "<center><table class='coverage'>";
+        content += "<tr>";
+        content += "<th>Type</th><th>Total</th><th>Tested</th><th>Coverage</th>";
+        content += "</tr><tr><td> Routines </td><td>";
+        content += {{site.data.testCoverage[page.path]["routines"]["subs-total"]}};
+        content += "</td><td>";
+        content += {{site.data.testCoverage[page.path]["routines"]["subs-tested"]}};
+        content += "</td><td>";
+        content += {{site.data.testCoverage[page.path]["routines"]["coverage"]}};
+
+        if (
+          {{ site.data.testCoverage[page.path]["types"]["types-total"] }} != 0
+        ) {
+          content += " %</td></tr><tr><td> Types </td><td>";
+          content += {{site.data.testCoverage[page.path]["types"]["types-total"]}};
+          content += "</td><td>";
+          content += {{site.data.testCoverage[page.path]["types"]["types-tested"]}};
+          content += "</td><td>";
+          content += {{site.data.testCoverage[page.path]["types"]["coverage"]}};
+        }
+
+        if (
+          {{ site.data.testCoverage[page.path]["signals"]["sigs-total"] }} != 0
+        ) {
+          content += " %</td></tr><tr><td> Signals </td><td>";
+          content += {{site.data.testCoverage[page.path]["signals"]["sigs-total"]}};
+          content += "</td><td>";
+          content += {{site.data.testCoverage[page.path]["signals"]["sigs-tested"]}};
+          content += "</td><td>";
+          content += {{site.data.testCoverage[page.path]["signals"]["coverage"]}};
+        }
+
+        if (
+          {{ site.data.testCoverage[page.path]["properties"]["props-total"] }}
+          != 0
+        ) {
+          content += " %</td></tr><tr><td> Properties </td><td>";
+          content += {{site.data.testCoverage[page.path]["properties"]["props-total"]}};
+          content += "</td><td>";
+          content += {{site.data.testCoverage[page.path]["properties"]["props-tested"]}};
+          content += "</td><td>";
+          content += {{site.data.testCoverage[page.path]["properties"]["coverage"]}};
+        }
+
+        content += " %</td></tr></table></center>";
+
+        $("#category").append(content);
 
 
         // create TOC anchor
@@ -39,6 +76,7 @@ layout: sidebar
         $("h1,h2,h3,h4,h5,h6").each(function(i,item){
           var tag = $(item).get(0).localName;
           $(item).attr("id","wow"+i);
+          $(item).attr("class","hx-link");
 
           var text = $(this).text();
           if( text != "Interfacing Raku to Gnome GTK+" &
@@ -60,6 +98,19 @@ layout: sidebar
           $(".newh6").css("margin-left",75);
         });
       });
+
+      // trick from https://stackoverflow.com/questions/7173596/changing-the-page-title-with-jquery
+      // Changing title can only be done this way. Normally set to frontmatter
+      // title, _config.yml title, defaults in _config.yml or when nothing is
+      // set to the first H1 on the page.
+
+      // page.title not set on reference pages so pick filename and drop .md
+      var filename = "{{ page.name }}";
+      filename = filename.replace( ".md", "");
+      var title = $(document).prop(
+        'title', "{{ page.part-title }}: " + filename
+      );
+
     </script>
   </head>
   <body id="reference-page">

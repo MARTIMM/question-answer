@@ -1,0 +1,15 @@
+# https://jekyllrb.com/tutorials/navigation/
+
+- bar_title: "About"
+  bar_menu:
+  - title: "About"
+    url: "/content-docs/about/about.html"
+  - title: "QA Change log"
+    url: "/content-docs/about/QA-release-notes.html"
+  - title: "QA Manager Change log"
+    url: "/content-docs/about/QA-Manager-release-notes.html"
+
+#- bar_title: 
+#  bar_menu:
+#  - title:
+#    url:

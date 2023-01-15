@@ -1,0 +1,19 @@
+# https://jekyllrb.com/tutorials/navigation/
+
+nav_menus:
+  - nav_pages:
+    - title: "Home"
+      url: '/'
+    - title: "Setup"
+      url: "/content-docs/setup/introduction.html"
+    - title: "Reference"
+      url: "/content-docs/reference-qa.html"
+    - title: "About"
+      url: "/content-docs/about/about.html"
+      right: true
+
+  - nav_pages:
+    - title: "QA"
+      url: "/content-docs/reference-qa.html"
+    - title: "QA::Manager"
+      url: "/content-docs/reference-qa-manager.html"
