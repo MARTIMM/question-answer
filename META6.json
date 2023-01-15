@@ -42,7 +42,7 @@
     "QA::Gui::YNMsgDialog": "lib/QA/Gui/YNMsgDialog.rakumod",
 
     "QA::Question": "lib/QA/Question.rakumod",
-    "QA::Questionaire": "lib/QA/Questionaire.rakumod",
+    "QA::Questionnare": "lib/QA/Questionnare.rakumod",
     "QA::Set": "lib/QA/Set.rakumod",
     "QA::Status": "lib/QA/Status.rakumod",
     "QA::Types": "lib/QA/Types.rakumod"
