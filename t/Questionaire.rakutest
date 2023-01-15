@@ -22,8 +22,7 @@ given my QA::Types $qa-types {
 # create some sets
 make-sets();
 
-my QA::Questionaire $qst .= new(:qst-name<login>);
-
+my QA::Questionaire $qst := QA::Questionaire.new(:qst-name<login>);
 
 #-------------------------------------------------------------------------------
 subtest 'ISO-Test', {
@@ -32,7 +31,8 @@ subtest 'ISO-Test', {
 }
 #-------------------------------------------------------------------------------
 subtest 'Add pages and sets', {
-
+#note $qst.add-page('tstsheet2');
+#  show-pages($qst);
   ok $qst.add-page('tstsheet2'), '.add-page() tstsheet2';
 
   ok $qst.add-page('tstsheet3'), '.add-page() tstsheet3';
@@ -50,9 +50,8 @@ subtest 'Add pages and sets', {
   nok $qst.add-set( 'tstsheet1', 'credentials'), 'cannot add same set';
   ok $qst.add-set( 'tstsheet1', 'profile'), '.add-set()';
 
-  my $c := $qst.clone;
   my @sheets = <tstsheet2 tstsheet3 tstsheet1>.reverse;
-  for $c -> Hash $page {
+  for $qst -> Hash $page {
     is $page<page-name>, @sheets.pop, "page iterator $page<page-name>";
   }
 }
@@ -70,7 +69,7 @@ subtest 'Save and load', {
   $qst.save-as('login2');
   ok "t/Data/login2.yaml-qaqst".IO ~~ :e, '.save-as() login2';
 
-  $qst .= new(:qst-name<login>);
+  $qst := QA::Questionaire.new(:qst-name<login>);
   is $qst.width, 400, 'reload sheet';
   my QA::Set $set .= new(
     :set-data($qst.get-set( 'tstsheet1', 'credentials'))
@@ -104,7 +103,7 @@ subtest 'replace sets and pages', {
 
 #-------------------------------------------------------------------------------
 subtest 'remove sets and pages', {
-#\  show-pages($qst);
+#  show-pages($qst);
   ok $qst.remove-set( 'tstsheet3', 'credentials'), '.remove-set()';
 #  show-pages($qst);
 
@@ -119,11 +118,11 @@ subtest 'remove sets and pages', {
 #-------------------------------------------------------------------------------
 subtest 'remove sheet', {
 
-  $qst .= new(:qst-name<login2>);
+  $qst := QA::Questionaire.new(:qst-name<login2>);
   ok $qst.remove, 'login2 deleted';
 
   # cannot remove unloaded sheets
-  $qst .= new(:qst-name<login>);
+  $qst := QA::Questionaire.new(:qst-name<login>);
   ok $qst.remove, 'login removed';
   nok $qst.remove, 'login already removed';
   ok "t/Data/login.yaml-qaqst".IO ~~ :!e, 'file removed';
@@ -203,10 +202,8 @@ sub change-sets ( ) {
 #-------------------------------------------------------------------------------
 multi sub show-set( Str:D $set-name ) {
 
-  note " ";
-  my QA::Set $set .= new(:$set-name);
-  my $c := $set.clone;
-  for $c -> QA::Question $q {
+  my QA::Set $set := QA::Set.new(:$set-name);
+  for $set -> QA::Question $q {
     for $q.qa-data.kv -> $k, $v {
       note "$k => $v";
     }
@@ -228,22 +225,18 @@ multi sub show-set( Hash:D $set ) {
           next if $qk eq 'name';
           note "      $qk => $qv";
         }
-#        note " ";
       }
     }
     else {
       note "    $sk => $sv";
     }
-#    note " ";
   }
 }
 
 #-------------------------------------------------------------------------------
 sub show-pages( QA::Questionaire $qst ) {
 
-  note "\nPage $qst:";
-  my $c := $qst.clone;
-  for $c -> Hash $page {
+  for $qst -> Hash $page {
     note "\nPage '$page<page-name>':";
     for $page.kv -> $k, $v {
       next if $k eq 'page-name';
@@ -257,6 +250,5 @@ sub show-pages( QA::Questionaire $qst ) {
         note "  $k => $v";
       }
     }
-#    note " ";
   }
 }
