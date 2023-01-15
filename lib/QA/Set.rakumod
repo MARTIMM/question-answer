@@ -5,7 +5,7 @@ use QA::Question;
 
 #-------------------------------------------------------------------------------
 unit class QA::Set:auth<github:MARTIMM>;
-also does Iterable;
+#also does Iterable;
 
 has QA::Types $!qa-types;
 
@@ -162,8 +162,28 @@ method remove ( --> Bool ) {
   }
 
 =end pod
-method iterator ( ) {
 
+# The loop operators search for the .iterator() method
+method iterator ( QA::Set:D: ) {
+  my $qdata = $!questions;
+  
+  # Create anonymous class which does the Iterator role. This class
+  # must have a pull-one() method
+  my class :: does Iterator {
+    has $!count = 0;
+    method pull-one ( --> Mu ) {
+      return $!count < $qdata.elems
+        ?? $qdata[$!count++]
+        !! IterationEnd;
+    }
+
+    # Create the object for this class because there
+    # is a reference to an attribute $!page-data
+  }.new
+}
+
+#`{{
+method iterator ( ) {
   # Create anonymous class which does the Iterator role
   class :: does Iterator {
     has $!count = 0;
@@ -181,3 +201,5 @@ method iterator ( ) {
     # Create the object for this class and return it
   }.new(:qdata($!questions))
 }
+}}
+

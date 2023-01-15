@@ -4,7 +4,7 @@ use QA::Types;
 
 #-------------------------------------------------------------------------------
 unit class QA::Questionaire:auth<github:MARTIMM>;
-also does Iterable;
+#also does Iterable;
 #also does Iterator;
 
 #-------------------------------------------------------------------------------
@@ -24,7 +24,6 @@ has Array $!page-data;
 # sets on the pages
 has Hash $!sets;
 has Array $!set-data;
-has Iterator $!iterator;
 
 #has Hash $!page;
 
@@ -107,7 +106,7 @@ method !load ( Hash :$sheet is copy ) {
 
 #-------------------------------------------------------------------------------
 method add-page (
-  Str:D $page-name, Str :$title = '', Str :$description = '',
+  Str:D $page-name, Str :$title is copy = '', Str :$description is copy = '',
   Bool :$hide = False
   --> Bool
 ) {
@@ -115,7 +114,7 @@ method add-page (
   return False if $!pages{$page-name}:exists;
 
   $title //= $page-name.tclc;
-  $description //=$title;
+  $description //= $title;
 
   $!set-data = [];
   my Hash $page = %( :$page-name, :$title, :$description, :$hide);
@@ -298,24 +297,44 @@ method remove ( --> Bool ) {
 # Iterator to be used in for {} statements returning pages from this sheet
 =begin pod
 
-  my $c := $!questionaire.clone;
-  for $c -> Hash $page {
+  my QA::Questionaire $q := QA::Questionaire.new(:qst-name<login>);
+  …
+  for $q -> Hash $page {
     note $page.keys;
-    ...;
+    …;
   }
 
 =end pod
-method iterator ( ) {
 
-  # Create anonymous class which does the Iterator role
-  class :: does Iterator {
+# The loop operators search for the .iterator() method
+method iterator ( QA::Questionaire:D: ) {
+  my $pdata = $!page-data;
+
+  # Create anonymous class which does the Iterator role. This class
+  # must have a pull-one() method
+  my class :: does Iterator {
     has $!count = 0;
-    has Array $.pdata is rw;
+    method pull-one ( --> Mu ) {
+      return $!count < $pdata.elems
+        ?? $pdata[$!count++]
+        !! IterationEnd;
+    }
 
-#    submethod BUILD (:$!pdata) { note $!pdata.elems; }
+    # Create the object for this class because there
+    # is a reference to an attribute $!page-data
+  }.new
+}
+
+#`{{
+method iterator ( QA::Questionaire:D: ) {
+  # Create anonymous class which does the Iterator role
+  my class :: does Iterator {
+    has $!count = 0;
+    has Array $.pdata;
+
+    submethod BUILD ( :$!pdata ) { note $!pdata.elems; }
 
     method pull-one ( --> Mu ) {
-
       return $!count < $!pdata.elems
         ?? $!pdata[$!count++]
         !! IterationEnd;
@@ -324,3 +343,5 @@ method iterator ( ) {
     # Create the object for this class and return it
   }.new(:pdata($!page-data))
 }
+}}
+
