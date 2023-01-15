@@ -16,7 +16,7 @@ use Gnome::Gtk3::Stack;
 use Gnome::Gtk3::StackSwitcher;
 use Gnome::Gtk3::Notebook;
 
-use QA::Questionaire;
+use QA::Questionnare;
 use QA::Types;
 
 use QA::Gui::Statusbar;
@@ -29,7 +29,7 @@ unit role QA::Gui::PageTools:auth<github:MARTIMM>;
 
 has Gnome::Gtk3::Grid $!grid;
 has Hash $!pages = %();
-has QA::Questionaire $!qst;
+has QA::Questionnare $!qst;
 has Str $!qst-name;
 
 has Hash $.result-user-data;

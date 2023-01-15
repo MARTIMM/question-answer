@@ -3,7 +3,7 @@ use v6.d;
 use QA::Types;
 
 #-------------------------------------------------------------------------------
-unit class QA::Questionaire:auth<github:MARTIMM>;
+unit class QA::Questionnare:auth<github:MARTIMM>;
 #also does Iterable;
 #also does Iterator;
 
@@ -297,7 +297,7 @@ method remove ( --> Bool ) {
 # Iterator to be used in for {} statements returning pages from this sheet
 =begin pod
 
-  my QA::Questionaire $q := QA::Questionaire.new(:qst-name<login>);
+  my QA::Questionnare $q := QA::Questionnare.new(:qst-name<login>);
   …
   for $q -> Hash $page {
     note $page.keys;
@@ -307,7 +307,7 @@ method remove ( --> Bool ) {
 =end pod
 
 # The loop operators search for the .iterator() method
-method iterator ( QA::Questionaire:D: ) {
+method iterator ( QA::Questionnare:D: ) {
   my $pdata = $!page-data;
 
   # Create anonymous class which does the Iterator role. This class
@@ -326,7 +326,7 @@ method iterator ( QA::Questionaire:D: ) {
 }
 
 #`{{
-method iterator ( QA::Questionaire:D: ) {
+method iterator ( QA::Questionnare:D: ) {
   # Create anonymous class which does the Iterator role
   my class :: does Iterator {
     has $!count = 0;
