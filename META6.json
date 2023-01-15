@@ -21,10 +21,7 @@
     "QA::Gui::OkMsgDialog": "lib/QA/Gui/OkMsgDialog.rakumod",
     "QA::Gui::Page": "lib/QA/Gui/Page.rakumod",
     "QA::Gui::PageAssistant": "lib/QA/Gui/PageAssistant.rakumod",
-    "QA::Gui::PageNotebookDialog": "lib/QA/Gui/PageNotebookDialog.rakumod",
-    "QA::Gui::PageSimpleDialog": "lib/QA/Gui/PageSimpleDialog.rakumod",
     "QA::Gui::PageSimpleWindow": "lib/QA/Gui/PageSimpleWindow.rakumod",
-    "QA::Gui::PageStackDialog": "lib/QA/Gui/PageStackDialog.rakumod",
     "QA::Gui::PageStackWindow": "lib/QA/Gui/PageStackWindow.rakumod",
     "QA::Gui::PageTools": "lib/QA/Gui/PageTools.rakumod",
     "QA::Gui::QACheckButton": "lib/QA/Gui/QACheckButton.rakumod",
@@ -51,7 +48,7 @@
     "QA::Types": "lib/QA/Types.rakumod"
   },
 
-  "source-url": "git://github.com/MARTIMM/qa-manager.git",
+  "source-url": "git://github.com/MARTIMM/question-answer.git",
 
   "depends": [ "JSON::Fast", "Config::TOML", "YAMLish", "URI::Encode", "Gnome::Gtk3"],
 
