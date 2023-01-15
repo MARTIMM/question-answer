@@ -36,7 +36,7 @@ use Gnome::Gtk3::StyleProvider;
 
 =end pod
 
-unit class QA::Gui::PageAssistant:auth<github:MARTIMM>:ver<0.1.0>;
+unit class QA::Gui::PageAssistant:auth<github:MARTIMM>;
 also is Gnome::Gtk3::Assistant;
 
 #-------------------------------------------------------------------------------
