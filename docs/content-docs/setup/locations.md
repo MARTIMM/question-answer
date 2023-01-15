@@ -9,14 +9,22 @@ layout: sidebar
 There are several locations involved where questionaires and categories are stored. The results of the query is stored at a standard location if not changed.
 
 Using definitions of [Free Desktop](https://freedesktop.org/wiki/);
-* Sets are stored in a directory at `$*HOME/.config/QAManager/Sets.d`. On windows, this might be a bit different. The file is by default a JSON formatted file having a 'json' extention. The set name is the filename without the extention.
-* Sheets are stored at `$*HOME/.config/QAManager/Sheets.d` and are also JSON formatted files by default.
-* Answers returned from the sheet dialogs are stored in hashes which go into the users configuration environment `$*HOME/.config/<modified $*PROGRAM-NAME>`. The filename is named after the used sheet name. Also, the sheet is filled in from this data before presentation if there is any data.
+* Sets, Questionaires and Data (answers returned from the questionaires) are stored in files placed into the users configuration environment `$*HOME/.config/<modified $*PROGRAM-NAME>`. On windows, another path is used; `C:\dataDir\<modified $*PROGRAM-NAME>`.
+* The Questionaire is also filled in from the data file before presentation if there is any data.
+* The root is to be set (if default is undesirable) just before accessing any QA class to prevent using wrong config files or get non-existing configuration files.
 
+
+
+
+
+
+
+
+<!--
 However, it is possible to change the paths to other locations. This is important when you want to install a module or package making use of its own quetionaires but not yet placed in the QAManager environment. Because the module installation program `zef` is not aware of any files from other locations than those in the `META6.json` configuration, other actions must be executed to get the sheets at the right locations. Several methods exist to install the modules set and sheet configurations;
 
 1) Write an installation module (`Build.pm6`) which installs the sheets at the proper location when installing your package. An example installation module to install categories and sheets is shown below;
-<!--
+
 ```
 use v6.d;
 
@@ -85,6 +93,7 @@ make-sheets ( ) {
 }
 
 ```
--->
 
 2) Keep the sheets in the resources directory and install them when programs or a module is accessed the first time.
+
+-->
