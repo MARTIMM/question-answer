@@ -1,7 +1,7 @@
 ---
 title: About
 nav_menu: default-nav
-sidebar_menu: about-sidebar
+sidebar_menu: sidebar-about
 layout: sidebar
 ---
 

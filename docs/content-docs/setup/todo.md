@@ -1,7 +1,7 @@
 ---
 title: Configuration
 nav_menu: default-nav
-sidebar_menu: config-sidebar
+sidebar_menu: sidebar-config
 layout: sidebar
 ---
 
@@ -62,7 +62,7 @@ Changing a questionaire will be some action like a change of an input widget val
 ## Naming of files and extensions
 * [x] Change extensions into a more descriptive one. Now `.json`, `.toml` and `.yaml`. This only describes its format. It should become `.<format>-qa<type>` where format is any of `json`, `toml` or `yaml`. Type is one of `qst`, `set` or `data`. For example `.yaml-qagst` for a questionaire. Type name `set` is  for parts of a questionaire and `data` is used for the result of the questionaire.
 * [x] The locations of the files are in a sheets, sets or data directory. Now the files can be distinquished by their extensions, this separation is not needed anymore. They can now be placed together in one directory.
-* [x] The data file is named after the questionaire. For single configurations, this is a good enough solution. Questionaires can also be used as a test or an interview. Those results are always stored in different files for persons or objects. Therefore there must be a way to set the name of the results file.
+* [x] The data file is named after the questionaire. For single configurations, this is a good enough solution. Questionnares can also be used as a test or an interview. Those results are always stored in different files for persons or objects. Therefore there must be a way to set the name of the results file.
 
 <!--
 -->

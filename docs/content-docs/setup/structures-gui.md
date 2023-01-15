@@ -1,5 +1,9 @@
-[toc]
-
+---
+title: Configuration
+nav_menu: default-nav
+sidebar_menu: sidebar-config
+layout: sidebar
+---
 # Sheet Types
 
 ## Simple Sheet

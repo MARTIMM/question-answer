@@ -1,7 +1,7 @@
 ---
 title: Configuration
 nav_menu: default-nav
-sidebar_menu: config-sidebar
+sidebar_menu: sidebar-config
 layout: sidebar
 ---
 
