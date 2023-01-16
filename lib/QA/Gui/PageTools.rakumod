@@ -16,7 +16,7 @@ use Gnome::Gtk3::Stack;
 use Gnome::Gtk3::StackSwitcher;
 use Gnome::Gtk3::Notebook;
 
-use QA::Questionnare;
+use QA::Questionnaire;
 use QA::Types;
 
 use QA::Gui::Statusbar;
@@ -29,7 +29,7 @@ unit role QA::Gui::PageTools:auth<github:MARTIMM>;
 
 has Gnome::Gtk3::Grid $!grid;
 has Hash $!pages = %();
-has QA::Questionnare $!qst;
+has QA::Questionnaire $!qst;
 has Str $!qst-name;
 
 has Hash $.result-user-data;
@@ -204,7 +204,7 @@ For dialog types it is possible to add some buttons to the dialog
 
 =item $widget-name; The name of the button specified in the button map from the configuration.
 =item $response-type; A choice of four supported types; GTK_RESPONSE_CANCEL, GTK_RESPONSE_APPLY, GTK_RESPONSE_OK and GTK_RESPONSE_HELP
-=item $is-dialog; When user wants to show the questionaire in its own widget, this value should be set to C<False>. The button normally is added at the bottom of a dialog but when set to False the buttons are added at the bottom of the grid.
+=item $is-dialog; When user wants to show the questionnaire in its own widget, this value should be set to C<False>. The button normally is added at the bottom of a dialog but when set to False the buttons are added at the bottom of the grid.
 
 =end pod
 method add-button (

@@ -1,7 +1,7 @@
 use v6.d;
 
 use QA::Set;
-use QA::Questionnare;
+use QA::Questionnaire;
 use QA::Types;
 
 #use QA::Gui::Dialog;
@@ -40,7 +40,7 @@ unit class QA::Gui::PageAssistant:auth<github:MARTIMM>;
 also is Gnome::Gtk3::Assistant;
 
 #-------------------------------------------------------------------------------
-has QA::Questionnare $!qst;
+has QA::Questionnaire $!qst;
 has Str $!qst-name;
 #has Hash $!user-data;
 has Hash $.result-user-data;

@@ -3,7 +3,7 @@ use v6.d;
 use QA::Types;
 
 #-------------------------------------------------------------------------------
-unit class QA::Questionnare:auth<github:MARTIMM>;
+unit class QA::Questionnaire:auth<github:MARTIMM>;
 #also does Iterable;
 #also does Iterator;
 
@@ -11,13 +11,13 @@ unit class QA::Questionnare:auth<github:MARTIMM>;
 # sheets are filenames holding pages of sets
 has Str $!qst-name is required;
 
-# complete questionaire and control
-has Hash $!questionaire;
+# complete questionnaire and control
+has Hash $!questionnaire;
 has Bool $!is-modified = False;
 has Bool $!versioned = False;
 has Int $!version = 0;
 
-# questionaire's pages
+# questionnaire's pages
 has Hash $!pages;
 has Array $!page-data;
 
@@ -38,19 +38,19 @@ has QA::Types $!qa-types;
 #TM:1:new
 =begin pod
 
-Load the questionaire from a file or copy it from the user provided data. Some defaults are set such as the width and height of the window wherein the questionaire is shown.
+Load the questionnaire from a file or copy it from the user provided data. Some defaults are set such as the width and height of the window wherein the questionnaire is shown.
 
-The filename of the questionaire is simple at first. Just a name with an extension depending on its format C<yaml>, C<toml> or C<json>. When versions are used, the name is extended with a version like so C<original-name:version.ext>. Further more the name C<original-name:'latest'.ext> is linked to the latest version.
+The filename of the questionnaire is simple at first. Just a name with an extension depending on its format C<yaml>, C<toml> or C<json>. When versions are used, the name is extended with a version like so C<original-name:version.ext>. Further more the name C<original-name:'latest'.ext> is linked to the latest version.
 
   new (
     Str:D :$!qst-name, Hash :$sheet,
     Bool :$!versioned = False, Int :$!version = 0
   )
 
-=item $!qst-name; The name of the file of the questionaire
-=item $sheet; A user provided questionaire. If defined and not empty, the file described by $!qst-name is not loaded and the user data is used instead.
+=item $!qst-name; The name of the file of the questionnaire
+=item $sheet; A user provided questionnaire. If defined and not empty, the file described by $!qst-name is not loaded and the user data is used instead.
 =item $versioned; If versioned is True, saving the data with C<.save()> will have a version number added to the filename starting from C<001> with a max of C<999> which should be sufficient. If False, it will take the original and replace the original. To prevent that, use C<.save-as()>.
-=item $version; If a version is given, pick that version of the questionaire. If undefined or 0 and $versioned is True, pick the latest version available.
+=item $version; If a version is given, pick that version of the questionnaire. If undefined or 0 and $versioned is True, pick the latest version available.
 
 =end pod
 submethod BUILD (
@@ -70,17 +70,17 @@ method !load ( Hash :$sheet is copy ) {
   $!pages = %();
   $!page-data = [];
 
-  $!questionaire //= $!qa-types.qa-load(
+  $!questionnaire //= $!qa-types.qa-load(
     $!qst-name, :sheet, :$!versioned, :$!version
   ) // %();
 
-  if ?$!questionaire {
-    $!width = $!questionaire<width> // 0;
-    $!height = $!questionaire<height> // 0;
-    $!button-map = $!questionaire<button-map> // %();
+  if ?$!questionnaire {
+    $!width = $!questionnaire<width> // 0;
+    $!height = $!questionnaire<height> // 0;
+    $!button-map = $!questionnaire<button-map> // %();
 
     # the rest are pages
-    for @($!questionaire<pages>) -> $page {
+    for @($!questionnaire<pages>) -> $page {
       next unless ?$page;
 
       # get and save page properties
@@ -290,14 +290,14 @@ method remove ( --> Bool ) {
     False
   }
 
-  # saving is unnecesary when questionaire is completely wiped, also from disk
+  # saving is unnecesary when questionnaire is completely wiped, also from disk
 }
 
 #-------------------------------------------------------------------------------
 # Iterator to be used in for {} statements returning pages from this sheet
 =begin pod
 
-  my QA::Questionnare $q := QA::Questionnare.new(:qst-name<login>);
+  my QA::Questionnaire $q := QA::Questionnaire.new(:qst-name<login>);
   …
   for $q -> Hash $page {
     note $page.keys;
@@ -307,7 +307,7 @@ method remove ( --> Bool ) {
 =end pod
 
 # The loop operators search for the .iterator() method
-method iterator ( QA::Questionnare:D: ) {
+method iterator ( QA::Questionnaire:D: ) {
   my $pdata = $!page-data;
 
   # Create anonymous class which does the Iterator role. This class
@@ -326,7 +326,7 @@ method iterator ( QA::Questionnare:D: ) {
 }
 
 #`{{
-method iterator ( QA::Questionnare:D: ) {
+method iterator ( QA::Questionnaire:D: ) {
   # Create anonymous class which does the Iterator role
   my class :: does Iterator {
     has $!count = 0;

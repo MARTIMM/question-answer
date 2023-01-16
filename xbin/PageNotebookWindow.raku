@@ -69,7 +69,7 @@ class EH {
     $qa-types.set-user-input-widget( 'use-my-widget', MyWidget.new);
 
     my Gnome::Gtk3::Window $window .= new;
-    $window.set-title('questionaire in window');
+    $window.set-title('questionnaire in window');
 
     $!qst-window .= new(
       :$qst-name, :show-cancel-warning, :save-data, :widget($window)
@@ -159,12 +159,12 @@ $eh.qst-window.show-hash;
 
 my QA::Status $status .= instance;
 if $status.faulty-state {
-  note 'State of questionaire: incomplete and/or wrong';
+  note 'State of questionnaire: incomplete and/or wrong';
   for $status.faulty-states.kv -> $name, $state {
     note "  faulty item: $name";
   }
 }
 
 else {
-  note 'State of questionaire: ok';
+  note 'State of questionnaire: ok';
 }

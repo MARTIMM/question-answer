@@ -20,7 +20,7 @@ See [semantic versioning](http://semver.org/). Please note point 4. on that page
   * Sometime soon I will remove the dialog versions so to cleanup some code. When one wants to use a dialog to present questions just provide an empty window and it will look like it is a dialog window.
 
 * 2022-08-26 0.16.9
-  * **QA::Page** is better named as **QA::Questionnare**.
+  * **QA::Page** is better named as **QA::Questionnaire**.
   * Add an experiment to play with mimetypes. A file in `xbin/t0.mt01` uses an extension which is defined in `/home/marcel/.local/share/mime/packages/application-x-mt01.xml` after mapping the type to a program, clicking on a file with the`.mt01` extension, will run that program using the file as its input. The name is found on the first item of its commandline arguments. The idea behind it, in this case, is that a configuration file can be modified with some question-answer program just by clicking on the config file in a file browser.
 
 * 2022-08-19 0.16.8
@@ -31,7 +31,7 @@ See [semantic versioning](http://semver.org/). Please note point 4. on that page
   * Made selectlist field modifyable. Not yet saved back into sheet config
 
 * 2022-08-12 0.16.6
-  * Preparations to modify questionaire
+  * Preparations to modify questionnaire
 
 * 2022-07-27 0.16.5
   * Changes caused by multiple changes/deprecation in the Gnome::* distributions

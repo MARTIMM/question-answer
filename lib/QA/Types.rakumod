@@ -266,7 +266,7 @@ method get-extension ( --> Str ) {
   )
 
 =item $versioned; If versioned is True, saving the data with C<.save()> will have a version number added to the filename starting from C<001> with a max of C<999> which should be sufficient. If False, it will take the original and replace the original. To prevent that, use C<.save-as()>.
-=item $version; If a version is given, pick that version of the questionaire. If undefined or 0 and $versioned is True, pick the latest version available.
+=item $version; If a version is given, pick that version of the questionnaire. If undefined or 0 and $versioned is True, pick the latest version available.
 
 =end pod
 
@@ -342,7 +342,7 @@ method !setup-path ( ) {
 =begin pod
 =head2 qa-load
 
-Load a config or data file into a Hash. There is no use for it directly. To load data, use the modules B<QA::Set> or B<QA::Questionnare>. The type of the file is taken from the $data-file-type.
+Load a config or data file into a Hash. There is no use for it directly. To load data, use the modules B<QA::Set> or B<QA::Questionnaire>. The type of the file is taken from the $data-file-type.
 
 C<:userdata> is used to load data which will be displayed in the forms.
 
@@ -477,7 +477,7 @@ method !load-hash ( Str $path, Sub $loader --> Hash ) {
 =begin pod
 =head2 qa-save
 
-Save a Hash of QA type data into a file. There is no use for it directly. To save data, use the modules B<QA::Set> or B<QA::Questionnare>.
+Save a Hash of QA type data into a file. There is no use for it directly. To save data, use the modules B<QA::Set> or B<QA::Questionnaire>.
 
 C<:userdata> is used to save data read from the forms.
 
@@ -553,7 +553,7 @@ method !save-hash ( Str $path is copy, Sub $dumper, Hash $data ) {
 =begin pod
 =head2 qa-remove
 
-Remove a Hash of QA type data file. There is no use for it directly. To remove data, use the modules B<QA::Set> or B<QA::Questionnare>.
+Remove a Hash of QA type data file. There is no use for it directly. To remove data, use the modules B<QA::Set> or B<QA::Questionnaire>.
 
 C<:userdata> is used to save data read from the forms.
 

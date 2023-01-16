@@ -1,7 +1,7 @@
 use v6.d;
 use Test;
 
-use QA::Questionnare;
+use QA::Questionnaire;
 use QA::Set;
 use QA::Question;
 use QA::Types;
@@ -22,12 +22,12 @@ given my QA::Types $qa-types {
 # create some sets
 make-sets();
 
-my QA::Questionnare $qst := QA::Questionnare.new(:qst-name<login>);
+my QA::Questionnaire $qst := QA::Questionnaire.new(:qst-name<login>);
 
 #-------------------------------------------------------------------------------
 subtest 'ISO-Test', {
 
-  isa-ok $qst, QA::Questionnare, '.new(:sheet-name)';
+  isa-ok $qst, QA::Questionnaire, '.new(:sheet-name)';
 }
 #-------------------------------------------------------------------------------
 subtest 'Add pages and sets', {
@@ -69,7 +69,7 @@ subtest 'Save and load', {
   $qst.save-as('login2');
   ok "t/Data/login2.yaml-qaqst".IO ~~ :e, '.save-as() login2';
 
-  $qst := QA::Questionnare.new(:qst-name<login>);
+  $qst := QA::Questionnaire.new(:qst-name<login>);
   is $qst.width, 400, 'reload sheet';
   my QA::Set $set .= new(
     :set-data($qst.get-set( 'tstsheet1', 'credentials'))
@@ -85,7 +85,7 @@ subtest 'replace sets and pages', {
   # change credential set
   change-sets();
 
-  my QA::Questionnare $qst2 .= new(:qst-name<login2>);
+  my QA::Questionnaire $qst2 .= new(:qst-name<login2>);
   nok $qst2.add-set( 'tstsheet3', 'credentials'), 'set already there';
   ok $qst2.add-set( 'tstsheet3', 'credentials', :replace), 'replaced set';
   $qst2.width = 300;
@@ -118,11 +118,11 @@ subtest 'remove sets and pages', {
 #-------------------------------------------------------------------------------
 subtest 'remove sheet', {
 
-  $qst := QA::Questionnare.new(:qst-name<login2>);
+  $qst := QA::Questionnaire.new(:qst-name<login2>);
   ok $qst.remove, 'login2 deleted';
 
   # cannot remove unloaded sheets
-  $qst := QA::Questionnare.new(:qst-name<login>);
+  $qst := QA::Questionnaire.new(:qst-name<login>);
   ok $qst.remove, 'login removed';
   nok $qst.remove, 'login already removed';
   ok "t/Data/login.yaml-qaqst".IO ~~ :!e, 'file removed';
@@ -234,7 +234,7 @@ multi sub show-set( Hash:D $set ) {
 }
 
 #-------------------------------------------------------------------------------
-sub show-pages( QA::Questionnare $qst ) {
+sub show-pages( QA::Questionnaire $qst ) {
 
   for $qst -> Hash $page {
     note "\nPage '$page<page-name>':";

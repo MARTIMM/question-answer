@@ -6,11 +6,11 @@ layout: sidebar
 ---
 # Locations
 
-There are several locations involved where Questionnares and categories are stored. The results of the query is stored at a standard location if not changed.
+There are several locations involved where questionnaires and categories are stored. The results of the query is stored at a standard location if not changed.
 
 Using definitions of [Free Desktop](https://freedesktop.org/wiki/);
-* Sets, Questionnares and Data (answers returned from the Questionnares) are stored in files placed into the users configuration environment `$*HOME/.config/<modified $*PROGRAM-NAME>`. On windows, another path is used; `C:\dataDir\<modified $*PROGRAM-NAME>`.
-* The Questionaire is also filled in from the data file before presentation if there is any data.
+* Sets, questionnaires and Data (answers returned from the questionnaires) are stored in files placed into the users configuration environment `$*HOME/.config/<modified $*PROGRAM-NAME>`. On windows, another path is used; `C:\dataDir\<modified $*PROGRAM-NAME>`.
+* The Questionnaire is also filled in from the data file before presentation if there is any data.
 * The root is to be set (if default is undesirable) just before accessing any QA class to prevent using wrong config files or get non-existing configuration files.
 
 

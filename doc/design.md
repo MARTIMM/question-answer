@@ -2,7 +2,7 @@
 
 # Packages
 
-Basically there are two packages made for the questions and answer system. The first, called **QA**, is meant to define the primary modules which helps the user to load a questionare and displays it on screen. The resulting answers are returned and optionally saved in the applications environment. The other package, **QA::Manager** helps the user to describe a questionaire and to save it for use in an application.
+Basically there are two packages made for the questions and answer system. The first, called **QA**, is meant to define the primary modules which helps the user to load a questionare and displays it on screen. The resulting answers are returned and optionally saved in the applications environment. The other package, **QA::Manager** helps the user to describe a questionnaire and to save it for use in an application.
 
 ## QA
 
@@ -234,7 +234,7 @@ finished: save data if requested
 
 ## QANotebook sheet type
 
-A QANotebook has more pages selectable by tabs. There might be an introductory page with a description of the questionaire and no questions. There is only a `Cancel` button on an intro-page. Other buttons are disabled or invisible. The pages with questions have a `Cancel` and a `save-quit` button.
+A QANotebook has more pages selectable by tabs. There might be an introductory page with a description of the questionnaire and no questions. There is only a `Cancel` button on an intro-page. Other buttons are disabled or invisible. The pages with questions have a `Cancel` and a `save-quit` button.
 
 hide empty description
 
@@ -312,7 +312,7 @@ QA::Gui::Page *-> "*" QA::Gui::Set
 QA::Gui::Set *-right-> "*" QA::Gui::Question
 QA::Gui::Question *-right-> QA::Gui::InputWidget
 ```
-The **QA::Gui::PageSimpleDialog** module can be replaced with **QA::Gui::SheetSimpleWindow** **QA::Gui::PageStackDialog**, **QA::Gui::SheetNotebook** or **QA::Gui::SheetAssistant** depending on the purpose of the questionaire.
+The **QA::Gui::PageSimpleDialog** module can be replaced with **QA::Gui::SheetSimpleWindow** **QA::Gui::PageStackDialog**, **QA::Gui::SheetNotebook** or **QA::Gui::SheetAssistant** depending on the purpose of the questionnaire.
 -->
 
 

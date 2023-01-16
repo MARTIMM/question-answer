@@ -4,7 +4,7 @@
   "version": "0.17.1",
   "authors": [ "Marcel Timmerman"],
   "tags": [
-    "questionnaire", "configuration", "gtk", "question", "answer", "Raku"
+    "questionnaire", "configuration", "invoice", "survey", "raku"
   ],
 
   "perl": "6.d",
@@ -42,7 +42,7 @@
     "QA::Gui::YNMsgDialog": "lib/QA/Gui/YNMsgDialog.rakumod",
 
     "QA::Question": "lib/QA/Question.rakumod",
-    "QA::Questionnare": "lib/QA/Questionnare.rakumod",
+    "QA::Questionnaire": "lib/QA/questionnaire.rakumod",
     "QA::Set": "lib/QA/Set.rakumod",
     "QA::Status": "lib/QA/Status.rakumod",
     "QA::Types": "lib/QA/Types.rakumod"

@@ -7,12 +7,12 @@ layout: sidebar
 
 # Todo notes:
 
-## Change questionaire
+## Change questionnaire
 
-Changing a questionaire will be some action like a change of an input widget value, set or page change. See for possible changes below in the list of `$type`. Actions not defined by that variable are e.g. modifications to the  accompanying combobox lists aside the question.
+Changing a questionnaire will be some action like a change of an input widget value, set or page change. See for possible changes below in the list of `$type`. Actions not defined by that variable are e.g. modifications to the  accompanying combobox lists aside the question.
 
 * [ ] When new items are added, it would be necessary to modify the name fields in the used template to keep the question, set or page unique. The new objects must be inserted after an existing object by using the name field of that existing object and add some number to it.
-* [ ] When there are changes to questions, sets or pages, it must be stored aside the original questionaire. This could be done using some sort of version tag added to the filename. It should also be simple without many versions so `<original-name>:latest.yaml` would be enough. New items are added, hidden or not. Reverting to the original by using a commandline option like `--orig` would also overwrite the latest when changes are made to the questionaire.
+* [ ] When there are changes to questions, sets or pages, it must be stored aside the original questionnaire. This could be done using some sort of version tag added to the filename. It should also be simple without many versions so `<original-name>:latest.yaml` would be enough. New items are added, hidden or not. Reverting to the original by using a commandline option like `--orig` would also overwrite the latest when changes are made to the questionnaire.
 * [x] Data needed to do the necessary changes, must come from a user supplied method. This method is called after checking the data. The method name is found in the `action-cb` question field. It holds a key to the name of the method stored using `QA::Gui::Types.set-action-handler()`. The field is read by `QA::Gui::Value.check-users-action()` and run if valid.
 
   This user method can optionally return an Array of actions to perform. The format is;
@@ -60,9 +60,9 @@ Changing a questionaire will be some action like a change of an input widget val
 -->
 
 ## Naming of files and extensions
-* [x] Change extensions into a more descriptive one. Now `.json`, `.toml` and `.yaml`. This only describes its format. It should become `.<format>-qa<type>` where format is any of `json`, `toml` or `yaml`. Type is one of `qst`, `set` or `data`. For example `.yaml-qagst` for a questionaire. Type name `set` is  for parts of a questionaire and `data` is used for the result of the questionaire.
+* [x] Change extensions into a more descriptive one. Now `.json`, `.toml` and `.yaml`. This only describes its format. It should become `.<format>-qa<type>` where format is any of `json`, `toml` or `yaml`. Type is one of `qst`, `set` or `data`. For example `.yaml-qagst` for a questionnaire. Type name `set` is  for parts of a questionnaire and `data` is used for the result of the questionnaire.
 * [x] The locations of the files are in a sheets, sets or data directory. Now the files can be distinquished by their extensions, this separation is not needed anymore. They can now be placed together in one directory.
-* [x] The data file is named after the questionaire. For single configurations, this is a good enough solution. Questionnares can also be used as a test or an interview. Those results are always stored in different files for persons or objects. Therefore there must be a way to set the name of the results file.
+* [x] The data file is named after the questionnaire. For single configurations, this is a good enough solution. questionnaires can also be used as a test or an interview. Those results are always stored in different files for persons or objects. Therefore there must be a way to set the name of the results file.
 
 <!--
 -->
@@ -91,7 +91,7 @@ The user data filled in into the questions comes from a file or created empty wh
 
   Some ideas for it
   * Fill a combobox with values after selection of another combobox.
-  * Remove or add pages or sets in the questionaire depending on other input. Perhaps using a template describing what is on the page or set.
+  * Remove or add pages or sets in the questionnaire depending on other input. Perhaps using a template describing what is on the page or set.
 
 * Many input widget types are already available but perhaps add a ...
   * Dialog
