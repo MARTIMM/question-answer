@@ -15,7 +15,7 @@ nav_menu: default-nav
 
 ## Description
 
-Questionnares, assistants and configurations, all types have the same in common. A series of questions which can be answered in the provided space nearby the question. The questions are often grouped into sections and or pages. This package has several ways to display these questionnares and to store the data from the answer areas in a `JSON`, `TOML` or `YAML` format. Also, when opened again, the previous provided values are restored in the display.
+Questionnares, surveys, invoices, assistants, authentication, multiple choices, configurations, etc., all types have the same in common. A series of questions which can be answered in the provided space nearby the question. The questions are often grouped into sections and or pages. This package has several ways to display these questionnares and to store the data from the answer areas in a `JSON`, `TOML` or `YAML` format. Also, when opened again, the previous provided values are restored in the display.
 
 There are several types of input possible of which the textual input is the most important (or most used) one. Other examples of input are check and radio buttons, combo boxes and file selections.
 
