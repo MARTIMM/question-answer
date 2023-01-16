@@ -1,41 +1,5 @@
 #!/usr/bin/env -S raku -Ilib -I.
 
-#`{{
-  Program to be run on files with the .qascript extension. The content of such files
-  are a magic code followed my yaml content
-
-  This content is a simple set of two keys 'data' and 'gst'
-  Example file;
-
-  ---[ file example ]-----------------------------------------------------------
-  #mt01
-
-  # Above code is a magic code. However, it is not checked anywhere and the
-  # linux 'file(1)' command does not use it and only shows 'ASCII text'.
-  # However, still put it there because it also gives info about which program
-  # starts when clicking on the file. Perhaps there are some hidden checks.
-
-  # Type of storage, one of yaml, toml or json
-  store-type: yaml
-
-  # Type of dialog to use; simple, stack, notebook or assistant
-  qst-type: Stack
-
-  # The location where data from questionaire is stored. Default at
-  # $HOME/.local/share/mt01/Data
-  data: /home/marcel/Languages/Raku/Projects/question-answer/xbin/Data
-
-  # The location where Questionnares are found Default at
-  # $HOME/.local/share/mt01/Qsts
-  qsts: /home/marcel/Languages/Raku/Projects/question-answer/xbin/Data/Qst
-
-
-  # name of the questionaire
-  questionaire: StackTest
-
-  ---[ end example ]------------------------------------------------------------
-}}
-
 #-------------------------------------------------------------------------------
 use lib '/home/marcel/Languages/Raku/Projects/question-answer/lib';
 
@@ -83,6 +47,8 @@ my Str $qst-name;
   #$data-file-name //= '';
   #$qst-name //= '';
 
+  # When -I is used, a lib name must be added to the RAKULIB environment
+  # variable and the program restarted without the -I option
   if ?$lib-path {
     # Change module search paths%*ENV<RAKULIB>
     %*ENV<RAKULIB> =
@@ -115,6 +81,7 @@ note 'restart with: ', @cmd.join(' ') ~ ' &';
 #note
 
 
+# Continue here when -I option is not found
 
 my QstDialog $qdialog .= new;
 my Window $window .= new;
@@ -122,7 +89,7 @@ my Window $window .= new;
 $script = @*ARGS[0];
 my Hash $cfg = load-yaml($script.IO.slurp);
 
-#  note "\n\nQuestionaire: ", $qa-types.get-file-path( $qst-name, :sheet);
+#  note "\n\nquestionnaire: ", $qa-types.get-file-path( $qst-name, :sheet);
 #  note 'Results: ', $qa-types.get-file-path(
 #    ?$data-file-name ?? $data-file-name !! $qst-name, :userdata
 #  );
@@ -131,7 +98,7 @@ init-qa( $cfg, $data-file-name);
 init-callbacks($cfg);
 init-theme( $cfg, $window);
 $window.register-signal( $qdialog, 'exit-app', 'destroy');
-my $qst-window = init-questionaire( $cfg, $window, $qst-name);
+my $qst-window = init-questionnaire( $cfg, $window, $qst-name);
 $window.show-all;
 
 Main.new.main;
@@ -142,14 +109,14 @@ $qst-window.show-hash;
 
 my QA::Status $status .= instance;
 if $status.faulty-state {
-  note 'State of questionaire: incomplete and/or wrong';
+  note 'State of questionnaire: incomplete and/or wrong';
   for $status.faulty-states.kv -> $name, $state {
     note "  faulty item: $name";
   }
 }
 
 else {
-  note 'State of questionaire: ok';
+  note 'State of questionnaire: ok';
 }
 
 #-------------------------------------------------------------------------------
@@ -159,15 +126,60 @@ sub USAGE ( ) {
   Usage;
   $*PROGRAM-NAME.IO.basename() <options> <protocol>
 
-  Protocol is a yaml formatted file which describes which questionaire
+  Protocol is a yaml formatted file which describes which questionnaire
   to use, where to find it, where to store the result amongst other things.
   Its extension should be '.qascript'.
 
   Options;
+    -D<data filename>   Optional name of datafile. When absent, the program
+                        looks for the 'data-file-name' key in the protocol file.
+                        Otherwise it takes the programs name without the
+                        extension.
     -I<path list>       List of paths where user modules can be found.
+    -Q<questionnaire>   Name of invoice to select. When absent, the program
+                        looks for the 'questionnaire' key in the protocol file.
+                        Otherwise it takes the programs name without the
+                        extension.
 
   EOUSAGE
 }
+
+#`{{
+  script to start invoices from commandline
+  Program to be run on files with the .qascript extension. The content of such files
+  are a magic code followed my yaml content
+
+  This content is a simple set of two keys 'data' and 'gst'
+  Example file;
+
+  ---[ file example ]-----------------------------------------------------------
+  #mt01
+
+  # Above code is a magic code. However, it is not checked anywhere and the
+  # linux 'file(1)' command does not use it and only shows 'ASCII text'.
+  # However, still put it there because it also gives info about which program
+  # starts when clicking on the file. Perhaps there are some hidden checks.
+
+  # Type of storage, one of yaml, toml or json
+  store-type: yaml
+
+  # Type of dialog to use; simple, stack, notebook or assistant
+  qst-type: Stack
+
+  # The location where data from questionnaire is stored. Default at
+  # $HOME/.local/share/mt01/Data
+  data: /home/marcel/Languages/Raku/Projects/question-answer/xbin/Data
+
+  # The location where questionnaires are found Default at
+  # $HOME/.local/share/mt01/Qsts
+  qsts: /home/marcel/Languages/Raku/Projects/question-answer/xbin/Data/Qst
+
+
+  # name of the questionnaire
+  questionnaire: StackTest
+
+  ---[ end example ]------------------------------------------------------------
+}}
 
 #-------------------------------------------------------------------------------
 sub init-qa ( Hash:D $cfg, Str $data-file-name? is copy ) {
@@ -177,8 +189,8 @@ sub init-qa ( Hash:D $cfg, Str $data-file-name? is copy ) {
   my Str $versioned = $cfg<versioned> // Str;
   my Int $version = $cfg<version> // 0;
 
-  # if -Q is not set then questionaire comes from script, otherwise undefined
-  $qst-name //= $cfg<questionaire> // Str;
+  # if -Q is not set then questionnaire comes from script, otherwise undefined
+  $qst-name //= $cfg<questionnaire> // Str;
 
   # if -D is not set take the name from script for data store
   $data-file-name //= $cfg<data-file-name> // Str;
@@ -257,7 +269,7 @@ note "\ncss:\n$css";
 }
 
 #-------------------------------------------------------------------------------
-sub init-questionaire ( Hash:D $cfg, $widget, Str $qst-name ) {
+sub init-questionnaire ( Hash:D $cfg, $widget, Str $qst-name ) {
 
   my Bool $show-cancel-warning = $cfg<show-cancel-warning> // False;
   my Bool $save-data = $cfg<save-data> // False;
