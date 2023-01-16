@@ -1,12 +1,17 @@
 #qascript
 
+# behavior
 show-cancel-warning: true
 show-data-on-exit: true
 save-data: true
 
+# data and 
 store-type: yaml
+# data-file-name: 
+
 qst-type: simple
 
 path: /home/marcel/Languages/Raku/Projects/question-answer/xbin/Data
 
 questionnaire:   q-change-01
+
