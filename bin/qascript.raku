@@ -1,7 +1,7 @@
 #!/usr/bin/env -S raku -Ilib -I.
 
 #`{{
-  Program to be run on files with the .mt01 extension. The content of such files
+  Program to be run on files with the .qascript extension. The content of such files
   are a magic code followed my yaml content
 
   This content is a simple set of two keys 'data' and 'gst'
@@ -25,7 +25,7 @@
   # $HOME/.local/share/mt01/Data
   data: /home/marcel/Languages/Raku/Projects/question-answer/xbin/Data
 
-  # The location where questionaires are found Default at
+  # The location where Questionnares are found Default at
   # $HOME/.local/share/mt01/Qsts
   qsts: /home/marcel/Languages/Raku/Projects/question-answer/xbin/Data/Qst
 
