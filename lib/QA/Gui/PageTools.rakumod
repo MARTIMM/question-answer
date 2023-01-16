@@ -94,7 +94,7 @@ Set the contents of the grid. This content depends on the type of container whic
 =end pod
 method set-grid-content ( Str $type = 'Simple' ) {
 
-note "set-grid-content, container type: $type";
+#note "set-grid-content, container type: $type";
 
   given $type {
     when / Simple / {
@@ -204,7 +204,7 @@ For dialog types it is possible to add some buttons to the dialog
 
 =item $widget-name; The name of the button specified in the button map from the configuration.
 =item $response-type; A choice of four supported types; GTK_RESPONSE_CANCEL, GTK_RESPONSE_APPLY, GTK_RESPONSE_OK and GTK_RESPONSE_HELP
-=item $is-dialog; When user wants to show the questionnaire in its own widget, this value should be set to C<False>. The button normally is added at the bottom of a dialog but when set to False the buttons are added at the bottom of the grid.
+=item $is-dialog; When user wants to show the questionaire in its own widget, this value should be set to C<False>. The button normally is added at the bottom of a dialog but when set to False the buttons are added at the bottom of the grid.
 
 =end pod
 method add-button (
@@ -272,12 +272,12 @@ method !create-button (
 
   # uppercase first letter of every word.
   $button-text = $button-text.split(/<[-_\s]>+/)>>.tc.join(' ');
-note "button text: $button-text, $response-type";
+#note "button text: $button-text, $response-type";
 
   # create button and change some other parameters
   my Gnome::Gtk3::Button $button .= new(:label($button-text));
   $button.set-name($widget-name);
-note $button.gist;
+#note $button.gist;
 
   unless $is-dialog {
     given $response-type {
@@ -301,6 +301,24 @@ note $button.gist;
 
   $button
 }
+
+#`{{
+# TODO; resize from widget values does not work because it is returning only
+# values of current allocation.
+#-------------------------------------------------------------------------------
+method resize-container ( ) {
+  my Gnome::Gtk3::Container() $c = $!grid.get-parent;
+note "grid width: ", my Int $w = $!grid.get-allocated-width();
+note "grid height: ", my Int $h = $!grid.get-allocated-height();
+
+note "preferred w: ", $!grid.get-preferred-width;
+note "preferred h: ", $!grid.get-preferred-height;
+
+note "allocation: ", $!grid.get-allocation;
+
+  $c.set-size-request( $w, $h);
+}
+}}
 
 #-------------------------------------------------------------------------------
 method set-callback (

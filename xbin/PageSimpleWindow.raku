@@ -18,16 +18,21 @@ class EH {
 
   #---------
   method show-window ( :$app-window ) {
-    my Gnome::Gtk3::Window $window .= new;
-    $window.set-title('questionnaire in window');
-    $window.set-transient-for($app-window);
+    with my Gnome::Gtk3::Window $window .= new {
+      .set-title('questionnaire in window');
+      .set-transient-for($app-window);
+#      .set-size-request( );
 
-    $!qst-window .= new(
-      :qst-name<SimpleTest>, :!show-cancel-warning, :!save-data,
-      :widget($window)
-    );
+      $!qst-window .= new(
+        :qst-name<SimpleTest>, :!show-cancel-warning, :!save-data,
+        :widget($window)
+      );
 
-    $window.show-all;
+      .show-all;
+
+#note "window allocated: ", .get-allocation;
+#      $!qst-window.resize-container;
+    }
   }
 
   #---------
