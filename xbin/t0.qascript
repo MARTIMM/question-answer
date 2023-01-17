@@ -1,27 +1,28 @@
 #qascript
 
-show-cancel-warning: true
-show-data-on-exit: true
-save-data: true
-
 path: /home/marcel/Languages/Raku/Projects/question-answer/xbin/Data
 store-type: yaml
 #versioned: true
 #version: 0
 
-qst-type: stack
 
-
-check-callbacks:
-  ModA:
-  - check-char
-
-#action-callbacks:
-#  QA::StackTest:
+#check-callbacks:
+#  ModA:
 #  - fieldtype-action1
+
+action-callbacks:
+#  QA::StackTest:
+  ModA:
+  - fieldtype-action1
+  - fieldtype-action2
 
 #user-input-widgets:
 #  - QA::StackTestUWidget
 
 
 questionnaire: StackTest
+questionnaire-type: stack
+
+show-cancel-warning: true
+show-data-on-exit: true
+save-data: true
