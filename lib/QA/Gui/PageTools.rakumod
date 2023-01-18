@@ -18,6 +18,7 @@ use Gnome::Gtk3::Notebook;
 
 use QA::Questionnaire;
 use QA::Types;
+use QA::Status;
 
 use QA::Gui::Statusbar;
 use QA::Gui::Page;
@@ -93,6 +94,8 @@ Set the contents of the grid. This content depends on the type of container whic
 
 =end pod
 method set-grid-content ( Str $type = 'Simple' ) {
+
+  QA::Status.instance.clear-status;
 
 #note "set-grid-content, container type: $type";
 

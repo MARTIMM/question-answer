@@ -8,7 +8,7 @@ use Gnome::Gtk3::Enums;
 use Gnome::Gtk3::Dialog;
 use Gnome::Gtk3::Widget;
 
-use QA::Status;
+#use QA::Status;
 use QA::Gui::PageTools;
 
 #-------------------------------------------------------------------------------
@@ -49,5 +49,5 @@ submethod BUILD (
   self.add-button( 'save-quit', GTK_RESPONSE_OK, :!is-dialog);
   self.add-button( 'help-info', GTK_RESPONSE_HELP, :!is-dialog);
 
-  QA::Status.instance.clear-status;
+#  QA::Status.instance.clear-status;
 }
