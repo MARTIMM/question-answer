@@ -13,6 +13,7 @@ See [semantic versioning](http://semver.org/). Please note point 4. on that page
 * 2023-01-19 0.17.2
   * Documentation of `qascript.raku` program
   * Bugfixed of statusbar messages
+  * Set an icon decoration when widget is a toplevel window
 
 * 2022-10-17 0.17.1
   * Add -I option to search for include directories

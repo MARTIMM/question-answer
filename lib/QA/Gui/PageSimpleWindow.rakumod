@@ -32,7 +32,7 @@ submethod BUILD (
 ) {
   $!qst .= new( :$!qst-name, :versioned);
   self.load-user-data;
-  self.set-style('QAPageSimple');
+  self.set-style( 'QAPageSimple', :$!widget);
 
   with $!qst {
     $!widget.set-border-width(2);

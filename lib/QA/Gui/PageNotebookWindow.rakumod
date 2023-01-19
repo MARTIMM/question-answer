@@ -34,7 +34,7 @@ submethod BUILD (
 ) {
   $!qst .= new( :$!qst-name, :versioned);
   self.load-user-data;
-  self.set-style('QAPageNotebook');
+  self.set-style( 'QAPageNotebook', :$!widget);
 
   with $!qst {
     $!widget.set-border-width(2);

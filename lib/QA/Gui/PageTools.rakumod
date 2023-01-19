@@ -3,6 +3,8 @@
 use v6;
 
 use Gnome::Gio::Resource;
+use Gnome::Glib::Error;
+use Gnome::Gdk3::Pixbuf;
 
 use Gnome::Gtk3::Enums;
 use Gnome::Gtk3::CssProvider;
@@ -335,7 +337,23 @@ method set-callback (
 }
 
 #-------------------------------------------------------------------------------
-method set-style ( Str:D $class-name ) {
+method set-style ( Str:D $class-name, :$widget ) {
+
+  if ?$widget and $widget.is-toplevel {
+    my Gnome::Gdk3::Pixbuf $win-icon .= new(
+      :file(%?RESOURCES<icons8-invoice-32.png>.Str)
+    );
+
+    my Gnome::Glib::Error $e = $win-icon.last-error;
+    if $e.is-valid {
+      die "Error icon file: $e.message()";
+    }
+
+    else {
+      $widget.set-icon($win-icon);
+    }
+  }
+
   # load the gtk resource file and register resource to make data global to app
   my Gnome::Gio::Resource $r .= new(
     :load(%?RESOURCES<g-resources/QAManager.gresource>.Str)
