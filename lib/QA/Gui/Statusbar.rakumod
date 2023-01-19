@@ -38,12 +38,15 @@ submethod BUILD ( ) {
 method !listen-status ( ) {
   my QA::Status $status .= instance;
   $status.tap( -> Hash $status-info {
+#note 'sts info: ', $status-info.gist;
 
       # Test for statusbar messages
       if $status-info<statusbar>:exists {
-        %!cids{$status-info<id>} //= self.get-context-id($status-info<id>);
 
-        my $cid = %!cids{$status-info<id>};
+        # Get a context id only when nesessary, i.e. 
+        %!cids{$status-info<msg-id>} //= self.get-context-id($status-info<msg-id>);
+
+        my $cid = %!cids{$status-info<msg-id>};
         my Str $message = $status-info<message> // '';
         my Str $msg-id = $status-info<msg-id> // '';
 
@@ -58,9 +61,9 @@ method !listen-status ( ) {
             unless %!mids{$msg-id};
         }
 
-        else {
-          note 'sts: ', $status-info;
-        }
+#        else {
+#          note 'sts: ', $status-info;
+#        }
       }   # if $status-info<statusbar>:exists
     }     # Hash $status-info
   );      # tap

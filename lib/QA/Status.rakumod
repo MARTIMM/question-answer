@@ -26,13 +26,15 @@ method instance ( |c --> QA::Status ) {
 }
 
 #-------------------------------------------------------------------------------
+# Subscribe routine $c to get emitted data sent to this object
 method tap ( Callable $c ) {
   my $supply = $!supplier.Supply;
   $supply.tap(&$c);
 }
 
 #-------------------------------------------------------------------------------
-method send ( Any $v ) {
+# Emit sent data to all subscribed routines
+method send ( Hash $v ) {
   $!supplier.emit($v);
 }
 

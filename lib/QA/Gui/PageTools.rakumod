@@ -95,6 +95,12 @@ Set the contents of the grid. This content depends on the type of container whic
 =end pod
 method set-grid-content ( Str $type = 'Simple' ) {
 
+  # The statusbar must be created before anything else because it starts
+  # to listen for status changes which are emitted when fields are placed
+  # on the invoice and checked for its data
+  my QA::Gui::Statusbar $statusbar .= new;
+  $!grid.attach( $statusbar, 0, 2, 1, 1);
+
   QA::Status.instance.clear-status;
 
 #note "set-grid-content, container type: $type";
@@ -188,9 +194,6 @@ method set-grid-content ( Str $type = 'Simple' ) {
     }
 }}
   }
-
-  my QA::Gui::Statusbar $statusbar .= new;
-  $!grid.attach( $statusbar, 0, 2, 1, 1);
 }
 
 #-------------------------------------------------------------------------------
@@ -363,7 +366,7 @@ method load-user-data ( ) {
 #-------------------------------------------------------------------------------
 method save-data ( ) {
   $!result-user-data = $!user-data;
-note 'save-data: ', $!result-user-data.gist;
+#note 'save-data: ', $!result-user-data.gist;
 
   my QA::Types $qa-types .= instance;
   $qa-types.qa-save( $!qst-name, $!result-user-data, :userdata) if $!save-data;
@@ -373,7 +376,7 @@ note 'save-data: ', $!result-user-data.gist;
 # create page with all widgets on it. it always will return a
 # scrollable window
 method !create-page( Hash $page, Bool :$description = True --> QA::Gui::Page ) {
-note "\nPage: ", $page.<page-name>;
+#note "\nPage: ", $page.<page-name>;
   my QA::Gui::Page $gui-page .= new(
     :$page, :$description, :$!user-data, :$!pages
   );

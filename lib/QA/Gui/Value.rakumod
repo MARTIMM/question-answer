@@ -84,8 +84,10 @@ method check-widget-value (
 
   my Str $msg-id = '';
 
-  if ! $status.get-faulty-state(self.question.name) {
-note "status ok, now we check …";
+#note 'status: ', self.question.name(), ', ',
+      $status.get-faulty-state(self.question.name), ' … now we check, …';
+
+#  if ! $status.get-faulty-state(self.question.name) {
 
     # check if there is a user routine which can check data. requiredness
     # must be checked too by the routine.
@@ -97,7 +99,7 @@ note "status ok, now we check …";
         |$qa-types.get-check-handler(self.question.check-cb);
       $message = $handler-object."$method-name"( $input, |%$options) // '';
       $msg-id = self.question.name if ?$message;
-note "status ok, now we check …";
+#note "status check-cb, $msg-id, $message …" if $msg-id and $message;
     }
 
     # if there is no callback, check a widgets check method
@@ -106,29 +108,37 @@ note "status ok, now we check …";
     if ! $msg-id and self.^lookup("check-value") {
       $message = self.check-value($input);
       $msg-id = self.question.name if ?$message;
+#note "status check-value method, $msg-id, $message …" if $msg-id and $message;
     }
 
     # if there is no check method, check if it is required
     if ! $msg-id and ?self.question.required and $input ~~ m/^ \s* $/ {
       $msg-id = self.question.name;
       $message = "$msg-id is required";
+#note "status required, $msg-id, $message …" if $msg-id and $message;
     }
-  }
+#  }
+
+#  else {
+#    $msg-id = self.question.name;
+#  }
 
   if ? $msg-id {
-note "check message: ", self.question.name, ' == ', $msg-id;
-    self.set-status-hint( $input-widget, QAStatusFail);
-    $status.set-faulty-state( self.question.name, True);
+#    unless $status.get-faulty-state(self.question.name) {
+#note "check message: ", self.question.name, ' == ', $msg-id, ', ', $message;
+      self.set-status-hint( $input-widget, QAStatusFail);
+      $status.set-faulty-state( self.question.name, True);
 
-    $msg-id = self.question.name;
-    $status.send( %(
-        :statusbar, :set-msg, :id<input-errors>, :$message, :$msg-id
-      )
-    );
+      $msg-id = self.question.name;
+      $status.send( %(
+          :statusbar, :set-msg, :id<input-errors>, :$message, :$msg-id
+        )
+      );
+#    }
   }
 
   else {
-note "drop message: ", self.question.name;
+#note "drop message: ", self.question.name;
     $status.send( %(
         :statusbar, :drop-msg, :id<input-errors>, :msg-id(self.question.name)
       )
@@ -160,7 +170,7 @@ method !adjust-user-data ( $input-widget, Any $input, Int() $row ) {
 
       my Int $cb-select  = $combobox.get-active;
       my Str $cb-text = $combobox.get-active-text;
-note "adjust-user-data: $cb-select, $cb-text";
+#note "adjust-user-data: $cb-select, $cb-text";
 #TODO there is new text when $cb-select = -1. comes in character by character
 #`{{
       if $cb-select == -1 {
