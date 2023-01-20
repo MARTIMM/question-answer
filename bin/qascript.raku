@@ -7,6 +7,7 @@ use YAMLish;
 
 use QA::Gui::PageSimpleWindow;
 use QA::Gui::PageStackWindow;
+use QA::Gui::PageNotebookWindow;
 use QA::Types;
 
 use Gnome::Gtk3::Window;
@@ -23,6 +24,7 @@ constant \Main = Gnome::Gtk3::Main;
 
 constant \PageSimpleWindow = QA::Gui::PageSimpleWindow;
 constant \PageStackWindow = QA::Gui::PageStackWindow;
+constant \PageNotebookWindow = QA::Gui::PageNotebookWindow;
 
 #-------------------------------------------------------------------------------
 # A very small class just to have a method to quit the event queue
@@ -305,7 +307,9 @@ sub init-questionnaire ( Hash:D $cfg, $widget, Str $qst-name ) {
     }
 
     when 'notebook' {
-      $qst-window = '';
+      $qst-window = PageNotebookWindow.new(
+        :$qst-name, :$show-cancel-warning, :$save-data, :$widget,
+      );
     }
 
     when 'assistant' {
