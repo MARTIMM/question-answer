@@ -2,28 +2,59 @@
 
 # Packages
 
-Basically there are two packages made for the questions and answer system. The first, called **QA**, is meant to define the primary modules which helps the user to load a questionare and displays it on screen. The resulting answers are returned and optionally saved in the applications environment. The other package, **QA::Manager** helps the user to describe a questionnaire and to save it for use in an application.
+Basically there are two packages made for the questions and answer system. The first, called **QA**, is meant to define the primary modules which helps the user to load a questionare and displays it on screen. The resulting answers are returned and optionally saved at the users preferred location. The other package, **QA::Manager** helps the user to describe a questionnaire and to save it for use in an application.
 
 ## QA
 
 ## QA::Manager
 
-### Management of QA sheets.
+### Management of questionnaires.
 
-The created sheets are stored in some configuration environment of the QA::Manager. To create sheets, the QA::Manager needs to ask questions like a name and description and also the questions to pose to the user of the sheet. For this, the program has some sheets of its own to present the forms to create the sheets for the users application.
+The manager helps to create sets of questions and are stored in the managers environment. These sets are combined into pages and the pages comprise the questionnaire. The questionnaire is stored at user desirable location.
 
-A sheet or form can be represented as a Notebook, Stack or an Assistant. On such a sheet you can find different items depending of the implementation. For example a Stack shows everything on one page and a Notebook or Assistent on several pages.
+The manager needs to ask questions to create the sets and pages. For this, the program has several questionnaires of its own.
 
-A description of the sheet comes at the top or on the first page when there are mages like a Notebook or Assistant has. In a Stack, one or more sets are displayed. The sets are spread over several pages when a Notebook or Assistant is used.
+The locations of the user defined sets and the questionnaires used by the manager are stored the desktop configurations directory
+* `$HOME/.config/io.github.martimm.qa-manager`
+  * `Sets`
+  * `Questionnaires`
+  * `QA`
 
-A set displays a number of questions together with proper input fields. At the top a description explains the purpose of the questions or whatever.
+
+# Manager API
+
+## Main window
+The main window has a menu with the following menu items.
+* `File`
+  * `Configure`; Display configuration window
+  * `Quit`; Stop the program
+
+* `Questionnaire`
+  * `New`; Show a dialog with a few questions to create a new questionnaire.
+  * `Modify`; Change the info for the page.
+  * `Save`; Save questionnaire in managers environment.
+  * `Load`; Load the questionnare. Only the ones in the managers environment can be loaded.
+  * `Export`; Place the questionnaire where user wants it.
+  * `View`; Display the questionnaire for testing.
+
+* `Pages`
+  * `New`; Show a dialog with a few questions for the new page.
+  * `Add`; Select a page to add to the questionnaire.
+  * `Remove`; Show a dialog to remove a specific page from the questionnaire.
+
+* `Sets`
+  * `New`; Create a new set of questions.
+  * `Add`; Add a question.
+  * `Save`; Save the set in managers environment.
+
+* `Help`
+  * `About`; Show a dialog with program version, license and author.
+
+Below the menubar, there are a few input fields;
+* A combobox with the page names for the questionnaire.
+* a listbox is shown with the names of previously saved sets. From these sets, a page can be constructed.
 
 
-All values can be checked for its type and definedness by several methods.
-
-A QA sheet is presented and can be filled in. After pressing `Save Quit`, the QA sheet is checked against wrong input. When the input checks alright the dialog is removed from display and the result returned. If the input is in some way wrong (visual hints are already shown), a message dialog is displayed with the found problems.
-
-# API
 
 ## Defining a question
 
@@ -36,7 +67,6 @@ my QAManager::Question $pw .= new(:name<password>, :qa-data(%(...)));
 $un.required = True;
 $un.encode = True;
 ```
-TODO; Now questions hold only text. It should also be capable to display images and colors. This also goes for comboboxes, lists and several other input tools.
 
 ## Defining a set of questions
 
