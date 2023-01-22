@@ -1,7 +1,7 @@
 {
   "description": "Question Answer",
   "name": "QA",
-  "version": "0.17.2",
+  "version": "0.17.3",
   "authors": [ "Marcel Timmerman"],
   "tags": [
     "questionnaire", "configuration", "invoice", "survey", "raku"
@@ -20,7 +20,7 @@
     "QA::Gui::InputWidget": "lib/QA/Gui/InputWidget.rakumod",
     "QA::Gui::OkMsgDialog": "lib/QA/Gui/OkMsgDialog.rakumod",
     "QA::Gui::Page": "lib/QA/Gui/Page.rakumod",
-    "QA::Gui::PageAssistant": "lib/QA/Gui/PageAssistant.rakumod",
+    "QA::Gui::PageAssistantWindow": "lib/QA/Gui/PageAssistantWindow.rakumod",
     "QA::Gui::PageSimpleWindow": "lib/QA/Gui/PageSimpleWindow.rakumod",
     "QA::Gui::PageStackWindow": "lib/QA/Gui/PageStackWindow.rakumod",
     "QA::Gui::PageTools": "lib/QA/Gui/PageTools.rakumod",
