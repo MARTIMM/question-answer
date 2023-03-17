@@ -28,7 +28,7 @@ mindmapDiagram {
 }
 </style>
 
-* Dialog
+* Container\nWindow
 ** Box
 *** Grid
 **** ScrolledWindow
@@ -64,7 +64,7 @@ mindmapDiagram {
 }
 </style>
 
-* Dialog
+* Container\nWindow
 ** Box
 *** Grid
 **** Notebook

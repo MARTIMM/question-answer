@@ -47,13 +47,3 @@ gem "kramdown-parser-gfm"
 
 gem "webrick", "~> 1.7"
 #gem "github-linguist"
-
-
-
-
-
-
-
-# https://bundler.io/man/gemfile.5.html
-#source "https://rubygems.org"
-#gem "github-pages", group: :jekyll_plugins

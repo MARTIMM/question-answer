@@ -7,12 +7,118 @@ layout: sidebar
 
 # Structures
 
-Structures are shown to have an idea how the files are defined. Categories and Sheets are stored on disk. The other structures are in categories, sets or sheets.
+Structures are shown to have an idea how the files are defined.
 
 All name fields in a configuration file must be unique, so that it can also be used as a hook to operate on. Current and future usages are;
 * [x] The name is used as an id for error messages.
-* [x] The name is used to store its value in a Hash tree. Using the same name twice, will overwrite a value of the other.
-* [ ] Search and modify sheets, sets and questions.
+* [x] The name is used to store its value (response to the question) in a Hash tree. Using the same name twice, will overwrite a value of the other.
+* [ ] Search and modify questionnaires, sets and questions.
+
+
+## Questionnaire
+
+The questionnaire is used to present all questions to the user. The questionnaire consists of pages which hold one or more sets of questions. When the questionnaire is displayed, there is one page visible. Using tabs or buttons you can show another.
+
+The global parameters for the questionnaire are;
+* **width**; The minimum width of the questionnaire.
+* **height**; The minimum height of the questionnaire.
+* **button-map**; A map of button names to a structure. There are two default buttons `save-quit` and `cancel` which do not need extra info and will be displayed by default. Simple renames of the button labels is straightforward. For changes from the default actions one need a structure. For instance on a login dialog, you would not like to have a 'save-quit' label on a button but renamed to `Login` and as default action when the 'enter' on the keyboard is pressed. The first letter of every word is uppercased and dashes are replaced with spaces. If a button is not desired, i.e. the default visible ones, a button is hidden when a name is set to an empty string. Otherwise, without a structure, the button is not shown.
+
+  The supported buttons are;
+  * `save-quit`; Save and close. Checks are done to see if it is safe to save.
+  * `save-continue`: Save but do not close. Checks are done. This works like an 'Apply'.
+  * `cancel`; Close without saving.
+  * `help-info`; Show help dialog. Text is from `help-message`,
+    * `message`; When help button is shown, this text is displayed. When absent, the help button is NOT shown.
+  * `user`; A user definable button.
+    * `action`; A name of a method which can be called on a previously provided object. The method is called when the answer on the question is accepted and saved in the users data. This is like the action from the question explained above.
+
+  * General options for the above buttons;
+    * `name`; Different text on the button or empty string to hide the button.
+    * `default`: `true`; the button is automatically pressed when `enter` is pressed on the keyboard. Only one one button can be set as default.
+
+* **pages**; An array of hashes.
+
+<!--
+```plantuml
+@startyaml
+width: int
+height: int
+button-map:
+  a-default-button:
+    name: changed label text
+    text: optional text
+    action: optional action
+  another-default-button:
+    name: changed label text
+pages:
+  - first page
+  - next page
+@endyaml
+```
+-->
+
+<!---->
+```
+{ "width": ... ,
+  "height": ... ,
+  "button-map": {
+    "default label text": {
+      "name": "changed label text",
+      "text": "optional text",
+      "action": "optional action"
+    }
+    ...
+  },
+  "pages": [ {
+      ... page ...
+    }, {
+      ... next page ...
+    },
+  ]
+}
+```
+<!---->
+
+## Page
+
+The questions are grouped in sets as explained above. Sets are referred to from a page to prevent duplication of structures. The problem which may arise is that sets in categories can be replaced or removed. The sheet display software will than issue a warning and skips the display of that particularly set.
+
+* **page-name**; Used in user interface to set and retrieve data.
+* **title**; A text used in a frame label at the top of the page
+* **description**; A text shown in this frame
+* **page-type**; Page types are like `QAContent`, `QAPageIntro`, `QAConfirm`, `QASummary`, `QAProgress` or `QACustom`. The `QAContent` is the default. A few are only useful for `QAAssistant` and almost none for `QADialog`.
+* **sets**; An array of set hashes.
+
+
+<!--
+```plantuml
+@startyaml
+page-name: name
+title: title
+description: text
+page-type: type
+sets:
+  - first set
+  - next set
+@endyaml
+```
+-->
+
+<!---->
+```
+"page-name": ... ,
+"title": ... ,
+"description": ... ,
+"page-type": ... ,
+"sets": [ {
+    ... set ...
+  }, {
+    ... next set ...
+  }
+]
+```
+<!---->
 
 ## Set
 
@@ -208,70 +314,3 @@ The formats used are shown below for each input type with the variables which co
 |buttons      |o |- |- |o |- |- |- |- |  |- |o |o |  |  |
 |hide         |o |o |o |o |o |o |o |o |o |o |o |o |o |o |
 -->
-
-## Sheet
-
-The sheet is used to present questions to the user. In a sheet there are pages which hold sets of questions. When shown there is only one page visible and using tabs or buttons you can show another.
-
-* **width**; The minimum width of the dialog.
-* **height**; The minimum height of the dialog.
-* **button-map**; A map of button names to a structure. There are two default buttons `save-quit` and `cancel` which do not need extra info and will be displayed by default. For changes and additions one need a structure. For instance on a login one would not like to have a 'save-quit' label on a button but renamed to `Login`. The first letter of every word is uppercased and dashes are replaced with spaces. If a button is not desired, i.e. the default visible ones, a button is hidden when a name is set to an empty string. Otherwise, without a structure, the button is not shown.
-
-  The supported buttons are;
-  * `save-quit`; Save and close. Checks are done to see if it is safe to save.
-  * `save-continue`: Save but do not close. Checks are done. This works like an 'Apply'.
-  * `cancel`; Close without saving.
-  * `help-info`; Show help dialog. Text is from `help-message`,
-    * `message`; When help button is shown, this text is displayed. When absent, the help button is NOT shown.
-  * `user`; A user definable button.
-    * `action`; A name of a method which can be called on a previously provided object. The method is called when the answer on the question is accepted and saved in the users data. This is like the action from the question explained above.
-
-  * General options for the above buttons;
-    * `name`; Different text on the button or empty string to hide the button.
-    * `default`: `true`; the button is automatically pressed when `enter` is pressed on the keyboard. Only one one button can be set as default.
-
-* **pages**; An array of hashes.
-
-```
-{ "width": ... ,
-  "height": ... ,
-  "button-map": {
-    "default label text": {
-      "name": "changed label text",
-      "text": "optional text",
-      "action": "optional action"
-    }
-    ...
-  },
-  "pages": [ {
-      ... page ...
-    }, {
-      ... next page ...
-    },
-  ]
-}
-```
-
-
-## Page
-
-The questions are grouped in sets as explained above. Sets are referred to from a page to prevent duplication of structures. The problem which may arise is that sets in categories can be replaced or removed. The sheet display software will than issue a warning and skips the display of that particularly set.
-
-* **page-name**; Used in user interface to set and retrieve data.
-* **title**; A text used in a frame label at the top of the page
-* **description**; A text shown in this frame
-* **page-type**; Page types are like `QAContent`, `QAPageIntro`, `QAConfirm`, `QASummary`, `QAProgress` or `QACustom`. The `QAContent` is the default. A few are only useful for `QAAssistant` and almost none for `QADialog`.
-* **sets**; An array of set hashes.
-
-```
-"page-name": ... ,
-"title": ... ,
-"description": ... ,
-"page-type": ... ,
-"sets": [ {
-    ... set ...
-  }, {
-    ... next set ...
-  }
-]
-```
