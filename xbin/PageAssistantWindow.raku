@@ -3,7 +3,7 @@
 use v6;
 #use lib '../gnome-gobject/lib';
 
-use Gnome::Gtk3::Dialog;
+#use Gnome::Gtk3::Dialog;
 use Gnome::Gtk3::Main;
 #use Gnome::Gtk3::Enums;
 use Gnome::Gtk3::Window;
@@ -11,14 +11,15 @@ use Gnome::Gtk3::Grid;
 use Gnome::Gtk3::Button;
 use Gnome::Gtk3::Label;
 
-use QA::Gui::SheetAssistant;
+use QA::Gui::PageAssistantWindow;
 use QA::Types;
+use QA::Status;
 
 #-------------------------------------------------------------------------------
 class EH {
 
   method show-assistant ( ) {
-    my QA::Gui::SheetAssistant $sheet-dialog .= new(
+    my QA::Gui::PageAssistantWindow $sheet-dialog .= new(
       :sheet-name<AssistantTest>,
       :show-cancel-warning, :save-data
     );
@@ -138,8 +139,8 @@ $qa-types.qa-save( 'QAManagerSetDialog', $user-data, :userdata);
 
 given my QA::Types $qa-types {
   .data-file-type(QAYAML);
-  .cfgloc-userdata('xbin/Data');
-  .cfgloc-sheet('xbin/Data/Sheets');
+  .set-root-path('xbin/Data');
+  mkdir 'xbin/Data', 0o700 unless 'xbin/Data'.IO.e;
 }
 
 #`{{

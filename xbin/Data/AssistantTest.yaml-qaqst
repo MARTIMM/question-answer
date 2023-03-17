@@ -1,0 +1,48 @@
+width: 500
+height: 500
+button-map:
+  cancel: stop
+  save-quit: donnit
+
+pages:
+  - page-name: page1
+    description: Specification of a set. Below you can fill in the necessary fields required for a description of an input field.
+    title: Set Specification
+
+    sets:
+      - set-name: set-spec
+        description: Testing the fields that makup this set
+        title: Test Set1
+        questions:
+          - name: name
+            required: true
+            fieldtype: QAEntry
+            description: Key of this input field
+            title: Name
+
+
+        questions:
+          - fieldtype: QATextView
+            description: Description of this input field
+            title: Description
+            name: description
+            required: false
+            repeatable: true
+            options:
+              minimum: 2
+              maximum: 4
+
+  - page-name: page2
+    description: "Specification of a set and a lot more info to talk about but we won't, not now anyways."
+    title: 2nd Specification
+
+    sets:
+      - set-name: entry-spec
+        description: Specify the fields that makup this question
+        title: Entry Specification
+        questions:
+          - required: true
+            name: name
+            fieldtype: QAEntry
+            title: Name
+            description: Key of this input fieldtype

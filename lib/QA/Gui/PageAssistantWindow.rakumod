@@ -42,7 +42,7 @@ also is Gnome::Gtk3::Assistant;
 #-------------------------------------------------------------------------------
 has QA::Questionnaire $!qst;
 has Str $!qst-name;
-#has Hash $!user-data;
+has Hash $!user-data;
 has Hash $.result-user-data;
 has Array $!sets = [];
 has Array $!pages = [];

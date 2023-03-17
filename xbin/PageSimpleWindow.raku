@@ -1,6 +1,6 @@
 #!/usr/bin/env raku
 
-use v6.d;
+use v6;
 
 use Gnome::Gtk3::Main;
 use Gnome::Gtk3::Window;
