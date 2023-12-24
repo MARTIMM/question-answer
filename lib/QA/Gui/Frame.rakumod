@@ -5,15 +5,8 @@ use Gnome::Gtk4::Frame:api<2>;
 use Gnome::Gtk4::StyleContext:api<2>;
 
 #-------------------------------------------------------------------------------
-unit role QA::Gui::Frame;
+unit class QA::Gui::Frame;
 also is Gnome::Gtk4::Frame;
-
-#-------------------------------------------------------------------------------
-method new ( |c ) {
-#note 'new QA::Gui::Frame';
-  # let the Gnome::Gtk4::Frame class process the options
-  self.bless( :GtkFrame, |c);
-}
 
 #-------------------------------------------------------------------------------
 submethod BUILD ( Str :$label = '' ) {
@@ -23,7 +16,7 @@ submethod BUILD ( Str :$label = '' ) {
   self.set-margin-bottom(3);
   #self.set-border-width(5);
   self.set-hexpand(True);
-  self.set-label($label) if ?$label;
+#  self.set-label($label) if ?$label;
 
   my Gnome::Gtk4::StyleContext $context .= new(
     :native-object(self.get-style-context)
