@@ -50,7 +50,10 @@
 
   "source-url": "git://github.com/MARTIMM/question-answer.git",
 
-  "depends": [ "JSON::Fast", "Config::TOML", "YAMLish", "URI::Encode", "Gnome::Gtk4:api<2>"],
+  "depends": [
+    "JSON::Fast", "Config::TOML", "YAMLish", "URI::Encode",
+    "Gnome::Gtk4:api<2>"
+  ],
 
   "test-depends": [ ],
   "build-depends": [ ],
