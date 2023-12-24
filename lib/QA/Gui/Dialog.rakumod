@@ -9,10 +9,10 @@ use Gnome::Gtk4::Dialog:api<2>;
 use Gnome::Gtk4::T-Enums:api<2>;
 use Gnome::Gtk4::Box:api<2>;
 
-use Gnome::N::X;
-use Gnome::N::N-GObject;
+use Gnome::N::X<2>;
+use Gnome::N::N-GObject<2>;
 
-use Gnome::Glib::Error;
+use Gnome::Glib::N-Error<2>;
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -23,11 +23,6 @@ unit class QA::Gui::Dialog:auth<github:MARTIMM>;
 also is Gnome::Gtk4::Dialog;
 
 has Gnome::Gtk4::Grid $.dialog-content;
-
-#-------------------------------------------------------------------------------
-submethod new ( |c ) {
-  self.bless( :GtkDialog, |c);
-}
 
 #-------------------------------------------------------------------------------
 submethod BUILD ( ) {

@@ -2,9 +2,9 @@
 
 use v6;
 
-use Gnome::Gio::Resource;
-use Gnome::Glib::Error;
-use Gnome::Gdk3::Pixbuf;
+use Gnome::Gio::Resource:api<2>;
+use Gnome::Glib::N-Error:api<2>;
+#use Gnome::Gdk3::Pixbuf;
 
 use Gnome::Gtk4::T-Enums:api<2>;
 use Gnome::Gtk4::CssProvider:api<2>;

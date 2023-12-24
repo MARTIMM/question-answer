@@ -5,7 +5,7 @@ use Gnome::Gdk3::Events;
 use Gnome::Gtk4::Entry:api<2>;
 
 use QA::Types;
-use QA::Gui::Frame;
+#use QA::Gui::Frame;
 use QA::Question;
 use QA::Gui::Value;
 
