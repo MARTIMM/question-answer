@@ -10,17 +10,17 @@ use QA::Gui::PageStackWindow;
 use QA::Gui::PageNotebookWindow;
 use QA::Types;
 
-use Gnome::Gtk3::Window;
-use Gnome::Gtk3::Main;
-use Gnome::Gtk3::StyleContext;
-use Gnome::Gtk3::StyleProvider;
-use Gnome::Gtk3::CssProvider;
+use Gnome::Gtk4::Window:api<2>;
+use Gnome::Gtk4::Main:api<2>;
+use Gnome::Gtk4::StyleContext:api<2>;
+use Gnome::Gtk4::StyleProvider:api<2>;
+use Gnome::Gtk4::CssProvider:api<2>;
 
 use Getopt::Long;
 
 #-------------------------------------------------------------------------------
-constant \Window = Gnome::Gtk3::Window;
-constant \Main = Gnome::Gtk3::Main;
+constant \Window = Gnome::Gtk4::Window;
+constant \Main = Gnome::Gtk4::Main;
 
 constant \PageSimpleWindow = QA::Gui::PageSimpleWindow;
 constant \PageStackWindow = QA::Gui::PageStackWindow;
@@ -262,7 +262,7 @@ sub init-callbacks ( Hash:D $cfg ) {
 sub init-theme ( Hash:D $cfg, $widget ) {
   return unless $cfg<theme>:exists;
 
-  my Gnome::Gtk3::StyleContext() $context = $widget.get-style-context;
+  my Gnome::Gtk4::StyleContext() $context = $widget.get-style-context;
   $context.add-class('QAWidget');
 
   my Str $css = '';
@@ -277,7 +277,7 @@ sub init-theme ( Hash:D $cfg, $widget ) {
 
 note "\ncss:\n$css";
 
-  my Gnome::Gtk3::CssProvider $css-provider .= new;
+  my Gnome::Gtk4::CssProvider $css-provider .= new;
   $css-provider.load-from-data($css);
 
   $context.add-provider-for-screen(

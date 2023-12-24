@@ -6,12 +6,12 @@ use v6.d;
 
 #note @*ARGS.join(', ');
 
-#use Gnome::Gtk3::Dialog;
-use Gnome::Gtk3::Main;
-use Gnome::Gtk3::Window;
-use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::Button;
-use Gnome::Gtk3::Label;
+#use Gnome::Gtk4::Dialog:api<2>;
+use Gnome::Gtk4::Main:api<2>;
+use Gnome::Gtk4::Window:api<2>;
+use Gnome::Gtk4::Grid:api<2>;
+use Gnome::Gtk4::Button:api<2>;
+use Gnome::Gtk4::Label:api<2>;
 
 use QA::Gui::PageStackWindow;
 use QA::Types;
@@ -26,7 +26,7 @@ class EH {
 
   #---------
   method show-stack ( Str:D :$qst-name ) {
-    my Gnome::Gtk3::Window $window .= new;
+    my Gnome::Gtk4::Window $window .= new;
     $window.set-title('questionnaire in window');
 
     $!qst-window .= new(
@@ -38,7 +38,7 @@ class EH {
 
   #---------
   method exit-app ( ) {
-    Gnome::Gtk3::Main.new.quit;
+    Gnome::Gtk4::Main.new.quit;
   }
 
   #---------
@@ -102,7 +102,7 @@ sub MAIN (
     .set-action-handler( 'fieldtype-action2', $eh);
   }
 
-  my Gnome::Gtk3::Label $description .= new(:text(''));
+  my Gnome::Gtk4::Label $description .= new(:text(''));
   $description.set-markup(Q:to/EOLABEL/);
 
     Show a <b>QAStack</b> view with a few pages
@@ -111,15 +111,15 @@ sub MAIN (
 
     EOLABEL
 
-  my Gnome::Gtk3::Button $dialog-button .= new(:label<QAStack>);
+  my Gnome::Gtk4::Button $dialog-button .= new(:label<QAStack>);
   $dialog-button.register-signal( $eh, 'show-stack', 'clicked', :$qst-name);
 
-  with my Gnome::Gtk3::Grid $grid .= new {
+  with my Gnome::Gtk4::Grid $grid .= new {
     .attach( $description, 0, 0, 1, 1);
     .attach( $dialog-button, 0, 1, 1, 1);
   }
 
-  with my Gnome::Gtk3::Window $top-window .= new {
+  with my Gnome::Gtk4::Window $top-window .= new {
     .set-title('Stack Sheet Test');
     .register-signal( $eh, 'exit-app', 'destroy');
     .set-border-width(20);
@@ -127,7 +127,7 @@ sub MAIN (
     .show-all;
   }
 
-  Gnome::Gtk3::Main.new.main;
+  Gnome::Gtk4::Main.new.main;
 
   # show data
   $eh.qst-window.show-hash;

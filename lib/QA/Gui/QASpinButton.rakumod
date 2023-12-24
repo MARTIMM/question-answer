@@ -4,8 +4,8 @@ use QA::Types;
 use QA::Question;
 use QA::Gui::Value;
 
-use Gnome::Gtk3::SpinButton;
-use Gnome::Gtk3::Adjustment;
+use Gnome::Gtk4::SpinButton:api<2>;
+use Gnome::Gtk4::Adjustment:api<2>;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::QASpinButton;
@@ -20,7 +20,7 @@ method create-widget ( Int() :$row --> Any ) {
 
   # create a spin button input widget
   my Num $minimum = ($!question.options<minimum> // 0).Num;
-  my Gnome::Gtk3::Adjustment $adjustment .= new(
+  my Gnome::Gtk4::Adjustment $adjustment .= new(
     :value($minimum),
     :lower($minimum),
     :upper($!question.options<maximum> // 100),
@@ -29,7 +29,7 @@ method create-widget ( Int() :$row --> Any ) {
     :page-size($!question.options<page-size> // 10)
   );
 
-  my Gnome::Gtk3::SpinButton $spin-button .= new(
+  my Gnome::Gtk4::SpinButton $spin-button .= new(
     :$adjustment, :climb-rate($!question.options<climbrate> // 1.5e0),
     :digits($!question.options<digits> // 0)
   );
@@ -61,7 +61,7 @@ method clear-value ( Any:D $spin-button ) {
 
 #-------------------------------------------------------------------------------
 method input-change-handler (
-  Gnome::Gtk3::SpinButton() :_native-object($spin-button), Int() :$row
+  Gnome::Gtk4::SpinButton() :_native-object($spin-button), Int() :$row
 ) {
   self.process-widget-input(
     $spin-button, $spin-button.get-value, $row, :!do-check

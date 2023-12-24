@@ -2,11 +2,11 @@
 
 use v6;
 
-use Gnome::Gtk3::Main;
-use Gnome::Gtk3::Window;
-use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::Button;
-use Gnome::Gtk3::Label;
+use Gnome::Gtk4::Main:api<2>;
+use Gnome::Gtk4::Window:api<2>;
+use Gnome::Gtk4::Grid:api<2>;
+use Gnome::Gtk4::Button:api<2>;
+use Gnome::Gtk4::Label:api<2>;
 
 use QA::Gui::PageSimpleWindow;
 use QA::Types;
@@ -18,7 +18,7 @@ class EH {
 
   #---------
   method show-window ( :$app-window ) {
-    with my Gnome::Gtk3::Window $window .= new {
+    with my Gnome::Gtk4::Window $window .= new {
       .set-title('questionnaire in window');
       .set-transient-for($app-window);
 #      .set-size-request( );
@@ -37,7 +37,7 @@ class EH {
 
   #---------
   method exit-app ( ) {
-    Gnome::Gtk3::Main.new.gtk-main-quit;
+    Gnome::Gtk4::Main.new.gtk-main-quit;
   }
 }
 
@@ -52,7 +52,7 @@ given my QA::Types $qa-types {
   mkdir 'xbin/Data', 0o700 unless 'xbin/Data'.IO.e;
 }
 
-my Gnome::Gtk3::Label $description .= new(:text(''));
+my Gnome::Gtk4::Label $description .= new(:text(''));
 $description.set-markup(Q:to/EOLABEL/);
 
   Show a <b>QASimpleWindow</b> view with only
@@ -61,14 +61,14 @@ $description.set-markup(Q:to/EOLABEL/);
 
   EOLABEL
 
-my Gnome::Gtk3::Window $top-window .= new;
+my Gnome::Gtk4::Window $top-window .= new;
 
-my Gnome::Gtk3::Button $dialog-button .= new(:label<QASimpleWindow>);
+my Gnome::Gtk4::Button $dialog-button .= new(:label<QASimpleWindow>);
 $dialog-button.register-signal(
   $eh, 'show-window', 'clicked', :app-window($top-window)
 );
 
-with my Gnome::Gtk3::Grid $grid .= new {
+with my Gnome::Gtk4::Grid $grid .= new {
   .attach( $description, 0, 0, 1, 1);
   .attach( $dialog-button, 0, 1, 1, 1);
 }
@@ -81,7 +81,7 @@ with $top-window {
   .show-all;
 }
 
-Gnome::Gtk3::Main.new.gtk-main;
+Gnome::Gtk4::Main.new.gtk-main;
 
 # show data
 $eh.qst-window.show-hash;

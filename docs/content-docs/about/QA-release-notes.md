@@ -10,6 +10,9 @@ layout: sidebar
 
 See [semantic versioning](http://semver.org/). Please note point 4. on that page: **_Major version zero (0.y.z) is for initial development. Anything may change at any time. The public API should not be considered stable._**
 
+* 2023-12-19 0.18.0
+  * Make preparations to use Gnome::gtk4:ap<2> instead of Gnome::Gtk4:api<1>.
+
 * 2023-01-22 0.17.3
   * Get the assistant working.
 
@@ -48,7 +51,7 @@ See [semantic versioning](http://semver.org/). Please note point 4. on that page
   * Change class name to reflect module name of SheetStackDialog
 
 * 2022-06-29 0.16.4
-  * Changes in QAImage for drag and drop changes in gtk3.
+  * Changes in QAImage for drag and drop changes in Gtk4.
 
 * 2022-02-24 0.16.3
   * Changed `qa-load()` to handle option `:qa-path` better.

@@ -17,18 +17,18 @@ use Gnome::N::GlibToRakuTypes;
 
 use Gnome::Gio::Resource;
 
-use Gnome::Gtk3::Main;
-use Gnome::Gtk3::Enums;
-#use Gnome::Gtk3::Dialog;
-use Gnome::Gtk3::Assistant;
-use Gnome::Gtk3::ScrolledWindow;
-#use Gnome::Gtk3::Notebook;
-#use Gnome::Gtk3::Grid;
-#use Gnome::Gtk3::Label;
-#use Gnome::Gtk3::Button;
-use Gnome::Gtk3::CssProvider;
-use Gnome::Gtk3::StyleContext;
-use Gnome::Gtk3::StyleProvider;
+use Gnome::Gtk4::Main:api<2>;
+use Gnome::Gtk4::T-Enums:api<2>;
+#use Gnome::Gtk4::Dialog:api<2>;
+use Gnome::Gtk4::Assistant:api<2>;
+use Gnome::Gtk4::ScrolledWindow:api<2>;
+#use Gnome::Gtk4::Notebook:api<2>;
+#use Gnome::Gtk4::Grid:api<2>;
+#use Gnome::Gtk4::Label:api<2>;
+#use Gnome::Gtk4::Button:api<2>;
+use Gnome::Gtk4::CssProvider:api<2>;
+use Gnome::Gtk4::StyleContext:api<2>;
+use Gnome::Gtk4::StyleProvider:api<2>;
 
 #-------------------------------------------------------------------------------
 =begin pod
@@ -37,7 +37,7 @@ use Gnome::Gtk3::StyleProvider;
 =end pod
 
 unit class QA::Gui::PageAssistant:auth<github:MARTIMM>;
-also is Gnome::Gtk3::Assistant;
+also is Gnome::Gtk4::Assistant;
 
 #-------------------------------------------------------------------------------
 has QA::Questionnaire $!qst;
@@ -50,12 +50,12 @@ has Bool $.faulty-state;
 has Bool $!show-cancel-warning;
 has Bool $!save-data;
 #has Int $!response;
-#has Gnome::Gtk3::Notebook $!notebook;
-#has Gnome::Gtk3::Grid $!grid;
+#has Gnome::Gtk4::Notebook $!notebook;
+#has Gnome::Gtk4::Grid $!grid;
 
 #-------------------------------------------------------------------------------
 submethod new ( |c ) {
-  # let the Gnome::Gtk3::Assistant class process the options
+  # let the Gnome::Gtk4::Assistant class process the options
   self.bless( :GtkAssistant, |c);
 }
 
@@ -80,7 +80,7 @@ note "ass: $!qst-name, $qa-types.list-dirs()";
 note "\npd: $page-data";
     if $page-data<page-type> ~~ QAContent {
       my QA::Gui::Page $page = self!create-page( $page-data, :!description);
-      my Gnome::Gtk3::ScrolledWindow $page-window = $page.create-content;
+      my Gnome::Gtk4::ScrolledWindow $page-window = $page.create-content;
       self.append-page($page-window);
 #TODO add type in question
       self.set-page-type( $page-window, GTK_ASSISTANT_PAGE_CONTENT);
@@ -104,11 +104,11 @@ method !set-style ( ) {
   my Str $application-id = '/io/github/martimm/qa';
 
   # read the style definitions into the css provider and style context
-  my Gnome::Gtk3::CssProvider $css-provider .= new;
+  my Gnome::Gtk4::CssProvider $css-provider .= new;
   $css-provider.load-from-resource(
     $application-id ~ '/resources/g-resources/QAManager-style.css'
   );
-  my Gnome::Gtk3::StyleContext $context .= new;
+  my Gnome::Gtk4::StyleContext $context .= new;
   $context.add-provider-for-screen(
     Gnome::Gdk3::Screen.new, $css-provider, GTK_STYLE_PROVIDER_PRIORITY_USER
   );
@@ -128,7 +128,7 @@ method !create-page( Hash $page, Bool :$description = True --> QA::Gui::Page ) {
 
 #-------------------------------------------------------------------------------
 method exit-assistant ( ) {
-  Gnome::Gtk3::Main.new.gtk-main-quit;
+  Gnome::Gtk4::Main.new.gtk-main-quit;
 }
 
 #`{{

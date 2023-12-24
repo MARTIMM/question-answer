@@ -4,10 +4,10 @@ use v6.d;
 
 use Gnome::N::N-GObject;
 
-use Gnome::Gtk3::ComboBoxText;
-use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::StyleContext;
-use Gnome::Gtk3::Enums;
+use Gnome::Gtk4::ComboBoxText:api<2>;
+use Gnome::Gtk4::Grid:api<2>;
+use Gnome::Gtk4::StyleContext:api<2>;
+use Gnome::Gtk4::T-Enums:api<2>;
 
 #use QA::Gui::Frame;
 #use QA::Gui::Statusbar;
@@ -162,11 +162,11 @@ method !adjust-user-data ( $input-widget, Any $input, Int() $row ) {
   if ? self.question.repeatable {
     if ? self.question.selectlist {
 
-      my Gnome::Gtk3::Grid() $grid = $input-widget.get-parent;
+      my Gnome::Gtk4::Grid() $grid = $input-widget.get-parent;
 
       # another grid is a level deeper
       $grid = $grid.get-child-at( QACatColumn, $row);
-      my Gnome::Gtk3::ComboBoxText() $combobox = $grid.get-child-at( 0, 0);
+      my Gnome::Gtk4::ComboBoxText() $combobox = $grid.get-child-at( 0, 0);
 
       my Int $cb-select  = $combobox.get-active;
       my Str $cb-text = $combobox.get-active-text;
@@ -372,7 +372,7 @@ method set-status-hint ( $input-widget, InputStatusHint $status ) {
 
 #-------------------------------------------------------------------------------
 method add-class ( $input-widget, Str $class-name ) {
-  my Gnome::Gtk3::StyleContext $context .= new(
+  my Gnome::Gtk4::StyleContext $context .= new(
     :native-object($input-widget.get-style-context)
   );
   $context.add-class($class-name);
@@ -380,7 +380,7 @@ method add-class ( $input-widget, Str $class-name ) {
 
 #-------------------------------------------------------------------------------
 method remove-class ( $input-widget, Str $class-name ) {
-  my Gnome::Gtk3::StyleContext $context .= new(
+  my Gnome::Gtk4::StyleContext $context .= new(
     :native-object($input-widget.get-style-context)
   );
   $context.remove-class($class-name);

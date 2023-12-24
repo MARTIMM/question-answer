@@ -804,7 +804,7 @@ An example widget could be something like the one shown below. This widget shows
     method create-widget ( Str $widget-name, Int $row --> Any ) {
 
       # create a text input widget
-      my Gnome::Gtk3::Button $button .= new;
+      my Gnome::Gtk4::Button $button .= new;
       $button.set-label('0');
       $button.set-hexpand(False);
       $button.register-signal( self, 'change-label', 'clicked');

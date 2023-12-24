@@ -29,9 +29,9 @@ class QA::Gui::InputWidget {
   QA::Question $!question
   Hash $!user-data-set-part
 '  Array $!values
-  Gnome::Gtk3::Widget $!widget-object
+  Gnome::Gtk4::Widget $!widget-object
   Array $!grid-row-data
-  Gnome::Gtk3::Grid $!grid
+  Gnome::Gtk4::Grid $!grid
   Bool $.faulty-state;
 
   !create-widget-object()
@@ -74,7 +74,7 @@ QA::Gui::InputTools <|.. QA::Gui::some_input_widget
 
 QA::Gui::Statusbar <--o QA::Gui::InputTools
 
-'Gnome::Gtk3::Statusbar <|-- QA::Gui::Statusbar
-'Gnome::Gtk3::Frame <|-- QA::Gui::Frame
+'Gnome::Gtk4::Statusbar <|-- QA::Gui::Statusbar
+'Gnome::Gtk4::Frame <|-- QA::Gui::Frame
 
 

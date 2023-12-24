@@ -335,7 +335,7 @@ class QA::Gui::PageTools <<(R,#80ffff)>>
 UserApp *-up-> QA::Gui::PageSimpleDialog
 QA::Gui::Dialog <|-- QA::Gui::PageSimpleDialog
 QA::Gui::PageTools <|.. QA::Gui::PageSimpleDialog
-Gnome::Gtk3::Dialog <|-- QA::Gui::Dialog
+Gnome::Gtk4::Dialog <|-- QA::Gui::Dialog
 
 QA::Gui::PageSimpleDialog *-> "*" QA::Gui::Page
 QA::Gui::Page *-> "*" QA::Gui::Set
@@ -378,9 +378,9 @@ class QA::Gui::InputWidget {
   QA::Question $!question
   Hash $!user-data-set-part
 '  Array $!values
-  Gnome::Gtk3::Widget $!widget-object
+  Gnome::Gtk4::Widget $!widget-object
   Array $!grid-row-data
-  Gnome::Gtk3::Grid $!grid
+  Gnome::Gtk4::Grid $!grid
   Bool $.faulty-state;
 
   !create-widget-object()

@@ -1,7 +1,7 @@
 {
   "description": "Question Answer",
   "name": "QA",
-  "version": "0.17.3",
+  "version": "0.18.0",
   "authors": [ "Marcel Timmerman"],
   "tags": [
     "questionnaire", "configuration", "invoice", "survey", "raku"
@@ -50,7 +50,7 @@
 
   "source-url": "git://github.com/MARTIMM/question-answer.git",
 
-  "depends": [ "JSON::Fast", "Config::TOML", "YAMLish", "URI::Encode", "Gnome::Gtk3"],
+  "depends": [ "JSON::Fast", "Config::TOML", "YAMLish", "URI::Encode", "Gnome::Gtk4:api<2>"],
 
   "test-depends": [ ],
   "build-depends": [ ],

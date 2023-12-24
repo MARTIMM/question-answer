@@ -4,8 +4,8 @@ use QA::Types;
 use QA::Question;
 use QA::Gui::Value;
 
-use Gnome::Gtk3::FileChooser;
-use Gnome::Gtk3::FileChooserButton;
+use Gnome::Gtk4::FileChooser:api<2>;
+use Gnome::Gtk4::FileChooserButton:api<2>;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::QAFileChooser;
@@ -39,7 +39,7 @@ note 'options: ', ($!question.options<action> // '-').raku;
     }
   }
 
-  my Gnome::Gtk3::FileChooserButton $filechooserbutton .= new(
+  my Gnome::Gtk4::FileChooserButton $filechooserbutton .= new(
     :title($!question.title), :$action
   );
   $filechooserbutton.set-hexpand(True);
@@ -69,7 +69,7 @@ method clear-value ( Any:D $filechooserbutton ) {
 
 #-------------------------------------------------------------------------------
 method input-change-handler (
-  Gnome::Gtk3::FileChooserButton() :_native-object($filechooserbutton),
+  Gnome::Gtk4::FileChooserButton() :_native-object($filechooserbutton),
   Int() :$row
 ) {
   self.process-widget-input(

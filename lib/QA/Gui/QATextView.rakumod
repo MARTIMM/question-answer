@@ -1,9 +1,9 @@
 use v6.d;
 
-use Gnome::Gtk3::Enums;
-use Gnome::Gtk3::TextBuffer;
-use Gnome::Gtk3::TextView;
-use Gnome::Gtk3::TextIter;
+use Gnome::Gtk4::T-Enums:api<2>;
+use Gnome::Gtk4::TextBuffer:api<2>;
+use Gnome::Gtk4::TextView:api<2>;
+use Gnome::Gtk4::TextIter:api<2>;
 
 use Gnome::Gdk3::Events;
 
@@ -29,7 +29,7 @@ method create-widget ( Int() :$row --> Any ) {
   $!question.repeatable = False;
 
   # create a text input widget
-  with my Gnome::Gtk3::TextView $textview .= new {
+  with my Gnome::Gtk4::TextView $textview .= new {
     .set-hexpand(True);
     .set-size-request( 1, $!question.height // 50);
     .set-wrap-mode(GTK_WRAP_WORD);
@@ -44,19 +44,19 @@ method create-widget ( Int() :$row --> Any ) {
 
 #-------------------------------------------------------------------------------
 method !get-value ( $textview --> Any ) {
-  my Gnome::Gtk3::TextBuffer $textbuffer .= new(
+  my Gnome::Gtk4::TextBuffer $textbuffer .= new(
     :native-object($textview.get-buffer)
   );
 
-  my Gnome::Gtk3::TextIter $start = $textbuffer.get-start-iter;
-  my Gnome::Gtk3::TextIter $end = $textbuffer.get-end-iter;
+  my Gnome::Gtk4::TextIter $start = $textbuffer.get-start-iter;
+  my Gnome::Gtk4::TextIter $end = $textbuffer.get-end-iter;
   $textbuffer.get-text( $start, $end, True)
 }
 
 #-------------------------------------------------------------------------------
 method set-value ( Any:D $textview, $text ) {
   if ?$text {
-    my Gnome::Gtk3::TextBuffer $textbuffer .= new(
+    my Gnome::Gtk4::TextBuffer $textbuffer .= new(
       :native-object($textview.get-buffer)
     );
 
@@ -66,7 +66,7 @@ method set-value ( Any:D $textview, $text ) {
 
 #-------------------------------------------------------------------------------
 method clear-value ( Any:D $textview ) {
-  my Gnome::Gtk3::TextBuffer $textbuffer .= new(
+  my Gnome::Gtk4::TextBuffer $textbuffer .= new(
     :native-object($textview.get-buffer)
   );
 
@@ -90,7 +90,7 @@ method check-value ( Str $input --> Str ) {
 
 #-------------------------------------------------------------------------------
 method input-change-handler (
-  N-GdkEventFocus() $, Gnome::Gtk3::TextView() :_native-object($textview),
+  N-GdkEventFocus() $, Gnome::Gtk4::TextView() :_native-object($textview),
   Int() :$row --> Int
 ) {
   self.process-widget-input(

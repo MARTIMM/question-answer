@@ -1,6 +1,6 @@
 use v6.d;
 
-use Gnome::Gtk3::ComboBoxText;
+use Gnome::Gtk4::ComboBoxText:api<2>;
 
 use QA::Types;
 use QA::Question;
@@ -18,7 +18,7 @@ method create-widget ( Int() :$row --> Any ) {
   $!question.selectlist = [];
 
   # create a text input widget
-  my Gnome::Gtk3::ComboBoxText $combobox .= new;
+  my Gnome::Gtk4::ComboBoxText $combobox .= new;
   $combobox.set-hexpand(True);
   self.add-class( $combobox, 'QAComboBoxText');
 
@@ -55,7 +55,7 @@ method clear-value ( Any:D $combobox ) {
 # called when a selection changes in the input widget combobox.
 # it must adjust the user data. no checks are needed.
 method input-change-handler (
-  Gnome::Gtk3::ComboBoxText() :_native-object($combobox), Int() :$row
+  Gnome::Gtk4::ComboBoxText() :_native-object($combobox), Int() :$row
 ) {
 
 note 'ich: ', $combobox.gist;
@@ -108,7 +108,7 @@ method set-value (
   # check if there is an input field defined. if not, create input field.
   # otherwise get object from grid
   my Bool $new-row;
-  my Gnome::Gtk3::Entry $entry;
+  my Gnome::Gtk4::Entry $entry;
   if $!input-widgets[$row].defined {
     $new-row = False;
     $entry .= new(:native-object($!grid.get-child-at( 0, $row)));
@@ -128,7 +128,7 @@ method set-value (
     if ! $!input-widgets[$row].get-text or $overwrite;
 
   # insert and set value of a combobox
-  my Gnome::Gtk3::ComboBoxText $cbt;
+  my Gnome::Gtk4::ComboBoxText $cbt;
   if $need-combobox {
     if $new-row {
       $cbt = self.create-combobox;
@@ -144,7 +144,7 @@ method set-value (
 
   # at last the toolbutton if $!repeatable
   if $!repeatable {
-    my Gnome::Gtk3::ToolButton $tb;
+    my Gnome::Gtk4::ToolButton $tb;
     if $new-row {
       $tb = self.create-toolbutton(:add($last-row));
       $!grid.attach-next-to(
@@ -162,11 +162,11 @@ method set-value (
 
 #-------------------------------------------------------------------------------
 method add-entry (
-  Gnome::Gtk3::ToolButton :_widget($toolbutton), Int :$_handler-id
+  Gnome::Gtk4::ToolButton :_widget($toolbutton), Int :$_handler-id
 ) {
 
   # modify this buttons icon and signal handler
-  my Gnome::Gtk3::Image $image .= new;
+  my Gnome::Gtk4::Image $image .= new;
   $image.set-from-icon-name( 'list-remove', GTK_ICON_SIZE_BUTTON);
 
   $toolbutton.set-icon-widget($image);
@@ -174,7 +174,7 @@ method add-entry (
   $toolbutton.register-signal( self, 'delete-entry', 'clicked');
 
   # create new tool button on row below the button triggering this handler
-  my Gnome::Gtk3::ToolButton $tb;
+  my Gnome::Gtk4::ToolButton $tb;
   $image .= new;
   $image.set-from-icon-name( 'list-add', GTK_ICON_SIZE_BUTTON);
   $tb .= new(:icon($image));
@@ -183,14 +183,14 @@ method add-entry (
 
   # check if a combobox is to be drawn
   my Int $tbcol = self.check-toolbutton-column;
-  my Gnome::Gtk3::ComboBoxText $cbt;
+  my Gnome::Gtk4::ComboBoxText $cbt;
   if $tbcol == 2 {
     $cbt = self.create-combobox;
     $!grid.attach-next-to( $cbt, $tb, GTK_POS_LEFT, 1, 1);
   }
 
   # create new text entry to the left of the button
-  my Gnome::Gtk3::Entry $entry .= new(:$!visibility);
+  my Gnome::Gtk4::Entry $entry .= new(:$!visibility);
   $!grid.attach-next-to(
     $entry, $tbcol == 2 ?? $cbt !! $tb, GTK_POS_LEFT, 1, 1
   );
@@ -201,7 +201,7 @@ method add-entry (
 
 #-------------------------------------------------------------------------------
 method delete-entry (
-  Gnome::Gtk3::ToolButton :_widget($toolbutton), Int :$_handler-id
+  Gnome::Gtk4::ToolButton :_widget($toolbutton), Int :$_handler-id
 ) {
 
   # delete a row using the name of the toolbutton, see also rename-buttons().
@@ -218,7 +218,7 @@ method rename-buttons ( ) {
 
   my Int $tb-col = self.check-toolbutton-column;
   my Int $row = 0;
-  my Gnome::Gtk3::ToolButton $toolbar-button;
+  my Gnome::Gtk4::ToolButton $toolbar-button;
   loop {
     my $ntb = $!grid.get-child-at( $tb-col, $row);
     last unless $ntb.defined;
@@ -239,14 +239,14 @@ method check-toolbutton-column ( --> Int ) {
 }
 
 #-------------------------------------------------------------------------------
-method create-toolbutton ( Bool :$add --> Gnome::Gtk3::ToolButton ) {
+method create-toolbutton ( Bool :$add --> Gnome::Gtk4::ToolButton ) {
 
-  my Gnome::Gtk3::Image $image .= new;
+  my Gnome::Gtk4::Image $image .= new;
   $image.set-from-icon-name(
     $add ?? 'list-add' !! 'list-remove', GTK_ICON_SIZE_BUTTON
   );
 
-  my Gnome::Gtk3::ToolButton $tb .= new(:icon($image));
+  my Gnome::Gtk4::ToolButton $tb .= new(:icon($image));
   $tb.register-signal(
     self, $add ?? 'add-entry' !! 'delete-entry', 'clicked'
   );
@@ -255,9 +255,9 @@ method create-toolbutton ( Bool :$add --> Gnome::Gtk3::ToolButton ) {
 }
 
 #-------------------------------------------------------------------------------
-method create-combobox ( Str $select = '' --> Gnome::Gtk3::ComboBoxText ) {
+method create-combobox ( Str $select = '' --> Gnome::Gtk4::ComboBoxText ) {
 
-  my Gnome::Gtk3::ComboBoxText $cbt .= new;
+  my Gnome::Gtk4::ComboBoxText $cbt .= new;
   for @$!input-category -> $v {
     $cbt.append-text($v);
   }
@@ -267,7 +267,7 @@ method create-combobox ( Str $select = '' --> Gnome::Gtk3::ComboBoxText ) {
 }
 
 #-------------------------------------------------------------------------------
-method set-combobox-select( Gnome::Gtk3::ComboBoxText $cbt, Str $select = '' ) {
+method set-combobox-select( Gnome::Gtk4::ComboBoxText $cbt, Str $select = '' ) {
 
   my Int $value-index = $!input-category.first( $select, :k) // 0;
   $cbt.set-active($value-index);
@@ -277,7 +277,7 @@ method set-combobox-select( Gnome::Gtk3::ComboBoxText $cbt, Str $select = '' ) {
 method check-on-focus-change ( N-GdkEventFocus $event, :_widget($w) --> Int ) {
 
 #note 'focus change';
-  my Gnome::Gtk3::Entry $entry = $w;
+  my Gnome::Gtk4::Entry $entry = $w;
   my Str $input = $entry.get-text;
 #    $input = $kv<default> // Str unless ?$input;
 

@@ -4,8 +4,8 @@ use QA::Types;
 use QA::Question;
 use QA::Gui::Value;
 
-use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::RadioButton;
+use Gnome::Gtk4::Grid:api<2>;
+use Gnome::Gtk4::RadioButton:api<2>;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::QARadioButton;
@@ -19,13 +19,13 @@ method create-widget ( Int() :$row --> Any ) {
   $!question.selectlist = [];
 
   # create a grid with radiobuttons
-  my Gnome::Gtk3::Grid $button-grid .= new;
+  my Gnome::Gtk4::Grid $button-grid .= new;
   self.add-class( $button-grid, 'QAGrid');
 
   my Int $button-grid-row = 0;
-  my Gnome::Gtk3::RadioButton $rb-first;
+  my Gnome::Gtk4::RadioButton $rb-first;
   for @($!question.fieldlist) -> $label {
-    my Gnome::Gtk3::RadioButton $rb .= new(:$label);
+    my Gnome::Gtk4::RadioButton $rb .= new(:$label);
     $rb.set-hexpand(True);
     self.add-class( $rb, 'QARadioButton');
 
@@ -54,7 +54,7 @@ method get-value ( $button-grid --> Any ) {
 
   my Str $label;
   loop ( my Int $row = 0; $row < $!question.fieldlist.elems; $row++ ) {
-    my Gnome::Gtk3::RadioButton $rb .= new(
+    my Gnome::Gtk4::RadioButton $rb .= new(
       :native-object($button-grid.get-child-at( 0, $row))
     );
 
@@ -74,7 +74,7 @@ method set-value ( Any:D $button-grid, $label ) {
   return unless ?$label;
 
   loop ( my Int $row = 0; $row < $!question.fieldlist.elems; $row++ ) {
-    my Gnome::Gtk3::RadioButton() $rb = $button-grid.get-child-at( 0, $row);
+    my Gnome::Gtk4::RadioButton() $rb = $button-grid.get-child-at( 0, $row);
     if $rb.get-label eq $label {
       # set-active() will also trigger signal
       $rb.set-active(True);
@@ -89,11 +89,11 @@ method clear-value ( Any:D $button-grid ) {
 
 #-------------------------------------------------------------------------------
 method input-change-handler (
-  Gnome::Gtk3::RadioButton() :_native-object($radiobutton), Int() :$row
+  Gnome::Gtk4::RadioButton() :_native-object($radiobutton), Int() :$row
 ) {
 
   # must get the grid because the unit is a grid
-  my Gnome::Gtk3::Grid() $grid = $radiobutton.get-parent;
+  my Gnome::Gtk4::Grid() $grid = $radiobutton.get-parent;
 
   # store in user data without checks
   self.process-widget-input( $grid, $radiobutton.get-label, $row, :!do-check);

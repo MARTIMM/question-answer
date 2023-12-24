@@ -2,9 +2,9 @@ use v6;
 
 use Gnome::Gdk3::Events;
 
-use Gnome::Gtk3::Entry;
-use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::ComboBoxText;
+use Gnome::Gtk4::Entry:api<2>;
+use Gnome::Gtk4::Grid:api<2>;
+use Gnome::Gtk4::ComboBoxText:api<2>;
 
 use QA::Types;
 
@@ -12,10 +12,10 @@ use QA::Gui::QAComboBox;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::QASelectComboBox:auth<github:MARTIMM>;
-also is Gnome::Gtk3::ComboBoxText;
+also is Gnome::Gtk4::ComboBoxText;
 
-constant \ComboBoxText = Gnome::Gtk3::ComboBoxText;
-constant \Entry = Gnome::Gtk3::Entry;
+constant \ComboBoxText = Gnome::Gtk4::ComboBoxText:api<2>;
+constant \Entry = Gnome::Gtk4::Entry:api<2>;
 
 #-------------------------------------------------------------------------------
 has $!input-widget;
@@ -39,7 +39,7 @@ submethod new ( Bool :$use-entry = False, *%o ) {
 #-------------------------------------------------------------------------------
 submethod BUILD (
   :$!input-widget, :$!widget-object, Array :$select-list,
-  Gnome::Gtk3::Grid :$grid, Int :current-grid-row($row-grid),
+  Gnome::Gtk4::Grid :$grid, Int :current-grid-row($row-grid),
   Int :current-grid-index($row-index), Bool :$use-entry = False
 ) {
 
@@ -61,7 +61,7 @@ submethod BUILD (
 
   # Create an extra grid so that the combobox get normal height instead of
   # stretched into the height of the neighboring widget
-  my Gnome::Gtk3::Grid $combo-grid .= new;
+  my Gnome::Gtk4::Grid $combo-grid .= new;
   $combo-grid.attach( self, 0, 0, 1, 1);
   $grid.attach( $combo-grid, QACatColumn, $row-index, 1, 1);
 }
@@ -95,7 +95,7 @@ note "combobox-change, $!inhibit-combobox-events, $!input-widget, $row-grid";
 
 #-------------------------------------------------------------------------------
 method combobox-entry-handler (
-  N-GdkEventFocus() $no, Gnome::Gtk3::Entry() :_native-object($entry),
+  N-GdkEventFocus() $no, Gnome::Gtk4::Entry() :_native-object($entry),
   :$row-grid
   --> Int
 ) {

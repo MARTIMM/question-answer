@@ -1,12 +1,12 @@
 use v6;
 
-#use Gnome::Gtk3::Dialog;
-use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::Frame;
-use Gnome::Gtk3::Enums;
-use Gnome::Gtk3::Separator;
-use Gnome::Gtk3::StyleContext;
-use Gnome::Gtk3::Label;
+#use Gnome::Gtk4::Dialog:api<2>;
+use Gnome::Gtk4::Grid:api<2>;
+use Gnome::Gtk4::Frame:api<2>;
+use Gnome::Gtk4::T-Enums:api<2>;
+use Gnome::Gtk4::Separator:api<2>;
+use Gnome::Gtk4::StyleContext:api<2>;
+use Gnome::Gtk4::Label:api<2>;
 
 use QA::Gui::Question;
 use QA::Gui::Frame;
@@ -43,23 +43,23 @@ has Hash $.questions = %();
 #-------------------------------------------------------------------------------
 # Display a set on a given grid at given row
 submethod BUILD (
-  Gnome::Gtk3::Grid :$grid, Int:D :$grid-row,
+  Gnome::Gtk4::Grid :$grid, Int:D :$grid-row,
   QA::Set :$set, Hash:D :$user-data-set-part, Hash :$pages
 ) {
 
   # place set description at the top of the grid
-  with my Gnome::Gtk3::Label $description .= new(:text($set.description)) {
+  with my Gnome::Gtk4::Label $description .= new(:text($set.description)) {
     .set-line-wrap(True);
     #.set-max-width-chars(60);
     .set-justify(GTK_JUSTIFY_FILL);
     .widget-set-halign(GTK_ALIGN_START);
     .widget-set-margin-bottom(3);
-    my Gnome::Gtk3::StyleContext() $context = .get-style-context;
+    my Gnome::Gtk4::StyleContext() $context = .get-style-context;
     $context.add-class('descriptionText');
   }
 
   # a separator made a bit shorter on the sides
-  with my Gnome::Gtk3::Separator $sep .= new(
+  with my Gnome::Gtk4::Separator $sep .= new(
       :orientation(GTK_ORIENTATION_HORIZONTAL)
     ) {
     .widget-set-margin-bottom(3);
@@ -71,7 +71,7 @@ submethod BUILD (
   # the grid is for displaying the input fields and are strechable horizontally.
   # Add the description and separator to the grid
   my Int $question-grid-row = 0;
-  with my Gnome::Gtk3::Grid $question-grid .= new {
+  with my Gnome::Gtk4::Grid $question-grid .= new {
     .set-border-width(5);
     #.set-row-spacing(5);
     .set-hexpand(True);

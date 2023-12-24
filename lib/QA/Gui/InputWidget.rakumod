@@ -2,12 +2,12 @@ use v6;
 
 use Gnome::Gdk3::Events;
 
-use Gnome::Gtk3::Enums;
-use Gnome::Gtk3::Entry;
-use Gnome::Gtk3::Grid;
-#use Gnome::Gtk3::ComboBoxText;
-use Gnome::Gtk3::ToolButton;
-use Gnome::Gtk3::Image;
+use Gnome::Gtk4::T-Enums:api<2>;
+use Gnome::Gtk4::Entry:api<2>;
+use Gnome::Gtk4::Grid:api<2>;
+#use Gnome::Gtk4::ComboBoxText:api<2>;
+use Gnome::Gtk4::ToolButton:api<2>;
+use Gnome::Gtk4::Image:api<2>;
 
 use QA::Types;
 use QA::Question;
@@ -46,7 +46,7 @@ has Array $!grid-row-data;
 has Array $!grid-access-index;
 
 # The grid which displays the input widgets and other sub widgets
-has Gnome::Gtk3::Grid $!grid;
+has Gnome::Gtk4::Grid $!grid;
 
 # state of the input widgets held in the $!grid-row-data
 has Bool $.faulty-state = False;
@@ -177,7 +177,7 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
       $!grid-row-data[$current-grid-row][QACatColumn] = $!combobox;
     }
 
-    my Gnome::Gtk3::ToolButton $tb;
+    my Gnome::Gtk4::ToolButton $tb;
     $tb = self!create-toolbutton( $current-grid-row, $current-grid-index, :add);
     $!grid.attach( $tb, QAToolButtonAddColumn, $current-grid-index, 1, 1);
     $!grid-row-data[$current-grid-row][QAToolButtonAddColumn] = $tb;
@@ -199,10 +199,10 @@ CONTROL { when CX::Warn {  note .gist; .resume; } }
 #-------------------------------------------------------------------------------
 method !create-toolbutton (
   Int $row-grid, Int $row-index, Bool :$add = True
-  --> Gnome::Gtk3::ToolButton
+  --> Gnome::Gtk4::ToolButton
 ) {
 
-  my Gnome::Gtk3::Image $image .= new;
+  my Gnome::Gtk4::Image $image .= new;
   my Str ( $tb-name, $tb-handler);
 
   # add '+' (add) button
@@ -219,7 +219,7 @@ method !create-toolbutton (
     $tb-handler = 'del-row';
   }
 
-  with my Gnome::Gtk3::ToolButton $tb .= new(:icon($image)) {
+  with my Gnome::Gtk4::ToolButton $tb .= new(:icon($image)) {
     .set-name($tb-name);
     .register-signal( self, $tb-handler, 'clicked', :$row-index);
     .register-signal( self, 'hide-tb-add', 'show');
@@ -320,7 +320,7 @@ note "apply-values: $i, $select-item, ", $value-index // 'Undefined index';
 #--[ Signal Handlers ]----------------------------------------------------------
 #-------------------------------------------------------------------------------
 method add-row (
-#  Gnome::Gtk3::ToolButton() :_native-object($tb),
+#  Gnome::Gtk4::ToolButton() :_native-object($tb),
 #   Int :$_handler-id, Int :$row-index
 ) {
   self.append-grid-row
@@ -328,7 +328,7 @@ method add-row (
 
 #-------------------------------------------------------------------------------
 method del-row (
-  Gnome::Gtk3::ToolButton() :_native-object($tb), Int :$_handler-id, Int :$row-index
+  Gnome::Gtk4::ToolButton() :_native-object($tb), Int :$_handler-id, Int :$row-index
 ) {
   my Int $row-grid = $!grid-access-index[$row-index];
 #note "delete row: $row-index, $row-grid, $!grid-access-index.elems(), $!grid-row-data.elems()";

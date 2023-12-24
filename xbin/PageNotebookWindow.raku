@@ -3,12 +3,12 @@
 use v6;
 #use lib '../gnome-gobject/lib';
 
-#use Gnome::Gtk3::Dialog;
-use Gnome::Gtk3::Main;
-use Gnome::Gtk3::Window;
-use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::Button;
-use Gnome::Gtk3::Label;
+#use Gnome::Gtk4::Dialog:api<2>;
+use Gnome::Gtk4::Main:api<2>;
+use Gnome::Gtk4::Window:api<2>;
+use Gnome::Gtk4::Grid:api<2>;
+use Gnome::Gtk4::Button:api<2>;
+use Gnome::Gtk4::Label:api<2>;
 
 use QA::Gui::PageNotebookWindow;
 #use QA::Gui::Value;
@@ -32,7 +32,7 @@ class MyWidget does QA::Gui::Value {
     $!question.repeatable = False;
 
     # create a text input widget
-    my Gnome::Gtk3::Button $button .= new;
+    my Gnome::Gtk4::Button $button .= new;
     $button.set-label('0');
     $button.set-hexpand(False);
     $button.register-signal( self, 'input-change-handler', 'clicked', :$row);
@@ -52,7 +52,7 @@ class MyWidget does QA::Gui::Value {
 
   #---------
   method input-change-handler (
-    Gnome::Gtk3::Button() :_native-object($button), Int() :$row
+    Gnome::Gtk4::Button() :_native-object($button), Int() :$row
   ) {
     my Str $label = (($button.get-label // '0').Int + 1).Str;
     $button.set-label($label);
@@ -68,7 +68,7 @@ class EH {
     my QA::Types $qa-types .= instance;
     $qa-types.set-user-input-widget( 'use-my-widget', MyWidget.new);
 
-    my Gnome::Gtk3::Window $window .= new;
+    my Gnome::Gtk4::Window $window .= new;
     $window.set-title('questionnaire in window');
 
     $!qst-window .= new(
@@ -80,7 +80,7 @@ class EH {
 
   #---------
   method exit-app ( ) {
-    Gnome::Gtk3::Main.new.gtk-main-quit;
+    Gnome::Gtk4::Main.new.gtk-main-quit;
   }
 
   #---------
@@ -125,7 +125,7 @@ $qa-types.set-action-handler(
   'show-select2', $eh, 'fieldtype-action2', :opt1<opt1>
 );
 
-my Gnome::Gtk3::Label $description .= new(:text(''));
+my Gnome::Gtk4::Label $description .= new(:text(''));
 $description.set-markup(Q:to/EOLABEL/);
 
   Show a <b>QANotebook</b> view with a few pages
@@ -134,17 +134,17 @@ $description.set-markup(Q:to/EOLABEL/);
 
   EOLABEL
 
-my Gnome::Gtk3::Button $dialog-button .= new(:label<QANotebook>);
+my Gnome::Gtk4::Button $dialog-button .= new(:label<QANotebook>);
 $dialog-button.register-signal(
   $eh, 'show-notebook', 'clicked', :qst-name<NotebookTest>
 );
 
-with my Gnome::Gtk3::Grid $grid .= new {
+with my Gnome::Gtk4::Grid $grid .= new {
   .attach( $description, 0, 0, 1, 1);
   .attach( $dialog-button, 0, 1, 1, 1);
 }
 
-with my Gnome::Gtk3::Window $top-window .= new {
+with my Gnome::Gtk4::Window $top-window .= new {
   .set-title('Notebook Sheet Test');
   .register-signal( $eh, 'exit-app', 'destroy');
   .set-border-width(20);
@@ -152,7 +152,7 @@ with my Gnome::Gtk3::Window $top-window .= new {
   .show-all;
 }
 
-Gnome::Gtk3::Main.new.gtk-main;
+Gnome::Gtk4::Main.new.gtk-main;
 
 # show data
 $eh.qst-window.show-hash;

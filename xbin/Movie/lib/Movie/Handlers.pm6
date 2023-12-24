@@ -1,11 +1,11 @@
 use v6.d;
 
-use Gnome::Gtk3::Dialog;
-use Gnome::Gtk3::Main;
-#use Gnome::Gtk3::Enums;
-#use Gnome::Gtk3::Window;
-#use Gnome::Gtk3::Grid;
-#use Gnome::Gtk3::Button;
+use Gnome::Gtk4::Dialog:api<2>;
+use Gnome::Gtk4::Main:api<2>;
+#use Gnome::Gtk4::T-Enums:api<2>;
+#use Gnome::Gtk4::Window:api<2>;
+#use Gnome::Gtk4::Grid:api<2>;
+#use Gnome::Gtk4::Button:api<2>;
 
 use QA::Gui::SheetNotebook;
 #use QA::Gui::Frame;
@@ -59,7 +59,7 @@ method !display-result ( Int $response, QA::Gui::SheetNotebook $dialog ) {
 
 #-------------------------------------------------------------------------------
 method exit-app ( ) {
-  Gnome::Gtk3::Main.new.gtk-main-quit;
+  Gnome::Gtk4::Main.new.gtk-main-quit;
 }
 
 #`{{

@@ -3,12 +3,12 @@
 use v6.d;
 use lib 'xbin/Movie/lib';
 
-#use Gnome::Gtk3::Dialog;
-use Gnome::Gtk3::Main;
-#use Gnome::Gtk3::Enums;
-use Gnome::Gtk3::Window;
-use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::Button;
+#use Gnome::Gtk4::Dialog:api<2>;
+use Gnome::Gtk4::Main:api<2>;
+#use Gnome::Gtk4::T-Enums:api<2>;
+use Gnome::Gtk4::Window:api<2>;
+use Gnome::Gtk4::Grid:api<2>;
+use Gnome::Gtk4::Button:api<2>;
 
 #use QA::Gui::SheetDialog;
 #use QA::Gui::Frame;
@@ -43,16 +43,16 @@ given my QA::Types $qa-types {
 #-------------------------------------------------------------------------------
 # data structure
 #TODO make application window
-given my Gnome::Gtk3::Window $top-window .= new {
+given my Gnome::Gtk4::Window $top-window .= new {
   .set-title('Sheet Dialog Test');
   .register-signal( $movie-handlers, 'exit-app', 'destroy');
   .set-size-request( 300, 1);
   .window-resize( 300, 1);
 
-  my Gnome::Gtk3::Grid $grid .= new;
+  my Gnome::Gtk4::Grid $grid .= new;
   .add($grid);
 
-  my Gnome::Gtk3::Button $dialog-button .= new(:label<QANotebook>);
+  my Gnome::Gtk4::Button $dialog-button .= new(:label<QANotebook>);
   $grid.attach( $dialog-button, 1, 0, 1, 1);
   $dialog-button.register-signal(
     $movie-handlers, 'show-movie-form', 'clicked'
@@ -61,4 +61,4 @@ given my Gnome::Gtk3::Window $top-window .= new {
   .show-all;
 }
 
-Gnome::Gtk3::Main.new.gtk-main;
+Gnome::Gtk4::Main.new.gtk-main;

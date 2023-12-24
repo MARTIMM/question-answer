@@ -3,13 +3,13 @@
 use v6;
 #use lib '../gnome-gobject/lib';
 
-#use Gnome::Gtk3::Dialog;
-use Gnome::Gtk3::Main;
-#use Gnome::Gtk3::Enums;
-use Gnome::Gtk3::Window;
-use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::Button;
-use Gnome::Gtk3::Label;
+#use Gnome::Gtk4::Dialog:api<2>;
+use Gnome::Gtk4::Main:api<2>;
+#use Gnome::Gtk4::T-Enums:api<2>;
+use Gnome::Gtk4::Window:api<2>;
+use Gnome::Gtk4::Grid:api<2>;
+use Gnome::Gtk4::Button:api<2>;
+use Gnome::Gtk4::Label:api<2>;
 
 use QA::Gui::PageAssistantWindow;
 use QA::Types;
@@ -70,7 +70,7 @@ class EH {
 
   #---------
   method exit-app ( ) {
-    Gnome::Gtk3::Main.new.gtk-main-quit;
+    Gnome::Gtk4::Main.new.gtk-main-quit;
   }
 
 #`{{
@@ -152,7 +152,7 @@ $qa-types.set-action-handler(
 );
 }}
 
-given my Gnome::Gtk3::Window $top-window .= new {
+given my Gnome::Gtk4::Window $top-window .= new {
   .set-title('Assistant Sheet Test');
   .register-signal( $eh, 'exit-app', 'destroy');
 #  .set-size-request( 300, 1);
@@ -160,7 +160,7 @@ given my Gnome::Gtk3::Window $top-window .= new {
   .set-border-width(20);
 }
 
-my Gnome::Gtk3::Label $description .= new(:text(''));
+my Gnome::Gtk4::Label $description .= new(:text(''));
 $description.set-markup(Q:to/EOLABEL/);
 
   Show an <b>Assistant</b> view with a few pages
@@ -170,10 +170,10 @@ $description.set-markup(Q:to/EOLABEL/);
   EOLABEL
 
 
-my Gnome::Gtk3::Button $dialog-button .= new(:label<QAAssistant>);
+my Gnome::Gtk4::Button $dialog-button .= new(:label<QAAssistant>);
 $dialog-button.register-signal( $eh, 'show-assistant', 'clicked');
 
-my Gnome::Gtk3::Grid $grid .= new;
+my Gnome::Gtk4::Grid $grid .= new;
 $grid.attach( $description, 0, 0, 1, 1);
 $grid.attach( $dialog-button, 0, 1, 1, 1);
 
@@ -181,4 +181,4 @@ $grid.attach( $dialog-button, 0, 1, 1, 1);
 $top-window.add($grid);
 $top-window.show-all;
 
-Gnome::Gtk3::Main.new.gtk-main;
+Gnome::Gtk4::Main.new.gtk-main;

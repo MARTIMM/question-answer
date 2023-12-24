@@ -2,14 +2,14 @@ use v6.d;
 
 use Gnome::N::GlibToRakuTypes;
 
-use Gnome::Gtk3::Statusbar;
-use Gnome::Gtk3::StyleContext;
+use Gnome::Gtk4::Statusbar:api<2>;
+use Gnome::Gtk4::StyleContext:api<2>;
 
 use QA::Status;
 
 #-------------------------------------------------------------------------------
-unit class QA::Gui::Statusbar;
-also is Gnome::Gtk3::Statusbar:auth<github:MARTIMM>;
+unit class QA::Gui::Statusbar:auth<github:MARTIMM>;
+also is Gnome::Gtk4::Statusbar;
 
 #-------------------------------------------------------------------------------
 has %!cids = %();
@@ -26,7 +26,7 @@ submethod BUILD ( ) {
   %!cids = %();
   %!mids = %();
 
-  my Gnome::Gtk3::StyleContext $context .= new(
+  my Gnome::Gtk4::StyleContext $context .= new(
     :native-object(self.get-style-context)
   );
   $context.add-class('QAStatusbar');

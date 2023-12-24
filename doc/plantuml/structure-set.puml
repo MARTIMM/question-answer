@@ -13,13 +13,13 @@ application -> QAManager::App::Application
 'QAManager::App::Application --> QAManager::App::Page::Category
 'QAManager::App::Application --> QAManager::App::Page::Sheet
 QAManager::App::Application --> QAManager::App::Page::Set
-'Gnome::Gtk3::Application <|-- QAManager::App::Application
+'Gnome::Gtk4::Application <|-- QAManager::App::Application
 
 'QAManager::App::Page::Category --> QAManager::Category
-'Gnome::Gtk3::Grid <|--- QAManager::App::Page::Category
+'Gnome::Gtk4::Grid <|--- QAManager::App::Page::Category
 
 'QAManager::App::Page::Sheet --> QAManager::Sheet
-'Gnome::Gtk3::Grid <|--- QAManager::App::Page::Sheet
+'Gnome::Gtk4::Grid <|--- QAManager::App::Page::Sheet
 
 QAManager::App::Page::Set --> QAManager::Category
 QAManager::App::Page::Set --> QAManager::Set
@@ -29,7 +29,7 @@ QAManager::App::Page::Set --> QAManager::Gui::Part::Set
 note "See structure for\n 'the set demo dialog'" as N1
 QAManager::Gui::Part::Set .. N1
 
-Gnome::Gtk3::Grid <|-- QAManager::App::Page::Set
+Gnome::Gtk4::Grid <|-- QAManager::App::Page::Set
 
 'QAManager --> QAManager::Category
 'QAManager --> QAManager::Sheet
@@ -49,7 +49,7 @@ QAManager::KV --> QAManager::QATypes
 'QAManager::Gui::Main --> QAManager::QATypes
 'QAManager::Gui::Main --> QAManager::Set
 
-Gnome::Gtk3::MessageDialog <|-- QAManager::Gui::YNMsgDialog
+Gnome::Gtk4::MessageDialog <|-- QAManager::Gui::YNMsgDialog
 
 'QAManager::Gui::SetDemoDialog --> QAManager::QATypes
 'QAManager::Gui::SetDemoDialog --> QAManager::Category
@@ -57,7 +57,7 @@ Gnome::Gtk3::MessageDialog <|-- QAManager::Gui::YNMsgDialog
 'QAManager::Gui::SetDemoDialog --> QAManager::Gui::Part::Dialog
 'QAManager::Gui::SetDemoDialog --> QAManager::Gui::Part::Set
 
-'Gnome::Gtk3::Dialog <|-- QAManager::Gui::Part::Dialog
+'Gnome::Gtk4::Dialog <|-- QAManager::Gui::Part::Dialog
 
 'QAManager::Gui::Part::Dialog --> QAManager::Set
 'QAManager::Gui::Part::Dialog --> QAManager::KV

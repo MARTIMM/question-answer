@@ -1,10 +1,10 @@
 use v6;
 
-use Gnome::Gtk3::ScrolledWindow;
-use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::Label;
-use Gnome::Gtk3::Widget;
-use Gnome::Gtk3::Enums;
+use Gnome::Gtk4::ScrolledWindow:api<2>;
+use Gnome::Gtk4::Grid:api<2>;
+use Gnome::Gtk4::Label:api<2>;
+use Gnome::Gtk4::Widget:api<2>;
+use Gnome::Gtk4::T-Enums:api<2>;
 
 use QA::Gui::Frame;
 use QA::Gui::Set;
@@ -17,7 +17,7 @@ unit class QA::Gui::Page:auth<github:MARTIMM>;
 has Hash $.sets = %();
 has Hash $!page;
 has Hash $!pages; # must be provided to QA::Gui::Question
-has Gnome::Gtk3::Grid $!page-grid;
+has Gnome::Gtk4::Grid $!page-grid;
 has Int $!page-row;
 has Bool $!description;
 has Bool $.faulty-page-state;
@@ -31,7 +31,7 @@ submethod BUILD (
 #-------------------------------------------------------------------------------
 # create page with all widgets on it. it always will return a
 # scrollable window
-method create-content( --> Gnome::Gtk3::ScrolledWindow ) {
+method create-content( --> Gnome::Gtk4::ScrolledWindow ) {
 
   $!page-grid .= new;
   $!page-row = 0;
@@ -59,7 +59,7 @@ method create-content( --> Gnome::Gtk3::ScrolledWindow ) {
   }
 
   # return the page
-  with my Gnome::Gtk3::ScrolledWindow $page-window .= new {
+  with my Gnome::Gtk4::ScrolledWindow $page-window .= new {
     .add($!page-grid);
     .widget-set-hexpand(True);
     .widget-set-vexpand(True);
@@ -91,7 +91,7 @@ method !description ( ) {
   $!page-grid.attach( $page-frame, 0, $!page-row++, 2, 1);
 
   # place description as text in this frame
-  with my Gnome::Gtk3::Label $page-descr .= new(:text($!page<description>)) {
+  with my Gnome::Gtk4::Label $page-descr .= new(:text($!page<description>)) {
     .set-line-wrap(True);
     .widget-set-halign(GTK_ALIGN_START);
     .widget-set-margin-bottom(3);

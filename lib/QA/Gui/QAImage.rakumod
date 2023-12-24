@@ -3,20 +3,20 @@ use NativeCall;
 
 use Gnome::Gdk3::Pixbuf;
 
-use Gnome::Gtk3::FileChooser;
-use Gnome::Gtk3::FileChooserButton;
-use Gnome::Gtk3::FileFilter;
-use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::Image;
-#use Gnome::Gtk3::StyleContext;
+use Gnome::Gtk4::FileChooser:api<2>;
+use Gnome::Gtk4::FileChooserButton:api<2>;
+use Gnome::Gtk4::FileFilter:api<2>;
+use Gnome::Gtk4::Grid:api<2>;
+use Gnome::Gtk4::Image:api<2>;
+#use Gnome::Gtk4::StyleContext:api<2>;
 
-use Gnome::Gtk3::TargetEntry;
-#use Gnome::Gtk3::DragSource;
-use Gnome::Gtk3::Drag;
-use Gnome::Gtk3::DragDest;
-use Gnome::Gtk3::TargetList;
-use Gnome::Gtk3::SelectionData;
-use Gnome::Gtk3::Enums;
+use Gnome::Gtk4::TargetEntry:api<2>;
+#use Gnome::Gtk4::DragSource:api<2>;
+use Gnome::Gtk4::Drag:api<2>;
+use Gnome::Gtk4::DragDest:api<2>;
+use Gnome::Gtk4::TargetList:api<2>;
+use Gnome::Gtk4::SelectionData:api<2>;
+use Gnome::Gtk4::T-Enums:api<2>;
 
 use Gnome::Gdk3::Events;
 
@@ -44,7 +44,7 @@ also does QA::Gui::Value;
 enum IMAGEGRID <FCHOOSER-ROW IMAGE-ROW>;
 
 has Str $!dnd-targets;
-has Gnome::Gtk3::Drag $!drag;
+has Gnome::Gtk4::Drag $!drag;
 
 #-------------------------------------------------------------------------------
 method create-widget ( Int() :$row --> Any ) {
@@ -55,17 +55,17 @@ method create-widget ( Int() :$row --> Any ) {
 
   # We need a grid with 2 rows. one for the file chooser button
   # and one for the image. If DND, 1st row is made invisible.
-  with my Gnome::Gtk3::FileFilter $filter .= new {
+  with my Gnome::Gtk4::FileFilter $filter .= new {
     .set-name('images');
     .add-mime-type('image/*');
     .add-mime-type('text/uri-list');
   }
 
-  my Gnome::Gtk3::Grid $widget-grid .= new;
+  my Gnome::Gtk4::Grid $widget-grid .= new;
   self.add-class( $widget-grid, 'QAGrid');
 
   my Str $title = $!question.title;
-  with my Gnome::Gtk3::FileChooserButton $fcb .= new(:$title) {
+  with my Gnome::Gtk4::FileChooserButton $fcb .= new(:$title) {
     .set-hexpand(True);
     .set-vexpand(True);
     .set-filter($filter);
@@ -77,7 +77,7 @@ method create-widget ( Int() :$row --> Any ) {
   self.add-class( $fcb, 'QAFileChooserButton');
   $widget-grid.attach( $fcb, 0, FCHOOSER-ROW, 1, 1);
 
-  my Gnome::Gtk3::Image $image .= new;
+  my Gnome::Gtk4::Image $image .= new;
   self.add-class( $image, 'QAImage');
   $image.set-from-icon-name( 'viewimage', GTK_ICON_SIZE_DIALOG);
 
@@ -93,14 +93,14 @@ method create-widget ( Int() :$row --> Any ) {
 
 #-------------------------------------------------------------------------------
 method get-value ( $grid --> Any ) {
-  my Gnome::Gtk3::FileChooserButton $fcb = $grid.get-child-at-rk( 0, 0);
+  my Gnome::Gtk4::FileChooserButton $fcb = $grid.get-child-at-rk( 0, 0);
   $fcb.get-filename // ''
 }
 
 #-------------------------------------------------------------------------------
 method set-value ( Any:D $grid, $filename ) {
   if ?$filename {
-    my Gnome::Gtk3::FileChooserButton $fcb = $grid.get-child-at-rk( 0, 0);
+    my Gnome::Gtk4::FileChooserButton $fcb = $grid.get-child-at-rk( 0, 0);
     $fcb.set-filename($filename);# unless ?$!question.dnd;
     self!set-image( $grid, $filename);
 #    $fcb.hide if ?$!question.dnd;
@@ -109,12 +109,12 @@ method set-value ( Any:D $grid, $filename ) {
 
 #-------------------------------------------------------------------------------
 method clear-value ( Any:D $grid ) {
-  my Gnome::Gtk3::FileChooserButton $fcb = $grid.get-child-at-rk(
+  my Gnome::Gtk4::FileChooserButton $fcb = $grid.get-child-at-rk(
     0, FCHOOSER-ROW
   );
 
   $fcb.set-filename('');
-  my Gnome::Gtk3::Image $image = $grid.get-child-at-rk(
+  my Gnome::Gtk4::Image $image = $grid.get-child-at-rk(
     0, IMAGE-ROW
   );
 
@@ -123,11 +123,11 @@ method clear-value ( Any:D $grid ) {
 
 #-------------------------------------------------------------------------------
 method input-change-handler (
-  Gnome::Gtk3::FileChooserButton() :_native-object($fcb), Int() :$row
+  Gnome::Gtk4::FileChooserButton() :_native-object($fcb), Int() :$row
 ) {
 
   # must get the grid because the unit is a grid
-  my Gnome::Gtk3::Grid $grid .= new(:native-object($fcb.get-parent));
+  my Gnome::Gtk4::Grid $grid .= new(:native-object($fcb.get-parent));
 
   # repaint and store image locally
   self!set-image( $grid, $fcb.get-filename);
@@ -139,26 +139,26 @@ method input-change-handler (
 #-------------------------------------------------------------------------------
 # Make widget invisible when dnd is turned on. Wait until widgets are shown
 # to be able to turn it off.
-method must-hide ( Gnome::Gtk3::FileChooserButton() :_native-object($fcb) ) {
+method must-hide ( Gnome::Gtk4::FileChooserButton() :_native-object($fcb) ) {
   $fcb.hide if ?$!dnd-targets;
 }
 
 #-------------------------------------------------------------------------------
-method !set-image ( Gnome::Gtk3::Grid $grid, Str $filename ) {
+method !set-image ( Gnome::Gtk4::Grid $grid, Str $filename ) {
 
   my Int $width = $!question.width // 100;
   my Int $height = $!question.height // 100;
   my Gnome::Gdk3::Pixbuf $pb .= new( :file($filename), :$width, :$height);
   note $pb.last-error.message if $pb.last-error.is-valid;
 
-  my Gnome::Gtk3::Image $image = $grid.get-child-at-rk( 0, IMAGE-ROW);
+  my Gnome::Gtk4::Image $image = $grid.get-child-at-rk( 0, IMAGE-ROW);
   $image.set-from-pixbuf($pb);
 }
 
 #-------------------------------------------------------------------------------
 method setup-as-drag-destination (
-  $destination-widget, Gnome::Gtk3::FileChooserButton $fcb,
-  Gnome::Gtk3::Grid $widget-grid, Int() $row
+  $destination-widget, Gnome::Gtk4::FileChooserButton $fcb,
+  Gnome::Gtk4::Grid $widget-grid, Int() $row
 ) {
 
   my Array[N-GtkTargetEntry] $target-entries = Array[N-GtkTargetEntry].new;
@@ -166,7 +166,7 @@ method setup-as-drag-destination (
     $target-entries.push:  N-GtkTargetEntry.new( :$target, :flags(0), :info(0));
   }
 
-  my Gnome::Gtk3::DragDest $destination .= new;
+  my Gnome::Gtk4::DragDest $destination .= new;
   $destination.set(
     $destination-widget, GTK_DEST_DEFAULT_NONE, $target-entries, GDK_ACTION_COPY
   );
@@ -192,8 +192,8 @@ method setup-as-drag-destination (
 #-------------------------------------------------------------------------------
 method motion (
   Gnome::Gdk3::DragContext() $context, Int $x, Int $y, UInt $time,
-  Gnome::Gtk3::FileChooserButton() :_native-object($destination-widget),
-  Gnome::Gtk3::DragDest :$destination
+  Gnome::Gtk4::FileChooserButton() :_native-object($destination-widget),
+  Gnome::Gtk4::DragDest :$destination
   --> Bool
 ) {
   my Bool $status;
@@ -220,8 +220,8 @@ method motion (
 #-------------------------------------------------------------------------------
 method leave (
   N-GObject $context-no, UInt $time,
-  Gnome::Gtk3::FileChooserButton() :_native-object($destination-widget),
-  Gnome::Gtk3::DragDest :$destination
+  Gnome::Gtk4::FileChooserButton() :_native-object($destination-widget),
+  Gnome::Gtk4::DragDest :$destination
 ) {
   $!drag.unhighlight($destination-widget);
 }
@@ -229,8 +229,8 @@ method leave (
 #-------------------------------------------------------------------------------
 method drop (
   Gnome::Gdk3::DragContext() $context, Int $x, Int $y, UInt $time,
-  Gnome::Gtk3::FileChooserButton() :_native-object($destination-widget),
-  Gnome::Gtk3::DragDest :$destination
+  Gnome::Gtk4::FileChooserButton() :_native-object($destination-widget),
+  Gnome::Gtk4::DragDest :$destination
   --> Bool
 ) {
   my Gnome::Gdk3::Atom() $target-atom = $destination.find-target(
@@ -250,10 +250,10 @@ method drop (
 #-------------------------------------------------------------------------------
 method received (
   Gnome::Gdk3::DragContext() $context, Int $x, Int $y,
-  Gnome::Gtk3::SelectionData() $selection-data, UInt $info, UInt $time,
-  Gnome::Gtk3::FileChooserButton() :_native-object($destination-widget),
-  Gnome::Gtk3::DragDest :$destination,
-  Gnome::Gtk3::FileChooserButton :$fcb, Gnome::Gtk3::Grid :$widget-grid,
+  Gnome::Gtk4::SelectionData() $selection-data, UInt $info, UInt $time,
+  Gnome::Gtk4::FileChooserButton() :_native-object($destination-widget),
+  Gnome::Gtk4::DragDest :$destination,
+  Gnome::Gtk4::FileChooserButton :$fcb, Gnome::Gtk4::Grid :$widget-grid,
   Int() :$row
 ) {
 
@@ -267,7 +267,7 @@ method received (
 #CONTROL { when CX::Warn {  note .gist; .resume; } }
 #CATCH { default { .message.note; .backtrace.concise.note } }
 
-    my Gnome::Gtk3::Grid $grid .= new(:native-object($fcb.get-parent));
+    my Gnome::Gtk4::Grid $grid .= new(:native-object($fcb.get-parent));
 
     $source-data = $selection-data.get-uris;
     # Replace if only one. Otherwise append all if more than one.
@@ -291,7 +291,7 @@ method received (
 
           my ( $added-widget, $added-row) = $!gui-input-widget.append-grid-row;
 
-          my Gnome::Gtk3::FileChooserButton() $new-fcb =
+          my Gnome::Gtk4::FileChooserButton() $new-fcb =
             $added-widget.get-child-at( 0, FCHOOSER-ROW);
           $new-fcb.set-filename($uri);
           self!set-image( $added-widget, $uri);

@@ -1,9 +1,9 @@
 use v6;
 
-use Gnome::Gtk3::Enums;
-use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::Label;
-use Gnome::Gtk3::StyleContext;
+use Gnome::Gtk4::T-Enums:api<2>;
+use Gnome::Gtk4::Grid:api<2>;
+use Gnome::Gtk4::Label:api<2>;
+use Gnome::Gtk4::StyleContext:api<2>;
 
 use QA::Types;
 use QA::Set;
@@ -28,7 +28,7 @@ unit class QA::Gui::Question:auth<github:MARTIMM>;
 
 #-------------------------------------------------------------------------------
 # Defined by calling method to show which row in the grid can be occupied
-has Gnome::Gtk3::Grid $!question-grid;
+has Gnome::Gtk4::Grid $!question-grid;
 has Int $!grid-row;
 
 has Hash $!user-data-set-part;
@@ -40,7 +40,7 @@ has Hash $.pages;
 #-------------------------------------------------------------------------------
 submethod BUILD (
   QA::Question:D :$!question, Hash:D :$!user-data-set-part,
-  Gnome::Gtk3::Grid:D :$!question-grid, Int:D :row($!grid-row),
+  Gnome::Gtk4::Grid:D :$!question-grid, Int:D :row($!grid-row),
   Hash :$!pages
 ) {
   die 'Missing name field in question data' unless ? $!question.name;
@@ -63,12 +63,12 @@ method !display-question ( ) {
 
   # mark required fields with a bold star
   $text = $!question.required ?? ' <b>*</b> ' !! ' ';
-  with my $r-label = Gnome::Gtk3::Label.new(:$text) {
+  with my $r-label = Gnome::Gtk4::Label.new(:$text) {
     .set-use-markup(True);
     .set-valign(GTK_ALIGN_START);
     .set-margin-top(6);
 
-    Gnome::Gtk3::StyleContext.new(
+    Gnome::Gtk4::StyleContext.new(
       :native-object(.get-style-context)
     ).add-class('QARequiredLabel');
   }
@@ -120,7 +120,7 @@ method !scale-field (
 #  my Array $v = $!user-data{$set.name}{$question.name} // [];
 #  my Hash $reversed-v = $v.kv.reverse.hash;
 
-  my Gnome::Gtk3::Scale $w .= new(
+  my Gnome::Gtk4::Scale $w .= new(
     :orientation(GTK_ORIENTATION_HORIZONTAL),
     :min($question.minimum // 0e0), :max($question.maximum // 1e2),
     :step($question.step // 1e0)

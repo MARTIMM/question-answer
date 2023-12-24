@@ -1,13 +1,13 @@
 use v6.d;
 
-use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::Button;
-#use Gnome::Gtk3::Widget;
-use Gnome::Gtk3::Window;
-use Gnome::Gtk3::StyleContext;
-use Gnome::Gtk3::Dialog;
-use Gnome::Gtk3::Enums;
-use Gnome::Gtk3::Box;
+use Gnome::Gtk4::Grid:api<2>;
+use Gnome::Gtk4::Button:api<2>;
+#use Gnome::Gtk4::Widget:api<2>;
+use Gnome::Gtk4::Window:api<2>;
+use Gnome::Gtk4::StyleContext:api<2>;
+use Gnome::Gtk4::Dialog:api<2>;
+use Gnome::Gtk4::T-Enums:api<2>;
+use Gnome::Gtk4::Box:api<2>;
 
 use Gnome::N::X;
 use Gnome::N::N-GObject;
@@ -20,9 +20,9 @@ Purpose of this class is to be a base class for all dialogs (except from other g
 =end pod
 
 unit class QA::Gui::Dialog:auth<github:MARTIMM>;
-also is Gnome::Gtk3::Dialog;
+also is Gnome::Gtk4::Dialog;
 
-has Gnome::Gtk3::Grid $.dialog-content;
+has Gnome::Gtk4::Grid $.dialog-content;
 
 #-------------------------------------------------------------------------------
 submethod new ( |c ) {
@@ -48,12 +48,12 @@ submethod BUILD ( ) {
   $!dialog-content.widget-set-hexpand(True);
   $!dialog-content.widget-set-vexpand(True);
 
-  my Gnome::Gtk3::Box $content .= new(:native-object(self.get-content-area));
+  my Gnome::Gtk4::Box $content .= new(:native-object(self.get-content-area));
   $content.widget-set-name('dialog-content-area');
   self!cleanup-content($content);
   $content.add($!dialog-content);
 
-  my Gnome::Gtk3::StyleContext $context .= new(
+  my Gnome::Gtk4::StyleContext $context .= new(
     :native-object(self.get-style-context)
   );
   $context.add-class('QADialog');
@@ -70,7 +70,7 @@ method add-dialog-button (
   Any $handler-object, Str $handler-method, Str $button-text, Int $response-type
 ) {
 
-  my Gnome::Gtk3::Button $b .= new(
+  my Gnome::Gtk4::Button $b .= new(
     :native-object(self.add-button( $button-text, $response-type))
   );
   $b.register-signal( $handler-object, $handler-method, 'clicked');
@@ -93,7 +93,7 @@ method !cleanup-content ( $content ) {
   class Wipe {
 
     method wipe-widget ( N-GObject $nw ) {
-      my Gnome::Gtk3::Widget $w .= new(:native-object($nw));
+      my Gnome::Gtk4::Widget $w .= new(:native-object($nw));
       $w.widget-destroy if $w.widget-get-name eq 'dialog-content-area';
     }
   }

@@ -291,7 +291,7 @@ An example widget could be something like the one shown below. This widget shows
       method create-widget ( Str $widget-name, Int $row --> Any ) {
 
         # create a text input widget
-        my Gnome::Gtk3::Button $button .= new;
+        my Gnome::Gtk4::Button $button .= new;
         $button.set-label('0');
         $button.set-hexpand(False);
         $button.register-signal( self, 'change-label', 'clicked');
@@ -307,7 +307,7 @@ An example widget could be something like the one shown below. This widget shows
         $button.set-label($label);
       }
 
-      method change-label ( Gnome::Gtk3::Button() :_native-object($button) ) {
+      method change-label ( Gnome::Gtk4::Button() :_native-object($button) ) {
         $button.set-label(($button.get-label // '0').Int + 1);
 
         my ( $n, $row ) = $button.get-name.split(':');

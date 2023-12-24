@@ -5,20 +5,20 @@ use Gnome::Glib::Error;
 
 use Gnome::Gdk3::Pixbuf;
 
-use Gnome::Gtk3::Enums;
-use Gnome::Gtk3::Dialog;
-use Gnome::Gtk3::MessageDialog;
-use Gnome::Gtk3::Window;
-use Gnome::Gtk3::StyleContext;
+use Gnome::Gtk4::T-Enums:api<2>;
+use Gnome::Gtk4::Dialog:api<2>;
+use Gnome::Gtk4::MessageDialog:api<2>;
+use Gnome::Gtk4::Window:api<2>;
+use Gnome::Gtk4::StyleContext:api<2>;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::YNMsgDialog;
-also is Gnome::Gtk3::MessageDialog;
+also is Gnome::Gtk4::MessageDialog;
 
 #-------------------------------------------------------------------------------
 submethod new ( Str :$message, |c ) {
 
-  # let the Gnome::Gtk3::MessageDialog class process the options
+  # let the Gnome::Gtk4::MessageDialog class process the options
   self.bless(
     :GtkMessageDialog, :flags(GTK_DIALOG_MODAL), :type(GTK_MESSAGE_WARNING),
     :buttons(GTK_BUTTONS_YES_NO), :markup-message($message),
@@ -46,7 +46,7 @@ submethod BUILD ( *%options ) {
     self.set-icon($win-icon);
   }
 
-  my Gnome::Gtk3::StyleContext $context .= new(
+  my Gnome::Gtk4::StyleContext $context .= new(
     :native-object(self.get-style-context)
   );
   $context.add-class('QAYNMsgDialog');

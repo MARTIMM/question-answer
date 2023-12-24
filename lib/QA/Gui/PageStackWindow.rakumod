@@ -1,9 +1,9 @@
 #tl:1:QA::Gui::PageDialog
 use v6.d;
 
-use Gnome::Gtk3::Enums;
-use Gnome::Gtk3::Widget;
-use Gnome::Gtk3::Dialog;
+use Gnome::Gtk4::T-Enums:api<2>;
+use Gnome::Gtk4::Widget:api<2>;
+use Gnome::Gtk4::Dialog:api<2>;
 
 #use QA::Status;
 use QA::Gui::PageTools;
@@ -19,12 +19,12 @@ also does QA::Gui::PageTools;
 
 #-------------------------------------------------------------------------------
 has Int $!response;
-has Gnome::Gtk3::Widget $!widget;
+has Gnome::Gtk4::Widget $!widget;
 
 #-------------------------------------------------------------------------------
 submethod BUILD (
   Str :$!qst-name, Bool :$!show-cancel-warning = True, Bool :$!save-data = True,
-  Gnome::Gtk3::Widget :$!widget,
+  Gnome::Gtk4::Widget :$!widget,
 ) {
   $!qst .= new( :$!qst-name, :versioned);
   self.load-user-data;

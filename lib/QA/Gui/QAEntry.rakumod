@@ -2,7 +2,7 @@ use v6.d;
 
 use Gnome::Gdk3::Events;
 
-use Gnome::Gtk3::Entry;
+use Gnome::Gtk4::Entry:api<2>;
 
 use QA::Types;
 use QA::Gui::Frame;
@@ -28,7 +28,7 @@ method create-widget ( Int() :$row --> Any ) {
   $!minimum = $!question.options<minimum> // -∞;
 
   # create a text input widget
-  with my Gnome::Gtk3::Entry $entry .= new {
+  with my Gnome::Gtk4::Entry $entry .= new {
     self.add-class( $entry, 'QAEntry');
 
     .set-size-request( 70, 1);
@@ -78,7 +78,7 @@ method check-value ( Str $input --> Str ) {
 
 #-------------------------------------------------------------------------------
 method input-change-handler (
-  N-GdkEventFocus() $no, Gnome::Gtk3::Entry() :_native-object($entry),
+  N-GdkEventFocus() $no, Gnome::Gtk4::Entry() :_native-object($entry),
   Int() :$row --> Int
 ) {
 

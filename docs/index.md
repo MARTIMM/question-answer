@@ -40,5 +40,5 @@ The section at [About](content-docs/About/about.html)
 
 # Attribution
 * Thanks for the great language **Raku** formally known as **Perl 6**.
-* Also the used libraries of Gnome made accessable through the **Gnome::Gtk3** package.
+* Also the used libraries of Gnome made accessable through the **Gnome::Gtk4** package.
 * An icon is used for free from https://icons8.com on this site and also in applications and modules.

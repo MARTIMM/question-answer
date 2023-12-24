@@ -6,17 +6,17 @@ use Gnome::Gio::Resource;
 use Gnome::Glib::Error;
 use Gnome::Gdk3::Pixbuf;
 
-use Gnome::Gtk3::Enums;
-use Gnome::Gtk3::CssProvider;
-use Gnome::Gtk3::StyleContext;
-use Gnome::Gtk3::StyleProvider;
-use Gnome::Gtk3::Dialog;
-use Gnome::Gtk3::Window;
-use Gnome::Gtk3::Grid;
-use Gnome::Gtk3::Button;
-use Gnome::Gtk3::Stack;
-use Gnome::Gtk3::StackSwitcher;
-use Gnome::Gtk3::Notebook;
+use Gnome::Gtk4::T-Enums:api<2>;
+use Gnome::Gtk4::CssProvider:api<2>;
+use Gnome::Gtk4::StyleContext:api<2>;
+use Gnome::Gtk4::StyleProvider:api<2>;
+use Gnome::Gtk4::Dialog:api<2>;
+use Gnome::Gtk4::Window:api<2>;
+use Gnome::Gtk4::Grid:api<2>;
+use Gnome::Gtk4::Button:api<2>;
+use Gnome::Gtk4::Stack:api<2>;
+use Gnome::Gtk4::StackSwitcher:api<2>;
+use Gnome::Gtk4::Notebook:api<2>;
 
 use QA::Questionnaire;
 use QA::Types;
@@ -30,7 +30,7 @@ use QA::Gui::OkMsgDialog;
 #-------------------------------------------------------------------------------
 unit role QA::Gui::PageTools:auth<github:MARTIMM>;
 
-has Gnome::Gtk3::Grid $!grid;
+has Gnome::Gtk4::Grid $!grid;
 has Hash $!pages = %();
 has QA::Questionnaire $!qst;
 has Str $!qst-name;
@@ -41,11 +41,11 @@ has Bool $!save-data;
 has Bool $!show-cancel-warning;
 has $!container;
 
-state Gnome::Gtk3::Grid $button-grid;
+state Gnome::Gtk4::Grid $button-grid;
 state Int $button-count = 0;
 has Array $buttons = [];
 
-#has Gnome::Gtk3::Stack $!stack;
+#has Gnome::Gtk4::Stack $!stack;
 
 #-------------------------------------------------------------------------------
 #TM:1:set-grid
@@ -74,7 +74,7 @@ method set-grid ( $!container where .defined ) {
     }
   }
 
-  my Gnome::Gtk3::StyleContext() $context = $!grid.get-style-context;
+  my Gnome::Gtk4::StyleContext() $context = $!grid.get-style-context;
   $context.add-class('QATopGrid');
 }
 
@@ -126,11 +126,11 @@ method set-grid-content ( Str $type = 'Simple' ) {
     }
 
     when / Stack / {
-      state Gnome::Gtk3::Stack $stack;
+      state Gnome::Gtk4::Stack $stack;
       if !$stack {
         $stack .= new;
         $!grid.attach( $stack, 0, 0, 1, 1);
-        my Gnome::Gtk3::StackSwitcher $stack-switcher .= new;
+        my Gnome::Gtk4::StackSwitcher $stack-switcher .= new;
         $stack-switcher.set-stack($stack);
         $!grid.attach( $stack-switcher, 0, 1, 1, 1);
       }
@@ -149,7 +149,7 @@ method set-grid-content ( Str $type = 'Simple' ) {
 
     when / Notebook / {
       # create the notebook and add pages to it
-      my Gnome::Gtk3::Notebook $notebook .= new;
+      my Gnome::Gtk4::Notebook $notebook .= new;
       $!grid.attach( $notebook, 0, 0, 1, 1);
 
       # select content pages only
@@ -159,7 +159,7 @@ method set-grid-content ( Str $type = 'Simple' ) {
           my QA::Gui::Page $page = self!create-page( $page-data, :!description);
           $notebook.append-page(
             $page.create-content,
-            Gnome::Gtk3::Label.new(:text($page-data<title>))
+            Gnome::Gtk4::Label.new(:text($page-data<title>))
           )
         }
       }
@@ -222,13 +222,13 @@ method add-button (
   my Hash $button-map = $!qst.button-map // %();
   return unless $button-map{$widget-name}:exists;
 
-#  state Gnome::Gtk3::Grid $button-grid;
+#  state Gnome::Gtk4::Grid $button-grid;
 #  state Int $button-count = 0;
 
 note "add button $widget-name, $response-type, $is-dialog";
 
   # ???? it is possible that button is undefined
-  my Gnome::Gtk3::Button $button = self!create-button(
+  my Gnome::Gtk4::Button $button = self!create-button(
     $widget-name, $button-map, :$is-dialog, :$response-type
   );
 
@@ -249,7 +249,7 @@ note "add button $widget-name, $response-type, $is-dialog";
     if not $button-grid.defined {
 #note 'new button grid';
       # create an empty box which wil push all buttons to the right
-      with my Gnome::Gtk3::Box $strut .= new {
+      with my Gnome::Gtk4::Box $strut .= new {
         .set-hexpand(True);
         .set-vexpand(False);
         .set-halign(GTK_ALIGN_START);
@@ -272,7 +272,7 @@ note "add button $widget-name, $response-type, $is-dialog";
 method !create-button (
   Str $widget-name, Hash $button-map, Bool :$is-dialog = True,
   GtkResponseType:D :$response-type
-  --> Gnome::Gtk3::Button
+  --> Gnome::Gtk4::Button
 ) {
   # change text of label on button when defined in the button map structure
 #  my Hash $button-map = $!qst.button-map // %();
@@ -283,7 +283,7 @@ method !create-button (
 #note "button text: $button-text, $response-type";
 
   # create button and change some other parameters
-  my Gnome::Gtk3::Button $button .= new(:label($button-text));
+  my Gnome::Gtk4::Button $button .= new(:label($button-text));
   $button.set-name($widget-name);
 #note $button.gist;
 
@@ -315,7 +315,7 @@ method !create-button (
 # values of current allocation.
 #-------------------------------------------------------------------------------
 method resize-container ( ) {
-  my Gnome::Gtk3::Container() $c = $!grid.get-parent;
+  my Gnome::Gtk4::Container() $c = $!grid.get-parent;
 note "grid width: ", my Int $w = $!grid.get-allocated-width();
 note "grid height: ", my Int $h = $!grid.get-allocated-height();
 
@@ -332,7 +332,7 @@ note "allocation: ", $!grid.get-allocation;
 method set-callback (
   GtkResponseType:D $response-type, Mu:D $handler-object, Str:D $handler-method
 ) {
-  my Gnome::Gtk3::Button $button = $!buttons[$response-type.value.abs];
+  my Gnome::Gtk4::Button $button = $!buttons[$response-type.value.abs];
   $button.register-signal( $handler-object, $handler-method, 'clicked');
 }
 
@@ -363,11 +363,11 @@ method set-style ( Str:D $class-name, :$widget ) {
   my Str $application-id = '/io/github/martimm/qa';
 
   # read the style definitions into the css provider and style context
-  my Gnome::Gtk3::CssProvider $css-provider .= new;
+  my Gnome::Gtk4::CssProvider $css-provider .= new;
   $css-provider.load-from-resource(
     $application-id ~ '/resources/g-resources/QAManager-style.css'
   );
-  my Gnome::Gtk3::StyleContext $context .= new;
+  my Gnome::Gtk4::StyleContext $context .= new;
   $context.add-provider-for-screen(
     Gnome::Gdk3::Screen.new, $css-provider, GTK_STYLE_PROVIDER_PRIORITY_USER
   );
