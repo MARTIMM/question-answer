@@ -14,7 +14,7 @@ submethod BUILD ( *%options ) {
   with self {
     .set-use-markup(%options<do-markup>:exists);
     .set-hexpand(True);
-    .set-line-wrap(True);
+    .set-wrap(True);
     #.set-max-width-chars(40);
     .set-justify(GTK_JUSTIFY_FILL);
     .set-halign(GTK_ALIGN_START);
