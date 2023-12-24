@@ -1,23 +1,16 @@
 use v6;
 
 #-------------------------------------------------------------------------------
-use Gnome::Gtk3::Label;
-use Gnome::Gtk3::StyleContext;
-use Gnome::Gtk3::Enums;
+use Gnome::Gtk4::Label:api<2>;
+use Gnome::Gtk4::StyleContext:api<2>;
+use Gnome::Gtk4::T-Enums:api<2>;
 
 #-------------------------------------------------------------------------------
 unit class QA::Gui::QALabel;
-also is Gnome::Gtk3::Label;
-
-#-------------------------------------------------------------------------------
-submethod new ( |c ) {
-  # let the Gnome::Gtk3::Label class process the options
-  self.bless( :GtkLabel, |c);
-}
+also is Gnome::Gtk4::Label;
 
 #-------------------------------------------------------------------------------
 submethod BUILD ( *%options ) {
-
   with self {
     .set-use-markup(%options<do-markup>:exists);
     .set-hexpand(True);
@@ -29,7 +22,7 @@ submethod BUILD ( *%options ) {
     .set-margin-top(6);
     .set-margin-start(2);
 
-    Gnome::Gtk3::StyleContext.new(
+    Gnome::Gtk4::StyleContext.new(
       :native-object(.get-style-context)
     ).add-class('QAQuestionLabel');
   }
