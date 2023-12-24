@@ -61,9 +61,9 @@ subtest 'Handler admin', {
   is $qa-types.get-action-handler('cfg-k2'), [ $eh, 'm2', :o2(2)],
     '.set-action-handler() / .get-action-handler()';
 
-  my Gnome::Gtk4::Entry $e .= new;
+  my Gnome::Gtk4::Entry $e .= new-entry;
   $qa-types.set-user-input-widget( 'e-key', $e);
-  is $qa-types.get-widget-object('e-key'), $e,
+  is $qa-types.get-widget-object('e-key').^name, $e.^name,
     '.set-user-input-widget() / .get-widget-object()'
 }
 
