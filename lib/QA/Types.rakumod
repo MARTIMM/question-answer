@@ -847,11 +847,11 @@ method set-user-input-widget ( Str:D $widget-key, Mu:D $widget-object ) {
 
 Get the widget object using the C<$widget-key>. The method is mostly used by form handling software to display and use the input widget.
 
-  method get-widget-object ( Str:D $widget-key --> Any )
+  method get-widget-object ( Str:D $widget-key --> Mu )
 
 =end pod
 
 #tm:1:get-widget-object
-method get-widget-object ( Str:D $widget-key --> Any ) {
+method get-widget-object ( Str:D $widget-key --> Mu ) {
   $!user-objects<widgets>{$widget-key}
 }
