@@ -31,9 +31,8 @@ submethod new ( Str $message, Mu $parent = N-Object ) {
 
 #-------------------------------------------------------------------------------
 submethod BUILD ( *%options ) {
-#  self.set-position(GTK_WIN_POS_MOUSE);
-#  self.set-keep-above(True);
   self.set-default-response(GTK_RESPONSE_NO);
+
 #`{{
   my $e = CArray[N-Error].new(N-Error);
   my Gnome::GdkPixbuf::Pixbuf $win-icon .= new-from-file(
@@ -44,10 +43,11 @@ submethod BUILD ( *%options ) {
   }
 
   else {
-    self.set-icon($win-icon);
+    self.set-icon-name($win-icon);
   }
 }}
 
+#  self.set-icon-name('qa');
   self.register-signal( self, 'ok-done', 'response');
 
   my Gnome::Gtk4::StyleContext $context .= new(
